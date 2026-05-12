@@ -6,6 +6,7 @@
 <title>Frontend Final · Área do Cliente — Vinícius Souza Fotografia</title>
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="shared.css">
+<!-- v1.0.35 — 2026-05-12 · varredura g8 cliente engajamento (8 telas validadas pós-g7: nav-cart canonical em todas as 5 com cart, info-block Salvos vs Curtidas no Favoritos coerente com roadmap, 6 tipos de Notificação batem com real, Chat bolhas in/out alinhado; fix sistêmico: data-sim-route adicionado em 1 nav-cart restante da Cliente · Recompensas, completando normalização do g7) -->
 <!-- v1.0.34 — 2026-05-12 · varredura g7 cliente hub & compras (avatar Lucas Almeida img=33 → img=3 canonical em 20 ocorrências; div.nav-cart → button.nav-cart + data-sim-route="/cliente/carrinho" em 10 navs para clicabilidade no simulador) -->
 <!-- v1.0.25 — 2026-05-12 · revisão (mobile Downloads Expirando, mobile Sessão Expirada, lucas@gmail.com em 6 navs) -->
 <!-- v1.0.24 — 2026-05-12 · cobertura funcional (telas P1+P2) -->
@@ -2510,7 +2511,7 @@
         <div class="nav">
           <a class="nav-logo-link"><svg class="nav-logo"><use href="#nav-logo-h"/></svg></a>
           <div class="nav-spacer"></div>
-          <button class="nav-cart" type="button">Carrinho <span class="count">2</span></button>
+          <button class="nav-cart" type="button" data-sim-route="/cliente/carrinho">Carrinho <span class="count">2</span></button>
           <div class="avatar brand" style="width: 32px; height: 32px; font-size: 12px;"><img src="https://i.pravatar.cc/100?img=12" alt="VS" loading="lazy"></div>
         </div>
         <div class="acc">
