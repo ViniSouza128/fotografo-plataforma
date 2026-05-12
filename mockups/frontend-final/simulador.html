@@ -6830,8 +6830,8 @@
             <h2>Página não encontrada.</h2>
             <p>A página que você procurou não existe ou foi movida. Talvez você queira voltar à home ou explorar os álbuns.</p>
             <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-              <button class="btn primary" type="button">← Voltar à home</button>
-              <button class="btn" type="button">Ver todos os álbuns</button>
+              <button class="btn primary" type="button" data-sim-route="/">← Voltar à home</button>
+              <button class="btn" type="button" data-sim-route="/">Ver todos os álbuns</button>
             </div>
           </div>
         </div>
@@ -6857,8 +6857,8 @@
                 <h2 style="font-size: 20px; font-weight: 400; letter-spacing: -.01em; margin: 0 0 10px; color: var(--ink-1000);">Página não encontrada.</h2>
                 <p style="font-size: 13px; color: var(--ink-800); line-height: 1.6; margin: 0 0 24px; max-width: 280px;">A página que você procurou não existe ou foi movida. Volte à home ou explore os álbuns.</p>
                 <div style="display: flex; flex-direction: column; gap: 8px;">
-                  <button class="btn primary" type="button" style="width: 100%; justify-content: center;">← Voltar à home</button>
-                  <button class="btn" type="button" style="width: 100%; justify-content: center;">Ver todos os álbuns</button>
+                  <button class="btn primary" type="button" data-sim-route="/" style="width: 100%; justify-content: center;">← Voltar à home</button>
+                  <button class="btn" type="button" data-sim-route="/" style="width: 100%; justify-content: center;">Ver todos os álbuns</button>
                 </div>
               </div>
             </div>
@@ -6883,7 +6883,7 @@
           </div>
           <div class="err">
             <div>
-              <div class="code" style="color: var(--signal-500);">500</div>
+              <div class="code" style="color: var(--danger-500);">500</div>
               <h2>Ops, algo deu errado.</h2>
               <p>Tivemos um problema interno. Já fomos notificados. Tente novamente em alguns minutos.</p>
               <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
@@ -6891,7 +6891,7 @@
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.81 1 6.5 2.6L21 8"/><path d="M21 3v5h-5"/></svg>
                   Tentar novamente
                 </button>
-                <button class="btn" type="button">← Voltar à home</button>
+                <button class="btn" type="button" data-sim-route="/">← Voltar à home</button>
               </div>
               <div style="margin-top: 24px; padding: 12px 16px; background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius); font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-700); letter-spacing: .04em; max-width: 420px; margin-left: auto; margin-right: auto; text-align: left;">
                 <div><span style="color: var(--ink-800); margin-right: 8px;">REF:</span>err_a1b2c3d4_2026-05-12T14:08</div>
@@ -6914,12 +6914,12 @@
             </div>
             <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 32px 24px; text-align: center;">
               <div>
-                <div style="font-family: var(--font-display); font-size: 96px; line-height: 1; color: var(--signal-500); letter-spacing: -.04em; font-style: italic; margin-bottom: 16px;">500</div>
+                <div style="font-family: var(--font-display); font-size: 96px; line-height: 1; color: var(--danger-500); letter-spacing: -.04em; font-style: italic; margin-bottom: 16px;">500</div>
                 <h2 style="font-size: 20px; font-weight: 400; letter-spacing: -.01em; margin: 0 0 10px; color: var(--ink-1000);">Ops, algo deu errado.</h2>
                 <p style="font-size: 13px; color: var(--ink-800); line-height: 1.6; margin: 0 0 24px; max-width: 280px;">Tivemos um problema interno. Já fomos notificados. Tente novamente em alguns minutos.</p>
                 <div style="display: flex; flex-direction: column; gap: 8px;">
                   <button class="btn primary" type="button" style="width: 100%; justify-content: center;">Tentar novamente</button>
-                  <button class="btn" type="button" style="width: 100%; justify-content: center;">← Voltar à home</button>
+                  <button class="btn" type="button" data-sim-route="/" style="width: 100%; justify-content: center;">← Voltar à home</button>
                 </div>
                 <div style="margin-top: 18px; padding: 8px 10px; background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius); font-family: var(--font-mono); font-size: 9px; color: var(--ink-700); letter-spacing: .04em; line-height: 1.5; text-align: left; display: inline-block;">
                   <div>REF · err_a1b2c3d4</div>
