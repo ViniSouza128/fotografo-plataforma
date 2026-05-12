@@ -6,6 +6,7 @@
 <title>Frontend Final · Painel Admin — Vinícius Souza Fotografia</title>
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="shared.css">
+<!-- v1.0.41 — 2026-05-12 · varredura g13 admin pessoas & moderação (7 rotas: clientes+colaboradores+chat+comentarios+contatos+remocoes+comentarios/moderacao; collabModal existente; 5× hex inline color:#fff → var(--ink-1000) em avatares brand-500 corrigidos para conformar regra "ZERO hex inline") -->
 <!-- v1.0.40 — 2026-05-12 · varredura g12 admin vendas (audit-pass: 6 telas auditadas — Pedidos+Reembolso+Carrinhos+Cupons+Propostas+Repasses; status canônicos byte-equal commerceUtils.js incluindo "Simulacao/liberacao" sem acento; modais refundModal/manualReleaseModal/couponModal existentes; sem fixes necessários) -->
 <!-- v1.0.39 — 2026-05-12 · varredura g11 admin eventos (handlers de navegação: 16× "Editar" + 10× "Abrir" → /admin/eventos/123; "+ Criar evento" → /admin/eventos/novo; "Criar evento & ir para upload" → /admin/eventos/123-upload; 8 abas do detalhe alinham byte-equal com TABS real) -->
 <!-- v1.0.38 — 2026-05-12 · varredura g10 admin visão geral (data-sim-route="__logout__" no role-switcher, data-sim-route="/admin/eventos/novo" em 3 botões "+ Novo evento" + 1 "Criar primeiro álbum") -->
@@ -971,7 +972,7 @@
           <nav class="adm-crumbs"><span>Painel</span><span class="sep">/</span><span>Visão</span><span class="sep">/</span><span class="here">Estatísticas</span></nav>
           <div class="adm-search-mini"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/></svg><input placeholder="Buscar…"/><span class="kbd">⌘K</span></div>
           <div class="adm-icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18z"/></svg></div>
-          <div class="adm-avatar-pill"><div class="avatar" style="width:26px;height:26px;font-size:10px;background:var(--brand-500);color:#fff;"><img src="https://i.pravatar.cc/100?img=12" alt="VS" loading="lazy"></div><div><div class="name">Vinícius</div><div class="role">FOTÓGRAFO</div></div></div>
+          <div class="adm-avatar-pill"><div class="avatar" style="width:26px;height:26px;font-size:10px;background:var(--brand-500);color:var(--ink-1000);"><img src="https://i.pravatar.cc/100?img=12" alt="VS" loading="lazy"></div><div><div class="name">Vinícius</div><div class="role">FOTÓGRAFO</div></div></div>
         </div>
         <div class="adm">
           <aside class="adm-side">
@@ -1191,7 +1192,7 @@
           <nav class="adm-crumbs"><span>Painel</span><span class="sep">/</span><span>Conteúdo</span><span class="sep">/</span><span class="here">Eventos / Álbuns</span></nav>
           <div class="adm-search-mini"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/></svg><input placeholder="Buscar…"/><span class="kbd">⌘K</span></div>
           <div class="adm-icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18z"/></svg></div>
-          <div class="adm-avatar-pill"><div class="avatar" style="width:26px;height:26px;font-size:10px;background:var(--brand-500);color:#fff;"><img src="https://i.pravatar.cc/100?img=12" alt="VS" loading="lazy"></div><div><div class="name">Vinícius</div><div class="role">FOTÓGRAFO</div></div></div>
+          <div class="adm-avatar-pill"><div class="avatar" style="width:26px;height:26px;font-size:10px;background:var(--brand-500);color:var(--ink-1000);"><img src="https://i.pravatar.cc/100?img=12" alt="VS" loading="lazy"></div><div><div class="name">Vinícius</div><div class="role">FOTÓGRAFO</div></div></div>
         </div>
         <div class="adm">
           <aside class="adm-side">
@@ -1441,7 +1442,7 @@
           <nav class="adm-crumbs"><span>Painel</span><span class="sep">/</span><span>Eventos</span><span class="sep">/</span><span class="here">Abertura da Safra 2026</span></nav>
           <div class="adm-search-mini"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/></svg><input placeholder="Buscar foto por ID, pasta…"/><span class="kbd">⌘K</span></div>
           <div class="adm-icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18z"/></svg></div>
-          <div class="adm-avatar-pill"><div class="avatar" style="width:26px;height:26px;font-size:10px;background:var(--brand-500);color:#fff;"><img src="https://i.pravatar.cc/100?img=12" alt="VS" loading="lazy"></div><div><div class="name">Vinícius</div><div class="role">FOTÓGRAFO</div></div></div>
+          <div class="adm-avatar-pill"><div class="avatar" style="width:26px;height:26px;font-size:10px;background:var(--brand-500);color:var(--ink-1000);"><img src="https://i.pravatar.cc/100?img=12" alt="VS" loading="lazy"></div><div><div class="name">Vinícius</div><div class="role">FOTÓGRAFO</div></div></div>
         </div>
         <div class="adm">
           <aside class="adm-side">
@@ -1901,7 +1902,7 @@
           <nav class="adm-crumbs"><span>Painel</span><span class="sep">/</span><span>Vendas</span><span class="sep">/</span><span class="here">Pedidos</span></nav>
           <div class="adm-search-mini" style="margin-left: auto;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/></svg><input placeholder="Buscar pedido por ID, cliente…"/></div>
           <div class="adm-icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18z"/></svg></div>
-          <div class="adm-avatar-pill"><div class="avatar" style="width:26px;height:26px;font-size:10px;background:var(--brand-500);color:#fff;"><img src="https://i.pravatar.cc/100?img=12" alt="VS" loading="lazy"></div><div><div class="name">Vinícius</div><div class="role">FOTÓGRAFO</div></div></div>
+          <div class="adm-avatar-pill"><div class="avatar" style="width:26px;height:26px;font-size:10px;background:var(--brand-500);color:var(--ink-1000);"><img src="https://i.pravatar.cc/100?img=12" alt="VS" loading="lazy"></div><div><div class="name">Vinícius</div><div class="role">FOTÓGRAFO</div></div></div>
         </div>
         <div class="adm">
           <aside class="adm-side">
@@ -2247,7 +2248,7 @@
             <input placeholder="Buscar cliente…" style="width: 100%; margin-bottom: 12px;"/>
             <div class="ac">
               <table class="tbl"><thead><tr><th>Cliente</th><th>Compras</th><th style="text-align: right;">LTV</th></tr></thead><tbody>
-                <tr><td><div style="display:flex;gap:8px;align-items:center;"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:var(--brand-500);color:#fff;">MF</div><div><div>Maria F. Silva</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--ink-700);">5 eventos</div></div></div></td><td class="num">22</td><td class="num" style="text-align:right;color:var(--signal-500);">R$ 642</td></tr>
+                <tr><td><div style="display:flex;gap:8px;align-items:center;"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:var(--brand-500);color:var(--ink-1000);">MF</div><div><div>Maria F. Silva</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--ink-700);">5 eventos</div></div></div></td><td class="num">22</td><td class="num" style="text-align:right;color:var(--signal-500);">R$ 642</td></tr>
                 <tr><td><div style="display:flex;gap:8px;align-items:center;"><div class="avatar" style="width:26px;height:26px;font-size:11px;">JM</div><div><div>João M. Santos</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--ink-700);">3 eventos</div></div></div></td><td class="num">14</td><td class="num" style="text-align:right;color:var(--signal-500);">R$ 488</td></tr>
                 <tr><td><div style="display:flex;gap:8px;align-items:center;"><div class="avatar" style="width:26px;height:26px;font-size:11px;">AL</div><div><div>Ana L. Pereira</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--ink-700);">4 eventos · <span class="badge b-new" style="font-size:8px;padding:1px 5px;">NOVA</span></div></div></div></td><td class="num">8</td><td class="num" style="text-align:right;color:var(--signal-500);">R$ 412</td></tr>
                 <tr><td><div style="display:flex;gap:8px;align-items:center;"><div class="avatar" style="width:26px;height:26px;font-size:11px;">RR</div><div><div>Rafael R. Costa</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--ink-700);">2 eventos</div></div></div></td><td class="num">6</td><td class="num" style="text-align:right;color:var(--signal-500);">R$ 366</td></tr>
