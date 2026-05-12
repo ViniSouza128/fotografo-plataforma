@@ -6,6 +6,7 @@
 <title>Frontend Final · Painel Admin — Vinícius Souza Fotografia</title>
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="shared.css">
+<!-- v1.0.42 — 2026-05-12 · varredura g14 admin sistema (11 rotas: marca-dagua+personalizar+configuracoes+storage+recompensas+logs+jobs+notificacoes+reconhecimento+reset+403; FIX semantica de cores em estados de erro/falha — mesmo padrão recorrente de g3/g4/g6: signal-500 verde sendo usado para vermelho. Corrigidos: /admin/403 cadeado+número (signal-500+rgba(239,68,68,.08) → danger-500+danger-dim), Toast Erro section 33 (idem), /admin/jobs KPI Falhas + tentativas 3/3 esgotadas + msg ffmpeg timeout (desktop+mobile, 5 substituições signal-500→danger-500); handler "Voltar ao painel" no /admin/403 → data-sim-route="/admin") -->
 <!-- v1.0.41 — 2026-05-12 · varredura g13 admin pessoas & moderação (7 rotas: clientes+colaboradores+chat+comentarios+contatos+remocoes+comentarios/moderacao; collabModal existente; 5× hex inline color:#fff → var(--ink-1000) em avatares brand-500 corrigidos para conformar regra "ZERO hex inline") -->
 <!-- v1.0.40 — 2026-05-12 · varredura g12 admin vendas (audit-pass: 6 telas auditadas — Pedidos+Reembolso+Carrinhos+Cupons+Propostas+Repasses; status canônicos byte-equal commerceUtils.js incluindo "Simulacao/liberacao" sem acento; modais refundModal/manualReleaseModal/couponModal existentes; sem fixes necessários) -->
 <!-- v1.0.39 — 2026-05-12 · varredura g11 admin eventos (handlers de navegação: 16× "Editar" + 10× "Abrir" → /admin/eventos/123; "+ Criar evento" → /admin/eventos/novo; "Criar evento & ir para upload" → /admin/eventos/123-upload; 8 abas do detalhe alinham byte-equal com TABS real) -->
@@ -3757,7 +3758,7 @@
                 </div>
                 <div class="adm-stat">
                   <div class="top"><span class="lbl">Falhas</span></div>
-                  <div class="v" style="color: var(--signal-500);">1</div>
+                  <div class="v" style="color: var(--danger-500);">1</div>
                   <div class="delta down">3/3 tentativas esgotadas</div>
                 </div>
               </div>
@@ -3800,9 +3801,9 @@
                       <td><span class="type-mono" style="color: var(--brand-400);">video-preview-wm</span></td>
                       <td>Circuito Praia</td>
                       <td><span class="badge b-cancel">failed</span></td>
-                      <td class="mono" style="color: var(--signal-500);">3/3</td>
+                      <td class="mono" style="color: var(--danger-500);">3/3</td>
                       <td class="mono">14/05 09:29 · há 5min</td>
-                      <td style="font-family: var(--font-mono); font-size: 11px; color: var(--signal-500);">ffmpeg timeout após 240s</td>
+                      <td style="font-family: var(--font-mono); font-size: 11px; color: var(--danger-500);">ffmpeg timeout após 240s</td>
                       <td style="display: flex; gap: 4px;"><button class="btn sm primary">Tentar novamente</button><button class="btn sm">Ver log</button></td>
                     </tr>
                     <tr>
@@ -3860,7 +3861,7 @@
             <div class="m-adm-stats">
               <div class="m-adm-stat"><div class="lbl">Pendentes</div><div class="v warn">2</div><div class="delta">aguardando</div></div>
               <div class="m-adm-stat"><div class="lbl">Processando</div><div class="v brand">2</div><div class="delta">2 workers</div></div>
-              <div class="m-adm-stat"><div class="lbl">Falhas</div><div class="v" style="color: var(--signal-500);">1</div><div class="delta">3/3 esgotadas</div></div>
+              <div class="m-adm-stat"><div class="lbl">Falhas</div><div class="v" style="color: var(--danger-500);">1</div><div class="delta">3/3 esgotadas</div></div>
             </div>
             <div class="m-adm-chips">
               <span class="chip active">Todos · 5</span>
@@ -3871,7 +3872,7 @@
             <div class="m-adm-row"><div><h5 style="font-family: var(--font-mono); font-size: 11px; color: var(--brand-400);">job_005 · video-preview-wm</h5><div class="meta"><span>Pedalada Verão</span><span>2/3</span><span class="badge b-info">PROC</span></div></div></div>
             <div class="m-adm-row"><div><h5 style="font-family: var(--font-mono); font-size: 11px; color: var(--brand-400);">job_002 · video-poster</h5><div class="meta"><span>Cross Games E3</span><span>0/3</span><span class="badge b-pend">PEND</span></div></div></div>
             <div class="m-adm-row"><div><h5 style="font-family: var(--font-mono); font-size: 11px; color: var(--brand-400);">job_004 · photo-derivatives</h5><div class="meta"><span>Casamento M&amp;L</span><span>0/3</span><span class="badge b-pend">PEND</span></div></div></div>
-            <div class="m-adm-row"><div><h5 style="font-family: var(--font-mono); font-size: 11px; color: var(--brand-400);">job_003 · video-preview-wm</h5><div class="meta"><span>Circuito Praia</span><span style="color: var(--signal-500);">3/3</span><span class="badge b-cancel">FAIL</span><span style="color: var(--signal-500);">ffmpeg timeout 240s</span></div></div><button class="btn sm primary">Retry</button></div>
+            <div class="m-adm-row"><div><h5 style="font-family: var(--font-mono); font-size: 11px; color: var(--brand-400);">job_003 · video-preview-wm</h5><div class="meta"><span>Circuito Praia</span><span style="color: var(--danger-500);">3/3</span><span class="badge b-cancel">FAIL</span><span style="color: var(--danger-500);">ffmpeg timeout 240s</span></div></div><button class="btn sm primary">Retry</button></div>
             <div style="text-align: center; padding: 12px 14px 24px; font-family: var(--font-mono); font-size: 10px; color: var(--ink-700); line-height: 1.6;">MAX_ATTEMPTS=3 · WORKER PERSISTIDO<br/>data/jobs.json · *.partial DESCARTADO NO BOOT</div>
           </div>
         </div>
@@ -4113,19 +4114,19 @@
             </aside>
             <main class="adm-main">
               <div style="padding: 80px 32px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 24px;">
-                <div style="width: 120px; height: 120px; border-radius: 50%; background: rgba(239,68,68,.08); border: 2px solid var(--signal-500); display: grid; place-items: center; color: var(--signal-500);">
+                <div style="width: 120px; height: 120px; border-radius: 50%; background: var(--danger-dim); border: 2px solid var(--danger-500); display: grid; place-items: center; color: var(--danger-500);">
                   <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
                     <rect x="3" y="11" width="18" height="11" rx="2"/>
                     <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                   </svg>
                 </div>
-                <div style="font-family: var(--font-mono); font-size: 92px; font-weight: 600; color: var(--signal-500); letter-spacing: -.04em; line-height: 1;">403</div>
+                <div style="font-family: var(--font-mono); font-size: 92px; font-weight: 600; color: var(--danger-500); letter-spacing: -.04em; line-height: 1;">403</div>
                 <div>
                   <h2 style="margin: 0 0 10px; font-size: 26px; color: var(--ink-1000);">Acesso restrito</h2>
                   <p style="margin: 0 auto; font-size: 14px; color: var(--ink-800); max-width: 520px; line-height: 1.55;">Esta área é apenas para administradores plenos. Como colaborador, você não tem permissão para acessar. Se acha que é um engano, fale com o fotógrafo responsável pelo evento.</p>
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 12px;">
-                  <a class="btn primary" style="padding: 12px 26px; font-size: 13.5px;">
+                  <a class="btn primary" data-sim-route="/admin" style="padding: 12px 26px; font-size: 13.5px;">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="margin-right: 6px; vertical-align: -2px;"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
                     Voltar ao painel
                   </a>
@@ -4452,14 +4453,14 @@
 
               <div style="display: flex; flex-direction: column; gap: 8px;">
                 <div style="font-family: var(--font-mono); font-size: 10px; color: var(--ink-700); letter-spacing: .12em; text-transform: uppercase;">02 · Erro</div>
-                <div style="padding: 14px 16px; background: rgba(239,68,68,.08); border: 1px solid var(--signal-500); border-left: 3px solid var(--signal-500); border-radius: var(--radius); display: flex; gap: 10px; align-items: start;">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: var(--signal-500); flex-shrink: 0; margin-top: 1px;"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                <div style="padding: 14px 16px; background: var(--danger-dim); border: 1px solid var(--danger-500); border-left: 3px solid var(--danger-500); border-radius: var(--radius); display: flex; gap: 10px; align-items: start;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: var(--danger-500); flex-shrink: 0; margin-top: 1px;"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
                   <div style="flex: 1;">
                     <div style="font-size: 13px; font-weight: 500; color: var(--ink-1000); margin-bottom: 2px;">Falha ao salvar</div>
                     <div style="font-size: 11.5px; color: var(--ink-800); line-height: 1.5;">Sessão expirou. Faça login novamente.</div>
                   </div>
                 </div>
-                <div style="padding: 10px 12px; background: var(--ink-100); border: 1px solid var(--ink-500); border-radius: var(--radius); font-family: var(--font-mono); font-size: 10px; color: var(--ink-700); line-height: 1.5;">BORDA signal-500<br/>BG rgba(.08)<br/>STICKY · sem timeout</div>
+                <div style="padding: 10px 12px; background: var(--ink-100); border: 1px solid var(--ink-500); border-radius: var(--radius); font-family: var(--font-mono); font-size: 10px; color: var(--ink-700); line-height: 1.5;">BORDA danger-500<br/>BG danger-dim<br/>STICKY · sem timeout</div>
               </div>
 
               <div style="display: flex; flex-direction: column; gap: 8px;">
