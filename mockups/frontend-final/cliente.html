@@ -6,6 +6,7 @@
 <title>Frontend Final · Área do Cliente — Vinícius Souza Fotografia</title>
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="shared.css">
+<!-- v1.0.37 — 2026-05-12 · checkpoint B coerência cliente (data-sim-route="__logout__" nos 3 botões Sair do markup original para visualização standalone; sidebar canônica do simulador já incluía handler; auditoria 21 rotas /cliente/* confirmou: avatar Vinícius img=12 em telas com dados + Lucas img=3 em vazias, mobile burger em todas, login/logout funcional) -->
 <!-- v1.0.36 — 2026-05-12 · varredura g9 cliente conta & privacidade (Sessão Expirada: + data-sim-route nos 3 botões Fazer login + 1 Voltar ao site público para handler do simulador; 6 outras telas auditadas e coerentes pós-g7+g8) -->
 <!-- v1.0.35 — 2026-05-12 · varredura g8 cliente engajamento (8 telas validadas pós-g7: nav-cart canonical em todas as 5 com cart, info-block Salvos vs Curtidas no Favoritos coerente com roadmap, 6 tipos de Notificação batem com real, Chat bolhas in/out alinhado; fix sistêmico: data-sim-route adicionado em 1 nav-cart restante da Cliente · Recompensas, completando normalização do g7) -->
 <!-- v1.0.34 — 2026-05-12 · varredura g7 cliente hub & compras (avatar Lucas Almeida img=33 → img=3 canonical em 20 ocorrências; div.nav-cart → button.nav-cart + data-sim-route="/cliente/carrinho" em 10 navs para clicabilidade no simulador) -->
@@ -691,7 +692,7 @@
               <div class="lbl">Conta</div>
               <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Configurações</a>
               <div class="logout">
-                <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sair</a>
+                <a data-sim-route="__logout__"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sair</a>
               </div>
             </aside>
             <main class="acc-main">
@@ -927,7 +928,7 @@
             <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/></svg>Reconhecimento<span class="badge b-info">beta</span></a>
             <div class="lbl">Conta</div>
             <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>Configurações</a>
-            <div class="logout"><a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/></svg>Sair</a></div>
+            <div class="logout"><a data-sim-route="__logout__"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/></svg>Sair</a></div>
           </aside>
           <main class="acc-main">
             <div class="page-head">
@@ -2709,7 +2710,7 @@
               <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>Reconhecimento<span class="badge b-info">beta</span></a>
               <div class="lbl">Conta</div>
               <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>Configurações</a>
-              <div class="logout"><a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/></svg>Sair</a></div>
+              <div class="logout"><a data-sim-route="__logout__"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/></svg>Sair</a></div>
             </aside>
             <main class="acc-main">
               <div class="page-head">
