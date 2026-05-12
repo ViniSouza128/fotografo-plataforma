@@ -2926,7 +2926,11 @@
                 </div>
               </a>
               <a class="event-card cat-natureza">
-                <div class="cover"><img src="https://picsum.photos/seed/holambra/720/450" alt=""/><span class="cat">Festival</span></div>
+                <div class="cover" style="position: relative;">
+                  <img src="https://picsum.photos/seed/holambra/720/450" alt=""/>
+                  <span class="cat">Festival</span>
+                  <span style="position: absolute; bottom: 10px; left: 10px; background: rgba(34,197,94,.92); color: var(--ink-100); font-family: var(--font-mono); font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 999px; letter-spacing: .04em; box-shadow: 0 4px 12px rgba(0,0,0,.25);">🎁 Álbum gratuito</span>
+                </div>
                 <div class="body">
                   <h3>ExpoFlora Holambra</h3>
                   <div class="meta-line"><span>28 fev 2026</span><span>Holambra · SP</span><span>1.114 fotos</span></div>
@@ -3062,6 +3066,7 @@
             </div>
           </div>
           <div style="display: flex; gap: 8px;">
+            <button class="btn sm" type="button" title="Salvar este álbum nos seus favoritos"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Salvar álbum</button>
             <button class="btn sm" type="button"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Compartilhar</button>
           </div>
         </div>
@@ -3138,6 +3143,91 @@
         <div data-tab-pane="evFotos" class="active">
           <div class="gallery-wrap" data-cart-side>
             <div class="gallery-main">
+              <!-- folder navigation + EXIF filter (v1.0.27 paridade com src/app/evento/[id]/page.js) -->
+              <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
+                <div>
+                  <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px;">
+                    <button class="chip active" type="button" style="display: inline-flex; align-items: center; gap: 6px;">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                      Todas as pastas
+                    </button>
+                    <span style="color: var(--ink-700); font-family: var(--font-mono); font-size: 11px;">›</span>
+                    <span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-700); letter-spacing: .08em; text-transform: uppercase;">5 pastas · 1.581 fotos</span>
+                  </div>
+                  <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
+                    <a style="background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius); overflow: hidden; cursor: pointer;">
+                      <div style="position: relative; height: 90px; background: var(--ink-300); display: flex; align-items: center; justify-content: center;">
+                        <img src="https://picsum.photos/seed/bateria/240/120" alt="" style="width: 100%; height: 100%; object-fit: cover; opacity: .55;"/>
+                        <span style="position: absolute; font-size: 1.8rem;">📂</span>
+                      </div>
+                      <div style="padding: 8px 10px;">
+                        <div style="font-size: 12.5px; font-weight: 500; color: var(--ink-1000); margin-bottom: 2px;">Bateria</div>
+                        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--ink-700);">412 fotos</div>
+                      </div>
+                    </a>
+                    <a style="background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius); overflow: hidden; cursor: pointer;">
+                      <div style="position: relative; height: 90px; background: var(--ink-300); display: flex; align-items: center; justify-content: center;">
+                        <img src="https://picsum.photos/seed/premiacao/240/120" alt="" style="width: 100%; height: 100%; object-fit: cover; opacity: .55;"/>
+                        <span style="position: absolute; font-size: 1.8rem;">📂</span>
+                      </div>
+                      <div style="padding: 8px 10px;">
+                        <div style="font-size: 12.5px; font-weight: 500; color: var(--ink-1000); margin-bottom: 2px;">Premiação</div>
+                        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--ink-700);">186 fotos</div>
+                      </div>
+                    </a>
+                    <a style="background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius); overflow: hidden; cursor: pointer;">
+                      <div style="position: relative; height: 90px; background: var(--ink-300); display: flex; align-items: center; justify-content: center;">
+                        <img src="https://picsum.photos/seed/backstage/240/120" alt="" style="width: 100%; height: 100%; object-fit: cover; opacity: .55;"/>
+                        <span style="position: absolute; font-size: 1.8rem;">📂</span>
+                      </div>
+                      <div style="padding: 8px 10px;">
+                        <div style="font-size: 12.5px; font-weight: 500; color: var(--ink-1000); margin-bottom: 2px;">Backstage</div>
+                        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--ink-700);">237 fotos</div>
+                      </div>
+                    </a>
+                    <a style="background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius); overflow: hidden; cursor: pointer;">
+                      <div style="position: relative; height: 90px; background: var(--ink-300); display: flex; align-items: center; justify-content: center;">
+                        <img src="https://picsum.photos/seed/abertura/240/120" alt="" style="width: 100%; height: 100%; object-fit: cover; opacity: .55;"/>
+                        <span style="position: absolute; font-size: 1.8rem;">📂</span>
+                      </div>
+                      <div style="padding: 8px 10px;">
+                        <div style="font-size: 12.5px; font-weight: 500; color: var(--ink-1000); margin-bottom: 2px;">Abertura</div>
+                        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--ink-700);">158 fotos</div>
+                      </div>
+                    </a>
+                    <a style="background: var(--ink-200); border: 1px solid rgba(34,197,94,.45); border-radius: var(--radius); overflow: hidden; cursor: pointer; position: relative;">
+                      <div style="position: relative; height: 90px; background: var(--ink-300); display: flex; align-items: center; justify-content: center;">
+                        <img src="https://picsum.photos/seed/aquecimento/240/120" alt="" style="width: 100%; height: 100%; object-fit: cover; opacity: .55;"/>
+                        <span style="position: absolute; font-size: 1.8rem;">📂</span>
+                        <span style="position: absolute; top: 6px; right: 6px; background: rgba(34,197,94,.9); color: var(--ink-100); font-family: var(--font-mono); font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 999px; letter-spacing: .06em;">🎁 GRÁTIS</span>
+                      </div>
+                      <div style="padding: 8px 10px;">
+                        <div style="font-size: 12.5px; font-weight: 500; color: var(--ink-1000); margin-bottom: 2px;">Aquecimento</div>
+                        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--ink-700);">88 fotos</div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- filtro de horário EXIF (real condicional: photosComHorario > 30) -->
+                <div style="display: flex; gap: 14px; align-items: center; padding: 12px 14px; background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius); flex-wrap: wrap;">
+                  <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-900); font-weight: 500;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Filtrar por horário (EXIF):
+                  </span>
+                  <label style="display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-800);">
+                    De
+                    <input type="time" value="08:00" style="background: var(--ink-100); border: 1px solid var(--ink-500); border-radius: 4px; color: var(--ink-1000); padding: 4px 8px; font-family: var(--font-mono); font-size: 11px;"/>
+                  </label>
+                  <label style="display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-800);">
+                    até
+                    <input type="time" value="18:30" style="background: var(--ink-100); border: 1px solid var(--ink-500); border-radius: 4px; color: var(--ink-1000); padding: 4px 8px; font-family: var(--font-mono); font-size: 11px;"/>
+                  </label>
+                  <button type="button" class="btn sm">✕ Limpar filtro</button>
+                  <span style="font-family: var(--font-mono); font-size: 11px; color: var(--brand-400); letter-spacing: .04em;">1.392 fotos no intervalo</span>
+                </div>
+              </div>
+
               <div class="photo-grid">
                 <div class="photo-tile in-cart" data-id="100400101">
                   <div class="photo-tile__media"><img src="https://picsum.photos/seed/p001/600/600" alt="Foto 100400101" loading="lazy"></div>
@@ -3463,7 +3553,13 @@
             <!-- gallery head mobile -->
             <div style="padding: 14px 16px 10px; border-bottom: 1px solid var(--ink-500);">
               <div style="font-size: 10px; color: var(--ink-700); font-family: var(--font-mono); margin-bottom: 4px;"><a style="color: var(--brand-400);">← voltar</a> · Rodeio</div>
-              <div style="font-size: 17px; font-weight: 500; margin-bottom: 4px;">Abertura da Safra 2026</div>
+              <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 4px;">
+                <div style="font-size: 17px; font-weight: 500;">Abertura da Safra 2026</div>
+                <button class="btn sm" type="button" title="Salvar álbum" style="flex-shrink: 0; padding: 4px 10px; font-size: 11px; display: inline-flex; align-items: center; gap: 4px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  Salvar
+                </button>
+              </div>
               <div style="font-family: var(--font-mono); font-size: 10px; color: var(--ink-800); display: flex; gap: 10px; flex-wrap: wrap;">
                 <span>17 abr 2026</span><span>Itajá · GO</span><span>1.900 fotos · 18 vídeos</span>
               </div>
@@ -3505,8 +3601,26 @@
               <button data-tab-target="mEvVideos" style="padding: 12px 14px; font-size: 12px; color: var(--ink-800); border-bottom: 2px solid transparent; background: transparent; border-top: 0; border-left: 0; border-right: 0; white-space: nowrap; font-family: inherit; cursor: pointer;">Vídeos (18)</button>
               <button data-tab-target="mEvComentarios" style="padding: 12px 14px; font-size: 12px; color: var(--ink-800); border-bottom: 2px solid transparent; background: transparent; border-top: 0; border-left: 0; border-right: 0; white-space: nowrap; font-family: inherit; cursor: pointer;">Comentários (32)</button>
             </div>
-            <!-- painel Fotos — estrutura idêntica ao desktop, sem style inline -->
-            <div data-tab-pane="mEvFotos" class="active" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px 16px;">
+            <!-- painel Fotos — pastas + EXIF + grid (v1.0.27 paridade real) -->
+            <div data-tab-pane="mEvFotos" class="active" style="padding: 12px 16px; display: flex; flex-direction: column; gap: 10px;">
+              <!-- pastas chips (scroll horizontal) -->
+              <div style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; margin-left: -2px; margin-right: -2px; padding-left: 2px; padding-right: 2px;">
+                <button class="chip active" type="button" style="white-space: nowrap; font-size: 11px;">🏠 Todas · 1.581</button>
+                <button class="chip" type="button" style="white-space: nowrap; font-size: 11px;">📂 Bateria · 412</button>
+                <button class="chip" type="button" style="white-space: nowrap; font-size: 11px;">📂 Premiação · 186</button>
+                <button class="chip" type="button" style="white-space: nowrap; font-size: 11px;">📂 Backstage · 237</button>
+                <button class="chip" type="button" style="white-space: nowrap; font-size: 11px;">📂 Abertura · 158</button>
+                <button class="chip" type="button" style="white-space: nowrap; font-size: 11px; border-color: rgba(34,197,94,.45); color: var(--signal-500);">🎁 Aquecimento · 88</button>
+              </div>
+              <!-- EXIF filter compacto -->
+              <div style="display: flex; gap: 8px; align-items: center; padding: 8px 10px; background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius); font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-800); flex-wrap: wrap;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <label style="display: inline-flex; align-items: center; gap: 4px;">De <input type="time" value="08:00" style="background: var(--ink-100); border: 1px solid var(--ink-500); border-radius: 4px; color: var(--ink-1000); padding: 2px 6px; font-family: var(--font-mono); font-size: 10.5px; width: 70px;"/></label>
+                <label style="display: inline-flex; align-items: center; gap: 4px;">até <input type="time" value="18:30" style="background: var(--ink-100); border: 1px solid var(--ink-500); border-radius: 4px; color: var(--ink-1000); padding: 2px 6px; font-family: var(--font-mono); font-size: 10.5px; width: 70px;"/></label>
+                <span style="color: var(--brand-400); margin-left: auto; font-weight: 600;">1.392 fotos</span>
+              </div>
+              <!-- photo grid -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
               <div class="photo-tile in-cart" data-id="100400101">
                 <div class="photo-tile__media"><img src="https://picsum.photos/seed/p001/600/600" alt="Foto 100400101" loading="lazy"></div>
                 <span class="photo-tile__id">#100400101</span>
@@ -3543,6 +3657,7 @@
                 <span class="photo-tile__price">R$ 28,80</span>
                 <button class="photo-tile__cart" type="button" data-cart-bump aria-label="Adicionar ao carrinho"><svg width="20" height="20"><use href="#i-cart"/></svg></button>
               </div>
+              </div><!-- /grid mEvFotos -->
             </div>
             <!-- painel Vídeos -->
             <div data-tab-pane="mEvVideos" hidden style="padding: 12px 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
