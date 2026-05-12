@@ -1693,6 +1693,39 @@ ${styleAdmin}
     font-family: var(--font-mono); font-size: 11px;
     color: var(--ink-800); letter-spacing: .08em;
   }
+  /* favorito (estrela) ao lado do meta */
+  .sim-lightbox-overlay .lb-fav-btn {
+    position: absolute; top: 56px; left: 200px;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18);
+    color: var(--ink-1000); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .15s, border-color .15s;
+  }
+  .sim-lightbox-overlay .lb-fav-btn.active { color: var(--warning-500); background: rgba(232,163,58,.18); border-color: var(--warning-500); }
+  .sim-lightbox-overlay .lb-fav-btn:hover { background: rgba(255,255,255,.16); }
+  /* preço pill bottom-left */
+  .sim-lightbox-overlay .lb-price-pill {
+    position: absolute; bottom: 100px; left: 20px;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px; border-radius: 9999px;
+    background: rgba(0,0,0,.65); border: 1px solid rgba(255,255,255,.18);
+    color: var(--ink-1000); backdrop-filter: blur(6px);
+    font-family: var(--font-mono); font-size: 14px; font-variant-numeric: tabular-nums;
+  }
+  .sim-lightbox-overlay .lb-price-pill .tier-label { font-size: 10px; color: var(--ink-800); letter-spacing: .1em; text-transform: uppercase; }
+  /* heart pill bottom-right (curtidas) */
+  .sim-lightbox-overlay .lb-heart-pill {
+    position: absolute; bottom: 100px; right: 20px;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px; border-radius: 9999px;
+    background: rgba(0,0,0,.65); border: 1px solid rgba(255,255,255,.18);
+    color: var(--ink-1000); cursor: pointer; backdrop-filter: blur(6px);
+    transition: background .15s, border-color .15s;
+  }
+  .sim-lightbox-overlay .lb-heart-pill.active { color: var(--danger-500, #e84444); border-color: var(--danger-500, #e84444); background: rgba(232,68,68,.18); }
+  .sim-lightbox-overlay .lb-heart-pill:hover { background: rgba(255,255,255,.12); }
+  .sim-lightbox-overlay .lb-heart-pill .hp-count { font-family: var(--font-body); font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums; }
   .sim-lightbox-overlay .lb-nav {
     position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
     display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
@@ -1896,7 +1929,18 @@ ${sectionsHtml.join('')}
 <div class="sim-lightbox-overlay" id="simLightbox" role="dialog" aria-label="Visualizar foto">
   <button class="lb-close" id="lbClose" type="button" aria-label="Fechar">×</button>
   <div class="lb-meta" id="lbMeta">REF #0001</div>
+  <button class="lb-fav-btn" id="lbFav" type="button" aria-label="Favoritar" title="Salvar nos favoritos">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+  </button>
   <img class="lb-photo" id="lbPhoto" src="" alt="">
+  <div class="lb-price-pill" id="lbPrice">
+    <span class="tier-label">Padrão</span>
+    <strong id="lbPriceValue">R$ 28,80</strong>
+  </div>
+  <button class="lb-heart-pill" id="lbHeart" type="button" aria-label="Curtir foto">
+    <span class="hp-count" id="lbHeartCount">247</span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+  </button>
   <div class="lb-nav">
     <button id="lbPrev" type="button">← Anterior</button>
     <button id="lbAdd" type="button">+ Adicionar ao carrinho</button>
@@ -2290,6 +2334,20 @@ function initLightbox() {
     const id = document.getElementById('lbMeta').textContent;
     addToCart(id, 35);
   });
+  // Favorito (toggle visual + toast)
+  document.getElementById('lbFav').addEventListener('click', (e) => {
+    const btn = e.currentTarget;
+    btn.classList.toggle('active');
+    showToast(btn.classList.contains('active') ? 'Foto salva nos favoritos' : 'Removida dos favoritos');
+  });
+  // Curtir (toggle visual + atualiza contador)
+  document.getElementById('lbHeart').addEventListener('click', (e) => {
+    const btn = e.currentTarget;
+    const counter = document.getElementById('lbHeartCount');
+    const isActive = btn.classList.toggle('active');
+    const n = parseInt(counter.textContent, 10) || 0;
+    counter.textContent = String(n + (isActive ? 1 : -1));
+  });
   document.getElementById('simLightbox').addEventListener('click', (e) => {
     if (e.target.id === 'simLightbox') closeLightbox();
   });
@@ -2305,6 +2363,11 @@ function renderLightbox() {
   if (!item) return;
   document.getElementById('lbPhoto').src = item.src;
   document.getElementById('lbMeta').textContent = item.id || ('REF #' + String(_lbIdx + 1).padStart(4, '0'));
+  // Reset estado de fav/curtir ao trocar de foto + valores pseudo-randômicos pra dar vida
+  const seed = (_lbIdx * 97 + 13) % 1000;
+  document.getElementById('lbHeartCount').textContent = String(40 + seed % 250);
+  document.getElementById('lbHeart').classList.remove('active');
+  document.getElementById('lbFav').classList.remove('active');
 }
 function stepLightbox(d) {
   _lbIdx = (_lbIdx + d + _lbList.length) % _lbList.length;
