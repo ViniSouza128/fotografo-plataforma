@@ -355,6 +355,7 @@ const ADMIN_SIDEBAR = [
   { text: 'Storage', route: '/admin/storage' },
   { text: 'Recompensas', route: '/admin/recompensas' },
   { text: 'Logs & auditoria', route: '/admin/logs' },
+  { text: 'Fila de Jobs', route: '/admin/jobs', badge: { type: 'pend', count: 2 } },
   { text: 'Notificações', route: '/admin/notificacoes' },
   { text: 'Reconhecimento', route: '/admin/reconhecimento' },
   { text: 'Reset', route: '/admin/reset' },
@@ -2491,10 +2492,20 @@ function normalizeSidebars() {
   // atualiza nome do user na sidebar
   const userName = state.user?.name || (state.role === 'admin' ? 'Vinícius Souza' : (state.role === 'cliente' ? 'Lucas Oliveira' : 'visitante'));
   scope.querySelectorAll('.sim-user-name').forEach(el => { el.textContent = userName; });
-  // marca link ativo baseado na rota
+  // marca link ativo baseado na rota (com fallback para rota-pai conhecida)
   const route = currentRoute();
+  const SIDEBAR_ROUTE_ALIASES = {
+    '/admin/dashboard-vazio': '/admin',
+    '/admin/eventos/123': '/admin/eventos',
+    '/admin/eventos/123-videos': '/admin/eventos',
+    '/admin/eventos/123-patrocinadores': '/admin/eventos',
+    '/admin/eventos-sem-fotos': '/admin/eventos',
+    '/admin/pedidos/reembolso': '/admin/pedidos',
+    '/admin/comentarios/moderacao': '/admin/comentarios',
+  };
+  const activeRoute = SIDEBAR_ROUTE_ALIASES[route] || route;
   scope.querySelectorAll('[data-sim-route]').forEach(a => {
-    a.classList.toggle('active', a.getAttribute('data-sim-route') === route);
+    a.classList.toggle('active', a.getAttribute('data-sim-route') === activeRoute);
   });
 }
 
