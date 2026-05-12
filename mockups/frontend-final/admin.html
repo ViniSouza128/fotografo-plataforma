@@ -6,6 +6,7 @@
 <title>Frontend Final · Painel Admin — Vinícius Souza Fotografia</title>
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="shared.css">
+<!-- v1.0.39 — 2026-05-12 · varredura g11 admin eventos (handlers de navegação: 16× "Editar" + 10× "Abrir" → /admin/eventos/123; "+ Criar evento" → /admin/eventos/novo; "Criar evento & ir para upload" → /admin/eventos/123-upload; 8 abas do detalhe alinham byte-equal com TABS real) -->
 <!-- v1.0.38 — 2026-05-12 · varredura g10 admin visão geral (data-sim-route="__logout__" no role-switcher, data-sim-route="/admin/eventos/novo" em 3 botões "+ Novo evento" + 1 "Criar primeiro álbum") -->
 <!-- v1.0.25 — 2026-05-12 · revisão (avatar Patrícia em Pedido com Reembolso) -->
 <!-- v1.0.24 — 2026-05-12 · cobertura funcional (telas P1+P2 + fix data-screen-label Configurações) -->
@@ -1209,7 +1210,7 @@
               <div><h2>Eventos / Álbuns</h2><div class="sub">— 142 ÁLBUNS · 38.217 FOTOS · 1.402 VÍDEOS —</div></div>
               <div class="actions">
                 <button class="btn">Importar CSV</button>
-                <button class="btn primary">+ Criar evento</button>
+                <button class="btn primary" type="button" data-sim-route="/admin/eventos/novo">+ Criar evento</button>
               </div>
             </div>
 
@@ -1233,8 +1234,8 @@
                     <span class="badge b-pub">PÚBLICO</span>
                   </div>
                   <div style="display: flex; gap: 6px; margin-top: 10px;">
-                    <button class="btn sm primary" style="flex: 1;">Abrir</button>
-                    <button class="btn sm">Editar</button>
+                    <button class="btn sm primary" type="button" data-sim-route="/admin/eventos/123" style="flex: 1;">Abrir</button>
+                    <button class="btn sm" data-sim-route="/admin/eventos/123">Editar</button>
                     <button class="btn sm">⋯</button>
                   </div>
                 </div>
@@ -1249,8 +1250,8 @@
                     <span class="badge b-pub">PÚBLICO</span>
                   </div>
                   <div style="display: flex; gap: 6px; margin-top: 10px;">
-                    <button class="btn sm primary" style="flex: 1;">Abrir</button>
-                    <button class="btn sm">Editar</button>
+                    <button class="btn sm primary" type="button" data-sim-route="/admin/eventos/123" style="flex: 1;">Abrir</button>
+                    <button class="btn sm" data-sim-route="/admin/eventos/123">Editar</button>
                     <button class="btn sm">⋯</button>
                   </div>
                 </div>
@@ -1265,8 +1266,8 @@
                     <span class="badge b-pub">PÚBLICO</span>
                   </div>
                   <div style="display: flex; gap: 6px; margin-top: 10px;">
-                    <button class="btn sm primary" style="flex: 1;">Abrir</button>
-                    <button class="btn sm">Editar</button>
+                    <button class="btn sm primary" type="button" data-sim-route="/admin/eventos/123" style="flex: 1;">Abrir</button>
+                    <button class="btn sm" data-sim-route="/admin/eventos/123">Editar</button>
                     <button class="btn sm">⋯</button>
                   </div>
                 </div>
@@ -1281,8 +1282,8 @@
                     <span class="badge b-priv">PRIVADO</span>
                   </div>
                   <div style="display: flex; gap: 6px; margin-top: 10px;">
-                    <button class="btn sm primary" style="flex: 1;">Abrir</button>
-                    <button class="btn sm">Editar</button>
+                    <button class="btn sm primary" type="button" data-sim-route="/admin/eventos/123" style="flex: 1;">Abrir</button>
+                    <button class="btn sm" data-sim-route="/admin/eventos/123">Editar</button>
                     <button class="btn sm">⋯</button>
                   </div>
                 </div>
@@ -1297,8 +1298,8 @@
                     <span class="badge b-pub">PÚBLICO</span>
                   </div>
                   <div style="display: flex; gap: 6px; margin-top: 10px;">
-                    <button class="btn sm primary" style="flex: 1;">Abrir</button>
-                    <button class="btn sm">Editar</button>
+                    <button class="btn sm primary" type="button" data-sim-route="/admin/eventos/123" style="flex: 1;">Abrir</button>
+                    <button class="btn sm" data-sim-route="/admin/eventos/123">Editar</button>
                     <button class="btn sm">⋯</button>
                   </div>
                 </div>
@@ -1313,8 +1314,8 @@
                     <span class="badge b-pub">PÚBLICO</span>
                   </div>
                   <div style="display: flex; gap: 6px; margin-top: 10px;">
-                    <button class="btn sm primary" style="flex: 1;">Abrir</button>
-                    <button class="btn sm">Editar</button>
+                    <button class="btn sm primary" type="button" data-sim-route="/admin/eventos/123" style="flex: 1;">Abrir</button>
+                    <button class="btn sm" data-sim-route="/admin/eventos/123">Editar</button>
                     <button class="btn sm">⋯</button>
                   </div>
                 </div>
@@ -1372,8 +1373,8 @@
                   <div class="meta"><span>17 abr</span><span>Itajá · GO</span><span class="badge b-pub">PÚBLICO</span></div>
                   <div class="meta"><span>1.581 fotos · 18 vídeos</span></div>
                   <div class="foot">
-                    <button class="btn sm primary">Abrir</button>
-                    <button class="btn sm">Editar</button>
+                    <button class="btn sm primary" type="button" data-sim-route="/admin/eventos/123">Abrir</button>
+                    <button class="btn sm" data-sim-route="/admin/eventos/123">Editar</button>
                   </div>
                 </div>
               </div>
@@ -1384,8 +1385,8 @@
                   <div class="meta"><span>02 abr</span><span>Goiânia · GO</span><span class="badge b-pub">PÚBLICO</span></div>
                   <div class="meta"><span>2.104 fotos · 32 vídeos</span></div>
                   <div class="foot">
-                    <button class="btn sm primary">Abrir</button>
-                    <button class="btn sm">Editar</button>
+                    <button class="btn sm primary" type="button" data-sim-route="/admin/eventos/123">Abrir</button>
+                    <button class="btn sm" data-sim-route="/admin/eventos/123">Editar</button>
                   </div>
                 </div>
               </div>
@@ -1396,8 +1397,8 @@
                   <div class="meta"><span>24 mar</span><span>Anápolis · GO</span><span class="badge b-pub">PÚBLICO</span></div>
                   <div class="meta"><span>3.802 fotos · 14 vídeos</span></div>
                   <div class="foot">
-                    <button class="btn sm primary">Abrir</button>
-                    <button class="btn sm">Editar</button>
+                    <button class="btn sm primary" type="button" data-sim-route="/admin/eventos/123">Abrir</button>
+                    <button class="btn sm" data-sim-route="/admin/eventos/123">Editar</button>
                   </div>
                 </div>
               </div>
@@ -1408,8 +1409,8 @@
                   <div class="meta"><span>15 mar</span><span>Brasília · DF</span><span class="badge b-priv">PRIVADO</span></div>
                   <div class="meta"><span>892 fotos · 6 vídeos</span></div>
                   <div class="foot">
-                    <button class="btn sm primary">Abrir</button>
-                    <button class="btn sm">Editar</button>
+                    <button class="btn sm primary" type="button" data-sim-route="/admin/eventos/123">Abrir</button>
+                    <button class="btn sm" data-sim-route="/admin/eventos/123">Editar</button>
                   </div>
                 </div>
               </div>
@@ -1586,42 +1587,42 @@
                   <div class="info"><h5>Veterinária Boi Forte</h5><p>boiforte.com · cota R$ 6.000</p></div>
                   <span class="badge b-paid">★ OURO</span>
                   <span class="badge b-pub">VISÍVEL</span>
-                  <button class="btn sm">Editar</button>
+                  <button class="btn sm" data-sim-route="/admin/eventos/123">Editar</button>
                 </div>
                 <div class="sponsor-row">
                   <div class="logo" style="overflow:hidden; padding: 0;"><img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20128%2080%22%3E%3Crect%20width%3D%22128%22%20height%3D%2280%22%20fill%3D%22%23222%22%20rx%3D%224%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%20fill%3D%22%23aaa%22%20font-family%3D%22-apple-system%2CBlinkMacSystemFont%2C%27Segoe%20UI%27%2CRoboto%2CArial%2Csans-serif%22%20font-weight%3D%22700%22%20font-size%3D%2227.2%22%20letter-spacing%3D%220.5%22%20style%3D%22text-transform%3Auppercase%22%3EGOYAZ%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Rações Goyaz" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px;"></div>
                   <div class="info"><h5>Rações Goyaz</h5><p>goyaz.com.br · cota R$ 3.500</p></div>
                   <span class="badge" style="background: var(--ink-300); color: var(--ink-900); border: 1px solid var(--ink-500);">PRATA</span>
                   <span class="badge b-pub">VISÍVEL</span>
-                  <button class="btn sm">Editar</button>
+                  <button class="btn sm" data-sim-route="/admin/eventos/123">Editar</button>
                 </div>
                 <div class="sponsor-row">
                   <div class="logo" style="overflow:hidden; padding: 0;"><img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20128%2080%22%3E%3Crect%20width%3D%22128%22%20height%3D%2280%22%20fill%3D%22%23222%22%20rx%3D%224%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%20fill%3D%22%23aaa%22%20font-family%3D%22-apple-system%2CBlinkMacSystemFont%2C%27Segoe%20UI%27%2CRoboto%2CArial%2Csans-serif%22%20font-weight%3D%22700%22%20font-size%3D%2227.2%22%20letter-spacing%3D%220.5%22%20style%3D%22text-transform%3Auppercase%22%3ECAJU%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Cervejaria Caju" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px;"></div>
                   <div class="info"><h5>Cervejaria Caju</h5><p>cajubeers.com · cota R$ 2.800</p></div>
                   <span class="badge" style="background: var(--ink-300); color: var(--ink-900); border: 1px solid var(--ink-500);">PRATA</span>
                   <span class="badge b-pub">VISÍVEL</span>
-                  <button class="btn sm">Editar</button>
+                  <button class="btn sm" data-sim-route="/admin/eventos/123">Editar</button>
                 </div>
                 <div class="sponsor-row">
                   <div class="logo" style="overflow:hidden; padding: 0;"><img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20128%2080%22%3E%3Crect%20width%3D%22128%22%20height%3D%2280%22%20fill%3D%22%23222%22%20rx%3D%224%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%20fill%3D%22%23888%22%20font-family%3D%22-apple-system%2CBlinkMacSystemFont%2C%27Segoe%20UI%27%2CRoboto%2CArial%2Csans-serif%22%20font-weight%3D%22700%22%20font-size%3D%2225.9%22%20letter-spacing%3D%220.5%22%20style%3D%22text-transform%3Auppercase%22%3EBOA%20SAFRA%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Boa Safra" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px;"></div>
                   <div class="info"><h5>Mercado Boa Safra</h5><p>boasafra.com.br · cota R$ 1.200</p></div>
                   <span class="badge" style="background: var(--warning-dim); color: var(--warning-600); border: 1px solid var(--warning-dim);">BRONZE</span>
                   <span class="badge b-pub">VISÍVEL</span>
-                  <button class="btn sm">Editar</button>
+                  <button class="btn sm" data-sim-route="/admin/eventos/123">Editar</button>
                 </div>
                 <div class="sponsor-row">
                   <div class="logo" style="overflow:hidden; padding: 0;"><img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20128%2080%22%3E%3Crect%20width%3D%22128%22%20height%3D%2280%22%20fill%3D%22%23222%22%20rx%3D%224%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%20fill%3D%22%23888%22%20font-family%3D%22-apple-system%2CBlinkMacSystemFont%2C%27Segoe%20UI%27%2CRoboto%2CArial%2Csans-serif%22%20font-weight%3D%22700%22%20font-size%3D%2225.9%22%20letter-spacing%3D%220.5%22%20style%3D%22text-transform%3Auppercase%22%3ELAVA-JATO%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Lava-Jato Itajá" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px;"></div>
                   <div class="info"><h5>Lava-Jato Itajá</h5><p>— · cota R$ 800</p></div>
                   <span class="badge" style="background: var(--warning-dim); color: var(--warning-600); border: 1px solid var(--warning-dim);">BRONZE</span>
                   <span class="badge b-priv">OCULTO</span>
-                  <button class="btn sm">Editar</button>
+                  <button class="btn sm" data-sim-route="/admin/eventos/123">Editar</button>
                 </div>
                 <div class="sponsor-row">
                   <div class="logo" style="overflow:hidden; padding: 0;"><img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20128%2080%22%3E%3Crect%20width%3D%22128%22%20height%3D%2280%22%20fill%3D%22%231a1a1a%22%20rx%3D%224%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%20fill%3D%22%23666%22%20font-family%3D%22-apple-system%2CBlinkMacSystemFont%2C%27Segoe%20UI%27%2CRoboto%2CArial%2Csans-serif%22%20font-weight%3D%22700%22%20font-size%3D%2227.2%22%20letter-spacing%3D%220.5%22%20style%3D%22text-transform%3Auppercase%22%3EFM%20102.5%3C%2Ftext%3E%3C%2Fsvg%3E" alt="FM Rural" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px;"></div>
                   <div class="info"><h5>FM 102.5 Rural</h5><p>fmrural.com.br · permuta</p></div>
                   <span class="badge b-soft">APOIO</span>
                   <span class="badge b-pub">VISÍVEL</span>
-                  <button class="btn sm">Editar</button>
+                  <button class="btn sm" data-sim-route="/admin/eventos/123">Editar</button>
                 </div>
               </div>
             </div>
@@ -1758,7 +1759,7 @@
             </div>
             <div style="margin-top: 14px; display: flex; gap: 8px; justify-content: end;">
               <button class="btn">Cancelar</button>
-              <button class="btn primary">Criar evento &amp; ir para upload →</button>
+              <button class="btn primary" type="button" data-sim-route="/admin/eventos/123-upload">Criar evento &amp; ir para upload →</button>
             </div>
           </div>
         </div>
