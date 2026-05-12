@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Vinícius Souza — Voz &amp; Tom</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { padding-bottom: var(--space-24); }
+  .wrap { max-width: var(--content-max); margin: 0 auto; padding: var(--space-20) var(--space-12) var(--space-24); }
+  @media (max-width: 800px) { .wrap { padding: var(--space-12) var(--space-5); } }
+
+  /* HERO ────────────────────────────────────────────── */
+  .hero { position: relative; padding-bottom: var(--space-16); border-bottom: 1px solid var(--ink-500); margin-bottom: var(--space-16); overflow: hidden; }
+  .hero::before { content: ""; position: absolute; inset: -10% -10% auto -10%; height: 70%; background: var(--glow-radial); pointer-events: none; }
+  .hero > * { position: relative; }
+  .hero .crumbs { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); margin-bottom: var(--space-4); display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; }
+  .hero .crumbs a { color: var(--ink-700); }
+  .hero .crumbs a:hover { color: var(--ink-1000); }
+  .hero .crumbs b { color: var(--ink-1000); font-weight: 500; }
+  .hero h1 { font-family: var(--font-display); font-style: italic; font-size: var(--text-5xl); line-height: var(--leading-flat); letter-spacing: var(--tracking-tight); margin: 0 0 var(--space-5); max-width: 24ch; color: var(--ink-1000); }
+  .hero .lede { max-width: 64ch; font-size: var(--text-md); line-height: var(--leading-relaxed); color: var(--ink-900); margin: 0; }
+  .hero .lede em { font-family: var(--font-display); font-style: italic; color: var(--ink-1000); }
+
+  /* SECTION ─────────────────────────────────────────── */
+  .section { margin-top: var(--space-20); }
+  .section-head { padding-bottom: var(--space-4); border-bottom: 1px solid var(--ink-500); margin-bottom: var(--space-8); display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-5); flex-wrap: wrap; }
+  .section-head .num { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); }
+  .section-head h2 { font-family: var(--font-heading); font-weight: 400; font-size: var(--text-2xl); margin: var(--space-1) 0 0; color: var(--ink-1000); letter-spacing: var(--tracking-snug); }
+  .section-head p { margin: var(--space-2) 0 0; color: var(--ink-800); font-size: var(--text-sm); max-width: 60ch; line-height: var(--leading-relaxed); }
+
+  /* PRINCIPLES ─────────────────────────────────────── */
+  .principles { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  @media (max-width: 800px) { .principles { grid-template-columns: 1fr; } }
+  .principle {
+    background: var(--ink-300);
+    border: 1px solid var(--ink-500);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+  }
+  .principle .num {
+    font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase;
+    color: var(--brand-400); margin-bottom: var(--space-2);
+  }
+  .principle h3 {
+    font-family: var(--font-heading); font-weight: 500; font-size: var(--text-lg); margin: 0 0 var(--space-3); color: var(--ink-1000);
+    letter-spacing: var(--tracking-snug);
+  }
+  .principle p { margin: 0 0 var(--space-4); font-size: var(--text-sm); line-height: var(--leading-relaxed); color: var(--ink-900); }
+  .principle .pair { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+  .principle .pair > div { padding: var(--space-3); border-radius: var(--radius); font-size: var(--text-sm); line-height: var(--leading-relaxed); }
+  .principle .pair .do  { background: var(--signal-dim); color: var(--ink-1000); border-left: 2px solid var(--signal-500); }
+  .principle .pair .dont { background: var(--danger-dim); color: var(--ink-1000); border-left: 2px solid var(--danger-500); }
+  .principle .pair .tag { display: block; font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase; margin-bottom: var(--space-1); }
+  .principle .pair .do .tag  { color: var(--signal-500); }
+  .principle .pair .dont .tag { color: var(--danger-500); }
+
+  /* SURFACE TONE ────────────────────────────────── */
+  .surfaces { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
+  @media (max-width: 980px) { .surfaces { grid-template-columns: 1fr; } }
+  .surface {
+    background: var(--ink-300);
+    border: 1px solid var(--ink-500);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+  }
+  .surface .pill {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase;
+    padding: 2px var(--space-2); border-radius: var(--radius-pill);
+    border: 1px solid currentColor;
+    margin-bottom: var(--space-3);
+  }
+  .surface .pill .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  .surface.publico  .pill { color: var(--sub-editorial-500); background: var(--sub-editorial-dim); }
+  .surface.cliente  .pill { color: var(--sub-fotografia-500); background: var(--sub-fotografia-dim); }
+  .surface.admin    .pill { color: var(--warning-500); background: var(--warning-dim); }
+  .surface h3 { font-family: var(--font-heading); font-weight: 500; font-size: var(--text-lg); margin: 0 0 var(--space-2); color: var(--ink-1000); letter-spacing: var(--tracking-snug); }
+  .surface p { margin: 0 0 var(--space-4); font-size: var(--text-sm); line-height: var(--leading-relaxed); color: var(--ink-900); }
+  .surface .sample {
+    border-left: 2px solid var(--ink-500);
+    padding: var(--space-3) var(--space-4);
+    font-style: italic;
+    color: var(--ink-1000);
+    line-height: var(--leading-relaxed);
+    font-size: var(--text-sm);
+    background: var(--ink-200);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .surface .sample .who { display: block; font-style: normal; font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-800); margin-top: var(--space-2); }
+
+  /* FORMATS ───────────────────────────────────────── */
+  .formats { border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; background: var(--ink-300); }
+  .formats table { width: 100%; border-collapse: collapse; }
+  .formats th, .formats td { padding: var(--space-3) var(--space-4); font-size: var(--text-sm); border-bottom: 1px solid var(--ink-500); text-align: left; vertical-align: top; line-height: var(--leading-relaxed); }
+  .formats thead th { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-800); background: var(--ink-200); }
+  .formats tbody tr:last-child td { border-bottom: none; }
+  .formats tbody td:first-child { font-weight: 500; color: var(--ink-1000); width: 22%; }
+  .formats td.example { color: var(--ink-1000); font-family: var(--font-mono); font-size: var(--text-xs); white-space: nowrap; }
+  .formats td.note { color: var(--ink-800); }
+
+  /* STRINGS TABLE ─────────────────────────────────── */
+  .strings { border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; background: var(--ink-300); }
+  .strings table { width: 100%; border-collapse: collapse; }
+  .strings th, .strings td { padding: var(--space-3) var(--space-4); font-size: var(--text-sm); border-bottom: 1px solid var(--ink-500); text-align: left; vertical-align: top; }
+  .strings thead th { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-800); background: var(--ink-200); }
+  .strings tbody tr:last-child td { border-bottom: none; }
+  .strings .id { font-family: var(--font-mono); color: var(--ink-700); font-size: var(--text-xs); white-space: nowrap; width: 90px; }
+  .strings .copy { color: var(--ink-1000); font-weight: 500; line-height: var(--leading-relaxed); }
+  .strings .copy em { color: var(--brand-400); font-style: normal; font-family: var(--font-mono); font-size: 0.95em; }
+  .strings .surface-tags { white-space: nowrap; }
+  .strings .surface-tag {
+    display: inline-block;
+    font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase;
+    padding: 2px var(--space-2); border-radius: var(--radius-pill);
+    margin-right: var(--space-1); margin-bottom: var(--space-1);
+  }
+  .strings .surface-tag.publico  { color: var(--sub-editorial-500); background: var(--sub-editorial-dim); border: 1px solid var(--sub-editorial-500); }
+  .strings .surface-tag.cliente  { color: var(--ink-1000); background: var(--ink-400); border: 1px solid var(--ink-600); }
+  .strings .surface-tag.admin    { color: var(--warning-500); background: var(--warning-dim); border: 1px solid var(--warning-500); }
+  .strings .where { color: var(--ink-800); font-size: var(--text-xs); font-family: var(--font-mono); white-space: nowrap; }
+
+  .group-bar {
+    background: var(--ink-200);
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase;
+    color: var(--ink-800);
+    border-bottom: 1px solid var(--ink-500);
+  }
+
+  /* FORBIDDEN ─────────────────────────────────────── */
+  .forbidden { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
+  @media (max-width: 800px) { .forbidden { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 500px) { .forbidden { grid-template-columns: 1fr; } }
+  .forbid-card {
+    background: var(--ink-300);
+    border: 1px solid var(--danger-500);
+    border-left: 3px solid var(--danger-500);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+  }
+  .forbid-card .quote { font-family: var(--font-display); font-style: italic; font-size: var(--text-lg); color: var(--ink-1000); line-height: var(--leading-snug); margin: 0 0 var(--space-2); text-decoration: line-through; text-decoration-color: var(--danger-500); }
+  .forbid-card .why { margin: 0; font-size: var(--text-xs); color: var(--ink-800); line-height: var(--leading-relaxed); }
+
+  /* PHOTO COPY ─────────────────────────────────── */
+  .photo-copy { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  @media (max-width: 800px) { .photo-copy { grid-template-columns: 1fr; } }
+  .photo-card {
+    background: var(--ink-300);
+    border: 1px solid var(--ink-500);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+  }
+  .photo-card h4 { font-family: var(--font-heading); font-weight: 500; font-size: var(--text-lg); margin: 0 0 var(--space-3); color: var(--ink-1000); }
+  .photo-card p  { margin: 0 0 var(--space-3); font-size: var(--text-sm); line-height: var(--leading-relaxed); color: var(--ink-900); }
+  .photo-card .example {
+    border-left: 2px solid var(--brand-500);
+    background: var(--ink-200);
+    padding: var(--space-3) var(--space-4);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: var(--text-sm);
+    color: var(--ink-1000);
+    line-height: var(--leading-relaxed);
+  }
+  .photo-card code { font-family: var(--font-mono); background: var(--ink-200); padding: 1px var(--space-1); border-radius: 2px; }
+
+  /* FOOTER ─────────────────────────────────────── */
+  footer { margin-top: var(--space-24); padding-top: var(--space-6); border-top: 1px solid var(--ink-500); display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-wider); }
+  footer a { color: var(--ink-700); }
+  footer a:hover { color: var(--ink-1000); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO ────────────────────────────────────── -->
+  <header class="hero" data-screen-label="Voice · Header">
+    <p class="crumbs">
+      <a href="index.html">DS</a> · <a href="index.html#brand">Brand</a> · <b>02.3 · Voz &amp; tom</b>
+      <span style="color: var(--brand-400);">v1.0 · 2026-05-10 · pt-BR</span>
+    </p>
+    <h1>Tom editorial<br>sem floreio.</h1>
+    <p class="lede">
+      A voz é <em>direta, brasileira, fotográfica</em>. Fala com o leitor — nunca sobre. Conta números só quando eles
+      permitem decidir. Recusa adjetivos vazios. Esta página fixa princípios, formato de número e moeda, dicionário
+      canônico de microcopy e o que <strong>nunca</strong> escrever.
+    </p>
+  </header>
+
+  <!-- 1 · PRINCIPLES ─────────────────────────── -->
+  <section class="section" data-screen-label="Voice · Principles">
+    <div class="section-head">
+      <div>
+        <span class="num">01 · Princípios</span>
+        <h2>Seis decisões que fixam o tom.</h2>
+        <p>Cada princípio vem com par "faça/não faça". Quando você duvidar, leia o par — eles foram escritos a partir de uso real.</p>
+      </div>
+    </div>
+
+    <div class="principles">
+
+      <div class="principle">
+        <p class="num">P1</p>
+        <h3>Fale com o leitor, não sobre ele.</h3>
+        <p>Segunda pessoa do singular ("seu carrinho", "seu evento"), não terceira ("do cliente"). O leitor é um interlocutor real.</p>
+        <div class="pair">
+          <div class="do"><span class="tag">faça</span>Encontre suas fotos do rodeio em minutos.</div>
+          <div class="dont"><span class="tag">evite</span>O cliente pode encontrar as fotos do evento.</div>
+        </div>
+      </div>
+
+      <div class="principle">
+        <p class="num">P2</p>
+        <h3>Diga o que faz, não o que vai entregar.</h3>
+        <p>Verbos no presente, imperativo curto. Sem "vamos te ajudar a", sem promessas vazias de marketing.</p>
+        <div class="pair">
+          <div class="do"><span class="tag">faça</span>Pague pelo PIX e baixe agora.</div>
+          <div class="dont"><span class="tag">evite</span>Vamos te oferecer a melhor experiência de compra.</div>
+        </div>
+      </div>
+
+      <div class="principle">
+        <p class="num">P3</p>
+        <h3>Número precisa servir para decidir.</h3>
+        <p>"1.581 fotos", "entrega &lt; 48 h", "R$ 28,80". Sem estatísticas inventadas, sem percentuais para enfeite.</p>
+        <div class="pair">
+          <div class="do"><span class="tag">faça</span>1.581 fotos · 22 mai 2026 · 18:42</div>
+          <div class="dont"><span class="tag">evite</span>Milhares de fotos em alta qualidade.</div>
+        </div>
+      </div>
+
+      <div class="principle">
+        <p class="num">P4</p>
+        <h3>Adjetivo só se for fato.</h3>
+        <p>"Fotos" — não "fotos profissionais", não "fotos de qualidade". A marca <em>é</em> a profissão; redundância subtrai.</p>
+        <div class="pair">
+          <div class="do"><span class="tag">faça</span>Cobertura completa de Cavalgada 2026.</div>
+          <div class="dont"><span class="tag">evite</span>Cobertura profissional de altíssima qualidade.</div>
+        </div>
+      </div>
+
+      <div class="principle">
+        <p class="num">P5</p>
+        <h3>Erro é informação, não acusação.</h3>
+        <p>Toda mensagem de falha explica o quê e o que fazer agora. Sem "Erro 500", sem "Algo deu errado".</p>
+        <div class="pair">
+          <div class="do"><span class="tag">faça</span>PIX não confirmou. Tente novamente em 30 s.</div>
+          <div class="dont"><span class="tag">evite</span>Erro ao processar pagamento. Contate o suporte.</div>
+        </div>
+      </div>
+
+      <div class="principle">
+        <p class="num">P6</p>
+        <h3>Vazio não é problema — diga isso.</h3>
+        <p>Empty states explicam por que está vazio e o próximo passo. Nunca "Nenhum resultado encontrado." sozinho.</p>
+        <div class="pair">
+          <div class="do"><span class="tag">faça</span>Seu carrinho está vazio. Encontre fotos em um evento aberto.</div>
+          <div class="dont"><span class="tag">evite</span>Nenhum item no carrinho.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 2 · TONE PER SURFACE ────────────────────── -->
+  <section class="section" data-screen-label="Voice · Tone per surface">
+    <div class="section-head">
+      <div>
+        <span class="num">02 · Tom por superfície</span>
+        <h2>Mesma voz, três velocidades.</h2>
+        <p>A voz é a mesma — o tom varia com o contexto. Marketing público respira; cliente recém-comprou e quer baixar; admin está movendo dinheiro às 23 h.</p>
+      </div>
+    </div>
+    <div class="surfaces">
+
+      <div class="surface publico">
+        <span class="pill"><span class="dot"></span>Público · editorial</span>
+        <h3>Confiante, generoso, fotográfico.</h3>
+        <p>Headlines em itálico (Instrument Serif), corpo respirando 65 caracteres por linha, frases curtas que terminam em ponto. Convida — não vende.</p>
+        <div class="sample">
+          Encontre-se nas fotos do seu evento em minutos. Pague pelo PIX, baixe em até 48 h.
+          <span class="who">Hero · landing pública</span>
+        </div>
+      </div>
+
+      <div class="surface cliente">
+        <span class="pill"><span class="dot"></span>Cliente · calmo</span>
+        <h3>Arquival, factual, sem entusiasmo.</h3>
+        <p>O cliente já comprou. A área dele é arquivo, não vitrine. Textos curtos, dados em primeiro plano, prosa só quando agrega.</p>
+        <div class="sample">
+          Pedido <code class="type-mono">#A8F2-91D0</code> · pago em 22 mai 2026 · 14 fotos prontas para baixar.
+          <span class="who">Lista de compras · cliente</span>
+        </div>
+      </div>
+
+      <div class="surface admin">
+        <span class="pill"><span class="dot"></span>Admin · denso</span>
+        <h3>Direto, denso, terminal-like.</h3>
+        <p>Vinícius está num celular antigo às 23 h depois do rodeio. Não há tempo para frases. Verbos imperativos, IDs visíveis, badges para status, mono em todo número.</p>
+        <div class="sample">
+          1.581 fotos · 12 carrinhos abertos · R$ 4.218,40 em recebíveis. Liberar repasse?
+          <span class="who">Dashboard · admin</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 3 · FORMATS ───────────────────────────── -->
+  <section class="section" data-screen-label="Voice · Formats">
+    <div class="section-head">
+      <div>
+        <span class="num">03 · Formatos pt-BR</span>
+        <h2>Número, moeda, data, hora, telefone, endereço.</h2>
+        <p>Toda data é local; toda moeda é R$; toda hora é 24 h; todo CNPJ é mascarado; todo telefone com DDD.</p>
+      </div>
+    </div>
+    <div class="formats">
+      <table>
+        <thead>
+          <tr><th>Tipo</th><th>Formato</th><th>Exemplo</th><th>Observações</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Moeda</td><td><code class="type-mono">R$ &lt;d&gt;.&lt;d&gt;,&lt;d&gt;</code></td><td class="example">R$ 28,80</td><td class="note">Sempre "R$" + espaço; vírgula decimal; ponto para milhar. Nunca "R$ 28,80 BRL".</td></tr>
+          <tr><td>Número &lt; 10k</td><td><code class="type-mono">&lt;d&gt;</code></td><td class="example">1581</td><td class="note">Em tabelas/admin: sem separador. Em corpo público: 1.581.</td></tr>
+          <tr><td>Número ≥ 10k</td><td><code class="type-mono">&lt;d&gt;.&lt;d&gt;</code></td><td class="example">12.480</td><td class="note">Ponto como separador de milhar. Tabular-nums no admin.</td></tr>
+          <tr><td>Percentual</td><td><code class="type-mono">&lt;d&gt;%</code></td><td class="example">12%</td><td class="note">Inteiro quando possível. Sem espaço antes do %.</td></tr>
+          <tr><td>Data curta</td><td><code class="type-mono">DD MMM AAAA</code></td><td class="example">22 mai 2026</td><td class="note">Mês abreviado em minúscula, sem ponto. Padrão público + admin.</td></tr>
+          <tr><td>Data extensa</td><td><code class="type-mono">DD de MMMM de AAAA</code></td><td class="example">22 de maio de 2026</td><td class="note">Só em recibos, contratos, página de evento.</td></tr>
+          <tr><td>Hora</td><td><code class="type-mono">HH:mm</code></td><td class="example">18:42</td><td class="note">24 h, sem "h". Em logs/admin: 18:42:11.</td></tr>
+          <tr><td>Data + hora</td><td><code class="type-mono">DD MMM · HH:mm</code></td><td class="example">22 mai · 18:42</td><td class="note">Separador é " · " (espaço-meio-ponto-espaço).</td></tr>
+          <tr><td>Telefone</td><td><code class="type-mono">(DD) 9 NNNN-NNNN</code></td><td class="example">(11) 9 8765-4321</td><td class="note">DDD entre parênteses; 9 isolado; hífen no celular.</td></tr>
+          <tr><td>CNPJ</td><td><code class="type-mono">DD.DDD.DDD/DDDD-DD</code></td><td class="example">12.345.678/0001-90</td><td class="note">Sempre mascarado. Cliente vê no rodapé/recibo.</td></tr>
+          <tr><td>CPF</td><td><code class="type-mono">DDD.DDD.DDD-DD</code></td><td class="example">123.456.789-09</td><td class="note">Mascarar em UI: 123.***.***-09 quando exibir para terceiros.</td></tr>
+          <tr><td>Endereço</td><td><code class="type-mono">&lt;Rua&gt;, &lt;N&gt; · &lt;Bairro&gt;, &lt;Cidade&gt;/&lt;UF&gt;</code></td><td class="example">Av. Paulista, 1578 · Bela Vista, São Paulo/SP</td><td class="note">"/" entre cidade e UF; UF sempre em caixa alta.</td></tr>
+          <tr><td>ID de pedido</td><td><code class="type-mono">#XXXX-XXXX</code></td><td class="example">#A8F2-91D0</td><td class="note">JetBrains Mono; uppercase; hífen no meio para legibilidade.</td></tr>
+          <tr><td>Tamanho de arquivo</td><td><code class="type-mono">&lt;d&gt; MB</code></td><td class="example">12 MB · 3,4 GB</td><td class="note">Espaço antes da unidade. Vírgula como decimal quando &lt; 10.</td></tr>
+          <tr><td>Duração de vídeo</td><td><code class="type-mono">m:ss</code> ou <code class="type-mono">h:mm:ss</code></td><td class="example">1:42 · 1:14:08</td><td class="note">Cobertura curta: m:ss. Painel admin: sempre h:mm:ss.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 4 · CANONICAL STRINGS ────────────────────── -->
+  <section class="section" data-screen-label="Voice · Canonical strings">
+    <div class="section-head">
+      <div>
+        <span class="num">04 · Dicionário canônico</span>
+        <h2>34 strings recorrentes em pt-BR.</h2>
+        <p>A cópia oficial das frases que aparecem em vários lugares. Quando precisar escrever uma delas, copie daqui — não invente uma variação.</p>
+      </div>
+    </div>
+
+    <div class="strings">
+      <p class="group-bar">Carrinho &amp; checkout</p>
+      <table>
+        <thead><tr><th>ID</th><th>Cópia canônica</th><th>Superfície</th><th>Onde aparece</th></tr></thead>
+        <tbody>
+          <tr><td class="id">cart.add</td><td class="copy">Adicionar ao carrinho</td><td class="surface-tags"><span class="surface-tag publico">público</span><span class="surface-tag cliente">cliente</span></td><td class="where">photo card · lightbox</td></tr>
+          <tr><td class="id">cart.remove</td><td class="copy">Remover</td><td class="surface-tags"><span class="surface-tag publico">público</span><span class="surface-tag cliente">cliente</span></td><td class="where">carrinho row</td></tr>
+          <tr><td class="id">cart.empty</td><td class="copy">Seu carrinho está vazio. Encontre fotos em um evento aberto.</td><td class="surface-tags"><span class="surface-tag publico">público</span></td><td class="where">/carrinho · empty</td></tr>
+          <tr><td class="id">cart.count</td><td class="copy"><em>{n}</em> fotos no carrinho · <em>R$ {valor}</em></td><td class="surface-tags"><span class="surface-tag publico">público</span></td><td class="where">cart pill (navbar)</td></tr>
+          <tr><td class="id">cart.subtotal</td><td class="copy">Subtotal · <em>R$ {valor}</em></td><td class="surface-tags"><span class="surface-tag publico">público</span></td><td class="where">cart summary</td></tr>
+          <tr><td class="id">checkout.cta</td><td class="copy">Pagar pelo PIX</td><td class="surface-tags"><span class="surface-tag publico">público</span></td><td class="where">checkout · botão primário</td></tr>
+          <tr><td class="id">checkout.terms</td><td class="copy">Ao pagar você aceita os <em>Termos de Uso</em> e a <em>Política de Privacidade</em>.</td><td class="surface-tags"><span class="surface-tag publico">público</span></td><td class="where">checkout · fine print</td></tr>
+        </tbody>
+      </table>
+
+      <p class="group-bar">Pagamento &amp; download</p>
+      <table>
+        <thead><tr><th>ID</th><th>Cópia canônica</th><th>Superfície</th><th>Onde aparece</th></tr></thead>
+        <tbody>
+          <tr><td class="id">pay.confirmed</td><td class="copy">Pagamento confirmado em <em>{data} · {hora}</em>.</td><td class="surface-tags"><span class="surface-tag publico">público</span><span class="surface-tag cliente">cliente</span></td><td class="where">recibo · /compras</td></tr>
+          <tr><td class="id">pay.pending</td><td class="copy">Aguardando PIX. Pode levar até 30 s.</td><td class="surface-tags"><span class="surface-tag publico">público</span></td><td class="where">checkout · estado</td></tr>
+          <tr><td class="id">pay.expired</td><td class="copy">QR Code expirou. Gere outro para continuar.</td><td class="surface-tags"><span class="surface-tag publico">público</span></td><td class="where">checkout · pix</td></tr>
+          <tr><td class="id">dl.ready</td><td class="copy">Suas fotos estão prontas.</td><td class="surface-tags"><span class="surface-tag cliente">cliente</span></td><td class="where">e-mail · /downloads</td></tr>
+          <tr><td class="id">dl.action</td><td class="copy">Baixar todas em ZIP</td><td class="surface-tags"><span class="surface-tag cliente">cliente</span></td><td class="where">/downloads · primário</td></tr>
+          <tr><td class="id">dl.expires</td><td class="copy">Links expiram em <em>{dias}</em> dias.</td><td class="surface-tags"><span class="surface-tag cliente">cliente</span></td><td class="where">/downloads · meta</td></tr>
+        </tbody>
+      </table>
+
+      <p class="group-bar">Conta &amp; autenticação</p>
+      <table>
+        <thead><tr><th>ID</th><th>Cópia canônica</th><th>Superfície</th><th>Onde aparece</th></tr></thead>
+        <tbody>
+          <tr><td class="id">auth.login.cta</td><td class="copy">Entrar</td><td class="surface-tags"><span class="surface-tag publico">público</span></td><td class="where">navbar · /login</td></tr>
+          <tr><td class="id">auth.signup.cta</td><td class="copy">Criar conta</td><td class="surface-tags"><span class="surface-tag publico">público</span></td><td class="where">/login · /cadastro</td></tr>
+          <tr><td class="id">auth.forgot</td><td class="copy">Esqueci a senha</td><td class="surface-tags"><span class="surface-tag publico">público</span></td><td class="where">/login</td></tr>
+          <tr><td class="id">auth.welcome</td><td class="copy">Bem-vinda, <em>{nome}</em>.</td><td class="surface-tags"><span class="surface-tag cliente">cliente</span></td><td class="where">/minha-conta · header</td></tr>
+          <tr><td class="id">auth.logout</td><td class="copy">Sair</td><td class="surface-tags"><span class="surface-tag cliente">cliente</span><span class="surface-tag admin">admin</span></td><td class="where">menu · todas</td></tr>
+        </tbody>
+      </table>
+
+      <p class="group-bar">Erros &amp; vazios</p>
+      <table>
+        <thead><tr><th>ID</th><th>Cópia canônica</th><th>Superfície</th><th>Onde aparece</th></tr></thead>
+        <tbody>
+          <tr><td class="id">err.404</td><td class="copy">Esta página não existe.</td><td class="surface-tags"><span class="surface-tag publico">público</span></td><td class="where">/404</td></tr>
+          <tr><td class="id">err.network</td><td class="copy">Sem conexão. Verifique sua rede e tente de novo.</td><td class="surface-tags"><span class="surface-tag publico">público</span><span class="surface-tag cliente">cliente</span></td><td class="where">toast global</td></tr>
+          <tr><td class="id">err.payment</td><td class="copy">PIX não confirmou. Tente novamente em 30 s.</td><td class="surface-tags"><span class="surface-tag publico">público</span></td><td class="where">checkout</td></tr>
+          <tr><td class="id">err.account.load</td><td class="copy">Não foi possível carregar suas compras. Tente de novo.</td><td class="surface-tags"><span class="surface-tag cliente">cliente</span></td><td class="where">/compras · error</td></tr>
+          <tr><td class="id">empty.events</td><td class="copy">Nenhum evento aberto no momento. Volte quando o próximo rodeio for fotografado.</td><td class="surface-tags"><span class="surface-tag publico">público</span></td><td class="where">/eventos · empty</td></tr>
+          <tr><td class="id">empty.orders</td><td class="copy">Você ainda não comprou nenhuma foto.</td><td class="surface-tags"><span class="surface-tag cliente">cliente</span></td><td class="where">/compras · empty</td></tr>
+          <tr><td class="id">empty.favs</td><td class="copy">Nenhuma foto salva. Toque na estrela em qualquer galeria para guardar.</td><td class="surface-tags"><span class="surface-tag cliente">cliente</span></td><td class="where">/favoritos · empty</td></tr>
+        </tbody>
+      </table>
+
+      <p class="group-bar">Galeria, evento &amp; busca</p>
+      <table>
+        <thead><tr><th>ID</th><th>Cópia canônica</th><th>Superfície</th><th>Onde aparece</th></tr></thead>
+        <tbody>
+          <tr><td class="id">gallery.cover.cta</td><td class="copy">Ver fotos</td><td class="surface-tags"><span class="surface-tag publico">público</span></td><td class="where">event card · hero</td></tr>
+          <tr><td class="id">gallery.count</td><td class="copy"><em>{n}</em> fotos · <em>{n}</em> vídeos</td><td class="surface-tags"><span class="surface-tag publico">público</span></td><td class="where">event header</td></tr>
+          <tr><td class="id">search.placeholder</td><td class="copy">Busque pelo nome do evento ou pelo número do seu peito.</td><td class="surface-tags"><span class="surface-tag publico">público</span></td><td class="where">search input</td></tr>
+          <tr><td class="id">face.cta</td><td class="copy">Procurar pelo meu rosto</td><td class="surface-tags"><span class="surface-tag publico">público</span></td><td class="where">evento · busca facial</td></tr>
+        </tbody>
+      </table>
+
+      <p class="group-bar">Admin · status &amp; ações</p>
+      <table>
+        <thead><tr><th>ID</th><th>Cópia canônica</th><th>Superfície</th><th>Onde aparece</th></tr></thead>
+        <tbody>
+          <tr><td class="id">badge.paid</td><td class="copy">Pago</td><td class="surface-tags"><span class="surface-tag admin">admin</span></td><td class="where">pedidos · badge</td></tr>
+          <tr><td class="id">badge.pending</td><td class="copy">Pendente</td><td class="surface-tags"><span class="surface-tag admin">admin</span></td><td class="where">pedidos · badge</td></tr>
+          <tr><td class="id">badge.refunded</td><td class="copy">Reembolsado</td><td class="surface-tags"><span class="surface-tag admin">admin</span></td><td class="where">pedidos · badge</td></tr>
+          <tr><td class="id">admin.publish</td><td class="copy">Publicar evento</td><td class="surface-tags"><span class="surface-tag admin">admin</span></td><td class="where">álbum · ação primária</td></tr>
+          <tr><td class="id">admin.payout</td><td class="copy">Liberar repasse · <em>R$ {valor}</em></td><td class="surface-tags"><span class="surface-tag admin">admin</span></td><td class="where">finanças</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 5 · FORBIDDEN ─────────────────────────── -->
+  <section class="section" data-screen-label="Voice · Forbidden">
+    <div class="section-head">
+      <div>
+        <span class="num">05 · Não escrever</span>
+        <h2>Palavras e frases proibidas.</h2>
+        <p>Cada uma já apareceu em rascunho e foi rejeitada. Se você se pegar digitando qualquer uma, pare e procure no dicionário acima.</p>
+      </div>
+    </div>
+    <div class="forbidden">
+      <div class="forbid-card"><p class="quote">fotos profissionais</p><p class="why">A marca já é a profissão. Diga "fotos".</p></div>
+      <div class="forbid-card"><p class="quote">clique aqui</p><p class="why">Texto de link descreve o destino, não a ação. "Ver fotos do rodeio."</p></div>
+      <div class="forbid-card"><p class="quote">explore mais</p><p class="why">Vazio. Diga o que se explora — "Ver mais eventos de equestre".</p></div>
+      <div class="forbid-card"><p class="quote">algo deu errado</p><p class="why">Sem ação para o leitor. Diga o que falhou e o próximo passo.</p></div>
+      <div class="forbid-card"><p class="quote">incrível</p><p class="why">Adjetivo de marketing. A foto fala por si.</p></div>
+      <div class="forbid-card"><p class="quote">utilize</p><p class="why">"Use". Português técnico não é traduzido — é escolhido.</p></div>
+      <div class="forbid-card"><p class="quote">a melhor experiência</p><p class="why">Não medida, não verificável, não comparável.</p></div>
+      <div class="forbid-card"><p class="quote">por favor aguarde</p><p class="why">Faz o leitor sentir que está sendo gerenciado. Diga "Carregando · 2 s restantes."</p></div>
+      <div class="forbid-card"><p class="quote">obrigado pela compreensão</p><p class="why">Não pede compreensão — pede desculpa e propõe ação.</p></div>
+    </div>
+  </section>
+
+  <!-- 6 · PHOTO COPY ─────────────────────────── -->
+  <section class="section" data-screen-label="Voice · Photography copy">
+    <div class="section-head">
+      <div>
+        <span class="num">06 · Cópia para foto</span>
+        <h2>Legendas, crédito, marca-d'água.</h2>
+        <p>O que escrever (e o que não escrever) em torno das fotos: hero, lista, lightbox, marca-d'água.</p>
+      </div>
+    </div>
+    <div class="photo-copy">
+
+      <div class="photo-card">
+        <h4>Legenda de evento</h4>
+        <p>Nome do evento + categoria + data, em uma linha. Sem adjetivo, sem promessa de qualidade. A foto se explica.</p>
+        <div class="example">Cavalgada Tradicional 2026 · Equestre · 22 mai 2026</div>
+      </div>
+
+      <div class="photo-card">
+        <h4>Crédito do autor</h4>
+        <p>O crédito vai no rodapé do recibo e no metadado EXIF — não no canto da foto. A marca já assina.</p>
+        <div class="example">Foto por Vinícius Souza · Todos os direitos reservados.</div>
+      </div>
+
+      <div class="photo-card">
+        <h4>Marca-d'água &mdash; preview público</h4>
+        <p>A linha canônica que aparece sobre toda foto não adquirida. Diagonal, opacidade 18&nbsp;%, posição centro/canto conforme <code>imagem-watermark.config.json</code>.</p>
+        <div class="example">VINÍCIUS SOUZA · imagem não adquirida</div>
+      </div>
+
+      <div class="photo-card">
+        <h4>Alt-text</h4>
+        <p>Descreva o sujeito, a ação e o local — não a emoção. Quem usa leitor de tela quer saber o que está na foto.</p>
+        <div class="example">alt="Cavaleiro segurando a alça do touro durante o salto, arena central, Rodeio de Barretos 2026."</div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer data-screen-label="Voice · Footer">
+    <span>VINÍCIUS SOUZA · VOZ &amp; TOM v1.0 · 2026-05-10</span>
+    <span><a href="index.html">Index</a> · <a href="brand-logo.html">Marca</a> · <a href="photography-style.html">Foto</a> · <a href="business-cards.html">Cartões</a></span>
+  </footer>
+
+</div>
+</body>
+</html>

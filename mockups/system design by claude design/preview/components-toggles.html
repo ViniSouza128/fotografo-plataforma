@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Seleção · checkbox · radio · toggle</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; padding: var(--space-6); background: var(--ink-100); color: var(--ink-1000); font-family: var(--font-body); }
+  .group { display: grid; grid-template-columns: 110px 1fr; gap: var(--space-4); align-items: start; margin-bottom: var(--space-5); padding-bottom: var(--space-5); border-bottom: 1px dashed var(--ink-500); }
+  .tag { font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); padding-top: 3px; }
+  .stack { display: flex; flex-direction: column; gap: var(--space-2); }
+  .inline { display: flex; gap: var(--space-5); flex-wrap: wrap; }
+
+  .check-row, .radio-row { display: inline-flex; align-items: flex-start; gap: var(--space-3); cursor: pointer; font-size: var(--text-sm); color: var(--ink-900); line-height: var(--leading-snug); user-select: none; }
+  .check-row input[type="checkbox"], .radio-row input[type="radio"] { appearance: none; -webkit-appearance: none; width: 16px; height: 16px; min-width: 16px; margin: 2px 0 0; background: var(--ink-400); border: 1px solid var(--ink-600); cursor: pointer; position: relative; }
+  .check-row input[type="checkbox"] { border-radius: var(--radius-sm); }
+  .radio-row  input[type="radio"]    { border-radius: 50%; }
+  .check-row input:checked, .radio-row input:checked { background: var(--brand-500); border-color: var(--brand-500); }
+  .check-row input[type="checkbox"]:checked::after { content: ""; position: absolute; left: 4px; top: 1px; width: 5px; height: 9px; border: solid var(--ink-1000); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .radio-row input[type="radio"]:checked::after { content: ""; position: absolute; inset: 3px; background: var(--ink-1000); border-radius: 50%; }
+  .check-row input:focus-visible, .radio-row input:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  .check-row input:disabled, .radio-row input:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  .toggle-row { display: inline-flex; align-items: center; gap: var(--space-3); cursor: pointer; font-size: var(--text-sm); color: var(--ink-900); user-select: none; }
+  .toggle-row input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 36px; height: 20px; background: var(--ink-500); border-radius: var(--radius-pill); position: relative; cursor: pointer; transition: background var(--duration-quick) var(--ease-out); }
+  .toggle-row input[type="checkbox"]::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: var(--ink-1000); border-radius: 50%; transition: left var(--duration-base) var(--ease-spring); }
+  .toggle-row input[type="checkbox"]:checked { background: var(--brand-500); }
+  .toggle-row input[type="checkbox"]:checked::after { left: 18px; }
+  .toggle-row input[type="checkbox"]:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  .toggle-row input[type="checkbox"]:disabled { opacity: 0.45; cursor: not-allowed; }
+</style></head>
+<body>
+  <div class="group">
+    <span class="tag">Checkbox</span>
+    <div class="inline">
+      <label class="check-row"><input type="checkbox">Não marcada</label>
+      <label class="check-row"><input type="checkbox" checked>Marcada</label>
+      <label class="check-row"><input type="checkbox" disabled>Desabilitada</label>
+      <label class="check-row"><input type="checkbox" checked disabled>Marcada · disabled</label>
+    </div>
+  </div>
+  <div class="group">
+    <span class="tag">Empilhada</span>
+    <div class="stack">
+      <label class="check-row"><input type="checkbox" checked>Receber e-mail quando o álbum for publicado</label>
+      <label class="check-row"><input type="checkbox" checked>Receber notificação de novo comentário</label>
+      <label class="check-row"><input type="checkbox">Receber comunicações de marketing</label>
+    </div>
+  </div>
+  <div class="group">
+    <span class="tag">Radio</span>
+    <div class="inline">
+      <label class="radio-row"><input type="radio" name="r-demo">Opção A</label>
+      <label class="radio-row"><input type="radio" name="r-demo" checked>Selecionada</label>
+      <label class="radio-row"><input type="radio" name="r-demo" disabled>Desabilitada</label>
+    </div>
+  </div>
+  <div class="group">
+    <span class="tag">Pagamento</span>
+    <div class="stack">
+      <label class="radio-row"><input type="radio" name="pgto" checked>Pix · à vista (R$ 75,60)</label>
+      <label class="radio-row"><input type="radio" name="pgto">Cartão de crédito · 1× R$ 75,60</label>
+      <label class="radio-row"><input type="radio" name="pgto">Cartão de crédito · 2× R$ 39,36 com taxa</label>
+    </div>
+  </div>
+  <div class="group" style="border-bottom: 0;">
+    <span class="tag">Toggle</span>
+    <div class="inline">
+      <label class="toggle-row"><input type="checkbox">Desligado</label>
+      <label class="toggle-row"><input type="checkbox" checked>Ligado</label>
+      <label class="toggle-row"><input type="checkbox" disabled>Desabilitado</label>
+      <label class="toggle-row"><input type="checkbox" checked disabled>Ligado · disabled</label>
+    </div>
+  </div>
+</body></html>

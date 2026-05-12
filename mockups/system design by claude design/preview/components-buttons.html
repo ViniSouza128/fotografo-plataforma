@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Buttons · preview</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; padding: var(--space-6); background: var(--ink-100); color: var(--ink-1000); font-family: var(--font-body); }
+
+  .row { display: flex; gap: var(--space-2) var(--space-3); align-items: center; flex-wrap: wrap; margin-bottom: var(--space-4); }
+  .tag {
+    font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest);
+    text-transform: uppercase; color: var(--ink-700); width: 110px; flex-shrink: 0;
+  }
+
+  /* Canonical .btn contract — mirrors components-atomic.html § 01 · Botões. */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+    font-family: var(--font-body); font-size: var(--text-sm); font-weight: 500; letter-spacing: var(--tracking-snug);
+    padding: var(--space-3) var(--space-5);
+    background: transparent; color: var(--ink-1000); border: 1px solid transparent; border-radius: var(--radius);
+    cursor: pointer; white-space: nowrap; user-select: none;
+    transition: background var(--duration-quick) var(--ease-out), border-color var(--duration-quick) var(--ease-out), color var(--duration-quick) var(--ease-out), transform var(--duration-quick) var(--ease-out), box-shadow var(--duration-quick) var(--ease-out);
+  }
+  .btn:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; }
+
+  .btn-primary { background: var(--brand-500); color: var(--ink-1000); }
+  .btn-primary:hover:not(:disabled) { background: var(--brand-400); transform: translateY(-1px); }
+  .btn-primary:active:not(:disabled) { background: var(--brand-700); transform: translateY(0); }
+
+  .btn-success { background: var(--signal-500); color: var(--ink-50); }
+  .btn-success:hover:not(:disabled) { background: var(--signal-400); transform: translateY(-1px); }
+  .btn-success:active:not(:disabled) { background: var(--signal-600); transform: translateY(0); }
+
+  .btn-secondary { background: transparent; color: var(--ink-1000); border-color: var(--ink-500); }
+  .btn-secondary:hover:not(:disabled) { border-color: var(--ink-700); background: var(--ink-200); transform: translateY(-1px); }
+
+  .btn-ghost { background: transparent; color: var(--ink-800); border-color: transparent; }
+  .btn-ghost:hover:not(:disabled) { color: var(--ink-1000); background: var(--ink-300); }
+
+  .btn-danger { background: var(--danger-dim); color: var(--danger-500); border-color: rgba(224, 85, 79, 0.35); }
+  .btn-danger:hover:not(:disabled) { background: rgba(224, 85, 79, 0.22); border-color: var(--danger-500); transform: translateY(-1px); }
+
+  .btn-sm { padding: var(--space-2) var(--space-3); font-size: var(--text-xs); gap: var(--space-1); }
+  .btn-lg { padding: var(--space-3) var(--space-6); font-size: var(--text-base); gap: var(--space-3); }
+  .btn-pill { border-radius: var(--radius-pill); }
+</style>
+</head>
+<body>
+  <div class="row"><span class="tag">Primary</span>
+    <button type="button" class="btn btn-primary">Ver eventos</button>
+    <button type="button" class="btn btn-primary btn-sm">Comprar</button>
+    <button type="button" class="btn btn-primary btn-lg">Continuar para pagamento</button>
+  </div>
+  <div class="row"><span class="tag">Success</span>
+    <button type="button" class="btn btn-success">Finalizar pagamento</button>
+    <button type="button" class="btn btn-success btn-pill">+ Adicionar ao carrinho</button>
+  </div>
+  <div class="row"><span class="tag">Secondary</span>
+    <button type="button" class="btn btn-secondary">Voltar</button>
+    <button type="button" class="btn btn-secondary">Baixar originais</button>
+  </div>
+  <div class="row"><span class="tag">Ghost</span>
+    <button type="button" class="btn btn-ghost">Cancelar</button>
+    <button type="button" class="btn btn-ghost">Ver detalhes</button>
+  </div>
+  <div class="row"><span class="tag">Destructive</span>
+    <button type="button" class="btn btn-danger">Desconectar</button>
+    <button type="button" class="btn btn-danger">Excluir álbum</button>
+  </div>
+</body>
+</html>

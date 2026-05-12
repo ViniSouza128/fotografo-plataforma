@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Vinícius Souza — Contribuição</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { padding-bottom: var(--space-24); }
+
+  .wrap { max-width: var(--content-max); margin: 0 auto; padding: var(--space-20) var(--space-12) var(--space-24); }
+  @media (max-width: 800px) { .wrap { padding: var(--space-12) var(--space-5); } }
+
+  /* HERO */
+  .hero { position: relative; padding-bottom: var(--space-16); border-bottom: 1px solid var(--ink-500); margin-bottom: var(--space-16); overflow: hidden; }
+  .hero::before { content: ""; position: absolute; inset: -10% -10% auto -10%; height: 70%; background: var(--glow-radial); pointer-events: none; }
+  .hero > * { position: relative; }
+  .hero .crumbs { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); margin-bottom: var(--space-4); display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; }
+  .hero .crumbs a { color: var(--ink-700); }
+  .hero .crumbs a:hover { color: var(--ink-1000); }
+  .hero .crumbs b { color: var(--ink-1000); font-weight: 500; }
+  .hero h1 { font-family: var(--font-display); font-style: italic; font-size: var(--text-5xl); line-height: var(--leading-flat); letter-spacing: var(--tracking-tight); margin: 0 0 var(--space-5); max-width: 22ch; color: var(--ink-1000); }
+  .hero .lede { max-width: 64ch; font-size: var(--text-md); line-height: var(--leading-relaxed); color: var(--ink-900); margin: 0; }
+  .hero .lede em { font-family: var(--font-display); font-style: italic; color: var(--ink-1000); }
+
+  /* SECTION */
+  .section { margin-top: var(--space-20); }
+  .section-head { padding-bottom: var(--space-4); border-bottom: 1px solid var(--ink-500); margin-bottom: var(--space-8); }
+  .section-head .num { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); }
+  .section-head h2 { font-family: var(--font-heading); font-weight: 400; font-size: var(--text-2xl); margin: var(--space-1) 0 0; color: var(--ink-1000); letter-spacing: var(--tracking-snug); }
+  .section-head p { margin: var(--space-2) 0 0; color: var(--ink-800); font-size: var(--text-sm); max-width: 64ch; line-height: var(--leading-relaxed); }
+
+  /* CARDS / STEPS */
+  .steps { display: grid; gap: var(--space-3); }
+  .step { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-6); display: grid; grid-template-columns: 60px 1fr; gap: var(--space-5); align-items: start; }
+  @media (max-width: 700px) { .step { grid-template-columns: 1fr; gap: var(--space-3); } }
+  .step .ix { font-family: var(--font-display); font-style: italic; font-size: var(--text-3xl); color: var(--brand-400); line-height: 1; }
+  .step h3 { font-family: var(--font-heading); font-weight: 500; font-size: var(--text-lg); margin: 0 0 var(--space-2); color: var(--ink-1000); letter-spacing: var(--tracking-snug); }
+  .step p { margin: 0 0 var(--space-3); font-size: var(--text-sm); color: var(--ink-900); line-height: var(--leading-relaxed); }
+  .step p:last-child { margin-bottom: 0; }
+  .step code, .step .type-mono { font-family: var(--font-mono); background: var(--ink-200); color: var(--ink-1000); padding: 1px var(--space-1); border-radius: 2px; font-size: 0.9em; }
+  .step .actions { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-top: var(--space-3); }
+  .step .actions a { font-family: var(--font-mono); font-size: var(--text-xs); padding: var(--space-2) var(--space-3); background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius); color: var(--brand-400); letter-spacing: var(--tracking-snug); }
+  .step .actions a:hover { background: var(--ink-100); color: var(--brand-300); border-color: var(--ink-700); }
+
+  /* RULES */
+  .rules { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-6); }
+  .rules h3 { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-800); font-weight: 500; margin: 0 0 var(--space-4); }
+  .rules ul { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-3); }
+  .rules li { display: grid; grid-template-columns: 26px 1fr; gap: var(--space-3); font-size: var(--text-sm); color: var(--ink-900); line-height: var(--leading-relaxed); }
+  .rules li b { color: var(--ink-1000); font-weight: 500; }
+  .rules li code { font-family: var(--font-mono); background: var(--ink-200); color: var(--ink-1000); padding: 1px var(--space-1); border-radius: 2px; }
+  .rules li .mark { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; margin-top: 2px; display: inline-grid; place-items: center; font-family: var(--font-mono); font-size: 11px; font-weight: 700; }
+  .rules.do li .mark { background: var(--signal-dim); color: var(--signal-400); border: 1px solid var(--signal-500); }
+  .rules.no li .mark { background: var(--danger-dim); color: var(--danger-500); border: 1px solid var(--danger-500); }
+  /* SVG mask check shape — substitui o glyph U+2713 unicode (regra SKILL: no emoji). */
+  .rules.do li .mark::before {
+    content: "";
+    display: block;
+    width: 10px;
+    height: 8px;
+    background-color: currentColor;
+    -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'><path d='M11 1.5 L4.5 8 L1.5 5 L0 6.5 L4.5 11 L12.5 3 Z' fill='black'/></svg>");
+            mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'><path d='M11 1.5 L4.5 8 L1.5 5 L0 6.5 L4.5 11 L12.5 3 Z' fill='black'/></svg>");
+    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+    -webkit-mask-position: center;  mask-position: center;
+    -webkit-mask-size: contain;     mask-size: contain;
+  }
+  .rules.no li .mark::before { content: "×"; font-size: 14px; }
+
+  .rule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  @media (max-width: 800px) { .rule-grid { grid-template-columns: 1fr; } }
+
+  /* NAMING TABLE */
+  .tbl { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; }
+  .tbl table { width: 100%; border-collapse: collapse; }
+  .tbl th, .tbl td { padding: var(--space-3) var(--space-4); font-size: var(--text-sm); border-bottom: 1px solid var(--ink-500); text-align: left; vertical-align: top; line-height: var(--leading-relaxed); }
+  .tbl thead th { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-800); background: var(--ink-200); font-weight: 500; }
+  .tbl tbody tr:last-child td { border-bottom: none; }
+  .tbl tbody td.t-mono { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-1000); white-space: nowrap; }
+  .tbl tbody td.desc { color: var(--ink-900); }
+
+  /* DEPRECATION ROW */
+  .depr-row .pill {
+    display: inline-flex; padding: 2px var(--space-2); border-radius: var(--radius-pill);
+    font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-wider); text-transform: uppercase;
+    border: 1px solid transparent; white-space: nowrap;
+  }
+  .pill.dim { color: var(--ink-700); background: var(--ink-200); border-color: var(--ink-500); }
+  .pill.live { color: var(--warning-500); background: var(--warning-dim); border-color: var(--warning-500); }
+  .pill.deferred { color: var(--brand-400); background: var(--brand-dim); border-color: var(--brand-500); }
+  .pill.gone { color: var(--danger-500); background: var(--danger-dim); border-color: var(--danger-500); }
+
+  /* VERSIONING */
+  .vers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
+  @media (max-width: 800px) { .vers-grid { grid-template-columns: 1fr; } }
+  .vers-card { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-6); }
+  .vers-card .v { font-family: var(--font-mono); font-size: var(--text-xl); color: var(--brand-400); letter-spacing: var(--tracking-snug); }
+  .vers-card h4 { font-family: var(--font-heading); font-weight: 500; font-size: var(--text-base); margin: var(--space-2) 0 var(--space-3); color: var(--ink-1000); }
+  .vers-card p { margin: 0 0 var(--space-3); font-size: var(--text-sm); color: var(--ink-900); line-height: var(--leading-relaxed); }
+  .vers-card p:last-child { margin-bottom: 0; }
+  .vers-card code { font-family: var(--font-mono); background: var(--ink-200); color: var(--ink-1000); padding: 1px var(--space-1); border-radius: 2px; }
+
+  .doc-note { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); line-height: var(--leading-relaxed); padding: var(--space-3) var(--space-4); border-left: 2px solid var(--brand-500); background: var(--brand-dim); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: var(--space-4) 0; }
+  .doc-note b { color: var(--ink-1000); font-weight: 500; }
+
+  footer { margin-top: var(--space-24); padding-top: var(--space-6); border-top: 1px solid var(--ink-500); display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-wider); }
+  footer a { color: var(--ink-700); }
+  footer a:hover { color: var(--ink-1000); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero" data-screen-label="Contribution · Header">
+    <p class="crumbs">
+      <a href="index.html">DS</a> · <a href="index.html#surfaces">Surfaces &amp; cross-cutting</a> · <b>05.7 · Contribuição</b>
+      <span style="color: var(--brand-400);">v1.0 · DS &lt;-&gt; src/ · pt-BR</span>
+    </p>
+    <h1>Como crescer<br>sem quebrar.</h1>
+    <p class="lede">
+      Esta página é o <em>contrato</em> entre o sistema e quem contribui. Diz como adicionar um componente novo, o que está
+      proibido, como nomear, o que está marcado para morrer e quando quebrar a versão. Se algo aqui dificulta seu trabalho,
+      essa é a discussão — não a violação.
+    </p>
+  </header>
+
+  <!-- 01 · ADDING A COMPONENT -->
+  <section class="section" data-screen-label="Contribution · Add component">
+    <div class="section-head">
+      <span class="num">01 · Adicionando um componente</span>
+      <h2>Cinco passos. Sem atalho.</h2>
+      <p>Um componente novo só existe quando atravessa <em>todos</em> os passos abaixo. Pular um quebra a costura — outro contribuinte vai recriar a mesma peça em três meses.</p>
+    </div>
+
+    <div class="steps">
+
+      <article class="step">
+        <span class="ix">1</span>
+        <div>
+          <h3>Verifique que já não existe</h3>
+          <p>Procure em <a href="components-atomic.html">components-atomic.html</a> (átomos: botão, chip, badge, ícone) e <a href="components-composite.html">components-composite.html</a> (compostos: cards, sumários, modais). Se for variante de algo existente — adicione como variante. Se for combinação de existentes — não é componente novo, é <em>layout</em>.</p>
+          <div class="actions">
+            <a href="components-atomic.html">Atômicos</a>
+            <a href="components-composite.html">Compostos</a>
+            <a href="layout-primitives.html">Layout</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="step">
+        <span class="ix">2</span>
+        <div>
+          <h3>Escreva no kit primeiro</h3>
+          <p>O componente nasce em HTML estático dentro do kit apropriado <em>antes</em> de virar React/JSX. Isso força a usar apenas tokens, escolher um nome em pt-BR e descobrir os estados (rest · hover · focus · active · disabled · loading · empty · error) cedo. Não há atalho aqui — código React sem o cartão correspondente no kit é dívida.</p>
+          <p>Coloque também um <em>preview card</em> isolado em <code>preview/components-&lt;nome&gt;.html</code> — sumário visual de uma peça, sem ruído. Hoje o sistema tem 19 cartões em <code>preview/</code>.</p>
+        </div>
+      </article>
+
+      <article class="step">
+        <span class="ix">3</span>
+        <div>
+          <h3>Use só tokens</h3>
+          <p>Toda cor, espaço, raio, sombra, duração resolve para <code>var(--…)</code> de <a href="colors_and_type.css">colors_and_type.css</a>. Sem hex novo, sem fonte nova, sem raio fora dos sete existentes, sem easing custom. Se o que você precisa não tem token — abra discussão (não invente um); se a discussão concluir que precisa de token novo, adicione ele <em>primeiro</em> ao CSS, depois consuma.</p>
+        </div>
+      </article>
+
+      <article class="step">
+        <span class="ix">4</span>
+        <div>
+          <h3>Documente estados &amp; nome de classe</h3>
+          <p>Toda peça precisa de pelo menos um cartão por estado: <em>rest</em>, <em>hover</em>, <em>focus</em>, <em>disabled</em>. Para conteúdo: pelo menos um <em>empty</em>, um <em>loading</em>, um <em>error</em>. Nome de classe segue a tabela <a href="#naming">§ 03</a>: <code>.&lt;peça&gt;</code> + <code>.is-&lt;estado&gt;</code> + <code>.t-&lt;intenção&gt;</code>.</p>
+          <p>Se a peça é exclusiva de uma superfície (raro), prefixe a classe: <code>.admin-toolbar</code>, <code>.public-navbar</code>. Compostos genéricos não têm prefixo.</p>
+        </div>
+      </article>
+
+      <article class="step">
+        <span class="ix">5</span>
+        <div>
+          <h3>Indexe no <a href="index.html">index.html</a> &amp; cite de onde nasceu</h3>
+          <p>O componente novo só "existe" quando o card dele aparece no índice. Adicione link, número (<code>04.X</code>), uma frase de descrição e o estado (<code>pronto</code>, <code>em revisão</code>, <code>planejado</code>). Se a peça nasceu para resolver um caso real em <code>src/</code>, mencione o arquivo (<em>"surge para substituir <code class="type-mono">SponsorCard</code> que hoje vive em <code class="type-mono">src/app/evento/[id]/page.js:1080</code>"</em>) — assim a próxima geração entende a razão.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 02 · TOKEN-FIRST RULE -->
+  <section class="section" data-screen-label="Contribution · Token-first">
+    <div class="section-head">
+      <span class="num">02 · Regra "token-first"</span>
+      <h2>O que está fechado para invenção.</h2>
+      <p>A locked-list. Qualquer valor literal abaixo precisa vir do CSS, nunca do seu commit.</p>
+    </div>
+
+    <div class="rule-grid">
+      <div class="rules no">
+        <h3>Proibido</h3>
+        <ul>
+          <li><span class="mark"></span><span><b>Hex code novo.</b> Inclui <code>#fff</code>, <code>#000</code>, <code>#ddd</code>, <em>qualquer</em> hex. Use a rampa de ink.</span></li>
+          <li><span class="mark"></span><span><b>Fonte nova.</b> Três famílias + Montserrat para LOGO. Acabou.</span></li>
+          <li><span class="mark"></span><span><b>Raio fora da escala.</b> <code>5px</code>, <code>12px</code>, <code>16px</code>: <em>não</em>. Os sete raios são suficientes.</span></li>
+          <li><span class="mark"></span><span><b>Easing custom</b> via <code>cubic-bezier</code> ad-hoc. Três easings cobrem 100% dos casos.</span></li>
+          <li><span class="mark"></span><span><b>Cor em <code>rgba()</code></b> que não vem do dim/glow tokens. Componha com <code>--brand-dim</code> e parentes.</span></li>
+          <li><span class="mark"></span><span><b>Gradient</b> além de <code>--glow-radial</code> (uma vez por viewport, atrás do hero).</span></li>
+          <li><span class="mark"></span><span><b>!important</b> sobrescrevendo token de motion (<code>animation-duration</code>, <code>transition-duration</code>).</span></li>
+          <li><span class="mark"></span><span><b>Emoji</b> como afordance de UI. Sempre line-svg via <code>&lt;use&gt;</code>.</span></li>
+        </ul>
+      </div>
+
+      <div class="rules do">
+        <h3>Permitido</h3>
+        <ul>
+          <li><span class="mark"></span><span><b>Novo token semântico</b> que <em>compõe</em> tokens existentes (ex.: <code>--success: var(--signal-500)</code>). PR aceito.</span></li>
+          <li><span class="mark"></span><span><b>Novo valor de espaço</b> em casos justificados — abra discussão. A escala não cresce sem revisão.</span></li>
+          <li><span class="mark"></span><span><b>Sub-marca</b> nova só se o negócio adicionar uma vertical (Esportes, Natureza, Editorial cobriram tudo até agora).</span></li>
+          <li><span class="mark"></span><span><b>Variante de chip/badge/tag</b> reutilizando ramp existente. Inclua exemplo na <a href="components-atomic.html">página de átomos</a>.</span></li>
+          <li><span class="mark"></span><span><b>Keyframe novo</b> desde que com fallback <code>animation: none</code> em <code>prefers-reduced-motion</code>.</span></li>
+          <li><span class="mark"></span><span><b>Layout primitive novo</b> em <a href="layout-primitives.html">layout-primitives.html</a> — uma grade ou um shell.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 · NAMING -->
+  <section class="section" id="naming" data-screen-label="Contribution · Naming">
+    <div class="section-head">
+      <span class="num">03 · Convenções de nome</span>
+      <h2>CSS · arquivo · preview · screen label.</h2>
+      <p>Padrões observáveis pela primeira leitura. Se um nome destoa do padrão, é bug — abra PR.</p>
+    </div>
+
+    <div class="tbl">
+      <table>
+        <thead><tr><th style="width: 28%;">Categoria</th><th style="width: 38%;">Padrão</th><th>Exemplo</th></tr></thead>
+        <tbody>
+          <tr><td class="t-mono">Token CSS</td><td class="desc">kebab-case, prefixo de família, sem hífen entre nome e step numérico</td><td class="t-mono">--brand-500 · --ink-1000 · --text-xl</td></tr>
+          <tr><td class="t-mono">Classe de peça (base)</td><td class="desc">substantivo em <em>kebab-case</em>, singular, em pt ou en (mantenha consistência por família)</td><td class="t-mono">.photo-card · .cart-summary · .admin-sidebar</td></tr>
+          <tr><td class="t-mono">Classe modificadora</td><td class="desc"><code>.is-&lt;estado&gt;</code> para estados; <code>.t-&lt;intenção&gt;</code> para tom; sempre encadeada</td><td class="t-mono">.btn.is-loading · .chip.is-active · .badge.t-success</td></tr>
+          <tr><td class="t-mono">Classe utilitária</td><td class="desc"><code>type-</code> para tipografia, <code>grid-</code> para grades, <code>surf-</code> para superfície</td><td class="t-mono">.type-display · .type-mono · .grid-public · .grid-admin</td></tr>
+          <tr><td class="t-mono">ID de componente em JSX</td><td class="desc">PascalCase. Importação como named export quando possível</td><td class="t-mono">&lt;PhotoCard /&gt; · &lt;CartSummary /&gt; · &lt;AdminSidebar /&gt;</td></tr>
+          <tr><td class="t-mono">Arquivo HTML do kit</td><td class="desc"><code>&lt;surface&gt;.html</code> para kits inteiros, <code>&lt;family&gt;-&lt;subject&gt;.html</code> para documentação</td><td class="t-mono">ui-kit-public.html · components-atomic.html · motion.html</td></tr>
+          <tr><td class="t-mono">Arquivo preview</td><td class="desc">sempre <code>preview/components-&lt;family&gt;.html</code> — sem capa, só o cartão</td><td class="t-mono">preview/components-chips.html · preview/components-avatars.html</td></tr>
+          <tr><td class="t-mono">Asset de logo</td><td class="desc">substantivo descritivo, sem versão no nome, <code>currentColor</code> sempre que possível</td><td class="t-mono">assets/logos/vs-monogram.svg · assets/logos/wordmark.svg</td></tr>
+          <tr><td class="t-mono">Imagem de stage</td><td class="desc"><code>assets/imagery/sample-&lt;event&gt;-NN.jpg</code></td><td class="t-mono">assets/imagery/sample-event-01.jpg</td></tr>
+          <tr><td class="t-mono">Atributo de screen label</td><td class="desc"><code>data-screen-label="&lt;Surface&gt; · &lt;Screen&gt;"</code> em todo frame que recebe comentário</td><td class="t-mono">data-screen-label="Public · Event Gallery"</td></tr>
+          <tr><td class="t-mono">ID de string de cópia</td><td class="desc"><code>&lt;surface&gt;.&lt;area&gt;.&lt;action&gt;</code> em <a href="content-style-guide.html">content-style-guide</a></td><td class="t-mono">cart.add · checkout.cta · admin.payout.release</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="doc-note"><b>Caso de dúvida</b> entre pt e en: dentro do CSS, <em>token</em> é sempre en (<code>brand</code>, <code>ink</code>, <code>signal</code>, <code>shadow</code>); <em>classe de peça</em> usa o termo mais natural ao código (<code>photo-card</code>, mas <code>cart-summary</code>). Cópia visível é sempre pt-BR.</p>
+  </section>
+
+  <!-- 04 · DEPRECATION LOG -->
+  <section class="section" data-screen-label="Contribution · Deprecation">
+    <div class="section-head">
+      <span class="num">04 · Log de deprecação</span>
+      <h2>O que sabemos que precisa morrer.</h2>
+      <p>Compilado das auditorias dos Prompts 1–4. Cada item tem motivo, fonte original e estado. <em>live</em> = ainda usado em <code class="type-mono">src/</code>; <em>deferred</em> = ainda no kit mas marcado para sair na próxima versão; <em>gone</em> = removido.</p>
+    </div>
+
+    <div class="tbl depr-row">
+      <table>
+        <thead><tr><th style="width: 20%;">Item</th><th style="width: 13%;">Estado</th><th style="width: 14%;">Sai em</th><th>Motivo · substituto</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="t-mono">--accent · --accent-hover · --accent-dim</td>
+            <td><span class="pill live">live</span></td>
+            <td class="t-mono">v1.x (cleanup)</td>
+            <td class="desc">Alias do <code class="type-mono">--brand-*</code> mantido para retrocompat de <code class="type-mono">src/app/base.css</code>. Migrar live para tokens diretos e remover. Hoje <code class="type-mono">--accent</code> é usado pela superfície verde antiga.</td>
+          </tr>
+          <tr>
+            <td class="t-mono">var verde como cor primária em src/</td>
+            <td><span class="pill live">live</span></td>
+            <td class="t-mono">migração src/</td>
+            <td class="desc"><code class="type-mono">src/app/base.css</code> ainda configura Inter + Space Grotesk + accent verde. DS v1.0 fixou Instrument Serif + General Sans + Anchor Blue. Migração é tarefa de produção, não do DS.</td>
+          </tr>
+          <tr>
+            <td class="t-mono">"Space Grotesk + Inter" em README.md</td>
+            <td><span class="pill gone">gone</span></td>
+            <td class="t-mono">OK · resolvido em v1.0</td>
+            <td class="desc">README do DS reescrito; agora fixa Instrument Serif + General Sans + JetBrains Mono + Montserrat (logo). A única menção remanescente a Inter/Space Grotesk descreve o legado <code class="type-mono">src/</code> (linha 120), comportamento correto.</td>
+          </tr>
+          <tr>
+            <td class="t-mono">--dur-fast · --dur · --dur-slow · --dur-slower</td>
+            <td><span class="pill live">live</span></td>
+            <td class="t-mono">v1.x</td>
+            <td class="desc">Aliases retrocompat para os <code class="type-mono">--duration-*</code> canônicos. Mantidos enquanto <code class="type-mono">frontend-final/shared.css</code> os consome. Migrar e remover.</td>
+          </tr>
+          <tr>
+            <td class="t-mono">--shadow (alias sem número)</td>
+            <td><span class="pill live">live</span></td>
+            <td class="t-mono">v1.x</td>
+            <td class="desc">Alias para <code class="type-mono">--shadow-md</code>. Substitua por <code class="type-mono">--shadow-2</code> em componentes novos.</td>
+          </tr>
+          <tr>
+            <td class="t-mono">Status "Simulacao/liberacao" sem acento</td>
+            <td><span class="pill live">live</span></td>
+            <td class="t-mono">backlog · src/</td>
+            <td class="desc">Rótulo único agregado por <code class="type-mono">src/lib/commerceUtils.js:70</code> · <code class="type-mono">getFinancialStatus()</code> — cobre sandbox/teste e liberação manual sem gateway real. Quando o live for corrigido para "Simulação/liberação", atualizar <a href="components-atomic.html#chips">components-atomic.html · chips</a> e <a href="content-style-guide.html#labels">content-style-guide.html § 04</a>.</td>
+          </tr>
+          <tr>
+            <td class="t-mono">SponsorCard como <code>&lt;div role="link"&gt;</code></td>
+            <td><span class="pill live">live</span></td>
+            <td class="t-mono">v1.x</td>
+            <td class="desc">Padrão defensável (lockup com SVG não cabe num <code>&lt;a&gt;</code>), porém é única peça que precisa de <code>onKeyDown</code> custom. Considerar wrapper <code>&lt;a&gt;</code> no Prompt 06. Vive em <code class="type-mono">src/app/evento/[id]/page.js:1080</code>.</td>
+          </tr>
+          <tr>
+            <td class="t-mono">Modais sem focus-trap formal</td>
+            <td><span class="pill live">live</span></td>
+            <td class="t-mono">backlog · src/</td>
+            <td class="desc">Modais hoje fecham com <em>Esc</em>, mas o foco pode escapar com <em>Tab</em>. Acessibilidade marca como gap em <a href="accessibility.html#aria">§ 05.D</a>. Implementar trap genérico (ex.: focus-trap-react).</td>
+          </tr>
+          <tr>
+            <td class="t-mono">Duplicação de aria-label em botões com texto</td>
+            <td><span class="pill live">live</span></td>
+            <td class="t-mono">backlog · src/</td>
+            <td class="desc">Auditoria em <a href="accessibility.html">acessibilidade § 05.F</a>. ~30 ocorrências em <code class="type-mono">src/</code>; lint regex e remoção.</td>
+          </tr>
+          <tr>
+            <td class="t-mono">monolithic <code>data/photos.json</code></td>
+            <td><span class="pill deferred">deferred</span></td>
+            <td class="t-mono">gone</td>
+            <td class="desc">Substituído por <code class="type-mono">data/photos/&lt;eventId&gt;.json</code> em 2026-05-10. Espelho ainda escrito por compat; remover quando todos os consumidores live migrarem.</td>
+          </tr>
+          <tr>
+            <td class="t-mono">Mockups antigos em <code>mockups/01-publico.html</code> etc.</td>
+            <td><span class="pill dim">archive</span></td>
+            <td class="t-mono">—</td>
+            <td class="desc">Mantidos como referência de funcionalidade. <em>Não</em> consultar para padrões visuais — o canônico é <a href="../frontend-final/index.html">mockups/frontend-final/</a> + este sistema.</td>
+          </tr>
+          <tr>
+            <td class="t-mono">"Space Grotesk" referenciado em DESIGN-SYSTEM.md (repo root)</td>
+            <td><span class="pill deferred">deferred</span></td>
+            <td class="t-mono">v1.0 (este prompt)</td>
+            <td class="desc">Reescrita pelo Prompt 5 como sumário executivo apontando para esta pasta.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="doc-note"><b>Como adicionar:</b> ao deprecar algo, escreva nesta tabela <em>antes</em> de remover. Defina <code>Sai em</code> (versão), <code>Motivo</code> e <code>Substituto</code>. Sem isso, o cleanup futuro vira arqueologia.</p>
+  </section>
+
+  <!-- 05 · VERSIONING -->
+  <section class="section" data-screen-label="Contribution · Versioning">
+    <div class="section-head">
+      <span class="num">05 · Política de versão</span>
+      <h2>SemVer aplicado ao visual.</h2>
+      <p>O DS segue <em>major.minor.patch</em>. O <em>major</em> só sobe quando uma decisão de marca muda (paleta, fonte, voz). <em>Minor</em> introduz peças/tokens novos. <em>Patch</em> corrige texto, contraste, link.</p>
+    </div>
+
+    <div class="vers-grid">
+      <article class="vers-card">
+        <span class="v">v1.0.0</span>
+        <h4>Major · marca decidida</h4>
+        <p>Estado atual. <b>Tokens fixos</b>: paleta obsidian, Anchor Blue, Signal Green, três fontes + Montserrat (LOGO). <b>Quatro verticais</b>. <b>Foundations · Brand · Atomic · Composite · Layout</b> trancados.</p>
+        <p>Próximo major (<code>v2.0</code>) só se a marca mudar — não acontece sem decisão de Vinícius.</p>
+      </article>
+
+      <article class="vers-card">
+        <span class="v">v1.x.0</span>
+        <h4>Minor · peça nova</h4>
+        <p>Sobe quando: <b>nova vertical sub-marca</b>, <b>composto novo</b> (entrando na <a href="components-composite.html">página de compostos</a>), <b>layout primitive novo</b>, <b>aliases removidos</b> (após período de tolerância).</p>
+        <p>Comunicação: changelog em <a href="index.html#changelog">index.html § 06</a> + entrada no log de deprecação se algo morreu.</p>
+      </article>
+
+      <article class="vers-card">
+        <span class="v">v1.0.x</span>
+        <h4>Patch · pequeno</h4>
+        <p>Sobe quando: <b>cópia ajustada</b>, <b>contraste corrigido</b>, <b>link quebrado</b>, <b>preview card novo</b> sem mudança de token, <b>typo</b>. Não muda comportamento de nada em <code class="type-mono">src/</code>.</p>
+        <p>Sem comunicação formal — entra direto no commit, com referência no rodapé da página afetada.</p>
+      </article>
+    </div>
+
+    <div class="doc-note">
+      <b>Quebra prevista &lt;-&gt; superfícies em produção:</b> antes de mergear breaking change (rename de token, remoção de classe), abra <em>migration note</em> em <a href="../../DESIGN-SYSTEM.md">DESIGN-SYSTEM.md</a> (repo root) listando: <b>(1)</b> o que muda, <b>(2)</b> grep para encontrar usos, <b>(3)</b> substituição mecânica, <b>(4)</b> janela de tolerância (alias por uma minor, remoção na próxima). Sem isso, contribuinte de boa-fé descobre que o DS quebrou o build dele.
+    </div>
+  </section>
+
+  <!-- 06 · WHEN IN DOUBT -->
+  <section class="section" data-screen-label="Contribution · Defaults">
+    <div class="section-head">
+      <span class="num">06 · Em dúvida — defaults</span>
+      <h2>Os padrões quietos.</h2>
+      <p>Decisões pequenas que aparecem em quase todo PR. Memorize estas — economiza discussão.</p>
+    </div>
+
+    <div class="rules">
+      <h3>Defaults canônicos</h3>
+      <ul style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3) var(--space-8);">
+        <li><span style="font-family: var(--font-mono); color: var(--brand-400); font-size: var(--text-xs); padding-right: var(--space-3); white-space: nowrap; letter-spacing: var(--tracking-wider); text-transform: uppercase;">raio</span><span><b><code>var(--radius)</code> · 8 px.</b> Botão, input, dropdown, card padrão.</span></li>
+        <li><span style="font-family: var(--font-mono); color: var(--brand-400); font-size: var(--text-xs); padding-right: var(--space-3); white-space: nowrap; letter-spacing: var(--tracking-wider); text-transform: uppercase;">espaço</span><span><b><code>var(--space-4)</code> · 16 px.</b> Gap entre cards · padding interno padrão.</span></li>
+        <li><span style="font-family: var(--font-mono); color: var(--brand-400); font-size: var(--text-xs); padding-right: var(--space-3); white-space: nowrap; letter-spacing: var(--tracking-wider); text-transform: uppercase;">cor de texto</span><span><b><code>var(--ink-900)</code>.</b> Corpo. <code>--ink-1000</code> só para ênfase.</span></li>
+        <li><span style="font-family: var(--font-mono); color: var(--brand-400); font-size: var(--text-xs); padding-right: var(--space-3); white-space: nowrap; letter-spacing: var(--tracking-wider); text-transform: uppercase;">duração</span><span><b><code>var(--duration-base)</code> · 200 ms.</b> Hover, troca de cor, fade.</span></li>
+        <li><span style="font-family: var(--font-mono); color: var(--brand-400); font-size: var(--text-xs); padding-right: var(--space-3); white-space: nowrap; letter-spacing: var(--tracking-wider); text-transform: uppercase;">easing</span><span><b><code>var(--ease-out)</code>.</b> Padrão; só troque por motivo claro.</span></li>
+        <li><span style="font-family: var(--font-mono); color: var(--brand-400); font-size: var(--text-xs); padding-right: var(--space-3); white-space: nowrap; letter-spacing: var(--tracking-wider); text-transform: uppercase;">sombra</span><span><b><code>var(--shadow-1)</code></b> em sticky, <b><code>--shadow-2</code></b> em hover, <b><code>--shadow-3</code></b> em modal.</span></li>
+        <li><span style="font-family: var(--font-mono); color: var(--brand-400); font-size: var(--text-xs); padding-right: var(--space-3); white-space: nowrap; letter-spacing: var(--tracking-wider); text-transform: uppercase;">borda</span><span><b><code>1 px solid var(--ink-500)</code>.</b> Sempre 1 px. 2 px só em modal sob foco.</span></li>
+        <li><span style="font-family: var(--font-mono); color: var(--brand-400); font-size: var(--text-xs); padding-right: var(--space-3); white-space: nowrap; letter-spacing: var(--tracking-wider); text-transform: uppercase;">foco</span><span><b><code>box-shadow: var(--focus-ring)</code>.</b> Nunca <code>outline</code> só.</span></li>
+        <li><span style="font-family: var(--font-mono); color: var(--brand-400); font-size: var(--text-xs); padding-right: var(--space-3); white-space: nowrap; letter-spacing: var(--tracking-wider); text-transform: uppercase;">fonte de número</span><span><b><code>var(--font-mono)</code></b> em ID/hora; <b><code>var(--font-display)</code></b> em preço.</span></li>
+        <li><span style="font-family: var(--font-mono); color: var(--brand-400); font-size: var(--text-xs); padding-right: var(--space-3); white-space: nowrap; letter-spacing: var(--tracking-wider); text-transform: uppercase;">grade</span><span><b><code>180 px</code> público · <code>130 px</code> admin.</b> Galeria.</span></li>
+        <li><span style="font-family: var(--font-mono); color: var(--brand-400); font-size: var(--text-xs); padding-right: var(--space-3); white-space: nowrap; letter-spacing: var(--tracking-wider); text-transform: uppercase;">largura</span><span><b><code>1280 px</code> público + cliente · <code>1440 px</code> admin · <code>720 px</code> prosa.</b></span></li>
+        <li><span style="font-family: var(--font-mono); color: var(--brand-400); font-size: var(--text-xs); padding-right: var(--space-3); white-space: nowrap; letter-spacing: var(--tracking-wider); text-transform: uppercase;">modal</span><span><b>Cancelar à esquerda · primária à direita.</b> Ordem canônica.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer data-screen-label="Contribution · Footer">
+    <span>VINÍCIUS SOUZA · CONTRIBUIÇÃO v1.0 · 2026-05-10</span>
+    <span><a href="index.html">Index</a> · <a href="../../DESIGN-SYSTEM.md">DESIGN-SYSTEM.md</a> · <a href="SKILL.md">SKILL</a> · <a href="README.md">README</a></span>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Vinícius Souza — Motion em contexto</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { padding-bottom: var(--space-24); }
+
+  .wrap { max-width: var(--content-max); margin: 0 auto; padding: var(--space-20) var(--space-12) var(--space-24); }
+  @media (max-width: 800px) { .wrap { padding: var(--space-12) var(--space-5); } }
+
+  /* HERO ─────────────────────────────────── */
+  .hero { position: relative; padding-bottom: var(--space-16); border-bottom: 1px solid var(--ink-500); margin-bottom: var(--space-16); overflow: hidden; }
+  .hero::before { content: ""; position: absolute; inset: -10% -10% auto -10%; height: 70%; background: var(--glow-radial); pointer-events: none; }
+  .hero > * { position: relative; }
+  .hero .crumbs { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); margin-bottom: var(--space-4); display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; }
+  .hero .crumbs a { color: var(--ink-700); }
+  .hero .crumbs a:hover { color: var(--ink-1000); }
+  .hero .crumbs b { color: var(--ink-1000); font-weight: 500; }
+  .hero h1 { font-family: var(--font-display); font-style: italic; font-size: var(--text-5xl); line-height: var(--leading-flat); letter-spacing: var(--tracking-tight); margin: 0 0 var(--space-5); max-width: 24ch; color: var(--ink-1000); }
+  .hero .lede { max-width: 64ch; font-size: var(--text-md); line-height: var(--leading-relaxed); color: var(--ink-900); margin: 0; }
+  .hero .lede em { font-family: var(--font-display); font-style: italic; color: var(--ink-1000); }
+
+  /* SECTION ───────────────────────────── */
+  .section { margin-top: var(--space-20); }
+  .section-head { padding-bottom: var(--space-4); border-bottom: 1px solid var(--ink-500); margin-bottom: var(--space-8); }
+  .section-head .num { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); }
+  .section-head h2 { font-family: var(--font-heading); font-weight: 400; font-size: var(--text-2xl); margin: var(--space-1) 0 0; color: var(--ink-1000); letter-spacing: var(--tracking-snug); }
+  .section-head p { margin: var(--space-2) 0 0; color: var(--ink-800); font-size: var(--text-sm); max-width: 64ch; line-height: var(--leading-relaxed); }
+
+  /* DEMO CARD ───────────────────────── */
+  .demos { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); }
+  @media (max-width: 800px) { .demos { grid-template-columns: 1fr; } }
+  .demos.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 980px) { .demos.cols-3 { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .demos.cols-3 { grid-template-columns: 1fr; } }
+
+  .demo {
+    background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg);
+    padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3);
+  }
+  .demo h3 { font-family: var(--font-heading); font-size: var(--text-base); font-weight: 500; color: var(--ink-1000); margin: 0; letter-spacing: var(--tracking-snug); }
+  .demo .meta { display: flex; gap: var(--space-3); font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-700); }
+  .demo .meta b { color: var(--brand-400); font-weight: 500; }
+  .demo .copy { font-size: var(--text-sm); color: var(--ink-800); line-height: var(--leading-relaxed); margin: 0; }
+  .demo .copy b { color: var(--ink-1000); font-weight: 500; }
+  .demo .stage {
+    background: var(--ink-100); border: 1px solid var(--ink-500); border-radius: var(--radius);
+    padding: var(--space-5); min-height: 140px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; user-select: none;
+  }
+  .demo code { font-family: var(--font-mono); background: var(--ink-200); color: var(--ink-1000); padding: 1px var(--space-1); border-radius: 2px; font-size: 0.9em; }
+
+  /* DOC NOTE ─────────────────────────── */
+  .doc-note { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); line-height: var(--leading-relaxed); padding: var(--space-3) var(--space-4); border-left: 2px solid var(--brand-500); background: var(--brand-dim); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: var(--space-4) 0; }
+  .doc-note b { color: var(--ink-1000); font-weight: 500; }
+
+  /* ── 01 · HOVER ATOMS ──────────────── */
+  .atom-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: var(--space-3) var(--space-5); border-radius: var(--radius);
+    background: var(--brand-500); color: var(--ink-1000);
+    font-family: var(--font-body); font-size: var(--text-sm); font-weight: 500;
+    border: 1px solid transparent; cursor: pointer;
+    transition: background var(--duration-quick) var(--ease-out), transform var(--duration-quick) var(--ease-out);
+  }
+  .atom-btn:hover { background: var(--brand-400); transform: translateY(-1px); }
+  .atom-btn:active { background: var(--brand-700); transform: translateY(0); }
+
+  .atom-chip {
+    display: inline-flex; padding: var(--space-2) var(--space-3);
+    background: transparent; border: 1px solid var(--ink-500); border-radius: var(--radius);
+    color: var(--ink-900); font-family: var(--font-body); font-size: var(--text-xs); font-weight: 500;
+    cursor: pointer;
+    transition: border-color var(--duration-quick) var(--ease-out), color var(--duration-quick) var(--ease-out), transform var(--duration-quick) var(--ease-out);
+  }
+  .atom-chip:hover { border-color: var(--ink-700); color: var(--ink-1000); transform: translateY(-1px); }
+
+  .atom-card {
+    width: 160px; aspect-ratio: 1; background: var(--ink-200);
+    border: 1px solid var(--ink-500); border-radius: var(--radius);
+    background-image: var(--ph-anchor);
+    transition: border-color var(--duration-quick) var(--ease-out), transform var(--duration-quick) var(--ease-out), box-shadow var(--duration-quick) var(--ease-out);
+    cursor: pointer;
+  }
+  .atom-card:hover { border-color: var(--brand-500); transform: translateY(-3px); box-shadow: 0 10px 24px -16px rgba(0,0,0,0.7); }
+
+  /* ── 02 · PAGE TRANSITIONS ─────────── */
+  .page-stage { position: relative; height: 220px; background: var(--ink-100); border: 1px solid var(--ink-500); border-radius: var(--radius); overflow: hidden; cursor: pointer; }
+  .page-stage .pg { position: absolute; inset: 0; padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); transition: opacity var(--duration-slow) var(--ease-out), transform var(--duration-slow) var(--ease-out); }
+  .page-stage .pg .lbl { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--brand-400); }
+  .page-stage .pg h4 { font-family: var(--font-display); font-style: italic; font-size: var(--text-2xl); margin: 0; color: var(--ink-1000); }
+  .page-stage .pg p { font-size: var(--text-xs); color: var(--ink-800); margin: 0; }
+  .page-stage .pg-1 { opacity: 1; transform: translateX(0); }
+  .page-stage .pg-2 { opacity: 0; transform: translateX(20px); pointer-events: none; }
+  .page-stage:hover .pg-1 { opacity: 0; transform: translateX(-20px); }
+  .page-stage:hover .pg-2 { opacity: 1; transform: translateX(0); pointer-events: auto; }
+
+  /* ── 03 · MODAL / TOAST ─────────────── */
+  .modal-stage { position: relative; height: 220px; background: var(--ink-100); border: 1px solid var(--ink-500); border-radius: var(--radius); overflow: hidden; cursor: pointer; }
+  .modal-stage .scrim { position: absolute; inset: 0; background: rgba(0,0,0,0.7); opacity: 0; pointer-events: none; transition: opacity var(--duration-slow) var(--ease-out); }
+  .modal-stage:hover .scrim { opacity: 1; }
+  .modal-stage .modal-card {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, calc(-50% + 16px));
+    background: var(--ink-300); border: 1px solid var(--ink-600); border-radius: var(--radius-lg);
+    padding: var(--space-5); width: 80%; max-width: 280px;
+    opacity: 0; transition: opacity var(--duration-slow) var(--ease-out), transform var(--duration-slow) var(--ease-out);
+    box-shadow: var(--shadow-3);
+  }
+  .modal-stage:hover .modal-card { opacity: 1; transform: translate(-50%, -50%); }
+  .modal-stage .modal-card h5 { font-family: var(--font-heading); font-size: var(--text-base); margin: 0 0 var(--space-2); color: var(--ink-1000); }
+  .modal-stage .modal-card p { font-size: var(--text-xs); color: var(--ink-800); margin: 0; }
+
+  .toast-stage { position: relative; height: 220px; background: var(--ink-100); border: 1px solid var(--ink-500); border-radius: var(--radius); overflow: hidden; cursor: pointer; }
+  .toast-stage .toast {
+    position: absolute; bottom: 16px; left: 50%;
+    transform: translate(-50%, 32px); opacity: 0;
+    background: var(--signal-dim); color: var(--signal-400); border: 1px solid var(--signal-500);
+    padding: var(--space-2) var(--space-4); border-radius: var(--radius-pill);
+    font-family: var(--font-mono); font-size: var(--text-xs);
+    transition: opacity var(--duration-slow) var(--ease-spring), transform var(--duration-slow) var(--ease-spring);
+    white-space: nowrap;
+  }
+  .toast-stage:hover .toast { opacity: 1; transform: translate(-50%, 0); }
+  .toast-stage::before {
+    content: "Hover para disparar"; position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+    font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-wide);
+  }
+
+  /* ── 04 · DRAG-DROP ────────────────── */
+  .drop-stage {
+    height: 220px; background: var(--ink-100); border: 2px dashed var(--ink-500); border-radius: var(--radius);
+    display: flex; align-items: center; justify-content: center; flex-direction: column; gap: var(--space-2);
+    transition: border-color var(--duration-base) var(--ease-out), background var(--duration-base) var(--ease-out), transform var(--duration-base) var(--ease-out);
+    cursor: pointer; padding: var(--space-4); text-align: center;
+  }
+  .drop-stage:hover { border-color: var(--brand-500); background: var(--brand-dim); transform: scale(1.005); }
+  .drop-stage .ic {
+    width: 36px; height: 36px; stroke: var(--ink-700); fill: none; stroke-width: 1.5;
+    transition: stroke var(--duration-base) var(--ease-out), transform var(--duration-base) var(--ease-spring);
+  }
+  .drop-stage:hover .ic { stroke: var(--brand-400); transform: translateY(-4px); }
+  .drop-stage .label { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); letter-spacing: var(--tracking-snug); }
+  .drop-stage:hover .label { color: var(--ink-1000); }
+
+  /* ── 05 · UPLOAD PROGRESS ──────────── */
+  .upload-stage { display: flex; flex-direction: column; gap: var(--space-3); height: 220px; padding: var(--space-3); }
+  .upload-row { display: grid; grid-template-columns: 1fr max-content; gap: var(--space-3); align-items: center; }
+  .upload-row .name { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-900); }
+  .upload-row .pct { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-1000); }
+  .upload-bar {
+    grid-column: 1 / -1; height: 4px; background: var(--ink-300); border-radius: var(--radius-pill); overflow: hidden;
+  }
+  .upload-bar .fill {
+    height: 100%; background: var(--brand-500);
+    animation: uploadFill 3s var(--ease-in-out) infinite;
+  }
+  @keyframes uploadFill { 0% { width: 0%; } 60% { width: 100%; } 100% { width: 100%; } }
+  .upload-bar.is-done .fill { background: var(--signal-500); animation: none; width: 100%; }
+  .upload-bar.is-indet { background: linear-gradient(90deg, var(--ink-300) 0%, var(--brand-500) 50%, var(--ink-300) 100%); background-size: 200% 100%; animation: uploadIndet 1.4s linear infinite; }
+  @keyframes uploadIndet { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+  /* ── 06 · SKELETON ─────────────────── */
+  .skel-stage { display: flex; flex-direction: column; gap: var(--space-3); height: 220px; padding: var(--space-3); }
+  .skel-line {
+    height: 12px; border-radius: var(--radius-sm);
+    background: linear-gradient(90deg, var(--ink-300) 0%, var(--ink-400) 50%, var(--ink-300) 100%);
+    background-size: 220% 100%;
+    animation: shimmer 1.6s linear infinite;
+  }
+  .skel-line.w-80 { width: 80%; }
+  .skel-line.w-60 { width: 60%; }
+  .skel-line.w-40 { width: 40%; }
+  .skel-block {
+    flex: 1; border-radius: var(--radius);
+    background: linear-gradient(90deg, var(--ink-300) 0%, var(--ink-400) 50%, var(--ink-300) 100%);
+    background-size: 220% 100%;
+    animation: shimmer 1.6s linear infinite;
+  }
+  @keyframes shimmer { 0% { background-position: 220% 0; } 100% { background-position: -220% 0; } }
+
+  /* ── 07 · CART PULSE ───────────────── */
+  .cart-stage {
+    height: 220px; padding: var(--space-3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-3);
+  }
+  .cart-pill {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-2) var(--space-3); background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-pill);
+    font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-1000);
+  }
+  .cart-pill .count {
+    background: var(--brand-500); color: var(--ink-1000); padding: 1px 6px; border-radius: var(--radius-pill);
+    font-size: var(--text-xxs); font-weight: 600;
+    animation: cartPulse 2.4s var(--ease-out) infinite;
+  }
+  @keyframes cartPulse {
+    0%, 88%, 100% { transform: scale(1); }
+    92% { transform: scale(1.18); }
+    96% { transform: scale(1); }
+  }
+  .cart-stage .add-btn {
+    background: var(--brand-500); color: var(--ink-1000); padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius); font-size: var(--text-xs); font-family: var(--font-body); font-weight: 500;
+    border: 0; cursor: pointer;
+  }
+
+  /* ── 08 · DON'T TABLE ───────────────── */
+  .tbl { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; }
+  .tbl table { width: 100%; border-collapse: collapse; }
+  .tbl th, .tbl td { padding: var(--space-3) var(--space-4); font-size: var(--text-sm); border-bottom: 1px solid var(--ink-500); text-align: left; vertical-align: top; line-height: var(--leading-relaxed); }
+  .tbl thead th { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-800); background: var(--ink-200); font-weight: 500; }
+  .tbl tbody tr:last-child td { border-bottom: none; }
+  .tbl tbody td.what { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-1000); white-space: nowrap; }
+  .tbl tbody td.why { color: var(--ink-900); }
+
+  /* Reduced-motion override is automatic via tokens; for examples that
+     declare keyframes, we kill the keyframe explicitly. */
+  @media (prefers-reduced-motion: reduce) {
+    .upload-bar .fill, .upload-bar.is-indet, .skel-line, .skel-block, .cart-pill .count { animation: none !important; }
+    .upload-bar.is-indet { background: var(--brand-500); }
+    .skel-line, .skel-block { background: var(--ink-300); }
+  }
+
+  footer { margin-top: var(--space-24); padding-top: var(--space-6); border-top: 1px solid var(--ink-500); display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-wider); }
+  footer a { color: var(--ink-700); }
+  footer a:hover { color: var(--ink-1000); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO ──────────────────────────────────── -->
+  <header class="hero" data-screen-label="Motion · Header">
+    <p class="crumbs">
+      <a href="index.html">DS</a> · <a href="index.html#surfaces">Surfaces &amp; cross-cutting</a> · <b>05.5 · Motion em contexto</b>
+      <span style="color: var(--brand-400);">v1.0 · 4 durações × 3 easings · pt-BR</span>
+    </p>
+    <h1>Movimento que<br>respeita o leitor.</h1>
+    <p class="lede">
+      As durações e easings vêm de <a href="spacing-elevation-motion.html">Foundations · Motion</a>. Aqui mostramos <em>em contexto</em>:
+      hover de átomos, troca de página, modal entrando, toast subindo, drag-drop, upload, skeleton e pulse de carrinho.
+      Tudo respeita <code class="type-mono">prefers-reduced-motion</code> — passe o cursor sobre os palcos para gatilhar.
+    </p>
+  </header>
+
+  <!-- 01 · HOVER / FOCUS ATOMS ──────── -->
+  <section class="section" data-screen-label="Motion · Atoms">
+    <div class="section-head">
+      <span class="num">01 · Hover · focus em átomos</span>
+      <h2>Resposta tátil, 120 ms.</h2>
+      <p>Botão, chip e card respondem ao cursor com <code class="type-mono">--duration-quick</code> + <code class="type-mono">--ease-out</code>. Translação de 1–3 px para cima sinaliza "interativo" sem rebote.</p>
+    </div>
+
+    <div class="demos cols-3">
+      <article class="demo">
+        <h3>Botão primário</h3>
+        <div class="meta"><b>120 ms</b><span>ease-out</span></div>
+        <div class="stage"><button class="atom-btn">Adicionar ao carrinho</button></div>
+        <p class="copy">Tonalidade de fundo + translação 1 px. <b>Não use scale:</b> ele expande a área clicável e confunde leitor de tela.</p>
+      </article>
+      <article class="demo">
+        <h3>Chip filtro</h3>
+        <div class="meta"><b>120 ms</b><span>ease-out</span></div>
+        <div class="stage"><button class="atom-chip">Rodeio</button></div>
+        <p class="copy">Borda escurece, cor sobe um degrau. Quando ativo (estado solid), a animação cessa — atalho mental para "selecionado".</p>
+      </article>
+      <article class="demo">
+        <h3>Card de foto</h3>
+        <div class="meta"><b>120 ms</b><span>ease-out</span></div>
+        <div class="stage"><div class="atom-card"></div></div>
+        <p class="copy">Borda <em>brand-500</em> + lift 3 px + sombra leve. Apenas o card hover — não animar o filho (preço, pill) para não chamar o olho.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 02 · PAGE TRANSITION ────────── -->
+  <section class="section" data-screen-label="Motion · Page transition">
+    <div class="section-head">
+      <span class="num">02 · Transição de página</span>
+      <h2>320 ms · ease-out · fade + slide curto.</h2>
+      <p>App Router troca conteúdo, mas o hero e a navbar persistem. A transição é só do conteúdo principal — não anime o chrome (navbar, sidebar admin). O slide é curto (20 px), suficiente para o olho registrar que houve mudança.</p>
+    </div>
+
+    <div class="demos">
+      <article class="demo">
+        <h3>Conteúdo principal</h3>
+        <div class="meta"><b>320 ms</b><span>ease-out</span></div>
+        <div class="page-stage">
+          <div class="pg pg-1">
+            <span class="lbl">/eventos</span>
+            <h4>Eventos abertos</h4>
+            <p>Lista pública · 142 álbuns</p>
+          </div>
+          <div class="pg pg-2">
+            <span class="lbl">/evento/abertura-safra</span>
+            <h4>Abertura da Safra</h4>
+            <p>1.581 fotos · 22 mai 2026</p>
+          </div>
+        </div>
+        <p class="copy">Hover dispara a troca. <b>Saída</b> da página anterior 0–160 ms, <b>entrada</b> da nova 160–320 ms. Sem cross-fade — uma sai, a outra entra.</p>
+      </article>
+      <article class="demo">
+        <h3>Navegação <em>persistente</em></h3>
+        <div class="meta"><b>0 ms</b><span>—</span></div>
+        <div class="stage" style="display: flex; flex-direction: column; align-items: stretch; padding: 0;">
+          <div style="background: var(--ink-200); border-bottom: 1px solid var(--ink-500); padding: var(--space-3) var(--space-4); font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--ink-700); letter-spacing: var(--tracking-widest); text-transform: uppercase;">Navbar · permanece</div>
+          <div style="flex: 1; display: grid; place-items: center; color: var(--ink-700); font-family: var(--font-mono); font-size: var(--text-xs);">conteúdo troca abaixo</div>
+        </div>
+        <p class="copy">A navbar não anima entre rotas. Animar chrome cria sensação de "tudo reiniciou" — exatamente o oposto da percepção SPA.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 03 · MODAL + TOAST ─────────── -->
+  <section class="section" data-screen-label="Motion · Modal + Toast">
+    <div class="section-head">
+      <span class="num">03 · Modal · drawer · toast</span>
+      <h2>Modal entra com peso, toast com mola.</h2>
+      <p>Modal: scrim 0→1 + card 16 px abaixo subindo para 0, ambos em 320 ms (<code class="type-mono">--duration-slow</code>). Toast: 320 ms com <code class="type-mono">--ease-spring</code> — chega com pequenissimo overshoot, sai linear em 200 ms.</p>
+    </div>
+
+    <div class="demos">
+      <article class="demo">
+        <h3>Modal entrando</h3>
+        <div class="meta"><b>320 ms</b><span>ease-out</span></div>
+        <div class="modal-stage">
+          <div class="scrim"></div>
+          <div class="modal-card">
+            <h5>Liberar repasse?</h5>
+            <p>R$ 4.218,40 cairão na conta cadastrada em até 2 dias úteis.</p>
+          </div>
+        </div>
+        <p class="copy">Fechar é a metade — 160 ms, mesmo easing. <b>Esc</b> não tem animação custom: usa a mesma transition; o tempo curto é deliberado.</p>
+      </article>
+      <article class="demo">
+        <h3>Toast subindo</h3>
+        <div class="meta"><b>320 ms</b><span>ease-spring</span></div>
+        <div class="toast-stage">
+          <div class="toast">Foto adicionada · R$ 28,80</div>
+        </div>
+        <p class="copy">Sobe 32 px com mola suave. Permanece 3.6 s, sai com fade linear 200 ms. <b>Nunca</b> empilhe mais de 3 toasts — colapsa em "<em>3 novas notificações</em>".</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 04 · DRAG-DROP + UPLOAD ─────── -->
+  <section class="section" data-screen-label="Motion · Drag-drop">
+    <div class="section-head">
+      <span class="num">04 · Drag-drop · upload</span>
+      <h2>Zona de drop respira; barra avança.</h2>
+      <p>Zona de upload: ao receber drag-enter, a borda muda para <em>brand</em>, o fundo escurece e o ícone sobe 4 px com <code class="type-mono">ease-spring</code> — afordance clara sem ruído. Barra: progresso real (<em>determinada</em>) ou indeterminada quando a API ainda não sabe.</p>
+    </div>
+
+    <div class="demos">
+      <article class="demo">
+        <h3>Zona de upload</h3>
+        <div class="meta"><b>200 ms</b><span>ease-out · spring no ícone</span></div>
+        <div class="drop-stage">
+          <svg class="ic" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span class="label">Arraste fotos aqui ou clique para escolher</span>
+          <span class="label" style="color: var(--ink-700);">JPEG · PNG · até 50 MB</span>
+        </div>
+        <p class="copy">Hover simula drag-enter. Em uso real, listen <code>dragover</code> com <code>preventDefault</code> e marca a classe <code>.is-active</code>.</p>
+      </article>
+
+      <article class="demo">
+        <h3>Barra de upload</h3>
+        <div class="meta"><b>linear</b><span>determinada e indeterminada</span></div>
+        <div class="stage" style="display: block; padding: 0;">
+          <div class="upload-stage">
+            <div>
+              <div class="upload-row"><span class="name">IMG_4218.JPG</span><span class="pct">68%</span></div>
+              <div class="upload-bar"><div class="fill" style="width: 68%;"></div></div>
+            </div>
+            <div>
+              <div class="upload-row"><span class="name">IMG_4219.JPG</span><span class="pct">processando…</span></div>
+              <div class="upload-bar is-indet"></div>
+            </div>
+            <div>
+              <div class="upload-row"><span class="name">IMG_4220.JPG</span><span class="pct" style="color: var(--signal-400);">pronto</span></div>
+              <div class="upload-bar is-done"><div class="fill"></div></div>
+            </div>
+          </div>
+        </div>
+        <p class="copy">Barras finas (4 px). <b>Determinada</b>: percentual real. <b>Indeterminada</b>: pulse 1.4 s linear. <b>Pronto</b>: cor vira <em>signal-500</em> e animação cessa.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 05 · SKELETON + CART PULSE ─────── -->
+  <section class="section" data-screen-label="Motion · Skeleton + Pulse">
+    <div class="section-head">
+      <span class="num">05 · Skeleton · pulse de feedback</span>
+      <h2>Shimmer 1.6 s linear; pulse de carrinho 2.4 s.</h2>
+      <p>Skeleton: gradient sliding ink-300 → ink-400 → ink-300, full loop em 1.6 s. Pulse de carrinho: 2.4 s com 88 % parado e 12 % de movimento — uma "batida" discreta no canto da tela, não uma piscada constante.</p>
+    </div>
+
+    <div class="demos">
+      <article class="demo">
+        <h3>Skeleton de card</h3>
+        <div class="meta"><b>1.6 s</b><span>linear · infinite</span></div>
+        <div class="stage" style="padding: 0;">
+          <div class="skel-stage">
+            <div class="skel-block"></div>
+            <div class="skel-line w-80"></div>
+            <div class="skel-line w-60"></div>
+            <div class="skel-line w-40"></div>
+          </div>
+        </div>
+        <p class="copy">Use <em>shimmer</em> para listas, grids e textos. Para botões/inputs prefira <em>spinner</em> de 16 px no lugar do texto — skeleton em controle confunde.</p>
+      </article>
+
+      <article class="demo">
+        <h3>Pill de carrinho · pulse</h3>
+        <div class="meta"><b>2.4 s</b><span>ease-out · loop</span></div>
+        <div class="stage" style="padding: 0;">
+          <div class="cart-stage">
+            <span class="cart-pill"><span>Carrinho</span><span class="count">3</span></span>
+            <button class="add-btn">Adicionar ao carrinho</button>
+            <span style="font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--ink-700); letter-spacing: var(--tracking-wider); text-transform: uppercase;">a pílula pulsa quando há item novo</span>
+          </div>
+        </div>
+        <p class="copy">Pulse acontece <b>uma vez</b> ao adicionar, depois cessa. Esta versão fica em loop só para demonstração. Reduzido sob <code>prefers-reduced-motion</code>.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 06 · DON'T ANIMATE ────────────── -->
+  <section class="section" data-screen-label="Motion · Don't list">
+    <div class="section-head">
+      <span class="num">06 · Não anime</span>
+      <h2>Onde silêncio é melhor.</h2>
+      <p>Lista canônica do que <em>não</em> recebe transição neste sistema. Cada linha existe porque já apareceu em rascunho e foi rejeitada.</p>
+    </div>
+
+    <div class="tbl">
+      <table>
+        <thead><tr><th style="width: 28%;">Elemento</th><th>Por quê</th></tr></thead>
+        <tbody>
+          <tr><td class="what">Números em tabela</td><td class="why">Tabular-nums com mudança animada cria leitura impossível. Mostre o valor novo direto, sem fade.</td></tr>
+          <tr><td class="what">Preço em <code class="type-mono">type-price</code></td><td class="why">Mesmo princípio — dinheiro precisa estar legível no primeiro frame.</td></tr>
+          <tr><td class="what">Sombra de navbar sticky</td><td class="why">A sombra aparece com a borda inferior — não anime a aparição, ela acompanha o scroll instantaneamente.</td></tr>
+          <tr><td class="what">Cor de borda em focus</td><td class="why">O anel de foco precisa aparecer no primeiro frame. Animar atrasa a percepção do "estou aqui".</td></tr>
+          <tr><td class="what">Bounce em entrada de página</td><td class="why">Spring em <em>page transition</em> simula app mobile genérico — diluí o caráter editorial do site.</td></tr>
+          <tr><td class="what">Hero pulsando</td><td class="why">O <code class="type-mono">--glow-radial</code> é estático. Animar gradient atrás de texto polui a leitura.</td></tr>
+          <tr><td class="what">Loading spinner em &gt; 200 ms</td><td class="why">Acima disso vire skeleton. Spinner muito tempo é sinal de problema, não de progresso.</td></tr>
+          <tr><td class="what">Hover em estado <code>:active</code></td><td class="why">Botão pressionado não deve "subir" — já está sendo pressionado. Translação volta a 0.</td></tr>
+          <tr><td class="what">Pulse em badge "Pago"</td><td class="why">Status final não pulsa. Pulse é convite à ação ou indicador de novidade — "Pago" é nem um nem outro.</td></tr>
+          <tr><td class="what">Auto-play de vídeo / carrossel</td><td class="why">Movimento sem gatilho do usuário rouba foco e quebra leitor de tela. <em>Sempre</em> pediu play.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 07 · REDUCED-MOTION ─────────── -->
+  <section class="section" data-screen-label="Motion · Reduced-motion">
+    <div class="section-head">
+      <span class="num">07 · <code class="type-mono">prefers-reduced-motion</code></span>
+      <h2>Esta página obedece.</h2>
+      <p>Em <a href="colors_and_type.css">colors_and_type.css</a> § 17, todas as durações caem para 1 ms. Esta página adiciona <code class="type-mono">animation: none</code> para os keyframes (skeleton, upload indet., cart pulse). Para testar: <em>System Settings → Accessibility → Reduce motion</em>.</p>
+    </div>
+
+    <div class="doc-note">
+      <b>Regra geral:</b> use <code>transition</code> sempre que possível — o token cuida da redução automaticamente. Reserve <code>@keyframes</code> para movimento sustentado (skeleton, pulse, sheen) e <b>sempre</b> declare o fallback <code>animation: none</code> dentro de <code>@media (prefers-reduced-motion: reduce)</code>. Se a animação <em>é</em> a mensagem (ex.: spinner indicando carregamento), substitua por um símbolo estático ("Carregando…").
+    </div>
+  </section>
+
+  <footer data-screen-label="Motion · Footer">
+    <span>VINÍCIUS SOUZA · MOTION EM CONTEXTO v1.0 · 2026-05-10</span>
+    <span><a href="index.html">Index</a> · <a href="spacing-elevation-motion.html">Tokens de motion</a> · <a href="accessibility.html">A11y</a></span>
+  </footer>
+
+</div>
+</body>
+</html>

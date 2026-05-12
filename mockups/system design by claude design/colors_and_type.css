@@ -1,0 +1,472 @@
+/* ============================================================
+   VINÍCIUS SOUZA — DESIGN SYSTEM · FOUNDATIONS
+   colors_and_type.css — single source of truth for visual tokens.
+   Imported by every HTML in this folder. Never redefine values inline.
+   --------------------------------------------------------------
+   v1.0 — 2026-05-10 — locked by Prompt 1 (Foundations).
+     · Theme stance: DARK ONLY (see colors.html).
+     · Type families: Instrument Serif (display) + General Sans
+       (heading/body) + JetBrains Mono (numerals/IDs/timestamps) +
+       Montserrat (LOGO ONLY — never UI).
+     · Anchor Blue (--brand-500) is the single primary accent.
+     · Signal Green (--signal-500) is reserved for money/confirm.
+   --------------------------------------------------------------
+   v1.0.1 — 2026-05-10 — paper + placeholder gradients added,
+     signal-button ink aliased.
+     · § 19 PAPER tokens unblock light-on-light surfaces
+       (email signatures, printed assets). [v1.0.3: --paper-card
+       (#f4f4f2) removed — declared here but never consumed in any
+       HTML; cards are dark-themed and email signature uses
+       --paper-bg + --paper-ink + --paper-brand instead.]
+     · § 20 PHOTO PLACEHOLDER gradients replace ~40 raw-hex
+       inline gradients across UI kits + composite docs.
+     · --ink-on-signal aliases the dark text used on signal-500
+     CTAs (replaces the hand-picked #04130a).
+   v1.0.2 — 2026-05-10 — Added --focus-ring-error semantic alias for invalid input states.
+   v1.0.3 — 2026-05-10 — Pruned orphan --paper-card (see § 19 note).
+   v1.0.5 — 2026-05-10 — contagens (icons 66, strings 34, shortcuts 13) reconciliadas, stripe admin event-tile, skeleton motion.
+   v1.0.6 — 2026-05-10 — propagação de versão entre README/SKILL/index + prefers-reduced-motion wraps.
+   v1.0.7 — 2026-05-11 — Fix-J: sprite 68 ícones, aliases UI-kit renomeados, button-states disclaimer, atalhos 12.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@500;700;800;900&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=general-sans@200,300,400,500,600,700&display=swap');
+
+:root {
+  /* ──────────────────────────────────────────────────────────
+     1 · OBSIDIAN RAMP
+     12 steps. Bone-white #ede8e0 is the primary ink — never #fff.
+     ────────────────────────────────────────────────────────── */
+  --ink-0:        #000000;   /* absolute void — borders on photos */
+  --ink-50:       #070708;   /* deepest bg — admin canvas, hero stages */
+  --ink-100:      #0c0c0d;   /* app bg — public + cliente */
+  --ink-200:      #141416;   /* elevated surface — sidebars, secondary */
+  --ink-300:      #1b1b1e;   /* card */
+  --ink-400:      #232327;   /* input · hovered card */
+  --ink-500:      #2e2e33;   /* divider · standard border */
+  --ink-600:      #3a3a41;   /* emphasised border · focused input */
+  --ink-700:      #55555d;   /* dim text · disabled · timestamps */
+  --ink-800:      #8a8a92;   /* muted text · meta · captions */
+  --ink-900:      #c9c9d1;   /* body text */
+  --ink-1000:     #ede8e0;   /* primary ink — bone white, warm */
+
+  /* ──────────────────────────────────────────────────────────
+     2 · BRAND — ANCHOR BLUE
+     Pulled from the word EDITORIAL in the master mark.
+     Single primary interactive accent across all three surfaces.
+     ────────────────────────────────────────────────────────── */
+  --brand-300:    #7fb3f2;
+  --brand-400:    #4f98ec;
+  --brand-500:    #1f7ae0;   /* primary — buttons, links, focus rings */
+  --brand-600:    #1660b8;   /* hover */
+  --brand-700:    #0f4a8f;   /* active · pressed */
+  --brand-dim:    rgba(31, 122, 224, 0.14);   /* tinted bg · alert-info */
+  --brand-glow:   rgba(31, 122, 224, 0.35);   /* hero radial · shadow halo (foco real usa --focus-ring) */
+
+  /* ──────────────────────────────────────────────────────────
+     3 · SIGNAL — MONEY · CONFIRM · SUCCESS
+     Reserved. Never use as a generic accent or decoration.
+     ────────────────────────────────────────────────────────── */
+  --signal-400:   #4ade80;
+  --signal-500:   #22c55e;   /* "Pago" · "Baixar" · checkout CTA */
+  --signal-600:   #16a34a;   /* hover · pressed */
+  --signal-dim:   rgba(34, 197, 94, 0.14);
+
+  /* ──────────────────────────────────────────────────────────
+     4 · SEMANTIC — STATUS
+     Use for system feedback only, never decoration.
+     ────────────────────────────────────────────────────────── */
+  --warning-400:  #f0b964;
+  --warning-500:  #e8a33a;   /* alert-warning · "Pendente" · "Atenção" */
+  --warning-600:  #c98322;
+  --warning-dim:  rgba(232, 163, 58, 0.14);
+
+  --danger-400:   #ec7872;
+  --danger-500:   #e0554f;   /* alert-error · "Reembolsado" · "Excluir" */
+  --danger-600:   #b73d38;
+  --danger-dim:   rgba(224, 85, 79, 0.14);
+
+  --info-500:     var(--brand-500);  /* alias — info shares the brand hue */
+  --info-dim:     var(--brand-dim);
+
+  /* ──────────────────────────────────────────────────────────
+     5 · SUB-BRAND TRIAD
+     One mother mark + three verticals. Each is a full ramp so we
+     can compose tags, badges and stripes on dark surfaces.
+     ────────────────────────────────────────────────────────── */
+  /* Fotografia (mother) — bone neutral, the master mark itself */
+  --sub-fotografia-400: #f7f3ec;
+  --sub-fotografia-500: #ede8e0;
+  --sub-fotografia-600: #c9c4bc;
+  --sub-fotografia-dim: rgba(237, 232, 224, 0.10);
+
+  /* Editorial — anchor blue (mirrors --brand) */
+  --sub-editorial-400:  #4f98ec;
+  --sub-editorial-500:  #1f7ae0;
+  --sub-editorial-600:  #1660b8;
+  --sub-editorial-dim:  rgba(31, 122, 224, 0.14);
+
+  /* Esportes — desaturated scarlet, never tomato red */
+  --sub-esportes-400:   #d96058;
+  --sub-esportes-500:   #c83333;
+  --sub-esportes-600:   #9e2424;
+  --sub-esportes-dim:   rgba(200, 51, 51, 0.14);
+
+  /* Natureza — forest green, distinct from signal-500 */
+  --sub-natureza-400:   #3a9c69;
+  --sub-natureza-500:   #1f7a4a;
+  --sub-natureza-600:   #155834;
+  --sub-natureza-dim:   rgba(31, 122, 74, 0.14);
+
+  /* ──────────────────────────────────────────────────────────
+     6 · SEMANTIC ALIASES
+     Backward-compat layer for the live src/ codebase.
+     New work should reach for the underlying tokens above.
+     ────────────────────────────────────────────────────────── */
+  --bg:            var(--ink-100);
+  --bg-secondary:  var(--ink-200);
+  --bg-card:       var(--ink-300);
+  --bg-input:      var(--ink-400);
+
+  --border:        var(--ink-500);
+  --border-light:  var(--ink-600);
+  --border-strong: var(--ink-600);
+
+  --text:          var(--ink-1000);
+  --text-body:     var(--ink-900);
+  --text-muted:    var(--ink-800);
+  --text-dim:      var(--ink-700);
+
+  --accent:        var(--brand-500);
+  --accent-hover:  var(--brand-600);
+  --accent-dim:    var(--brand-dim);
+
+  --danger:        var(--danger-500);
+  --success:       var(--signal-500);
+  --success-dim:   var(--signal-dim);
+  --warning:       var(--warning-500);
+
+  /* Legible dark text when sitting on a signal-500 fill (e.g. "Grátis"
+     pill, primary checkout CTA). Resolves to --ink-50, which passes
+     AA against #22c55e at 7.8:1. Never use raw #04130a inline. */
+  --ink-on-signal: var(--ink-50);
+
+  /* Focus ring — single token, used everywhere. */
+  --focus-ring:    0 0 0 2px var(--ink-100), 0 0 0 4px var(--brand-500);
+  --focus-ring-error: 0 0 0 2px var(--ink-100), 0 0 0 4px var(--danger-500);
+
+  /* ──────────────────────────────────────────────────────────
+     7 · TYPE FAMILIES
+     ────────────────────────────────────────────────────────── */
+  --font-display:  'Instrument Serif', 'Times New Roman', Georgia, serif;
+  --font-heading:  'General Sans', 'Söhne', 'Helvetica Neue', Arial, sans-serif;
+  --font-body:     'General Sans', 'Söhne', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:     'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-brand:    'Montserrat', 'Helvetica Neue', Arial, sans-serif; /* LOGO ONLY */
+
+  /* ──────────────────────────────────────────────────────────
+     8 · TYPE SCALE
+     A photographic scale: wide jumps in display, tight in body.
+     Modular ratio ≈ 1.250 in the body, ≈ 1.333 in the display.
+     ────────────────────────────────────────────────────────── */
+  --text-xxs:     0.6875rem;  /* 11   — eyebrow · micro caption */
+  --text-xs:      0.75rem;    /* 12   — UI label · helper · price-cents */
+  --text-sm:      0.8125rem;  /* 13   — admin body · table cells */
+  --text-base:    0.9375rem;  /* 15   — UI default · body */
+  --text-md:      1.0625rem;  /* 17   — long-form body · public */
+  --text-lg:      1.25rem;    /* 20   — h5 · pull quote */
+  --text-xl:      1.5rem;     /* 24   — h4 · card head */
+  --text-2xl:     1.875rem;   /* 30   — h3 · section title */
+  --text-3xl:     2.5rem;     /* 40   — h2 · page subtitle */
+  --text-4xl:     3.5rem;     /* 56   — h1 · hero compact */
+  --text-5xl:     clamp(3rem, 7vw, 5.5rem);   /* 48–88 — hero display */
+  --text-6xl:     clamp(4rem, 10vw, 8rem);    /* 64–128 — editorial cover */
+  --text-7xl:     clamp(5rem, 12vw, 9.5rem);  /* 80–152 — billboard */
+
+  /* ──────────────────────────────────────────────────────────
+     9 · LINE HEIGHT
+     ────────────────────────────────────────────────────────── */
+  --leading-flat:    0.95;   /* display only — large italic phrases */
+  --leading-tight:   1.1;    /* h1 · hero · cover lines */
+  --leading-snug:    1.25;   /* h2–h5 · section titles */
+  --leading-normal:  1.5;    /* UI · admin body */
+  --leading-relaxed: 1.65;   /* long-form public body */
+
+  /* ──────────────────────────────────────────────────────────
+     10 · LETTER-SPACING (TRACKING)
+     ────────────────────────────────────────────────────────── */
+  --tracking-tight:   -0.02em;
+  --tracking-snug:    -0.01em;
+  --tracking-normal:  0;
+  --tracking-wide:    0.04em;
+  --tracking-wider:   0.08em;
+  --tracking-widest:  0.18em;   /* eyebrow · all-caps · table head */
+
+  /* ──────────────────────────────────────────────────────────
+     11 · SPACING — 4-px GRID
+     ────────────────────────────────────────────────────────── */
+  --space-0:   0;
+  --space-px:  1px;
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-8:   32px;
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-16:  64px;
+  --space-20:  80px;
+  --space-24:  96px;
+  --space-32:  128px;
+
+  /* ──────────────────────────────────────────────────────────
+     12 · CORNER RADII
+     ────────────────────────────────────────────────────────── */
+  --radius-none: 0;
+  --radius-sm:   4px;     /* tag · inline chip */
+  --radius:      8px;     /* button · input · card-default */
+  --radius-md:   10px;    /* dropdown */
+  --radius-lg:   14px;    /* card-elevated · modal · drawer */
+  --radius-xl:   20px;    /* hero block · feature card */
+  --radius-pill: 999px;   /* badge · chip-pill · cart-pill */
+
+  /* ──────────────────────────────────────────────────────────
+     13 · ELEVATION
+     Darkroom-deep shadows, used sparingly.
+     ────────────────────────────────────────────────────────── */
+  --shadow-xs:     0 1px 2px rgba(0,0,0,0.4);
+  --shadow-sm:     0 2px 6px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md:     0 6px 20px rgba(0,0,0,0.45), 0 2px 6px rgba(0,0,0,0.3);
+  --shadow-lg:     0 16px 48px rgba(0,0,0,0.55), 0 4px 12px rgba(0,0,0,0.35);
+  --shadow-xl:     0 32px 80px rgba(0,0,0,0.6), 0 8px 24px rgba(0,0,0,0.4);
+  --shadow-glow:   0 0 0 1px var(--brand-glow), 0 0 24px var(--brand-glow);
+  --shadow-inset:  inset 0 1px 0 rgba(255,255,255,0.04);
+
+  /* Semantic elevation aliases (preferred in components) */
+  --shadow-1:      var(--shadow-sm);   /* low — sticky nav · chip */
+  --shadow-2:      var(--shadow-md);   /* mid — hover card · dropdown */
+  --shadow-3:      var(--shadow-lg);   /* high — modal · drawer */
+
+  /* Hero radial — single allowed gradient on the system. */
+  --glow-radial:   radial-gradient(60% 50% at 50% 0%, var(--brand-glow) 0%, transparent 70%);
+
+  /* Backward-compat */
+  --shadow:        var(--shadow-md);
+
+  /* ──────────────────────────────────────────────────────────
+     14 · MOTION
+     Hierarchy:
+       quick      — instant feedback (hover, focus, scroll arrow)
+       base       — standard transition (most things)
+       slow       — deliberate (modal in, drawer)
+       deliberate — narrative (hero loop, success burst)
+     ────────────────────────────────────────────────────────── */
+  --ease-out:        cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out:     cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring:     cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --duration-quick:      120ms;
+  --duration-base:       200ms;
+  --duration-slow:       320ms;
+  --duration-deliberate: 560ms;
+
+  /* Backward-compat (frontend-final shared.css uses these names) */
+  --dur-fast:        var(--duration-quick);
+  --dur:             var(--duration-base);
+  --dur-slow:        var(--duration-slow);
+  --dur-slower:      var(--duration-deliberate);
+
+  /* ──────────────────────────────────────────────────────────
+     15 · LAYOUT CONSTANTS
+     Surface widths and chrome heights. Document, don't recompute.
+     ────────────────────────────────────────────────────────── */
+  --content-narrow: 720px;    /* prose · auth forms */
+  --content-max:    1280px;   /* public · cliente */
+  --content-wide:   1440px;   /* admin */
+  --nav-height:        58px;
+  --nav-height-mobile: 54px;
+
+  /* ──────────────────────────────────────────────────────────
+     16 · BREAKPOINTS (reference values; consume via @media)
+     ────────────────────────────────────────────────────────── */
+  --bp-sm: 480px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1280px;
+
+  /* ──────────────────────────────────────────────────────────
+     19 · PAPER (printed surfaces / email signatures · light-on-light)
+     The DS is dark-only by stance, but printed cards and email
+     signatures render on a white client/printer surface and need
+     a small, dedicated light-mode palette. These are the only
+     light-on-light tokens in the system; do not consume them
+     anywhere on a dark surface.
+     ────────────────────────────────────────────────────────── */
+  --paper-bg:    #ffffff;
+  --paper-ink:   #0d0d0f;             /* primary ink on paper */
+  --paper-meta:  #4a4a4e;             /* meta · cite */
+  --paper-rule:  #d9d8d2;             /* hair-line · divider */
+  --paper-soft:  #d0cbc0;             /* secondary rule · separator dot */
+  --paper-brand: var(--brand-500);    /* anchor blue prints clean */
+
+  /* ──────────────────────────────────────────────────────────
+     20 · PHOTO PLACEHOLDER GRADIENTS
+     Stand-ins for unavailable photography. Three tonal moods
+     (rust · forest · anchor · amber) plus a neutral mono fallback
+     that read as photographic without committing to a real image.
+     The four chromatic starting points (#5e1f2a, #1e3a25, #1e3a8a,
+     #4a3015) are tonal — they reference the sub-brand families
+     but desaturated. They are the ONLY fresh chromatic hexes added
+     to the system in v1.0.1; every other colour resolves to an
+     existing token.
+     ────────────────────────────────────────────────────────── */
+  --ph-rust:   linear-gradient(135deg, #5e1f2a 0%, var(--ink-50) 100%);
+  --ph-forest: linear-gradient(135deg, #1e3a25 0%, var(--ink-50) 100%);
+  --ph-anchor: linear-gradient(135deg, #1e3a8a 0%, var(--ink-50) 100%);
+  --ph-amber:  linear-gradient(135deg, #4a3015 0%, var(--ink-50) 100%);
+  --ph-mono:   linear-gradient(135deg, var(--ink-400) 0%, var(--ink-50) 100%);
+}
+
+/* ============================================================
+   17 · MOTION SAFETY
+   Respect reduced-motion users on every animation in the system.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-quick:      1ms;
+    --duration-base:       1ms;
+    --duration-slow:       1ms;
+    --duration-deliberate: 1ms;
+    --dur-fast:    1ms;
+    --dur:         1ms;
+    --dur-slow:    1ms;
+    --dur-slower:  1ms;
+  }
+  *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; }
+}
+
+/* ============================================================
+   18 · BODY DEFAULTS + TYPE UTILITIES
+   Element + class API used by every HTML page in the system.
+   ============================================================ */
+
+body {
+  background-color: var(--ink-100);
+  color: var(--ink-1000);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "ss01", "cv11";
+}
+
+.eyebrow,
+.type-eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--ink-800);
+}
+
+.type-display {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--text-5xl);
+  font-weight: 400;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--ink-1000);
+}
+
+.type-h1, h1 {
+  font-family: var(--font-heading);
+  font-size: var(--text-4xl);
+  font-weight: 300;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--ink-1000);
+  text-wrap: balance;
+}
+
+.type-h2, h2 {
+  font-family: var(--font-heading);
+  font-size: var(--text-3xl);
+  font-weight: 400;
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-snug);
+  color: var(--ink-1000);
+}
+
+.type-h3, h3 {
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+  font-weight: 500;
+  line-height: var(--leading-snug);
+  color: var(--ink-1000);
+}
+
+.type-h4, h4 {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: 500;
+  line-height: var(--leading-snug);
+  color: var(--ink-1000);
+}
+
+.type-h5, h5 {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  line-height: var(--leading-snug);
+  color: var(--ink-1000);
+}
+
+.type-body, p {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 300;
+  line-height: var(--leading-relaxed);
+  color: var(--ink-900);
+  text-wrap: pretty;
+}
+
+.type-body-strong { font-weight: 500; color: var(--ink-1000); }
+.type-small       { font-size: var(--text-sm); color: var(--ink-800); }
+.type-caption     { font-size: var(--text-xs); color: var(--ink-800); letter-spacing: var(--tracking-wide); }
+.type-helper      { font-size: var(--text-xs); color: var(--ink-700); }
+
+.type-mono, code, pre, kbd {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  letter-spacing: 0;
+}
+
+.type-price {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  font-weight: 400;
+  letter-spacing: var(--tracking-snug);
+  color: var(--ink-1000);
+}
+
+.type-numeric {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+a { color: var(--brand-400); text-decoration: none; transition: color var(--duration-quick) var(--ease-out); }
+a:hover { color: var(--brand-300); }
+
+::selection { background: var(--brand-dim); color: var(--ink-1000); }
+
+/* End of foundations. Components, surfaces and layouts live in later prompts. */
+</content>
+</invoke>

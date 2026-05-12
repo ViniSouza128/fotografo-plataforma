@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mockups · PhotoVault / Vinícius Rodrigues</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0c0c; --bg-secondary:#141414; --bg-card:#1c1c1c; --bg-input:#222;
+    --border:#2e2e2e; --border-light:#3a3a3a;
+    --text:#ede8e0; --text-muted:#888880; --text-dim:#555550;
+    --accent:#22c55e; --accent-hover:#16a34a; --accent-dim:rgba(34,197,94,.15);
+    --danger:#d96c6c; --success:#6cc47a;
+    --radius:6px; --radius-lg:12px;
+    --font-heading:'Space Grotesk',sans-serif;
+    --font-body:'Inter',system-ui,sans-serif;
+    --font-mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-weight:300;line-height:1.6;min-height:100vh}
+  h1,h2,h3{font-family:var(--font-heading);font-weight:500;letter-spacing:.02em;line-height:1.2}
+  a{color:inherit;text-decoration:none}
+
+  .topbar{position:sticky;top:0;z-index:10;background:rgba(12,12,12,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 1.5rem;height:58px;display:flex;align-items:center;justify-content:space-between}
+  .topbar .brand{font-family:var(--font-heading);font-size:1.1rem;font-weight:500}
+  .topbar .brand span{color:var(--accent)}
+  .topbar .meta{font-size:.78rem;color:var(--text-muted);letter-spacing:.05em}
+
+  .hero{max-width:1100px;margin:0 auto;padding:5rem 2rem 3rem}
+  .hero .eyebrow{font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem}
+  .hero h1{font-size:clamp(2.4rem,5vw,3.6rem);font-weight:300;letter-spacing:.03em;margin-bottom:1rem}
+  .hero h1 strong{color:var(--accent);font-weight:500}
+  .hero .lead{color:var(--text-muted);font-size:1rem;max-width:680px}
+
+  .meta-grid{max-width:1100px;margin:0 auto 3rem;padding:0 2rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+  .meta-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem}
+  .meta-card .k{font-size:.7rem;color:var(--text-dim);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.4rem}
+  .meta-card .v{font-family:var(--font-heading);font-size:1.5rem;color:var(--text)}
+  .meta-card .v small{font-size:.85rem;color:var(--text-muted);font-family:var(--font-body)}
+
+  .cards{max-width:1100px;margin:0 auto 5rem;padding:0 2rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem}
+  .card{display:block;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem 1.5rem 1.75rem;transition:border-color .2s,transform .2s}
+  .card:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .card .num{font-family:var(--font-mono);font-size:.78rem;color:var(--accent);letter-spacing:.12em;margin-bottom:.75rem}
+  .card h2{font-size:1.4rem;margin-bottom:.5rem}
+  .card .desc{font-size:.9rem;color:var(--text-muted);margin-bottom:1.25rem}
+  .card .pages{font-size:.75rem;color:var(--text-dim);font-family:var(--font-mono)}
+  .card .pages b{color:var(--text-muted);font-weight:400}
+  .card .open{margin-top:1.25rem;display:inline-flex;align-items:center;gap:.4rem;color:var(--accent);font-size:.82rem;letter-spacing:.08em}
+
+  .stack{max-width:1100px;margin:0 auto 5rem;padding:0 2rem}
+  .stack h3{font-size:1.05rem;color:var(--text-muted);margin-bottom:1rem;letter-spacing:.05em}
+  .pill-grid{display:flex;flex-wrap:wrap;gap:.5rem}
+  .pill{background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-muted);padding:.4rem .85rem;border-radius:100px;font-size:.78rem;letter-spacing:.04em;font-family:var(--font-mono)}
+  .pill.accent{background:var(--accent-dim);color:var(--accent);border-color:rgba(34,197,94,.35)}
+
+  .footer-note{max-width:1100px;margin:0 auto 2rem;padding:2rem;border-top:1px solid var(--border);color:var(--text-dim);font-size:.78rem;letter-spacing:.04em;text-align:center}
+  .footer-note span{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">Vinícius<span>.</span></div>
+  <div class="meta">Mockups internos · estado atual · 2026-05-10</div>
+</div>
+
+<section class="hero">
+  <div class="eyebrow">Plataforma de fotografia esportiva e de eventos</div>
+  <h1>Mockups <strong>completos</strong> do estado atual da plataforma</h1>
+  <p class="lead">Mapeamento visual de todas as áreas do produto rodando hoje — site público, área do cliente e painel administrativo. Reflete o código da branch ativa em maio/2026: SQLite, vídeos, patrocinadores, recompensas, propostas, colaboradores, chat, reconhecimento facial e backup automático.</p>
+</section>
+
+<div class="meta-grid">
+  <div class="meta-card"><div class="k">Stack</div><div class="v">Next 14 <small>· React 18</small></div></div>
+  <div class="meta-card"><div class="k">Backend ativo</div><div class="v">SQLite <small>· WAL</small></div></div>
+  <div class="meta-card"><div class="k">Rotas</div><div class="v">50+ <small>UI + API</small></div></div>
+  <div class="meta-card"><div class="k">Tema</div><div class="v">Dark <small>+ light auto</small></div></div>
+</div>
+
+<div class="cards">
+  <a class="card" href="01-publico.html">
+    <div class="num">01 / 03</div>
+    <h2>Site público</h2>
+    <p class="desc">Home, busca de eventos, galeria, modal de foto, carrinho, checkout (PIX/cartão), compras como guest, autenticação e páginas legais.</p>
+    <div class="pages"><b>Inclui:</b> /, /evento/[id], /carrinho, /checkout, /compras, /login, /cadastro, /trocar-senha, /contato, /autenticidade, /termos, /privacidade, /cookies, 404</div>
+    <div class="open">Abrir mockup →</div>
+  </a>
+
+  <a class="card" href="02-cliente.html">
+    <div class="num">02 / 03</div>
+    <h2>Área do cliente</h2>
+    <p class="desc">Hub do cliente logado: histórico de compras com download, favoritos, comentários, solicitações de remoção (LGPD), notificações, chat, reconhecimento facial e configurações.</p>
+    <div class="pages"><b>Inclui:</b> /minha-conta, /minha-conta/compras, /minha-conta/carrinho, /minha-conta/favoritos, /minha-conta/comentarios, /minha-conta/notificacoes, /minha-conta/chat, /minha-conta/reconhecimento, /minha-conta/remocoes, /minha-conta/configuracoes</div>
+    <div class="open">Abrir mockup →</div>
+  </a>
+
+  <a class="card" href="03-admin.html">
+    <div class="num">03 / 03</div>
+    <h2>Painel admin</h2>
+    <p class="desc">Painel completo do fotógrafo: dashboard, gestão de álbuns, upload, pedidos, clientes, carrinhos ativos, comentários, contatos, cupons, propostas, repasses, colaboradores, chat, marca d'água, personalização visual, configurações, notificações, estatísticas, reconhecimento facial e reset.</p>
+    <div class="pages"><b>22 seções</b> · /admin, /admin/eventos, /admin/criar-evento, /admin/upload-fotos, /admin/pedidos, /admin/clientes, /admin/carrinhos, /admin/comentarios, /admin/contatos, /admin/cupons, /admin/propostas, /admin/repasses, /admin/colaboradores, /admin/chat, /admin/marca-dagua, /admin/personalizar, /admin/configuracoes, /admin/notificacoes, /admin/estatisticas, /admin/reconhecimento, /admin/remocoes, /admin/reset</div>
+    <div class="open">Abrir mockup →</div>
+  </a>
+</div>
+
+<div class="stack">
+  <h3>Funcionalidades cobertas</h3>
+  <div class="pill-grid">
+    <span class="pill accent">PIX (Asaas)</span>
+    <span class="pill accent">Cartão (Stripe)</span>
+    <span class="pill">Mercado Pago</span>
+    <span class="pill">PagSeguro</span>
+    <span class="pill accent">Liberação manual</span>
+    <span class="pill">Cupom de fotos grátis</span>
+    <span class="pill">Desconto progressivo</span>
+    <span class="pill">Reembolso por foto/pedido</span>
+    <span class="pill">Comentários em árvore</span>
+    <span class="pill">Avaliações por estrelas</span>
+    <span class="pill">Favoritos & curtidas</span>
+    <span class="pill">Solicitação de remoção (LGPD)</span>
+    <span class="pill">Marca d'água por variante</span>
+    <span class="pill">Mini-thumb 90px sem WM</span>
+    <span class="pill">Capa dedicada por álbum</span>
+    <span class="pill">Original protegido</span>
+    <span class="pill accent">Reconhecimento facial</span>
+    <span class="pill accent">Vídeos</span>
+    <span class="pill">Patrocinadores</span>
+    <span class="pill">Recompensas</span>
+    <span class="pill">Propostas</span>
+    <span class="pill">Repasses</span>
+    <span class="pill">Colaboradores</span>
+    <span class="pill">Chat</span>
+    <span class="pill accent">SQLite + WAL</span>
+    <span class="pill">S3/R2/Backblaze (opcional)</span>
+    <span class="pill">Backup automático</span>
+    <span class="pill">Monitoração de saúde</span>
+    <span class="pill">Auditoria server-side</span>
+    <span class="pill">Tema claro/escuro/auto</span>
+  </div>
+</div>
+
+<div class="footer-note">
+  © 2026 <span>Vinícius Rodrigues de Souza</span> · Mockups gerados a partir da inspeção do código atual em <code>src/</code>.
+</div>
+
+</body>
+</html>

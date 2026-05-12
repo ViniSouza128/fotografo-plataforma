@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Vinícius Souza — Sistema de Cores</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  /* This page only uses tokens. Any geometry below is structural, not chromatic. */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { padding-bottom: var(--space-24); }
+
+  .wrap { max-width: var(--content-max); margin: 0 auto; padding: var(--space-20) var(--space-12) var(--space-24); }
+  @media (max-width: 800px) { .wrap { padding: var(--space-12) var(--space-5); } }
+
+  /* page chrome */
+  .page-head { margin-bottom: var(--space-16); padding-bottom: var(--space-8); border-bottom: 1px solid var(--ink-500); }
+  .page-head .back { display: inline-block; font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-700); margin-bottom: var(--space-4); }
+  .page-head .lede { max-width: 65ch; color: var(--ink-800); margin-top: var(--space-4); font-size: var(--text-md); }
+  .page-head nav { margin-top: var(--space-8); display: flex; gap: var(--space-5); flex-wrap: wrap; }
+  .page-head nav a { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-700); padding-bottom: var(--space-1); border-bottom: 1px solid transparent; transition: color var(--duration-quick) var(--ease-out); }
+  .page-head nav a:hover { color: var(--ink-1000); }
+  .page-head nav a[aria-current] { color: var(--ink-1000); border-bottom-color: var(--brand-500); }
+
+  /* sections */
+  section { margin-top: var(--space-20); }
+  .s-num { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); color: var(--ink-700); display: block; margin-bottom: var(--space-2); text-transform: uppercase; }
+  .s-title { font-size: var(--text-3xl); margin: 0 0 var(--space-3); }
+  .s-deck { color: var(--ink-800); max-width: 65ch; margin: 0 0 var(--space-8); font-size: var(--text-md); }
+
+  /* ramp */
+  .ramp { display: grid; gap: var(--space-px); background: var(--ink-500); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; }
+  .ramp-row { display: grid; grid-template-columns: 110px 110px 1fr 110px 110px; align-items: center; gap: var(--space-4); padding: var(--space-4) var(--space-5); }
+  .ramp-row .swatch { width: 84px; height: 56px; border-radius: var(--radius-sm); border: 1px solid var(--ink-500); }
+  .ramp-row .token { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--ink-1000); letter-spacing: var(--tracking-snug); }
+  .ramp-row .hex { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); }
+  .ramp-row .role { color: var(--ink-900); font-size: var(--text-sm); }
+  .ramp-row .ratio { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); }
+  .ramp-row .ratio b { color: var(--ink-1000); font-weight: 500; }
+  .ramp-row .pass { color: var(--signal-500); }
+  .ramp-row .fail { color: var(--danger-500); }
+  @media (max-width: 900px) {
+    .ramp-row { grid-template-columns: 70px 1fr; gap: var(--space-3); }
+    .ramp-row .role, .ramp-row .ratio { display: none; }
+  }
+
+  /* accents grid */
+  .accents { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-4); }
+  .accent-card { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); }
+  .accent-card .head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); }
+  .accent-card .name { font-family: var(--font-heading); font-weight: 500; font-size: var(--text-lg); color: var(--ink-1000); }
+  .accent-card .hex { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); }
+  .accent-card .swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-px); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--ink-500); }
+  .accent-card .swatches > div { aspect-ratio: 1; display: flex; align-items: flex-end; justify-content: center; padding: var(--space-1); font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--ink-1000); letter-spacing: var(--tracking-wide); }
+  .accent-card .rule { font-size: var(--text-sm); color: var(--ink-800); line-height: var(--leading-relaxed); }
+  .accent-card .rule b { color: var(--ink-1000); font-weight: 500; }
+  .accent-card .examples { display: flex; gap: var(--space-2); flex-wrap: wrap; padding-top: var(--space-3); border-top: 1px solid var(--ink-500); }
+  .accent-card .pill { display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: 500; letter-spacing: var(--tracking-wide); }
+  .accent-card .btn-demo { display: inline-flex; align-items: center; padding: var(--space-2) var(--space-4); border-radius: var(--radius); font-size: var(--text-sm); font-weight: 500; }
+
+  /* sub-brand grid */
+  .subbrands { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4); }
+  .sub-card { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; }
+  .sub-card .stripe { height: 8px; }
+  .sub-card .body { padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); }
+  .sub-card .stage { display: flex; align-items: baseline; justify-content: space-between; }
+  .sub-card .vertical { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); color: var(--ink-800); text-transform: uppercase; }
+  .sub-card h3 { font-family: var(--font-display); font-style: italic; font-size: var(--text-2xl); margin: 0; color: var(--ink-1000); }
+  .sub-card .descriptor { font-size: var(--text-sm); color: var(--ink-800); }
+  .sub-card .ramp-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-px); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--ink-500); height: 32px; }
+  .sub-card .uses { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .sub-card .badge { display: inline-flex; align-items: center; padding: var(--space-1) var(--space-3); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: 500; letter-spacing: var(--tracking-wide); }
+  .sub-card .tag-line { display: inline-flex; align-items: center; gap: var(--space-2); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); }
+  .sub-card .tag-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* pairing matrix */
+  .pair-table { width: 100%; border-collapse: collapse; background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; }
+  .pair-table th, .pair-table td { padding: var(--space-4) var(--space-5); text-align: left; border-top: 1px solid var(--ink-500); vertical-align: middle; }
+  .pair-table th { background: var(--ink-200); color: var(--ink-700); font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; font-weight: 500; border-top: 0; }
+  .pair-table td.sample { font-size: var(--text-base); width: 40%; }
+  .pair-table td.token-cell { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); white-space: nowrap; }
+  .pair-table td.ratio-cell { font-family: var(--font-mono); font-size: var(--text-sm); }
+  .pair-table td.verdict { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; }
+  .v-pass { color: var(--signal-500); }
+  .v-fail { color: var(--danger-500); }
+  .v-large { color: var(--warning-500); }
+
+  /* aliases section — proves backward-compat layer works */
+  .aliases { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4); }
+  .alias-card { padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); }
+  .alias-card.surf-bg          { background: var(--bg);           border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); }
+  .alias-card.surf-secondary   { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); }
+  .alias-card.surf-card        { background: var(--bg-card);      border: 1px solid var(--border-light); border-radius: var(--radius); color: var(--text); box-shadow: var(--shadow); }
+  .alias-card.surf-input       { background: var(--bg-input);     border: 1px solid var(--border-strong); border-radius: var(--radius); color: var(--text-body); }
+  .alias-card.surf-text-stack  { background: var(--bg-card);      border: 1px solid var(--border); border-radius: var(--radius); }
+  .alias-card .name            { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); color: var(--text-muted); margin: 0; }
+  .alias-card .name b          { color: var(--text); font-weight: 500; }
+  .alias-card .stack p         { margin: 0; padding: var(--space-1) 0; line-height: var(--leading-snug); letter-spacing: var(--tracking-normal); }
+  .alias-card .stack p.t-text  { color: var(--text);       font-size: var(--text-md); }
+  .alias-card .stack p.t-body  { color: var(--text-body);  font-size: var(--text-base); }
+  .alias-card .stack p.t-muted { color: var(--text-muted); font-size: var(--text-sm); }
+  .alias-card .stack p.t-dim   { color: var(--text-dim);   font-size: var(--text-sm); }
+  .alias-card .demo-button     { background: var(--accent); color: var(--ink-50); padding: var(--space-2) var(--space-4); font-weight: 500; font-size: var(--text-sm); border-radius: var(--radius); border: 0; cursor: pointer; align-self: flex-start; transition: background var(--dur-fast) var(--ease-out); }
+  .alias-card .demo-button:hover { background: var(--accent-hover); }
+  .alias-card .demo-button:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  .alias-card .demo-button-tinted { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent); padding: var(--space-2) var(--space-4); font-size: var(--text-sm); border-radius: var(--radius); align-self: flex-start; transition: background var(--dur) var(--ease-out); }
+  .alias-card .pills { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .alias-card .pill { display: inline-flex; padding: var(--space-1) var(--space-3); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: 500; letter-spacing: var(--tracking-wide); transition: opacity var(--dur-slow) var(--ease-in-out); }
+  .alias-card .pill.s-success { background: var(--success-dim); color: var(--success); border: 1px solid var(--success); }
+  .alias-card .pill.s-danger  { background: var(--danger-dim);  color: var(--danger);  border: 1px solid var(--danger); }
+  .alias-card .pill.s-warning { background: var(--warning-dim); color: var(--warning); border: 1px solid var(--warning); }
+  .alias-card .pill.s-info    { background: var(--info-dim);    color: var(--info-500); border: 1px solid var(--info-500); }
+  .alias-card .void { background: var(--ink-0); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); height: 32px; }
+
+  /* theme stance */
+  .stance { background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-8); display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-8); }
+  .stance .pull { font-family: var(--font-display); font-style: italic; font-size: var(--text-2xl); line-height: var(--leading-snug); color: var(--ink-1000); padding-left: var(--space-5); border-left: 2px solid var(--brand-500); }
+  .stance .reasons { display: grid; gap: var(--space-3); font-size: var(--text-base); color: var(--ink-900); line-height: var(--leading-relaxed); }
+  .stance .reasons strong { color: var(--ink-1000); font-weight: 500; }
+  @media (max-width: 800px) { .stance { grid-template-columns: 1fr; padding: var(--space-5); } }
+
+  footer { margin-top: var(--space-24); padding-top: var(--space-6); border-top: 1px solid var(--ink-500); display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-wider); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="page-head">
+    <a class="back" href="index.html">← Sistema</a>
+    <p class="eyebrow">Vinícius Souza · Foundations</p>
+    <h1>Sistema de cores</h1>
+    <p class="lede">
+      Uma rampa obsidian de doze passos, um único acento âncora, um signal de dinheiro. As três sub-marcas compartilham
+      a mesma estrutura — o que muda é o descritor e a cor de respiração. Tudo escuro, tudo bone-white em vez de branco.
+    </p>
+    <nav>
+      <a href="typography.html">Tipografia</a>
+      <a href="colors.html" aria-current="page">Cores</a>
+      <a href="spacing-elevation-motion.html">Espaço · Elevação · Motion</a>
+      <a href="brand-logo.html">Marca</a>
+    </nav>
+  </header>
+
+  <!-- 01 — RAMP ───────────────────────────────────────────── -->
+  <section data-screen-label="01 Obsidian">
+    <span class="s-num">01 · Rampa Obsidian</span>
+    <h2 class="s-title">Doze passos do absoluto ao bone.</h2>
+    <p class="s-deck">
+      A escala atravessa a página: <code class="type-mono">--ink-50</code> é o teatro mais profundo (admin, hero
+      cinematográfico); <code class="type-mono">--ink-1000</code> é a tinta. Nunca usamos branco puro — bone-white
+      <code class="type-mono">#ede8e0</code> remete ao fixador de filme. As proporções de contraste foram calculadas
+      em relação a <code class="type-mono">--ink-100</code> (fundo padrão da app).
+    </p>
+
+    <div class="ramp" id="ramp"></div>
+  </section>
+
+  <!-- 02 — BRAND + SEMANTIC ──────────────────────────────── -->
+  <section data-screen-label="02 Acentos">
+    <span class="s-num">02 · Acentos da marca + semânticos</span>
+    <h2 class="s-title">Um azul, um verde, dois alertas.</h2>
+    <p class="s-deck">
+      <strong style="color: var(--ink-1000)">Anchor Blue</strong> é o único acento interativo — botões, links, foco,
+      info. <strong style="color: var(--ink-1000)">Signal Green</strong> é reservado para dinheiro e confirmação.
+      Warning e Danger só aparecem em feedback do sistema, jamais como decoração.
+    </p>
+
+    <div class="accents">
+
+      <article class="accent-card">
+        <div class="head">
+          <span class="name">Anchor Blue · Brand</span>
+          <span class="hex">#1f7ae0 · --brand-500</span>
+        </div>
+        <div class="swatches">
+          <div style="background: var(--brand-300)">300</div>
+          <div style="background: var(--brand-400)">400</div>
+          <div style="background: var(--brand-500)">500</div>
+          <div style="background: var(--brand-600)">600</div>
+          <div style="background: var(--brand-700)">700</div>
+        </div>
+        <p class="rule">
+          <b>Quando.</b> Botão primário (uma por superfície). Link de corpo. Anel de foco. Badge "Info". Highlight
+          do EDITORIAL no logotipo.
+        </p>
+        <p class="rule" style="color: var(--ink-700)">
+          <b>Nunca.</b> Como cor de "sucesso" (use signal). Como decoração de fundo grande. Em gradiente — a única
+          exceção é o glow radial atrás do hero (<code class="type-mono">--glow-radial</code>).
+        </p>
+        <div class="examples">
+          <span class="btn-demo" style="background: var(--brand-500); color: var(--ink-50);">Comprar</span>
+          <span class="pill" style="background: var(--brand-dim); color: var(--brand-300); border: 1px solid var(--brand-500);">Info</span>
+        </div>
+      </article>
+
+      <article class="accent-card">
+        <div class="head">
+          <span class="name">Signal Green · Money</span>
+          <span class="hex">#22c55e · --signal-500</span>
+        </div>
+        <div class="swatches">
+          <div style="background: var(--signal-400)">400</div>
+          <div style="background: var(--signal-500)">500</div>
+          <div style="background: var(--signal-600)">600</div>
+          <div style="background: var(--signal-dim); color: var(--signal-500);">dim</div>
+          <div style="background: var(--ink-300); color: var(--signal-500);">on-300</div>
+        </div>
+        <p class="rule"><b>Quando.</b> Status "Pago". CTA de checkout. Botão "Baixar". Tier de download liberado.</p>
+        <p class="rule" style="color: var(--ink-700)">
+          <b>Nunca.</b> Como acento genérico de UI — esse trabalho é do Anchor Blue. Sem signal-500 em texto longo
+          (não passa AA em corpo &lt; 18pt).
+        </p>
+        <div class="examples">
+          <span class="btn-demo" style="background: var(--signal-500); color: var(--ink-on-signal);">Finalizar — R$ 28,80</span>
+          <span class="pill" style="background: var(--signal-dim); color: var(--signal-500); border: 1px solid var(--signal-500);">Pago</span>
+        </div>
+      </article>
+
+      <article class="accent-card">
+        <div class="head">
+          <span class="name">Warning · Pendente</span>
+          <span class="hex">#e8a33a · --warning-500</span>
+        </div>
+        <div class="swatches">
+          <div style="background: var(--warning-400)">400</div>
+          <div style="background: var(--warning-500)">500</div>
+          <div style="background: var(--warning-600)">600</div>
+          <div style="background: var(--warning-dim); color: var(--warning-500);">dim</div>
+          <div style="background: var(--ink-300); color: var(--warning-500);">on-300</div>
+        </div>
+        <p class="rule"><b>Quando.</b> Status "Pendente", "Processando", aviso de prazo. Banner "Atenção".</p>
+        <p class="rule" style="color: var(--ink-700)"><b>Nunca.</b> Como cor de acento de produto — confunde com signal.</p>
+        <div class="examples">
+          <span class="pill" style="background: var(--warning-dim); color: var(--warning-500); border: 1px solid var(--warning-500);">Pendente</span>
+        </div>
+      </article>
+
+      <article class="accent-card">
+        <div class="head">
+          <span class="name">Danger · Erro</span>
+          <span class="hex">#e0554f · --danger-500</span>
+        </div>
+        <div class="swatches">
+          <div style="background: var(--danger-400)">400</div>
+          <div style="background: var(--danger-500)">500</div>
+          <div style="background: var(--danger-600)">600</div>
+          <div style="background: var(--danger-dim); color: var(--danger-500);">dim</div>
+          <div style="background: var(--ink-300); color: var(--danger-500);">on-300</div>
+        </div>
+        <p class="rule"><b>Quando.</b> Validação de formulário. Status "Reembolsado". Botão "Excluir" destructive.</p>
+        <p class="rule" style="color: var(--ink-700)">
+          <b>Nunca.</b> Como acento decorativo. Em superfícies grandes — vermelho saturado polui a paleta editorial.
+        </p>
+        <div class="examples">
+          <span class="btn-demo" style="background: var(--danger-dim); color: var(--danger-500); border: 1px solid var(--danger-500);">Excluir álbum</span>
+          <span class="pill" style="background: var(--danger-dim); color: var(--danger-500); border: 1px solid var(--danger-500);">Reembolsado</span>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 03 — SUB-BRANDS ────────────────────────────────────── -->
+  <section data-screen-label="03 Sub-marcas">
+    <span class="s-num">03 · Arquitetura de marca</span>
+    <h2 class="s-title">Uma mãe, três verticais.</h2>
+    <p class="s-deck">
+      <em style="color: var(--ink-1000); font-style: italic;">Vinícius Souza · Fotografia</em> é a mãe.
+      <strong style="color: var(--ink-1000)">Esportes</strong>, <strong style="color: var(--ink-1000)">Natureza</strong>
+      e <strong style="color: var(--ink-1000)">Editorial</strong> compartilham o wordmark e trocam apenas o descritor
+      e a cor de respiração. Cada vertical recebe uma rampa para tags, listras de categoria e badges.
+    </p>
+
+    <div class="subbrands">
+
+      <article class="sub-card">
+        <div class="stripe" style="background: var(--sub-fotografia-500);"></div>
+        <div class="body">
+          <div class="stage">
+            <span class="vertical">Mãe</span>
+            <span class="tag-line"><span class="tag-dot" style="background: var(--sub-fotografia-500);"></span>--sub-fotografia</span>
+          </div>
+          <h3>Fotografia</h3>
+          <p class="descriptor">A marca matriz. Bone-neutral. Não é uma vertical — é o teto que abriga as três.</p>
+          <div class="ramp-strip">
+            <div style="background: var(--sub-fotografia-400);"></div>
+            <div style="background: var(--sub-fotografia-500);"></div>
+            <div style="background: var(--sub-fotografia-600);"></div>
+            <div style="background: var(--sub-fotografia-dim);"></div>
+          </div>
+          <div class="uses">
+            <span class="badge" style="background: var(--sub-fotografia-dim); color: var(--ink-1000); border: 1px solid var(--ink-600);">vinícius souza</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="sub-card">
+        <div class="stripe" style="background: var(--sub-editorial-500);"></div>
+        <div class="body">
+          <div class="stage">
+            <span class="vertical">Vertical · 01</span>
+            <span class="tag-line"><span class="tag-dot" style="background: var(--sub-editorial-500);"></span>--sub-editorial</span>
+          </div>
+          <h3>Editorial</h3>
+          <p class="descriptor">Coberturas autorais — festivais, ensaios, cobertura jornalística. Anchor Blue, mesma cor da marca.</p>
+          <div class="ramp-strip">
+            <div style="background: var(--sub-editorial-400);"></div>
+            <div style="background: var(--sub-editorial-500);"></div>
+            <div style="background: var(--sub-editorial-600);"></div>
+            <div style="background: var(--sub-editorial-dim);"></div>
+          </div>
+          <div class="uses">
+            <span class="badge" style="background: var(--sub-editorial-dim); color: var(--sub-editorial-400); border: 1px solid var(--sub-editorial-500);">Editorial</span>
+            <span class="badge" style="background: var(--sub-editorial-dim); color: var(--sub-editorial-400); border: 1px solid var(--sub-editorial-500);">Mostra Cultural</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="sub-card">
+        <div class="stripe" style="background: var(--sub-esportes-500);"></div>
+        <div class="body">
+          <div class="stage">
+            <span class="vertical">Vertical · 02</span>
+            <span class="tag-line"><span class="tag-dot" style="background: var(--sub-esportes-500);"></span>--sub-esportes</span>
+          </div>
+          <h3>Esportes</h3>
+          <p class="descriptor">Rodeio, corrida, equestre, futebol. Scarlet desaturado, jamais o vermelho-tomate.</p>
+          <div class="ramp-strip">
+            <div style="background: var(--sub-esportes-400);"></div>
+            <div style="background: var(--sub-esportes-500);"></div>
+            <div style="background: var(--sub-esportes-600);"></div>
+            <div style="background: var(--sub-esportes-dim);"></div>
+          </div>
+          <div class="uses">
+            <span class="badge" style="background: var(--sub-esportes-dim); color: var(--sub-esportes-400); border: 1px solid var(--sub-esportes-500);">Rodeio</span>
+            <span class="badge" style="background: var(--sub-esportes-dim); color: var(--sub-esportes-400); border: 1px solid var(--sub-esportes-500);">Corrida</span>
+            <span class="badge" style="background: var(--sub-esportes-dim); color: var(--sub-esportes-400); border: 1px solid var(--sub-esportes-500);">Equestre</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="sub-card">
+        <div class="stripe" style="background: var(--sub-natureza-500);"></div>
+        <div class="body">
+          <div class="stage">
+            <span class="vertical">Vertical · 03</span>
+            <span class="tag-line"><span class="tag-dot" style="background: var(--sub-natureza-500);"></span>--sub-natureza</span>
+          </div>
+          <h3>Natureza</h3>
+          <p class="descriptor">Paisagem, fauna, expedição. Forest verde — não confundir com signal-500.</p>
+          <div class="ramp-strip">
+            <div style="background: var(--sub-natureza-400);"></div>
+            <div style="background: var(--sub-natureza-500);"></div>
+            <div style="background: var(--sub-natureza-600);"></div>
+            <div style="background: var(--sub-natureza-dim);"></div>
+          </div>
+          <div class="uses">
+            <span class="badge" style="background: var(--sub-natureza-dim); color: var(--sub-natureza-400); border: 1px solid var(--sub-natureza-500);">Pantanal</span>
+            <span class="badge" style="background: var(--sub-natureza-dim); color: var(--sub-natureza-400); border: 1px solid var(--sub-natureza-500);">Expedição</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 04 — PAIRING ───────────────────────────────────────── -->
+  <section data-screen-label="04 Pareamento">
+    <span class="s-num">04 · Pareamento texto · fundo</span>
+    <h2 class="s-title">Combinações que passam, combinações que falham.</h2>
+    <p class="s-deck">
+      Tabela calculada no momento da renderização — mexer no token recalcula tudo. Padrão de aprovação:
+      <strong style="color: var(--ink-1000)">AA · 4.5</strong> para texto normal,
+      <strong style="color: var(--ink-1000)">AA · 3.0</strong> para texto grande (≥ 18pt) ou componentes de UI.
+      Listadas em ordem de uso real no sistema.
+    </p>
+
+    <table class="pair-table" id="pair-table">
+      <thead>
+        <tr>
+          <th>Amostra</th>
+          <th>Texto</th>
+          <th>Fundo</th>
+          <th>Ratio</th>
+          <th>Veredito</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- 05 — COMPATIBILITY ALIASES ───────────────────────── -->
+  <section data-screen-label="05 Aliases">
+    <span class="s-num">05 · Camada de compatibilidade</span>
+    <h2 class="s-title">Os aliases continuam vivos.</h2>
+    <p class="s-deck">
+      Toda a base do código de produção (<code class="type-mono">src/app/*.css</code>) consome aliases semânticos —
+      <code class="type-mono">--bg</code>, <code class="type-mono">--text</code>, <code class="type-mono">--accent</code>,
+      <code class="type-mono">--shadow</code>. Esses aliases continuam apontando para os tokens primitivos da v1.0,
+      o que permite migrar a produção sem big-bang. Se você está editando o código legado, estes são os nomes que vai
+      encontrar — todos os blocos abaixo usam <em style="color: var(--ink-1000); font-style: italic;">apenas aliases</em>,
+      jamais primitivos.
+    </p>
+
+    <div class="aliases">
+
+      <div class="alias-card surf-bg">
+        <p class="name"><b>--bg</b> · <b>--border</b> · <b>--text</b></p>
+        <p class="stack" style="display: flex; flex-direction: column; gap: 0;">
+          <span class="t-text">Texto principal — Bone-white herdado da rampa</span>
+          <span class="t-body">Corpo padrão — descrições e parágrafos curtos</span>
+          <span class="t-muted">Meta · 17 abr 2026 · 18:42</span>
+          <span class="t-dim">Disabled · placeholder · timestamp</span>
+        </p>
+      </div>
+
+      <div class="alias-card surf-secondary">
+        <p class="name"><b>--bg-secondary</b> · <b>--border</b></p>
+        <p class="stack" style="display: flex; flex-direction: column; gap: 0;">
+          <span class="t-body">Sidebar do admin · seção secundária do público</span>
+          <span class="t-muted">Subtítulo da seção</span>
+        </p>
+      </div>
+
+      <div class="alias-card surf-card">
+        <p class="name"><b>--bg-card</b> · <b>--border-light</b> · <b>--shadow</b></p>
+        <p class="stack" style="display: flex; flex-direction: column; gap: 0;">
+          <span class="t-text">Card padrão</span>
+          <span class="t-muted">Inclui sombra leve via <code class="type-mono">--shadow</code> e borda em <code class="type-mono">--border-light</code>.</span>
+        </p>
+      </div>
+
+      <div class="alias-card surf-input">
+        <p class="name"><b>--bg-input</b> · <b>--border-strong</b></p>
+        <p class="stack" style="display: flex; flex-direction: column; gap: 0;">
+          <span class="t-body">Campo · "seu@email.com"</span>
+        </p>
+        <p class="stack" style="display: flex; flex-direction: column; gap: 0;"><span class="t-dim">Helper — formato de e-mail</span></p>
+      </div>
+
+      <div class="alias-card surf-card">
+        <p class="name"><b>--accent</b> · <b>--accent-hover</b> · <b>--accent-dim</b> · <b>--focus-ring</b></p>
+        <button type="button" class="demo-button">Comprar foto · primário</button>
+        <button type="button" class="demo-button-tinted">Adicionar ao carrinho</button>
+        <p class="stack"><span class="t-dim">Tab no botão acima para ver o foco. Hover troca <code class="type-mono">--accent</code> → <code class="type-mono">--accent-hover</code> em <code class="type-mono">--dur-fast</code>.</span></p>
+      </div>
+
+      <div class="alias-card surf-card">
+        <p class="name"><b>--success</b> · <b>--warning</b> · <b>--danger</b> · <b>--info-500</b></p>
+        <div class="pills">
+          <span class="pill s-success">Pago</span>
+          <span class="pill s-warning">Pendente</span>
+          <span class="pill s-danger">Reembolsado</span>
+          <span class="pill s-info">Info</span>
+        </div>
+        <p class="stack"><span class="t-muted">Os <code class="type-mono">*-dim</code> entram como fundo translúcido; o <code class="type-mono">*-500</code> ou alias direto entra como texto e borda.</span></p>
+      </div>
+
+      <div class="alias-card surf-card">
+        <p class="name"><b>--ink-0</b> · void absoluto</p>
+        <div class="void"></div>
+        <p class="stack"><span class="t-muted">Reservado para borda de imagem em sequência cinematográfica e para fundo de letterbox.</span></p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 06 — DARK ONLY ─────────────────────────────────────── -->
+  <section data-screen-label="06 Postura">
+    <span class="s-num">06 · Postura cromática</span>
+    <h2 class="s-title">Esse sistema é escuro. Por escolha.</h2>
+
+    <div class="stance">
+      <blockquote class="pull">
+        “Câmara escura, fundo escuro. A foto é o objeto que respira.”
+      </blockquote>
+      <div class="reasons">
+        <p><strong>Decisão.</strong> O design system é <em style="color: var(--ink-1000)">dark-only</em>. Nem o módulo público, nem o cliente, nem o admin oferecem alternância para tema claro nesta versão (v1.0).</p>
+        <p><strong>Por quê.</strong> Toda a hierarquia de tokens — rampa obsidian, sombras profundas, brilho radial do brand — é construída sobre a premissa de fundo &lt; <code class="type-mono">#1b1b1e</code>. Inverter a paleta exigiria uma rampa-irmã calibrada, decisões cromáticas paralelas para todos os semânticos e revisão de contraste de cada componente. Não está pronto.</p>
+        <p><strong>O que existe na produção.</strong> O <code class="type-mono">src/app/base.css</code> traz um bloco <code class="type-mono">[data-theme="light"]</code> herdado de versões anteriores. Esse bloco é considerado <em>legado</em> até que uma migração formal seja decidida — não é parte do sistema v1.0.</p>
+        <p><strong>O que vem depois.</strong> Uma rampa <em>papel</em> (ink claro com tinta escura) já está rascunhada. Quando entrar, será uma página separada (<code class="type-mono">colors-light.html</code>) com sua própria tabela de pareamento e seus próprios tokens — jamais um override do <code class="type-mono">colors_and_type.css</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>VINÍCIUS SOUZA · CORES v1.0 · 2026</span>
+    <span>12 ink · 1 brand · 1 signal · 2 alert · 4 sub-brand</span>
+  </footer>
+
+</div>
+
+<script>
+/* ─────────────────────────────────────────────────────────────
+   WCAG contrast computation. Tokens are read from CSS via
+   getComputedStyle; if you change colors_and_type.css, this page
+   recomputes everything on the next reload.
+   ───────────────────────────────────────────────────────────── */
+
+const root = getComputedStyle(document.documentElement);
+const T = name => root.getPropertyValue(name).trim();
+
+function hexToRgb(hex){
+  const h = hex.replace('#','').trim();
+  const i = parseInt(h.length===3 ? h.split('').map(x=>x+x).join('') : h, 16);
+  return [(i>>16)&255, (i>>8)&255, i&255];
+}
+function relLum([r,g,b]){
+  const f = c => { c/=255; return c <= 0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4); };
+  return 0.2126*f(r) + 0.7152*f(g) + 0.0722*f(b);
+}
+function ratio(hexA, hexB){
+  const [a,b] = [relLum(hexToRgb(hexA)), relLum(hexToRgb(hexB))];
+  const [hi, lo] = [Math.max(a,b), Math.min(a,b)];
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+/* ─── 01 · Ramp ─── */
+const RAMP = [
+  ['--ink-0',    '#000000', 'absolute void · borda em foto'],
+  ['--ink-50',   '#070708', 'admin canvas · hero stage'],
+  ['--ink-100',  '#0c0c0d', 'app bg · padrão'],
+  ['--ink-200',  '#141416', 'sidebar · seção secundária'],
+  ['--ink-300',  '#1b1b1e', 'card · superfície elevada'],
+  ['--ink-400',  '#232327', 'input · card hovered'],
+  ['--ink-500',  '#2e2e33', 'divider · borda padrão'],
+  ['--ink-600',  '#3a3a41', 'borda enfática · input focado'],
+  ['--ink-700',  '#55555d', 'texto dim · disabled · timestamp'],
+  ['--ink-800',  '#8a8a92', 'texto muted · meta · caption'],
+  ['--ink-900',  '#c9c9d1', 'texto corpo'],
+  ['--ink-1000', '#ede8e0', 'tinta primária · bone-white'],
+];
+const BG = '#0c0c0d';   // --ink-100
+const FG = '#ede8e0';   // --ink-1000
+const rampEl = document.getElementById('ramp');
+RAMP.forEach(([token, hex, role]) => {
+  const r1 = ratio(hex, BG);   // contra fundo
+  const r2 = ratio(hex, FG);   // contra tinta
+  const v1 = r1 >= 4.5 ? 'pass' : (r1 >= 3 ? 'pass' : 'fail');
+  const v2 = r2 >= 4.5 ? 'pass' : (r2 >= 3 ? 'pass' : 'fail');
+  const row = document.createElement('div');
+  row.className = 'ramp-row';
+  row.innerHTML = `
+    <div class="swatch" style="background: var(${token});"></div>
+    <div>
+      <div class="token">${token}</div>
+      <div class="hex">${hex}</div>
+    </div>
+    <div class="role">${role}</div>
+    <div class="ratio">vs --ink-100<br><b class="${v1}">${r1.toFixed(2)} : 1</b></div>
+    <div class="ratio">vs --ink-1000<br><b class="${v2}">${r2.toFixed(2)} : 1</b></div>
+  `;
+  rampEl.appendChild(row);
+});
+
+/* ─── 04 · Pairing matrix ─── */
+const PAIRS = [
+  // [textTokenName, textHex, bgTokenName, bgHex, sample, large?]
+  ['--ink-1000', '#ede8e0', '--ink-100', '#0c0c0d', 'Encontre as fotos do seu evento', false],
+  ['--ink-900',  '#c9c9d1', '--ink-100', '#0c0c0d', 'Texto de corpo padrão. R$ 28,80.', false],
+  ['--ink-800',  '#8a8a92', '--ink-100', '#0c0c0d', 'Meta · 17 abr 2026 · 18:42', false],
+  ['--ink-700',  '#55555d', '--ink-100', '#0c0c0d', 'Disabled · timestamp · placeholder', false],
+  ['--ink-1000', '#ede8e0', '--ink-300', '#1b1b1e', 'Texto dentro de card', false],
+  ['--ink-900',  '#c9c9d1', '--ink-300', '#1b1b1e', 'Corpo dentro de card', false],
+  ['--ink-800',  '#8a8a92', '--ink-300', '#1b1b1e', 'Caption · meta dentro de card', false],
+  ['--ink-1000', '#ede8e0', '--ink-200', '#141416', 'Sidebar · admin', false],
+  ['--brand-500','#1f7ae0', '--ink-100', '#0c0c0d', 'Link no corpo. CTA âncora.', false],
+  ['--brand-400','#4f98ec', '--ink-100', '#0c0c0d', 'Link em hover. Foco visível.', false],
+  ['--brand-300','#7fb3f2', '--ink-100', '#0c0c0d', 'Link em estado pressionado.', false],
+  ['--ink-50',   '#070708', '--brand-500','#1f7ae0', 'Botão primário — Comprar agora', false],
+  ['--ink-on-signal', '#070708', '--signal-500','#22c55e', 'Botão de checkout — R$ 28,80', false],
+  ['--signal-500','#22c55e', '--ink-100', '#0c0c0d', 'Status: Pago · faturamento', false],
+  ['--warning-500','#e8a33a','--ink-100', '#0c0c0d', 'Status: Pendente · processando', false],
+  ['--danger-500','#e0554f', '--ink-100', '#0c0c0d', 'Status: Reembolsado · erro', false],
+  ['--sub-esportes-400','#d96058','--ink-100','#0c0c0d', 'Tag: Rodeio Cassilândia 2026', false],
+  ['--sub-natureza-400','#3a9c69','--ink-100','#0c0c0d', 'Tag: Expedição Pantanal', false],
+  ['--ink-1000', '#ede8e0', '--brand-500','#1f7ae0', 'Texto sobre brand-500', false],
+  ['--ink-1000', '#ede8e0', '--signal-500','#22c55e','Texto sobre signal-500', false],
+  ['--ink-1000', '#ede8e0', '--ink-50',   '#070708', 'Hero · headline grande', true],
+];
+const tbody = document.querySelector('#pair-table tbody');
+PAIRS.forEach(([textT, textH, bgT, bgH, sample, large]) => {
+  const r = ratio(textH, bgH);
+  const target = large ? 3 : 4.5;
+  let verdict, cls;
+  if (r >= target)       { verdict = large ? 'AA · grande' : 'AA · normal'; cls = 'v-pass'; }
+  else if (r >= 3)       { verdict = 'somente texto grande (≥ 18pt)'; cls = 'v-large'; }
+  else                   { verdict = 'falha'; cls = 'v-fail'; }
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td class="sample" style="background: var(${bgT}); color: var(${textT});">${sample}</td>
+    <td class="token-cell">${textT}<br><span style="color: var(--ink-700);">${textH}</span></td>
+    <td class="token-cell">${bgT}<br><span style="color: var(--ink-700);">${bgH}</span></td>
+    <td class="ratio-cell"><b style="color: var(--ink-1000);">${r.toFixed(2)} : 1</b></td>
+    <td class="verdict ${cls}">${verdict}</td>
+  `;
+  tbody.appendChild(tr);
+});
+</script>
+</body>
+</html>

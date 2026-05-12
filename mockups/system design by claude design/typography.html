@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Vinícius Souza — Sistema Tipográfico</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  /* Structural only. No chromatic decisions outside tokens. */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { padding-bottom: var(--space-24); }
+
+  .wrap { max-width: var(--content-max); margin: 0 auto; padding: var(--space-20) var(--space-12) var(--space-24); }
+  @media (max-width: 800px) { .wrap { padding: var(--space-12) var(--space-5); } }
+
+  /* page chrome */
+  .page-head { margin-bottom: var(--space-16); padding-bottom: var(--space-8); border-bottom: 1px solid var(--ink-500); }
+  .page-head .back { display: inline-block; font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-700); margin-bottom: var(--space-4); }
+  .page-head .lede { max-width: 65ch; color: var(--ink-800); margin-top: var(--space-4); font-size: var(--text-md); line-height: var(--leading-relaxed); }
+  .page-head nav { margin-top: var(--space-8); display: flex; gap: var(--space-5); flex-wrap: wrap; }
+  .page-head nav a { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-700); padding-bottom: var(--space-1); border-bottom: 1px solid transparent; transition: color var(--duration-quick) var(--ease-out); }
+  .page-head nav a:hover { color: var(--ink-1000); }
+  .page-head nav a[aria-current] { color: var(--ink-1000); border-bottom-color: var(--brand-500); }
+
+  /* sections */
+  section { margin-top: var(--space-20); }
+  .s-num { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); color: var(--ink-700); display: block; margin-bottom: var(--space-2); text-transform: uppercase; }
+  .s-title { margin: 0 0 var(--space-3); font-size: var(--text-3xl); }
+  .s-deck { color: var(--ink-800); max-width: 65ch; margin: 0 0 var(--space-8); font-size: var(--text-md); line-height: var(--leading-relaxed); }
+
+  /* trio (faces) */
+  .trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-px); background: var(--ink-500); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; }
+  .face { background: var(--ink-300); padding: var(--space-8); display: flex; flex-direction: column; gap: var(--space-4); min-height: 380px; }
+  .face .role { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-3); }
+  .face .role .r { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); color: var(--ink-700); text-transform: uppercase; }
+  .face .role .w { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); }
+  .face .name { font-size: var(--text-4xl); margin: var(--space-1) 0; line-height: var(--leading-tight); color: var(--ink-1000); }
+  .face[data-face="display"] .name { font-family: var(--font-display); font-style: italic; font-weight: 400; letter-spacing: var(--tracking-tight); }
+  .face[data-face="ui"]      .name { font-family: var(--font-heading); font-weight: 500; letter-spacing: var(--tracking-snug); }
+  .face[data-face="mono"]    .name { font-family: var(--font-mono); font-weight: 500; letter-spacing: var(--tracking-tight); font-size: var(--text-3xl); }
+  .face .meta { font-size: var(--text-sm); color: var(--ink-800); line-height: var(--leading-relaxed); }
+  .face .meta b { color: var(--ink-1000); font-weight: 500; }
+  .face .glyph-row { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3); margin-top: auto; padding-top: var(--space-5); border-top: 1px solid var(--ink-500); }
+  .face .glyph-row span { font-size: var(--text-lg); color: var(--ink-1000); }
+  .face[data-face="display"] .glyph-row span { font-family: var(--font-display); font-style: italic; }
+  .face[data-face="ui"]      .glyph-row span { font-family: var(--font-heading); font-weight: 500; }
+  .face[data-face="mono"]    .glyph-row span { font-family: var(--font-mono); font-feature-settings: "tnum"; }
+  @media (max-width: 980px) { .trio { grid-template-columns: 1fr; } }
+
+  /* scale table */
+  .scale { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; }
+  .scale .row { display: grid; grid-template-columns: 130px 110px 1fr; gap: var(--space-6); padding: var(--space-5) var(--space-6); align-items: baseline; border-top: 1px solid var(--ink-500); }
+  .scale .row:first-child { border-top: 0; background: var(--ink-200); color: var(--ink-700); }
+  .scale .row .tag { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-wide); }
+  .scale .row .px { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); }
+  .scale .row .smp { color: var(--ink-1000); line-height: var(--leading-tight); }
+  .scale .row[data-fam="d"] .smp { font-family: var(--font-display); font-style: italic; font-weight: 400; letter-spacing: var(--tracking-tight); }
+  .scale .row[data-fam="h"] .smp { font-family: var(--font-heading); font-weight: 500; letter-spacing: var(--tracking-snug); }
+  .scale .row[data-fam="b"] .smp { font-family: var(--font-body); font-weight: 300; line-height: var(--leading-relaxed); }
+  @media (max-width: 800px) { .scale .row { grid-template-columns: 100px 1fr; } .scale .row .px { display: none; } }
+
+  /* surface body widths */
+  .surfaces { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
+  .surface { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-6); }
+  .surface .label { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-800); margin-bottom: var(--space-2); }
+  .surface .name { font-size: var(--text-xl); margin: 0 0 var(--space-2); color: var(--ink-1000); }
+  .surface .meta-line { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); margin-bottom: var(--space-4); }
+  .surface .body-pub  { max-width: 65ch; font-size: var(--text-md);   color: var(--ink-900); line-height: var(--leading-relaxed); }
+  .surface .body-cli  { max-width: 70ch; font-size: var(--text-base); color: var(--ink-900); line-height: var(--leading-normal); }
+  .surface .body-adm  { max-width: 90ch; font-size: var(--text-sm);   color: var(--ink-900); line-height: var(--leading-normal); }
+  @media (max-width: 980px) { .surfaces { grid-template-columns: 1fr; } }
+
+  /* hero specimen on dark */
+  .specimen { background: var(--ink-50); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-12); display: flex; flex-direction: column; gap: var(--space-8); position: relative; overflow: hidden; }
+  .specimen::before { content: ""; position: absolute; inset: 0; background: var(--glow-radial); pointer-events: none; }
+  .specimen > * { position: relative; }
+  .specimen .label { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-800); margin: 0; }
+  .hero-line { font-family: var(--font-display); font-style: italic; font-weight: 400; font-size: var(--text-6xl); line-height: var(--leading-flat); letter-spacing: var(--tracking-tight); margin: 0; color: var(--ink-1000); }
+  .hero-line span { display: block; margin-top: var(--space-3); font-style: normal; font-family: var(--font-heading); font-weight: 300; font-size: 0.42em; letter-spacing: var(--tracking-snug); color: var(--ink-900); }
+  .hero-meta { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--ink-800); display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); padding-top: var(--space-5); border-top: 1px solid var(--ink-500); }
+  .hero-meta b { color: var(--ink-1000); font-weight: 500; font-feature-settings: "tnum"; }
+
+  /* card specimen */
+  .card-spec { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-8); display: flex; flex-direction: column; gap: var(--space-5); }
+  .card-spec .row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-5); flex-wrap: wrap; }
+  .card-spec .h-card { font-family: var(--font-heading); font-weight: 500; font-size: var(--text-xl); letter-spacing: var(--tracking-snug); margin: 0; color: var(--ink-1000); }
+  .card-spec .price { font-family: var(--font-mono); font-size: var(--text-2xl); letter-spacing: var(--tracking-tight); font-weight: 500; font-feature-settings: "tnum"; color: var(--ink-1000); }
+  .card-spec .price .cents { font-size: 0.6em; color: var(--ink-800); margin-left: 2px; }
+  .card-spec .body-paragraph { max-width: 62ch; margin: 0; color: var(--ink-900); }
+  .card-spec .meta-line { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); padding-top: var(--space-4); border-top: 1px solid var(--ink-500); letter-spacing: var(--tracking-wide); }
+  .card-spec .meta-line b { color: var(--ink-1000); font-weight: 500; font-feature-settings: "tnum"; }
+
+  /* pair (do/don't) */
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-px); background: var(--ink-500); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; }
+  .pair .col { background: var(--ink-300); padding: var(--space-8); display: flex; flex-direction: column; gap: var(--space-4); min-height: 240px; }
+  .pair .col h4 { margin: 0; display: flex; align-items: center; gap: var(--space-3); font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-800); font-weight: 500; }
+  .pair .col h4::before { content: ""; width: 8px; height: 8px; border-radius: 50%; }
+  .pair .col.good h4::before { background: var(--sub-natureza-500); }
+  .pair .col.bad  h4::before { background: var(--sub-esportes-500); }
+  .pair .col .ex { flex: 1; display: flex; align-items: center; color: var(--ink-1000); }
+  .pair .col p { margin: 0; font-size: var(--text-sm); color: var(--ink-800); line-height: var(--leading-relaxed); }
+  @media (max-width: 800px) { .pair { grid-template-columns: 1fr; } }
+
+  /* utility blocks */
+  .util-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4); }
+  .util-card { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-3); }
+  .util-card .title { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-800); margin: 0; }
+  .util-card .body { color: var(--ink-1000); }
+  .util-card .body small { display: block; margin-top: var(--space-2); font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--ink-700); letter-spacing: var(--tracking-wide); }
+
+  /* lists / def-list / blockquote demo */
+  .demo-prose { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-8); display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-8); }
+  .demo-prose ul, .demo-prose ol { margin: 0; padding-left: var(--space-5); color: var(--ink-900); font-size: var(--text-base); line-height: var(--leading-relaxed); }
+  .demo-prose ul li, .demo-prose ol li { margin-bottom: var(--space-2); }
+  .demo-prose ul li::marker { color: var(--ink-700); }
+  .demo-prose ol { font-variant-numeric: tabular-nums; }
+  .demo-prose dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: var(--space-2) var(--space-4); }
+  .demo-prose dt { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-700); }
+  .demo-prose dd { margin: 0; color: var(--ink-900); font-size: var(--text-base); }
+  .demo-prose blockquote { margin: 0; padding-left: var(--space-5); border-left: 2px solid var(--brand-500); font-family: var(--font-display); font-style: italic; font-size: var(--text-xl); line-height: var(--leading-snug); color: var(--ink-1000); }
+  .demo-prose blockquote cite { display: block; margin-top: var(--space-3); font-family: var(--font-heading); font-style: normal; font-size: var(--text-sm); color: var(--ink-800); letter-spacing: var(--tracking-snug); }
+  @media (max-width: 800px) { .demo-prose { grid-template-columns: 1fr; padding: var(--space-5); } }
+
+  /* mono demo table */
+  .mono-table { width: 100%; border-collapse: collapse; background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; font-family: var(--font-mono); font-feature-settings: "tnum"; font-size: var(--text-sm); }
+  .mono-table th, .mono-table td { padding: var(--space-3) var(--space-5); text-align: left; border-top: 1px solid var(--ink-500); }
+  .mono-table thead th { border-top: 0; background: var(--ink-200); color: var(--ink-700); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; font-weight: 500; }
+  .mono-table .num { text-align: right; color: var(--ink-1000); }
+  .mono-table .id  { color: var(--ink-900); }
+
+  /* inline demo */
+  .inline-demo { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-6); }
+  .inline-demo p { font-size: var(--text-base); color: var(--ink-900); margin: 0 0 var(--space-3); line-height: var(--leading-relaxed); max-width: 65ch; }
+  .inline-demo p:last-child { margin-bottom: 0; }
+
+  footer { margin-top: var(--space-24); padding-top: var(--space-6); border-top: 1px solid var(--ink-500); display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-wider); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="page-head">
+    <a class="back" href="index.html">← Sistema</a>
+    <p class="eyebrow">Vinícius Souza · Foundations</p>
+    <h1>Sistema tipográfico</h1>
+    <p class="lede">
+      Três famílias trabalham juntas: uma serifa de revista para conduzir a narrativa,
+      uma grotesca neutra para operar a interface, e uma monoespaçada técnica para preços, IDs e timestamps.
+      Nenhuma delas é a fonte da marca — essa fica reservada à logo.
+    </p>
+    <nav>
+      <a href="typography.html" aria-current="page">Tipografia</a>
+      <a href="colors.html">Cores</a>
+      <a href="spacing-elevation-motion.html">Espaço · Elevação · Motion</a>
+      <a href="brand-logo.html">Marca</a>
+    </nav>
+  </header>
+
+  <!-- 01 — DOUTRINA ──────────────────────────────────────── -->
+  <section data-screen-label="01 Doutrina">
+    <span class="s-num">01 · Doutrina</span>
+    <h2 class="s-title">Por que essas três.</h2>
+    <p class="s-deck">
+      A escolha tipográfica precisa carregar a tensão certa: gravidade editorial sem peso jornalístico,
+      precisão técnica sem frieza de software, neutralidade de UI sem virar genérica.
+      <strong style="color: var(--ink-1000)">Instrument Serif</strong> traz o gesto editorial — alto contraste,
+      itálico expressivo, terminais finos — funciona como voz autoral.
+      <strong style="color: var(--ink-1000)">General Sans</strong> é grotesca contemporânea, neutra com
+      personalidade no peso; substitui Inter sem custar leiturabilidade na UI densa do admin.
+      <strong style="color: var(--ink-1000)">JetBrains Mono</strong> opera no que precisa ser lido como dado:
+      preço, código de evento, timestamp EXIF, ID — alinhamento tabular, legibilidade em corpos pequenos.
+      <strong style="color: var(--ink-1000)">Montserrat</strong> permanece — porém somente na assinatura da marca.
+      Misturá-la na UI dilui o reconhecimento do logotipo.
+    </p>
+  </section>
+
+  <!-- 02 — TRIO ──────────────────────────────────────────── -->
+  <section data-screen-label="02 Trio">
+    <span class="s-num">02 · O Trio</span>
+    <h2 class="s-title">Display · UI · Dado.</h2>
+
+    <div class="trio">
+      <div class="face" data-face="display">
+        <div class="role"><span class="r">Display · Editorial</span><span class="w">Regular · Italic</span></div>
+        <div class="name">Instrument Serif</div>
+        <p class="meta">Production Type, 2022. Para títulos a partir de <b>32&nbsp;px</b>, citações, cover lines e nomes de galerias. Use o itálico como gesto principal — é onde a fonte respira. Token: <code class="type-mono">--font-display</code>.</p>
+        <div class="glyph-row"><span>A</span><span>a</span><span>g</span><span>R</span><span>&amp;</span><span>?</span><span>1</span><span>9</span></div>
+      </div>
+      <div class="face" data-face="ui">
+        <div class="role"><span class="r">UI · Body</span><span class="w">200–700</span></div>
+        <div class="name">General Sans</div>
+        <p class="meta">Indian Type Foundry, 2022. Body copy, navegação, formulários, microcopy. Pesos <b>300</b> para corpo, <b>500</b> para títulos de UI, <b>600</b> para grifos. Tokens: <code class="type-mono">--font-heading</code>, <code class="type-mono">--font-body</code>.</p>
+        <div class="glyph-row"><span>A</span><span>a</span><span>g</span><span>R</span><span>&amp;</span><span>?</span><span>1</span><span>9</span></div>
+      </div>
+      <div class="face" data-face="mono">
+        <div class="role"><span class="r">Dado · Mono</span><span class="w">Regular · Medium</span></div>
+        <div class="name">JetBrains Mono</div>
+        <p class="meta">JetBrains, 2020. Tabular nums por padrão. Preços, EXIF, IDs, código, timestamps. Aplique <code class="type-mono">font-feature-settings: "tnum"</code> em colunas numéricas. Token: <code class="type-mono">--font-mono</code>.</p>
+        <div class="glyph-row"><span>0</span><span>1</span><span>3</span><span>5</span><span>8</span><span>9</span><span>R$</span><span>·</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 — ESCALA ────────────────────────────────────────── -->
+  <section data-screen-label="03 Escala">
+    <span class="s-num">03 · Escala</span>
+    <h2 class="s-title">Uma escala fotográfica.</h2>
+    <p class="s-deck">
+      Pulos largos no display, pulos curtos no body. Razão modular ≈ 1.250 nos corpos pequenos, ≈ 1.333 nos grandes —
+      para que títulos respirem como capa de revista e o body permaneça funcional. Os tamanhos abaixo são valores
+      computados; tudo na página resolve para tokens.
+    </p>
+
+    <div class="scale">
+      <div class="row"><span class="tag">Token</span><span class="px">px / rem</span><span>Amostra · pt-BR</span></div>
+      <div class="row" data-fam="d"><span class="tag">--text-7xl</span><span class="px">80–152 / clamp</span><span class="smp" style="font-size: var(--text-7xl);">A luz do final da tarde</span></div>
+      <div class="row" data-fam="d"><span class="tag">--text-6xl</span><span class="px">64–128 / clamp</span><span class="smp" style="font-size: var(--text-6xl);">Mostra Cultural Lá&nbsp;na&nbsp;Praça</span></div>
+      <div class="row" data-fam="d"><span class="tag">--text-5xl</span><span class="px">48–88 / clamp</span><span class="smp" style="font-size: var(--text-5xl);">Galeria · Editorial</span></div>
+      <div class="row" data-fam="h"><span class="tag">--text-4xl</span><span class="px">56 / 3.5</span><span class="smp" style="font-size: var(--text-4xl);">Encontre suas fotos</span></div>
+      <div class="row" data-fam="h"><span class="tag">--text-3xl</span><span class="px">40 / 2.5</span><span class="smp" style="font-size: var(--text-3xl);">Eventos recentes</span></div>
+      <div class="row" data-fam="h"><span class="tag">--text-2xl</span><span class="px">30 / 1.875</span><span class="smp" style="font-size: var(--text-2xl);">Carrinho · 3 fotos selecionadas</span></div>
+      <div class="row" data-fam="h"><span class="tag">--text-xl</span><span class="px">24 / 1.5</span><span class="smp" style="font-size: var(--text-xl);">Pacote completo do evento</span></div>
+      <div class="row" data-fam="h"><span class="tag">--text-lg</span><span class="px">20 / 1.25</span><span class="smp" style="font-size: var(--text-lg);">Cabeçalho de card</span></div>
+      <div class="row" data-fam="b"><span class="tag">--text-md</span><span class="px">17 / 1.0625</span><span class="smp" style="font-size: var(--text-md);">Texto longo, leitura confortável em desktop e mobile.</span></div>
+      <div class="row" data-fam="b"><span class="tag">--text-base</span><span class="px">15 / 0.9375</span><span class="smp" style="font-size: var(--text-base);">Padrão de UI — formulários, parágrafos curtos, descrições.</span></div>
+      <div class="row" data-fam="b"><span class="tag">--text-sm</span><span class="px">13 / 0.8125</span><span class="smp" style="font-size: var(--text-sm);">Microcopy, legendas, helpers, células de tabela.</span></div>
+      <div class="row" data-fam="b"><span class="tag">--text-xs</span><span class="px">12 / 0.75</span><span class="smp" style="font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase;">Eyebrow · sobrescrita</span></div>
+      <div class="row" data-fam="b"><span class="tag">--text-xxs</span><span class="px">11 / 0.6875</span><span class="smp" style="font-size: var(--text-xxs); letter-spacing: var(--tracking-wide);">Micro caption · selo de canto</span></div>
+    </div>
+  </section>
+
+  <!-- 04 — SUPERFÍCIES ──────────────────────────────────── -->
+  <section data-screen-label="04 Body por superfície">
+    <span class="s-num">04 · Body por superfície</span>
+    <h2 class="s-title">Uma medida de leitura por superfície.</h2>
+    <p class="s-deck">
+      A largura ideal varia: o público respira em prosa de revista (<b style="color: var(--ink-1000)">65 ch</b>); a área do cliente é arquivística e funcional (<b style="color: var(--ink-1000)">70 ch</b>); o admin é tabular e denso (<b style="color: var(--ink-1000)">90 ch</b>). Os tamanhos seguem a escala — apenas a largura e o espaçamento mudam.
+    </p>
+
+    <div class="surfaces">
+      <article class="surface">
+        <div class="label">Public · 1280 · 65 ch</div>
+        <h3 class="name">Mostra Cultural Lá na Praça</h3>
+        <div class="meta-line">17 abr 2026 · Cassilândia · 1.581 fotos</div>
+        <p class="body-pub">A noite chegou cedo. A iluminação cênica do palco subiu lenta, e a praça inteira virou plateia. Cada foto desta cobertura preserva o instante exato em que a banda parou de tocar — você pode ouvir, na imagem, o silêncio que veio antes do aplauso. <a href="#">Veja a galeria completa →</a></p>
+      </article>
+
+      <article class="surface">
+        <div class="label">Cliente · 1200 · 70 ch</div>
+        <h3 class="name">Pedido #200000037 · 4 fotos</h3>
+        <div class="meta-line">06 abr 2026 · 20:20 · Pago — R$ 3,81</div>
+        <p class="body-cli">Sua compra foi liberada. Os arquivos originais ficam disponíveis por 12 meses na sua conta — você pode baixar quantas vezes quiser. As versões otimizadas para redes (1080×1080 e 1920×1080) também estão prontas. Os créditos ao fotógrafo são opcionais; se publicar, etiquete <span class="type-mono">@viniciussouza</span>.</p>
+      </article>
+
+      <article class="surface">
+        <div class="label">Admin · 1440 · 90 ch</div>
+        <h3 class="name">Lá na Praça — gestão</h3>
+        <div class="meta-line">379 fotos · 9 vendidas · R$ 137,50 · 4 pedidos · ticket médio R$ 34,38</div>
+        <p class="body-adm">Janela densa: a coluna principal cabe até 90 caracteres por linha para que tabelas, listas de pedidos e logs de ações respirem sem precisar quebrar nomes. O corpo aqui é <span class="type-mono">--text-sm</span> (13 px) — concentra mais informação por viewport sem perder leiturabilidade no zoom 100%. Mantenha textos longos em parágrafos de no máximo 4 linhas para preservar a hierarquia tabular.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 05 — HERO ──────────────────────────────────────────── -->
+  <section data-screen-label="05 Hero">
+    <span class="s-num">05 · Aplicação · Hero</span>
+    <h2 class="s-title">Como soa em cima de uma capa.</h2>
+    <p class="s-deck">A combinação canônica do público: itálico de Instrument Serif acolhendo a frase, General Sans Light dando contexto, mono pontuando com metadados. O brilho radial atrás do texto é o único gradiente permitido no sistema (<code class="type-mono">--glow-radial</code>).</p>
+
+    <div class="specimen">
+      <p class="label">VINÍCIUS SOUZA · COBERTURA #284</p>
+      <h1 class="hero-line">Mais de mil fotos<br>do seu domingo<span>publicadas em 2 horas após o evento</span></h1>
+      <div class="hero-meta">
+        <span>EVENTO <b>VS-284</b></span>
+        <span>04 mai 2026 · 06:42 → 12:18</span>
+        <span><b>1.247</b> fotos</span>
+        <span><b>R$ 9</b> por foto</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 — UI CARD ──────────────────────────────────────── -->
+  <section data-screen-label="06 Card">
+    <span class="s-num">06 · Aplicação · UI</span>
+    <h2 class="s-title">Onde a interface mora.</h2>
+    <p class="s-deck">Card de produto: heading em General Sans 500, body em 300, preço em mono — com tabular nums alinhando os centavos sob qualquer combinação de dígitos. Os IDs, especificações técnicas e timestamps também são monoespaçados.</p>
+
+    <div class="card-spec">
+      <div class="row">
+        <h3 class="h-card">Foto #4127 · Cavalgada Pantanal</h3>
+        <span class="price">R$ 9<span class="cents">,90</span></span>
+      </div>
+      <p class="body-paragraph">Captura no segundo grupo, faixa 06:48–07:02. Arquivo entregue em alta (6 720 × 4 480 px) com versão otimizada para redes. Direitos para uso pessoal — créditos opcionais.</p>
+      <div class="meta-line">
+        <span>ISO <b>400</b></span>
+        <span>f / <b>2.8</b></span>
+        <span><b>1/1250</b> s</span>
+        <span>85 mm</span>
+        <span>SHA <b>·a4f1</b></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 — UTILITÁRIOS ──────────────────────────────────── -->
+  <section data-screen-label="07 Utilitários">
+    <span class="s-num">07 · Eyebrow · caption · helper · price · numeric</span>
+    <h2 class="s-title">Classes utilitárias.</h2>
+    <p class="s-deck">Cada uma resolve uma necessidade tipográfica que não se beneficia de uma tag semântica dedicada. Use a classe quando o elemento já tem outro papel HTML.</p>
+
+    <div class="util-grid">
+      <div class="util-card">
+        <p class="title">.eyebrow · .type-eyebrow</p>
+        <div class="body"><p class="eyebrow">Fotografia profissional</p><small>--text-xs · 500 · widest · uppercase · ink-800</small></div>
+      </div>
+      <div class="util-card">
+        <p class="title">.type-display</p>
+        <div class="body"><span class="type-display" style="font-size: var(--text-2xl);">A luz do final da tarde</span><small>--font-display · italic · tight · ink-1000</small></div>
+      </div>
+      <div class="util-card">
+        <p class="title">.type-h5 / h5</p>
+        <div class="body"><h5>Cabeçalho de bloco</h5><small>--text-lg · 500 · ink-1000</small></div>
+      </div>
+      <div class="util-card">
+        <p class="title">.type-body / p</p>
+        <div class="body"><p>Texto de corpo padrão. Família body, peso 300, cor ink-900.</p><small>--text-base · 300 · relaxed · ink-900</small></div>
+      </div>
+      <div class="util-card">
+        <p class="title">.type-body-strong</p>
+        <div class="body"><span class="type-body-strong">Texto realçado dentro do corpo.</span><small>peso 500 · ink-1000 (não muda família)</small></div>
+      </div>
+      <div class="util-card">
+        <p class="title">.type-small</p>
+        <div class="body"><span class="type-small">Texto secundário · meta de card</span><small>--text-sm · ink-800</small></div>
+      </div>
+      <div class="util-card">
+        <p class="title">.type-caption</p>
+        <div class="body"><span class="type-caption">Legenda · descrição abaixo de imagem</span><small>--text-xs · wide · ink-800</small></div>
+      </div>
+      <div class="util-card">
+        <p class="title">.type-helper</p>
+        <div class="body"><span class="type-helper">Helper de input · "Mínimo 8 caracteres"</span><small>--text-xs · ink-700</small></div>
+      </div>
+      <div class="util-card">
+        <p class="title">.type-mono · code</p>
+        <div class="body"><code class="type-mono">VS-284 · 1f7ae0 · 1247</code><small>--font-mono · IDs · hashes · timestamps</small></div>
+      </div>
+      <div class="util-card">
+        <p class="title">.type-price</p>
+        <div class="body"><span class="type-price" style="font-size: var(--text-xl);">R$ 28,80</span><small>display italic · tnum · alinhado por colunas</small></div>
+      </div>
+      <div class="util-card">
+        <p class="title">.type-numeric</p>
+        <div class="body"><span class="type-numeric" style="font-size: var(--text-lg);">1.247 · 379 · 28,80</span><small>tnum em qualquer família</small></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 — INLINE ──────────────────────────────────────── -->
+  <section data-screen-label="08 Inline">
+    <span class="s-num">08 · Inline</span>
+    <h2 class="s-title">Links, ênfase, código, abreviações.</h2>
+    <p class="s-deck">O itálico é gesto editorial — guarde-o para citações e cover lines. Para realçar dentro do corpo, use <strong style="color: var(--ink-1000)">peso 500</strong>, não itálico. Links viajam em <code class="type-mono">--brand-400</code>; o estado de hover sobe para <code class="type-mono">--brand-300</code> sem sublinhado.</p>
+
+    <div class="inline-demo">
+      <p>O fotógrafo cobriu a <a href="#">Cavalgada do Tibagi</a> em maio de 2026 — uma manhã de céu fechado, vento sul e <strong>1.247 cliques entregues em 2 horas</strong>. Os arquivos originais (RAW + JPEG) foram catalogados como <code class="type-mono">VS-284</code>; cada compra gera um SHA único — por exemplo <code class="type-mono">SHA-256: a4f1b9c0…</code> — armazenado no recibo.</p>
+      <p>O termo <abbr title="Direitos de uso">DDU</abbr> aparece nas notas fiscais. O texto da capa traz a citação <em style="font-family: var(--font-display); font-style: italic;">“a luz acabou às 18h42”</em> — itálico só nesse contexto. Em microcopy de UI, o realce é apenas <strong>peso, nunca itálico</strong>.</p>
+    </div>
+  </section>
+
+  <!-- 09 — LISTAS / DEF / QUOTE ─────────────────────────── -->
+  <section data-screen-label="09 Listas, def-list, blockquote">
+    <span class="s-num">09 · Listas · Definições · Citação</span>
+    <h2 class="s-title">Conteúdo longo.</h2>
+    <p class="s-deck">Listas mantêm a fonte do corpo e os marcadores em <code class="type-mono">--ink-700</code>. Listas ordenadas usam tabular nums para que os números fiquem em coluna. <em style="font-family: var(--font-display); font-style: italic;">Definition lists</em> alinham termo em mono e definição em sans. Citações vivem no display italic com filete âncora à esquerda.</p>
+
+    <div class="demo-prose">
+      <div>
+        <ul>
+          <li>O cliente recebe o link da galeria por WhatsApp ou e-mail.</li>
+          <li>Seleciona as fotos e adiciona ao carrinho — preço por unidade ou pacote.</li>
+          <li>Paga via PIX (libera na hora) ou cartão (libera após confirmação).</li>
+          <li>Faz download em alta na sua área pessoal; reembolso aceito por foto.</li>
+        </ul>
+        <ol style="margin-top: var(--space-5);">
+          <li>Vinícius Rodrigues de Souza · 1.581 fotos</li>
+          <li>Cobertura completa · 24 h após o evento</li>
+          <li>Galeria em alta · 365 dias para baixar</li>
+        </ol>
+        <dl style="margin-top: var(--space-5);">
+          <dt>EVENTO</dt><dd>VS-284 · Mostra Cultural Lá na Praça</dd>
+          <dt>DATA</dt><dd>17 abr 2026 · 18:00 → 23:00</dd>
+          <dt>LOCAL</dt><dd>Praça São José · Cassilândia · MS</dd>
+          <dt>FOTOS</dt><dd class="type-numeric">1.581 publicadas · 9 vendidas</dd>
+          <dt>TICKET</dt><dd class="type-price" style="font-size: var(--text-base);">R$ 34,38</dd>
+        </dl>
+      </div>
+      <blockquote>
+        “A fotografia narra um instante; a tipografia decide o seu tom.”
+        <cite>— manifesto interno · 2026</cite>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- 10 — NUMERAIS / MONO ──────────────────────────────── -->
+  <section data-screen-label="10 Numerais">
+    <span class="s-num">10 · Numerais</span>
+    <h2 class="s-title">Números em coluna.</h2>
+    <p class="s-deck">
+      Em qualquer tabela, lista de pedidos ou lista de IDs, os dígitos precisam ocupar a mesma largura — caso contrário, a leitura escaneada falha. Usamos <code class="type-mono">tabular-nums</code> em mono para preços, IDs, EXIF e timestamps. No corpo de leitura usamos os números padrão (proporcionais) das fontes.
+    </p>
+
+    <table class="mono-table">
+      <thead>
+        <tr><th>ID público</th><th>Cliente</th><th>Itens</th><th class="num">Total</th><th>Status</th><th>Quando</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="id">200000039</td><td>Souza G.</td><td class="num">2</td><td class="num">R$ 3,00</td><td>Pendente</td><td>07/05/2026 · 15:50</td></tr>
+        <tr><td class="id">200000037</td><td>Vinícius R. de Souza</td><td class="num">4</td><td class="num">R$ 3,81</td><td>Pago</td><td>06/05/2026 · 20:20</td></tr>
+        <tr><td class="id">200000036</td><td>Vinícius R. de Souza</td><td class="num">11</td><td class="num">R$ 40,66</td><td>Pago</td><td>06/05/2026 · 20:19</td></tr>
+        <tr><td class="id">200000035</td><td>Vinícius R. de Souza</td><td class="num">11</td><td class="num">R$ 50,66</td><td>Pago</td><td>06/05/2026 · 20:13</td></tr>
+        <tr><td class="id">200000034</td><td>Vinícius R. de Souza</td><td class="num">7</td><td class="num">R$ 9,80</td><td>Pago</td><td>06/05/2026 · 10:05</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 11 — PARES ────────────────────────────────────────── -->
+  <section data-screen-label="11 Pareamento">
+    <span class="s-num">11 · Pareamentos</span>
+    <h2 class="s-title">Faça. Não faça.</h2>
+
+    <div class="pair">
+      <div class="col good">
+        <h4>Faça</h4>
+        <div class="ex">
+          <span style="font-family: var(--font-display); font-style: italic; font-size: var(--text-3xl); line-height: var(--leading-snug); letter-spacing: var(--tracking-tight);">A luz acabou.</span><br>
+          <span style="font-family: var(--font-heading); font-weight: 500; font-size: var(--text-base); color: var(--ink-800); display: block; margin-top: var(--space-3); letter-spacing: var(--tracking-snug);">Cobertura encerrada às 18h42.</span>
+        </div>
+        <p>Display em itálico carrega a frase. Subtítulo em General Sans 500 informa sem competir.</p>
+      </div>
+      <div class="col bad">
+        <h4>Não faça</h4>
+        <div class="ex">
+          <span style="font-family: var(--font-brand); font-weight: 800; font-size: var(--text-2xl); letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--ink-1000);">A LUZ ACABOU.</span>
+        </div>
+        <p>Montserrat ExtraBold é a marca, não o tom de voz. Ela nunca aparece em copy ou UI — só na logo.</p>
+      </div>
+      <div class="col good">
+        <h4>Faça</h4>
+        <div class="ex">
+          <span class="type-numeric" style="font-family: var(--font-mono); font-weight: 500; font-size: var(--text-2xl); letter-spacing: var(--tracking-tight); color: var(--ink-1000);">R$&nbsp;<b>1&nbsp;299</b>,00</span>
+        </div>
+        <p>Preços e quantidades em mono com tabular nums — alinham coluna a coluna no carrinho e no admin.</p>
+      </div>
+      <div class="col bad">
+        <h4>Não faça</h4>
+        <div class="ex">
+          <span style="font-family: var(--font-display); font-style: italic; font-size: var(--text-2xl); color: var(--ink-1000);">R$ 1.299,00</span>
+        </div>
+        <p>Itálico em preço quebra a leitura: o cliente está escaneando, não lendo. Reserve o serif para frases.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 — RESUMO ───────────────────────────────────────── -->
+  <section data-screen-label="12 Resumo">
+    <span class="s-num">12 · Decisão rápida</span>
+    <h2 class="s-title">Em uma frase.</h2>
+
+    <div class="card-spec">
+      <p style="font-family: var(--font-display); font-style: italic; font-size: var(--text-3xl); line-height: var(--leading-snug); letter-spacing: var(--tracking-tight); margin: 0; max-width: 30ch; color: var(--ink-1000);">
+        Instrument Serif <em style="font-style: normal; font-family: var(--font-heading); font-weight: 500; font-size: 0.55em; color: var(--ink-800); letter-spacing: var(--tracking-snug);">narra</em>,
+        General Sans <em style="font-style: normal; font-family: var(--font-heading); font-weight: 500; font-size: 0.55em; color: var(--ink-800); letter-spacing: var(--tracking-snug);">organiza</em>,
+        JetBrains Mono <em style="font-style: normal; font-family: var(--font-mono); font-weight: 500; font-size: 0.5em; color: var(--ink-800); letter-spacing: var(--tracking-tight);">mede</em>.
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <span>VINÍCIUS SOUZA · TIPOGRAFIA v1.0 · 2026</span>
+    <span>3 famílias + 1 brand · 13 corpos · 1 escala fotográfica</span>
+  </footer>
+
+</div>
+</body>
+</html>

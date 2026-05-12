@@ -1,0 +1,1754 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Vinícius Souza — Componentes atômicos</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { padding-bottom: var(--space-24); }
+
+  .wrap { max-width: var(--content-max); margin: 0 auto; padding: var(--space-20) var(--space-12) var(--space-24); display: grid; grid-template-columns: 220px 1fr; gap: var(--space-12); align-items: start; }
+  @media (max-width: 1080px) { .wrap { grid-template-columns: 1fr; gap: var(--space-8); } }
+  @media (max-width: 800px) { .wrap { padding: var(--space-12) var(--space-5); } }
+
+  .col-main { min-width: 0; }
+
+  /* ── PAGE HEAD ────────────────────────────────── */
+  .page-head { grid-column: 1 / -1; margin-bottom: var(--space-12); padding-bottom: var(--space-8); border-bottom: 1px solid var(--ink-500); }
+  .page-head .back { display: inline-block; font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-700); margin-bottom: var(--space-4); }
+  .page-head .lede { max-width: 65ch; color: var(--ink-800); margin-top: var(--space-4); font-size: var(--text-md); line-height: var(--leading-relaxed); }
+  .page-head nav { margin-top: var(--space-8); display: flex; gap: var(--space-5); flex-wrap: wrap; }
+  .page-head nav a { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-700); padding-bottom: var(--space-1); border-bottom: 1px solid transparent; }
+  .page-head nav a:hover { color: var(--ink-1000); }
+  .page-head nav a[aria-current] { color: var(--ink-1000); border-bottom-color: var(--brand-500); }
+
+  /* ── TOC (sticky in-page nav) ─────────────────── */
+  .toc { position: sticky; top: var(--space-6); align-self: start; display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-5) 0; border-top: 1px solid var(--ink-500); border-bottom: 1px solid var(--ink-500); }
+  .toc .toc-num { font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); padding: 0 0 var(--space-2); }
+  .toc a { display: flex; justify-content: space-between; gap: var(--space-2); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); padding: var(--space-1) 0; letter-spacing: var(--tracking-wide); }
+  .toc a:hover { color: var(--ink-1000); }
+  .toc a b { color: var(--ink-700); font-weight: 400; }
+  @media (max-width: 1080px) { .toc { position: static; flex-direction: row; flex-wrap: wrap; gap: var(--space-3); padding: var(--space-3) 0; } .toc .toc-num { width: 100%; } .toc a { padding: 0; } }
+
+  /* ── SECTIONS ─────────────────────────────────── */
+  section.atom { margin-top: var(--space-16); padding-top: var(--space-8); border-top: 1px solid var(--ink-500); }
+  section.atom:first-of-type { margin-top: 0; padding-top: 0; border-top: 0; }
+  .s-num { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); color: var(--ink-700); display: block; margin-bottom: var(--space-2); text-transform: uppercase; }
+  .s-title { margin: 0 0 var(--space-3); font-size: var(--text-3xl); font-family: var(--font-heading); font-weight: 400; }
+  .s-deck { color: var(--ink-800); max-width: 65ch; margin: 0 0 var(--space-8); font-size: var(--text-md); line-height: var(--leading-relaxed); }
+  .s-deck b { color: var(--ink-1000); font-weight: 500; }
+
+  h3.row-title { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-800); font-weight: 500; margin: var(--space-8) 0 var(--space-3); }
+  h3.row-title:first-of-type { margin-top: 0; }
+
+  /* ── DEMO CONTAINERS ──────────────────────────── */
+  .demo { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-6) var(--space-6) var(--space-5); margin-bottom: var(--space-3); }
+  .demo + .demo { margin-top: 0; }
+  .demo-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-4); }
+  .demo-row + .demo-row { margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px dashed var(--ink-500); }
+  .demo-row .demo-label { font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); min-width: 110px; }
+  .demo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4); }
+
+  .doc-note { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); line-height: var(--leading-relaxed); letter-spacing: var(--tracking-snug); padding: var(--space-3) var(--space-4); border-left: 2px solid var(--brand-500); background: var(--brand-dim); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: var(--space-4) 0; }
+  .doc-note b { color: var(--ink-1000); font-weight: 500; }
+  .doc-rule { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); margin-top: var(--space-3); }
+  .doc-rule b { color: var(--ink-1000); font-weight: 500; }
+
+  .xref { margin-top: var(--space-5); padding: var(--space-4) var(--space-5); background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius); display: grid; grid-template-columns: max-content 1fr; gap: var(--space-3) var(--space-5); align-items: baseline; font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-snug); }
+  .xref dt { color: var(--ink-700); text-transform: uppercase; letter-spacing: var(--tracking-wider); font-size: var(--text-xxs); }
+  .xref dd { margin: 0; color: var(--ink-900); }
+  .xref dd code { color: var(--ink-1000); background: var(--ink-300); padding: 1px 6px; border-radius: var(--radius-sm); }
+
+  /* ────────────────────────────────────────────────
+     ATOM CANONICAL STYLES
+     Everything below uses ONLY tokens from colors_and_type.css.
+     These are the canonical implementations.
+     ──────────────────────────────────────────────── */
+
+  /* ── 01 · BUTTONS ─────────────────────────────── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+    font-family: var(--font-body); font-size: var(--text-sm); font-weight: 500; letter-spacing: var(--tracking-snug);
+    padding: var(--space-3) var(--space-5);
+    background: transparent; color: var(--ink-1000); border: 1px solid transparent; border-radius: var(--radius);
+    cursor: pointer; white-space: nowrap; user-select: none;
+    transition: background var(--duration-quick) var(--ease-out), border-color var(--duration-quick) var(--ease-out), color var(--duration-quick) var(--ease-out), transform var(--duration-quick) var(--ease-out), box-shadow var(--duration-quick) var(--ease-out);
+  }
+  .btn:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  .btn:disabled, .btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; transform: none !important; }
+
+  .btn-primary { background: var(--brand-500); color: var(--ink-1000); }
+  .btn-primary:hover:not(:disabled):not([aria-disabled="true"]) { background: var(--brand-400); transform: translateY(-1px); }
+  .btn-primary:active:not(:disabled) { background: var(--brand-700); transform: translateY(0); }
+
+  .btn-success { background: var(--signal-500); color: var(--ink-50); }
+  .btn-success:hover:not(:disabled):not([aria-disabled="true"]) { background: var(--signal-400); transform: translateY(-1px); }
+  .btn-success:active:not(:disabled) { background: var(--signal-600); transform: translateY(0); }
+
+  .btn-secondary { background: transparent; color: var(--ink-1000); border-color: var(--ink-500); }
+  .btn-secondary:hover:not(:disabled):not([aria-disabled="true"]) { border-color: var(--ink-700); background: var(--ink-200); transform: translateY(-1px); }
+  .btn-secondary:active:not(:disabled) { background: var(--ink-300); transform: translateY(0); }
+
+  .btn-ghost { background: transparent; color: var(--ink-800); border-color: transparent; }
+  .btn-ghost:hover:not(:disabled):not([aria-disabled="true"]) { color: var(--ink-1000); background: var(--ink-300); }
+  .btn-ghost:active:not(:disabled) { background: var(--ink-400); }
+
+  .btn-danger { background: var(--danger-dim); color: var(--danger-500); border-color: rgba(224, 85, 79, 0.35); }
+  .btn-danger:hover:not(:disabled):not([aria-disabled="true"]) { background: rgba(224, 85, 79, 0.22); border-color: var(--danger-500); transform: translateY(-1px); }
+  .btn-danger:active:not(:disabled) { background: var(--danger-600); color: var(--ink-1000); transform: translateY(0); }
+
+  .btn-link { background: transparent; color: var(--brand-400); padding: var(--space-1) 0; border-color: transparent; border-radius: 0; gap: var(--space-1); border-bottom: 1px solid transparent; }
+  .btn-link:hover:not(:disabled) { color: var(--brand-300); border-bottom-color: var(--brand-400); transform: none; }
+
+  .btn-sm { padding: var(--space-2) var(--space-3); font-size: var(--text-xs); gap: var(--space-1); }
+  .btn-lg { padding: var(--space-3) var(--space-6); font-size: var(--text-base); gap: var(--space-3); }
+
+  .btn-icon { padding: var(--space-2); width: 36px; height: 36px; min-width: 36px; }
+  .btn-icon.btn-sm { padding: var(--space-1); width: 28px; height: 28px; min-width: 28px; }
+  .btn-icon.btn-lg { padding: var(--space-3); width: 44px; height: 44px; min-width: 44px; }
+
+  .btn .ico { flex-shrink: 0; }
+  .btn-sm .ico { width: 14px; height: 14px; }
+  .btn .ico { width: 16px; height: 16px; }
+  .btn-lg .ico { width: 18px; height: 18px; }
+
+  /* spinner inside button (loading) */
+  .btn[data-loading="true"] { color: transparent !important; position: relative; pointer-events: none; }
+  .btn[data-loading="true"]::after { content: ""; position: absolute; inset: 0; margin: auto; width: 16px; height: 16px; border: 2px solid currentColor; border-color: var(--ink-1000) var(--ink-1000) transparent transparent; border-radius: 50%; color: var(--ink-1000); opacity: 0.85; animation: spin 0.7s linear infinite; }
+  .btn-danger[data-loading="true"]::after, .btn-link[data-loading="true"]::after, .btn-ghost[data-loading="true"]::after { border-color: var(--danger-500) var(--danger-500) transparent transparent; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* state-toggling demo helpers (visualise hover/focus/active without interaction) */
+  .force-hover.btn-primary { background: var(--brand-400); transform: translateY(-1px); }
+  .force-focus { box-shadow: var(--focus-ring) !important; }
+  .force-active.btn-primary { background: var(--brand-700); }
+  .force-active.btn-secondary { background: var(--ink-300); }
+  .force-hover.btn-secondary { border-color: var(--ink-700); background: var(--ink-200); }
+  .force-hover.btn-ghost { color: var(--ink-1000); background: var(--ink-300); }
+  .force-hover.btn-danger { background: rgba(224, 85, 79, 0.22); border-color: var(--danger-500); }
+  .force-hover.btn-success { background: var(--signal-400); }
+
+  /* ── 02 · INPUTS ──────────────────────────────── */
+  .field { display: flex; flex-direction: column; gap: var(--space-2); }
+  .field-label { font-family: var(--font-body); font-size: var(--text-xs); font-weight: 500; letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-800); }
+  .field-helper { font-family: var(--font-body); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-snug); }
+  .field-error-msg { font-family: var(--font-body); font-size: var(--text-xs); color: var(--danger-500); letter-spacing: var(--tracking-snug); display: flex; align-items: center; gap: var(--space-1); }
+
+  .input,
+  .field input[type="text"], .field input[type="email"], .field input[type="password"],
+  .field input[type="number"], .field input[type="search"], .field input[type="tel"],
+  .field input[type="url"], .field input[type="date"],
+  .field textarea, .field select {
+    background: var(--ink-400); color: var(--ink-1000);
+    font-family: var(--font-body); font-size: var(--text-sm); font-weight: 300;
+    padding: var(--space-3) var(--space-4); border: 1px solid var(--ink-500); border-radius: var(--radius);
+    outline: none; width: 100%; box-sizing: border-box;
+    transition: border-color var(--duration-quick) var(--ease-out), background var(--duration-quick) var(--ease-out), box-shadow var(--duration-quick) var(--ease-out);
+  }
+  .input::placeholder, .field input::placeholder, .field textarea::placeholder { color: var(--ink-700); }
+  .input:hover:not(:disabled):not(:focus), .field input:hover:not(:focus):not(:disabled), .field textarea:hover:not(:focus):not(:disabled), .field select:hover:not(:focus):not(:disabled) { border-color: var(--ink-700); }
+  .input:focus-visible, .field input:focus-visible, .field textarea:focus-visible, .field select:focus-visible { border-color: var(--brand-500); box-shadow: var(--focus-ring); background: var(--ink-300); }
+  .input:disabled, .field input:disabled, .field textarea:disabled, .field select:disabled { opacity: 0.55; cursor: not-allowed; background: var(--ink-300); }
+  .input[readonly], .field input[readonly], .field textarea[readonly] { background: var(--ink-200); color: var(--ink-900); }
+
+  .field.is-error .field-label { color: var(--danger-500); }
+  .field.is-error .input, .field.is-error input, .field.is-error textarea, .field.is-error select { border-color: var(--danger-500); background: rgba(224, 85, 79, 0.05); }
+  .field.is-error .input:focus-visible, .field.is-error input:focus-visible { box-shadow: var(--focus-ring-error); }
+
+  .input-affix { position: relative; display: flex; align-items: stretch; }
+  .input-affix .ico { position: absolute; top: 50%; transform: translateY(-50%); color: var(--ink-700); pointer-events: none; flex-shrink: 0; }
+  .input-affix .ico.leading  { left: var(--space-3); }
+  .input-affix .ico.trailing { right: var(--space-3); }
+  .input-affix .input.has-leading  { padding-left: var(--space-10); }
+  .input-affix .input.has-trailing { padding-right: var(--space-10); }
+  .input-affix .prefix { display: inline-flex; align-items: center; padding: 0 var(--space-3); background: var(--ink-300); color: var(--ink-800); border: 1px solid var(--ink-500); border-right: 0; border-radius: var(--radius) 0 0 var(--radius); font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-snug); }
+  .input-affix .prefix + .input { border-radius: 0 var(--radius) 0 0; border-top-right-radius: var(--radius); border-bottom-right-radius: var(--radius); }
+  .input-affix.has-prefix .input { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+
+  .field.is-sm .input, .field.is-sm input, .field.is-sm textarea, .field.is-sm select { padding: var(--space-2) var(--space-3); font-size: var(--text-xs); }
+  .field.is-lg .input, .field.is-lg input, .field.is-lg textarea, .field.is-lg select { padding: var(--space-3) var(--space-5); font-size: var(--text-base); }
+
+  .field textarea, .field .input.is-textarea { resize: vertical; min-height: 88px; line-height: var(--leading-normal); }
+
+  .field select, .field .input.is-select { appearance: none; -webkit-appearance: none; padding-right: var(--space-10); background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a8a92' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>"); background-repeat: no-repeat; background-position: right var(--space-3) center; }
+
+  /* file input */
+  .field-file { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); background: var(--ink-400); border: 1px dashed var(--ink-600); border-radius: var(--radius); color: var(--ink-900); cursor: pointer; font-size: var(--text-sm); }
+  .field-file:hover { border-color: var(--brand-500); background: var(--brand-dim); color: var(--ink-1000); }
+  .field-file input[type="file"] { display: none; }
+  .field-file .name { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); }
+
+  /* form row (label-top / label-inline) */
+  .form-row { display: grid; gap: var(--space-3); }
+  .form-row.is-cols-2 { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 600px) { .form-row.is-cols-2 { grid-template-columns: 1fr; } }
+  .form-row.is-inline { display: grid; grid-template-columns: 140px 1fr; gap: var(--space-4); align-items: center; }
+  .form-row.is-inline .field { display: contents; }
+  .form-row.is-inline .field-label { text-align: right; padding-top: 0; }
+  @media (max-width: 600px) { .form-row.is-inline { grid-template-columns: 1fr; } .form-row.is-inline .field-label { text-align: left; } }
+
+  /* ── 03 · CHECKBOX / RADIO / TOGGLE ───────────── */
+  .check-row, .radio-row { display: inline-flex; align-items: flex-start; gap: var(--space-3); cursor: pointer; font-size: var(--text-sm); color: var(--ink-900); line-height: var(--leading-snug); user-select: none; }
+  .check-row input[type="checkbox"], .radio-row input[type="radio"] { appearance: none; -webkit-appearance: none; width: 16px; height: 16px; min-width: 16px; margin: 2px 0 0; background: var(--ink-400); border: 1px solid var(--ink-600); flex-shrink: 0; cursor: pointer; transition: border-color var(--duration-quick) var(--ease-out), background var(--duration-quick) var(--ease-out); position: relative; }
+  .check-row input[type="checkbox"] { border-radius: var(--radius-sm); }
+  .radio-row input[type="radio"] { border-radius: 50%; }
+  .check-row input:hover, .radio-row input:hover { border-color: var(--ink-700); }
+  .check-row input:focus-visible, .radio-row input:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  .check-row input:checked, .radio-row input:checked { background: var(--brand-500); border-color: var(--brand-500); }
+  .check-row input[type="checkbox"]:checked::after { content: ""; position: absolute; left: 4px; top: 1px; width: 5px; height: 9px; border: solid var(--ink-1000); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .radio-row input[type="radio"]:checked::after { content: ""; position: absolute; inset: 3px; background: var(--ink-1000); border-radius: 50%; }
+  .check-row input:disabled, .radio-row input:disabled { opacity: 0.45; cursor: not-allowed; }
+  .check-row.is-disabled, .radio-row.is-disabled { color: var(--ink-700); cursor: not-allowed; }
+
+  /* toggle */
+  .toggle-row { display: inline-flex; align-items: center; gap: var(--space-3); cursor: pointer; font-size: var(--text-sm); color: var(--ink-900); user-select: none; }
+  .toggle-row input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 36px; height: 20px; background: var(--ink-500); border-radius: var(--radius-pill); position: relative; cursor: pointer; transition: background var(--duration-quick) var(--ease-out); flex-shrink: 0; }
+  .toggle-row input[type="checkbox"]::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: var(--ink-1000); border-radius: 50%; transition: left var(--duration-base) var(--ease-spring); }
+  .toggle-row input[type="checkbox"]:checked { background: var(--brand-500); }
+  .toggle-row input[type="checkbox"]:checked::after { left: 18px; }
+  .toggle-row input[type="checkbox"]:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  .toggle-row input[type="checkbox"]:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  /* ── 04 · BADGES ──────────────────────────────── */
+  .badge { display: inline-flex; align-items: center; gap: var(--space-1); padding: 3px var(--space-3); border-radius: var(--radius-pill); font-family: var(--font-mono); font-size: var(--text-xxs); font-weight: 500; letter-spacing: var(--tracking-wide); text-transform: uppercase; border: 1px solid transparent; white-space: nowrap; }
+  .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+  .badge.b-success { background: var(--signal-dim);  color: var(--signal-400);  border-color: rgba(34,197,94,0.30); }
+  .badge.b-warning { background: var(--warning-dim); color: var(--warning-500); border-color: rgba(232,163,58,0.30); }
+  .badge.b-danger  { background: var(--danger-dim);  color: var(--danger-500);  border-color: rgba(224,85,79,0.30); }
+  .badge.b-info    { background: var(--brand-dim);   color: var(--brand-400);   border-color: rgba(31,122,224,0.30); }
+  .badge.b-neutral { background: var(--ink-200);     color: var(--ink-900);     border-color: var(--ink-500); }
+  .badge.b-brand   { background: var(--brand-500);   color: var(--ink-1000);    border-color: transparent; }
+
+  /* sub-brand badges */
+  .badge.b-sub-editorial { background: var(--sub-editorial-dim); color: var(--sub-editorial-400); border-color: rgba(31,122,224,0.30); }
+  .badge.b-sub-esportes  { background: var(--sub-esportes-dim);  color: var(--sub-esportes-400);  border-color: rgba(200,51,51,0.30); }
+  .badge.b-sub-natureza  { background: var(--sub-natureza-dim);  color: var(--sub-natureza-400);  border-color: rgba(31,122,74,0.30); }
+  .badge.b-sub-fotografia { background: var(--sub-fotografia-dim); color: var(--sub-fotografia-500); border-color: rgba(237,232,224,0.18); }
+
+  /* outline variant — same border, no fill */
+  .badge.is-outline { background: transparent; }
+
+  /* sm / md sizes */
+  .badge.is-sm { padding: 2px var(--space-2); font-size: 9.5px; }
+
+  /* ── 05 · CHIPS ───────────────────────────────── */
+  .chip { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border: 1px solid var(--ink-500); border-radius: var(--radius); background: transparent; color: var(--ink-900); font-family: var(--font-body); font-size: var(--text-xs); font-weight: 500; letter-spacing: var(--tracking-snug); cursor: pointer; white-space: nowrap; transition: background var(--duration-quick) var(--ease-out), border-color var(--duration-quick) var(--ease-out), color var(--duration-quick) var(--ease-out), transform var(--duration-quick) var(--ease-out); }
+  .chip:hover { border-color: var(--ink-700); color: var(--ink-1000); transform: translateY(-1px); }
+  .chip:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  .chip.is-active { background: var(--brand-500); border-color: var(--brand-500); color: var(--ink-1000); }
+  .chip.is-active:hover { background: var(--brand-600); border-color: var(--brand-600); transform: translateY(-1px); }
+  .chip .count { font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--ink-700); letter-spacing: var(--tracking-wide); }
+  .chip.is-active .count { color: rgba(237,232,224,0.7); }
+  .chip .remove { display: inline-flex; width: 14px; height: 14px; padding: 0; border: 0; background: transparent; color: currentColor; cursor: pointer; align-items: center; justify-content: center; opacity: 0.7; }
+  .chip .remove:hover { opacity: 1; }
+
+  /* status chip — semantic colour, non-interactive look (matches badge tones but slightly bigger) */
+  .chip-status { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-1) var(--space-3); border: 1px solid transparent; border-radius: var(--radius-pill); font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 500; letter-spacing: var(--tracking-wider); text-transform: uppercase; }
+  .chip-status .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+  .chip-status.t-success { background: var(--signal-dim);  color: var(--signal-400);  border-color: rgba(34,197,94,0.30); }
+  .chip-status.t-warning { background: var(--warning-dim); color: var(--warning-500); border-color: rgba(232,163,58,0.30); }
+  .chip-status.t-danger  { background: var(--danger-dim);  color: var(--danger-500);  border-color: rgba(224,85,79,0.30); }
+  .chip-status.t-info    { background: var(--brand-dim);   color: var(--brand-400);   border-color: rgba(31,122,224,0.30); }
+  .chip-status.t-muted   { background: var(--ink-200);     color: var(--ink-800);     border-color: var(--ink-500); }
+
+  /* eyebrow chip (hero label) */
+  .chip-eyebrow { display: inline-flex; align-items: center; gap: var(--space-2); padding: 0; background: transparent; border: 0; color: var(--brand-400); font-family: var(--font-body); font-size: var(--text-xs); font-weight: 500; letter-spacing: var(--tracking-widest); text-transform: uppercase; }
+  .chip-eyebrow::before, .chip-eyebrow::after { content: ""; display: block; width: 18px; height: 1px; background: currentColor; opacity: 0.45; }
+
+  /* ── 06 · TAGS ────────────────────────────────── */
+  .tag { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-1) var(--space-3); background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-sm); color: var(--ink-900); font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-snug); transition: border-color var(--duration-quick) var(--ease-out), color var(--duration-quick) var(--ease-out), background var(--duration-quick) var(--ease-out); }
+  .tag:hover { border-color: var(--ink-700); color: var(--ink-1000); background: var(--ink-400); }
+  .tag .ico { width: 12px; height: 12px; color: var(--ink-800); flex-shrink: 0; }
+  .tag .remove { display: inline-flex; width: 14px; height: 14px; padding: 0; border: 0; background: transparent; color: var(--ink-700); cursor: pointer; align-items: center; justify-content: center; }
+  .tag .remove:hover { color: var(--danger-500); }
+
+  /* ── 07 · AVATARS ─────────────────────────────── */
+  .avatar { display: inline-flex; align-items: center; justify-content: center; background: var(--ink-400); color: var(--ink-1000); font-family: var(--font-heading); font-weight: 500; border-radius: 50%; overflow: hidden; flex-shrink: 0; position: relative; border: 1px solid var(--ink-500); }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .avatar.is-square { border-radius: var(--radius); }
+
+  .avatar.is-xs { width: 20px; height: 20px; font-size: 9px; }
+  .avatar.is-sm { width: 28px; height: 28px; font-size: 11px; }
+  .avatar.is-md { width: 40px; height: 40px; font-size: 14px; }
+  .avatar.is-lg { width: 56px; height: 56px; font-size: 20px; }
+  .avatar.is-xl { width: 88px; height: 88px; font-size: 30px; }
+
+  .avatar-stack { display: inline-flex; }
+  .avatar-stack .avatar { margin-left: -8px; border: 2px solid var(--ink-300); }
+  .avatar-stack .avatar:first-child { margin-left: 0; }
+  .avatar-stack.on-page { }
+  .avatar-stack.on-page .avatar { border-color: var(--ink-100); }
+  .avatar-stack .avatar.is-more { background: var(--ink-500); color: var(--ink-900); font-family: var(--font-mono); }
+
+  .avatar-status { position: relative; display: inline-block; }
+  .avatar-status::after { content: ""; position: absolute; right: -1px; bottom: -1px; width: 10px; height: 10px; border-radius: 50%; background: var(--signal-500); border: 2px solid var(--ink-300); }
+  .avatar-status.is-offline::after { background: var(--ink-700); }
+  .avatar-status.is-away::after    { background: var(--warning-500); }
+  .avatar-status.is-busy::after    { background: var(--danger-500); }
+  .avatar-status.is-xs::after { width: 6px; height: 6px; border-width: 1px; }
+  .avatar-status.is-sm::after { width: 8px; height: 8px; }
+  .avatar-status.is-lg::after { width: 12px; height: 12px; }
+  .avatar-status.is-xl::after { width: 16px; height: 16px; border-width: 3px; }
+
+  /* ── 08 · ICONS ───────────────────────────────── */
+  .ico { display: inline-block; width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vertical-align: middle; }
+  .ico.is-16 { width: 16px; height: 16px; }
+  .ico.is-20 { width: 20px; height: 20px; }
+  .ico.is-24 { width: 24px; height: 24px; }
+  .ico.is-32 { width: 32px; height: 32px; }
+
+  .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: var(--space-px); background: var(--ink-500); border: 1px solid var(--ink-500); border-radius: var(--radius); overflow: hidden; }
+  .icon-cell { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); padding: var(--space-4) var(--space-3); background: var(--ink-300); }
+  .icon-cell .ico { color: var(--ink-1000); width: 22px; height: 22px; }
+  .icon-cell .name { font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--ink-700); letter-spacing: var(--tracking-snug); text-align: center; }
+
+  .icon-sizes { display: flex; align-items: flex-end; gap: var(--space-6); flex-wrap: wrap; }
+  .icon-size-cell { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); }
+  .icon-size-cell .ico { color: var(--ink-1000); }
+  .icon-size-cell .label { font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--ink-700); letter-spacing: var(--tracking-wide); }
+
+  /* ── 09 · DIVIDERS ────────────────────────────── */
+  .divider { display: block; width: 100%; height: 1px; background: var(--ink-500); border: 0; margin: 0; }
+  .divider.is-thick { height: 2px; background: var(--ink-1000); opacity: 0.85; }
+  .divider.is-dashed { background: transparent; border-top: 1px dashed var(--ink-600); height: 0; }
+  .divider-v { display: inline-block; width: 1px; height: 1em; background: var(--ink-500); vertical-align: middle; margin: 0 var(--space-3); }
+  .divider-label { display: flex; align-items: center; gap: var(--space-4); margin: var(--space-4) 0; color: var(--ink-700); font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; }
+  .divider-label::before, .divider-label::after { content: ""; flex: 1; height: 1px; background: var(--ink-500); }
+
+  /* ── 10 · LINKS ───────────────────────────────── */
+  .link { color: var(--brand-400); border-bottom: 1px solid transparent; transition: color var(--duration-quick) var(--ease-out), border-color var(--duration-quick) var(--ease-out); }
+  .link:hover { color: var(--brand-300); border-bottom-color: var(--brand-400); }
+  .link:focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: 2px; }
+  .link:visited { color: var(--brand-400); }
+  .link.is-quiet { color: var(--ink-1000); border-bottom: 1px solid var(--ink-600); }
+  .link.is-quiet:hover { border-bottom-color: var(--brand-400); color: var(--brand-300); }
+  .link-with-icon { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .breadcrumb { display: inline-flex; align-items: center; flex-wrap: wrap; gap: var(--space-2); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-snug); }
+  .breadcrumb a { color: var(--ink-700); }
+  .breadcrumb a:hover { color: var(--ink-1000); }
+  .breadcrumb .sep { color: var(--ink-600); }
+  .breadcrumb .current { color: var(--ink-1000); }
+  .back-link { display: inline-flex; align-items: center; gap: var(--space-2); font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-700); }
+  .back-link:hover { color: var(--ink-1000); }
+
+  /* ── 11 · TOOLTIPS ────────────────────────────── */
+  .tt-pair { position: relative; display: inline-flex; align-items: center; }
+  .tt { position: absolute; padding: var(--space-2) var(--space-3); background: var(--ink-50); color: var(--ink-1000); font-family: var(--font-body); font-size: var(--text-xs); border: 1px solid var(--ink-500); border-radius: var(--radius); white-space: nowrap; box-shadow: var(--shadow-2); pointer-events: none; letter-spacing: var(--tracking-snug); }
+  .tt::after { content: ""; position: absolute; width: 8px; height: 8px; background: var(--ink-50); border: 1px solid var(--ink-500); transform: rotate(45deg); }
+  .tt.tt-top    { bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%); }
+  .tt.tt-top::after    { top: calc(100% - 5px); left: 50%; transform: translateX(-50%) rotate(45deg); border-top: 0; border-left: 0; }
+  .tt.tt-bottom { top: calc(100% + 10px); left: 50%; transform: translateX(-50%); }
+  .tt.tt-bottom::after { bottom: calc(100% - 5px); left: 50%; transform: translateX(-50%) rotate(45deg); border-bottom: 0; border-right: 0; }
+  .tt.tt-left   { right: calc(100% + 10px); top: 50%; transform: translateY(-50%); }
+  .tt.tt-left::after   { left: calc(100% - 5px); top: 50%; transform: translateY(-50%) rotate(45deg); border-bottom: 0; border-left: 0; }
+  .tt.tt-right  { left: calc(100% + 10px); top: 50%; transform: translateY(-50%); }
+  .tt.tt-right::after  { right: calc(100% - 5px); top: 50%; transform: translateY(-50%) rotate(45deg); border-top: 0; border-right: 0; }
+
+  /* ── 12 · LOADING ─────────────────────────────── */
+  .spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--ink-500); border-top-color: var(--brand-500); border-radius: 50%; animation: spin 0.7s linear infinite; }
+  .spinner.is-sm { width: 14px; height: 14px; border-width: 2px; }
+  .spinner.is-lg { width: 32px; height: 32px; border-width: 3px; }
+
+  .skeleton { display: block; background: linear-gradient(90deg, var(--ink-300) 0%, var(--ink-400) 50%, var(--ink-300) 100%); background-size: 200% 100%; border-radius: var(--radius-sm); animation: skel 1.6s ease-in-out infinite; }
+  @keyframes skel { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  .skeleton.is-text   { height: 12px; width: 100%; border-radius: 6px; }
+  .skeleton.is-text.is-short { width: 40%; }
+  .skeleton.is-text.is-medium { width: 70%; }
+  .skeleton.is-block  { width: 100%; aspect-ratio: 4 / 3; border-radius: var(--radius); }
+  .skeleton.is-square { width: 64px; height: 64px; border-radius: var(--radius); }
+  .skeleton.is-circle { width: 40px; height: 40px; border-radius: 50%; }
+
+  .progress { display: block; width: 100%; height: 6px; background: var(--ink-400); border-radius: var(--radius-pill); overflow: hidden; }
+  .progress > span { display: block; height: 100%; background: var(--brand-500); transition: width var(--duration-base) var(--ease-out); }
+  .progress.is-success > span { background: var(--signal-500); }
+  .progress.is-warning > span { background: var(--warning-500); }
+  .progress.is-danger > span  { background: var(--danger-500); }
+  .progress.is-indeterminate > span { width: 30% !important; animation: indet 1.4s var(--ease-in-out) infinite; }
+  @keyframes indet { 0% { transform: translateX(-100%); } 100% { transform: translateX(400%); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn[data-loading="true"]::after,
+    .spinner,
+    .skeleton,
+    .progress.is-indeterminate > span { animation: none !important; }
+  }
+
+  .upload-progress { display: grid; grid-template-columns: 1fr max-content; gap: var(--space-2) var(--space-4); align-items: center; padding: var(--space-3) var(--space-4); background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius); }
+  .upload-progress .name { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-900); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .upload-progress .pct  { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-1000); }
+  .upload-progress .progress { grid-column: 1 / -1; }
+
+  /* inconsistency table */
+  .incon-table { width: 100%; border-collapse: collapse; background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; }
+  .incon-table th, .incon-table td { padding: var(--space-3) var(--space-4); text-align: left; border-top: 1px solid var(--ink-500); font-size: var(--text-sm); vertical-align: top; }
+  .incon-table th { background: var(--ink-200); color: var(--ink-700); font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; font-weight: 500; border-top: 0; }
+  .incon-table code { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-1000); background: var(--ink-200); padding: 1px 6px; border-radius: var(--radius-sm); white-space: nowrap; }
+  .incon-table tr td:first-child { color: var(--ink-1000); white-space: nowrap; }
+
+  /* footer */
+  footer { margin-top: var(--space-20); padding-top: var(--space-6); border-top: 1px solid var(--ink-500); display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-wider); grid-column: 1 / -1; }
+  footer a { color: var(--ink-700); }
+  footer a:hover { color: var(--ink-1000); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ── ICON SPRITE ─────────────────────────────── -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+      <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></symbol>
+      <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+      <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+      <symbol id="i-user-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.66c.34-3.13 2.83-5.66 5-5.66s4.66 2.53 5 5.66"/></symbol>
+      <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+      <symbol id="i-folder" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></symbol>
+      <symbol id="i-folder-open" viewBox="0 0 24 24"><path d="M6 14l3-6h13l-3 6Z"/><path d="M2 6a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2v1H6l-4 7Z"/></symbol>
+      <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></symbol>
+      <symbol id="i-images" viewBox="0 0 24 24"><rect x="2" y="6" width="16" height="14" rx="2"/><path d="M6 2h14a2 2 0 0 1 2 2v14"/><circle cx="7" cy="11" r="1.5"/><polyline points="18 18 13 13 4 22"/></symbol>
+      <symbol id="i-video" viewBox="0 0 24 24"><rect x="2" y="6" width="14" height="12" rx="2"/><polygon points="22 8 22 16 16 12 22 8"/></symbol>
+      <symbol id="i-play" viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4"/></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+      <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></symbol>
+      <symbol id="i-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+      <symbol id="i-minus" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+      <symbol id="i-chevron-left" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></symbol>
+      <symbol id="i-chevron-right" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
+      <symbol id="i-chevron-up" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></symbol>
+      <symbol id="i-chevron-down" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+      <symbol id="i-arrow-left" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></symbol>
+      <symbol id="i-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+      <symbol id="i-arrow-up" viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></symbol>
+      <symbol id="i-arrow-down" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></symbol>
+      <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+      <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></symbol>
+      <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+      <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></symbol>
+      <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+      <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
+      <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></symbol>
+      <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+      <symbol id="i-whatsapp" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163a11.87 11.87 0 0 1-1.587-5.946C.16 5.337 5.494.001 12.05.001a11.81 11.81 0 0 1 8.413 3.488 11.82 11.82 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24z"/></symbol>
+      <symbol id="i-instagram" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37a4 4 0 1 1-4.73-4.73 4 4 0 0 1 4.73 4.73z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+      <symbol id="i-unlock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></symbol>
+      <symbol id="i-log-out" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></symbol>
+      <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+      <symbol id="i-external" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></symbol>
+      <symbol id="i-more-v" viewBox="0 0 24 24"><circle cx="12" cy="6" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="18" r="1"/></symbol>
+      <symbol id="i-more-h" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="18" cy="12" r="1"/></symbol>
+      <symbol id="i-filter" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></symbol>
+      <symbol id="i-sort" viewBox="0 0 24 24"><path d="M3 6h13"/><path d="M3 12h9"/><path d="M3 18h5"/><polyline points="17 11 21 15 17 19"/><line x1="21" y1="15" x2="13" y2="15"/></symbol>
+      <symbol id="i-tag" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></symbol>
+      <symbol id="i-credit-card" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></symbol>
+      <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></symbol>
+      <symbol id="i-refresh" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></symbol>
+      <symbol id="i-zoom-in" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></symbol>
+      <symbol id="i-zoom-out" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></symbol>
+      <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></symbol>
+      <symbol id="i-list" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></symbol>
+      <symbol id="i-map" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+      <symbol id="i-comment" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+      <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07L11.71 5.24"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+      <symbol id="i-pix" viewBox="0 0 24 24"><path d="M3.5 12 12 3.5 20.5 12 12 20.5z"/><path d="M8 8l4 4 4-4"/><path d="M8 16l4-4 4 4"/></symbol>
+      <symbol id="i-fingerprint" viewBox="0 0 24 24"><path d="M6 16a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4"/><path d="M4 12a8 8 0 0 1 16 0"/><path d="M9 20c.5-1.5 1.5-3 3-3s2.5 1.5 3 3"/></symbol>
+      <symbol id="i-wifi-off" viewBox="0 0 24 24"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.58 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></symbol>
+      <symbol id="i-image-off" viewBox="0 0 24 24"><line x1="1" y1="1" x2="23" y2="23"/><path d="M21 21H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2"/><path d="M21 15.5V5a2 2 0 0 0-2-2H8.5"/><path d="m21 15-5-5L5 21"/></symbol>
+    </defs>
+  </svg>
+
+  <!-- ── PAGE HEAD ────────────────────────────────── -->
+  <header class="page-head">
+    <a class="back" href="index.html">← Sistema</a>
+    <p class="eyebrow">Vinícius Souza · Components 03</p>
+    <h1 class="type-h1">Componentes atômicos</h1>
+    <p class="lede">
+      Os menores pedaços reutilizáveis da interface — botões, inputs, badges, chips, ícones, avatares, divisores, loading. Cada variante, cada estado, em uma só página. Tudo resolve em tokens do <code class="type-mono">colors_and_type.css</code>. Atom-level apenas; cards, sumários, tabelas e modais entram no Prompt 04.
+    </p>
+    <nav>
+      <a href="index.html">Sistema</a>
+      <a href="components-atomic.html" aria-current="page">Atômicos · 03</a>
+      <a href="colors.html">Cores</a>
+      <a href="typography.html">Tipografia</a>
+      <a href="spacing-elevation-motion.html">Espaço · Motion</a>
+    </nav>
+  </header>
+
+  <!-- ── TOC ──────────────────────────────────────── -->
+  <aside class="toc" aria-label="Índice da página">
+    <span class="toc-num">Nesta página</span>
+    <a href="#buttons">01 · Botões <b>6 × 3</b></a>
+<!-- TOC note: icon count 68 (promoted i-wifi-off + i-image-off in v1.0.7) -->
+    <a href="#inputs">02 · Inputs <b>8 tipos</b></a>
+    <a href="#selection">03 · Seleção <b>3</b></a>
+    <a href="#badges">04 · Badges <b>10</b></a>
+    <a href="#chips">05 · Chips <b>3 famílias</b></a>
+    <a href="#tags">06 · Tags</a>
+    <a href="#avatars">07 · Avatares <b>5 tamanhos</b></a>
+    <a href="#icons">08 · Ícones <b>66</b></a>
+    <a href="#dividers">09 · Divisores</a>
+    <a href="#links">10 · Links</a>
+    <a href="#tooltips">11 · Tooltips</a>
+    <a href="#loading">12 · Loading</a>
+    <a href="#inconsistencies">∆ · Inconsistências</a>
+  </aside>
+
+  <main class="col-main">
+
+  <!-- ────────────────────────────────────────────────
+       01 · BUTTONS
+       ──────────────────────────────────────────────── -->
+  <section class="atom" id="buttons" data-screen-label="03 · Atômicos · Botões">
+    <span class="s-num">01 · Botões</span>
+    <h2 class="s-title">Six intentions, three sizes.</h2>
+    <p class="s-deck">
+      A hierarquia de ação na superfície é o trabalho mais sensível desses átomos. Cada botão declara o quanto ele "quer" ser clicado.
+      <b>Primary</b> conduz a ação afirmativa principal. <b>Success</b> é reservado para dinheiro/confirmação. <b>Secondary</b> é a alternativa correta sem ser a recomendada. <b>Ghost</b> é descomprometido. <b>Destructive</b> é irreversível. <b>Link-button</b> é navegação inline com peso de botão.
+    </p>
+
+    <div class="doc-note">
+      <b>Regra de hierarquia:</b> nenhuma superfície tem dois botões <code class="type-mono">btn-primary</code> visíveis ao mesmo tempo. Se a tela exige duas ações fortes (ex.: <em>Salvar</em> e <em>Cancelar</em>), o secundário é <code class="type-mono">btn-secondary</code>; jamais dois primários. Em fluxos de checkout/pagamento, o primário é trocado por <code class="type-mono">btn-success</code> (verde signal) para sinalizar dinheiro.
+    </div>
+
+    <h3 class="row-title">Variantes — tamanho md (default)</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">Primary</span>
+        <button type="button" class="btn btn-primary">Publicar álbum</button>
+        <button type="button" class="btn btn-primary"><svg class="ico"><use href="#i-plus"/></svg>Novo evento</button>
+        <button type="button" class="btn btn-primary">Continuar<svg class="ico"><use href="#i-arrow-right"/></svg></button>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Success</span>
+        <button type="button" class="btn btn-success">Finalizar pagamento</button>
+        <button type="button" class="btn btn-success"><svg class="ico"><use href="#i-check"/></svg>Confirmar repasse</button>
+        <button type="button" class="btn btn-success"><svg class="ico"><use href="#i-download"/></svg>Baixar originais</button>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Secondary</span>
+        <button type="button" class="btn btn-secondary">Voltar</button>
+        <button type="button" class="btn btn-secondary"><svg class="ico"><use href="#i-arrow-left"/></svg>Galeria</button>
+        <button type="button" class="btn btn-secondary">Exportar CSV<svg class="ico"><use href="#i-download"/></svg></button>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Ghost</span>
+        <button type="button" class="btn btn-ghost">Cancelar</button>
+        <button type="button" class="btn btn-ghost"><svg class="ico"><use href="#i-x"/></svg>Limpar filtros</button>
+        <button type="button" class="btn btn-ghost">Ver detalhes</button>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Destructive</span>
+        <button type="button" class="btn btn-danger">Excluir álbum</button>
+        <button type="button" class="btn btn-danger"><svg class="ico"><use href="#i-trash"/></svg>Remover foto</button>
+        <button type="button" class="btn btn-danger">Solicitar remoção</button>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Link-button</span>
+        <button type="button" class="btn btn-link">Ver todos os 142</button>
+        <button type="button" class="btn btn-link">Reenviar e-mail<svg class="ico is-16"><use href="#i-refresh"/></svg></button>
+        <button type="button" class="btn btn-link">Mudar método<svg class="ico is-16"><use href="#i-chevron-right"/></svg></button>
+      </div>
+    </div>
+
+    <h3 class="row-title">Tamanhos — sm · md · lg</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">Small (sm)</span>
+        <button type="button" class="btn btn-primary btn-sm">Comprar</button>
+        <button type="button" class="btn btn-secondary btn-sm">Voltar</button>
+        <button type="button" class="btn btn-danger btn-sm">Excluir</button>
+        <button type="button" class="btn btn-ghost btn-sm">Cancelar</button>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Medium (md)</span>
+        <button type="button" class="btn btn-primary">Comprar</button>
+        <button type="button" class="btn btn-secondary">Voltar</button>
+        <button type="button" class="btn btn-danger">Excluir</button>
+        <button type="button" class="btn btn-ghost">Cancelar</button>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Large (lg)</span>
+        <button type="button" class="btn btn-primary btn-lg">Continuar para pagamento</button>
+        <button type="button" class="btn btn-secondary btn-lg">Voltar à galeria</button>
+        <button type="button" class="btn btn-success btn-lg">Pagar R$ 75,60</button>
+      </div>
+    </div>
+
+    <h3 class="row-title">Estados — rest · hover · focus-visible · active · disabled · loading <span style="font-weight: 400; color: var(--ink-700); font-size: 0.85em;"><b>Decisão de escopo</b>: Active demoed em <code class="type-mono">primary</code> e <code class="type-mono">secondary</code> (botões de maior peso visual). <code class="type-mono">ghost</code>, <code class="type-mono">destructive</code>, <code class="type-mono">success</code> e <code class="type-mono">link-button</code> reusam o mesmo padrão de active (translateY 1px + filter brightness 0.95) — render demonstrativo seria redundância. Foco-visible e disabled são os states críticos pra esses; ambos estão renderizados.</span></h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">Primary</span>
+        <button type="button" class="btn btn-primary">Rest</button>
+        <button type="button" class="btn btn-primary force-hover">Hover</button>
+        <button type="button" class="btn btn-primary force-focus">Focus</button>
+        <button type="button" class="btn btn-primary force-active">Active</button>
+        <button type="button" class="btn btn-primary" disabled>Disabled</button>
+        <button type="button" class="btn btn-primary" data-loading="true">Loading</button>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Secondary</span>
+        <button type="button" class="btn btn-secondary">Rest</button>
+        <button type="button" class="btn btn-secondary force-hover">Hover</button>
+        <button type="button" class="btn btn-secondary force-focus">Focus</button>
+        <button type="button" class="btn btn-secondary force-active">Active</button>
+        <button type="button" class="btn btn-secondary" disabled>Disabled</button>
+        <button type="button" class="btn btn-secondary" data-loading="true">Loading</button>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Ghost</span>
+        <button type="button" class="btn btn-ghost">Rest</button>
+        <button type="button" class="btn btn-ghost force-hover">Hover</button>
+        <button type="button" class="btn btn-ghost force-focus">Focus</button>
+        <button type="button" class="btn btn-ghost" disabled>Disabled</button>
+        <button type="button" class="btn btn-ghost" data-loading="true">Loading</button>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Destructive</span>
+        <button type="button" class="btn btn-danger">Rest</button>
+        <button type="button" class="btn btn-danger force-hover">Hover</button>
+        <button type="button" class="btn btn-danger force-focus">Focus</button>
+        <button type="button" class="btn btn-danger" disabled>Disabled</button>
+        <button type="button" class="btn btn-danger" data-loading="true">Loading</button>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Success</span>
+        <button type="button" class="btn btn-success">Rest</button>
+        <button type="button" class="btn btn-success force-hover">Hover</button>
+        <button type="button" class="btn btn-success force-focus">Focus</button>
+        <button type="button" class="btn btn-success" disabled>Disabled</button>
+        <button type="button" class="btn btn-success" data-loading="true">Loading</button>
+      </div>
+      <p class="doc-rule"><b>Focus-ring:</b> idêntico em todas as variantes — <code class="type-mono">var(--focus-ring)</code> = anel 2px de <code class="type-mono">--ink-100</code> + anel 2px de <code class="type-mono">--brand-500</code>. Nunca substitua por outline padrão do browser.</p>
+    </div>
+
+    <h3 class="row-title">Icon-only · ícone líder · ícone trailing</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">Icon-only</span>
+        <button type="button" class="btn btn-secondary btn-icon btn-sm" aria-label="Anterior"><svg class="ico"><use href="#i-chevron-left"/></svg></button>
+        <button type="button" class="btn btn-secondary btn-icon" aria-label="Buscar"><svg class="ico"><use href="#i-search"/></svg></button>
+        <button type="button" class="btn btn-secondary btn-icon" aria-label="Mais opções"><svg class="ico"><use href="#i-more-v"/></svg></button>
+        <button type="button" class="btn btn-ghost btn-icon" aria-label="Fechar"><svg class="ico"><use href="#i-x"/></svg></button>
+        <button type="button" class="btn btn-danger btn-icon" aria-label="Excluir"><svg class="ico"><use href="#i-trash"/></svg></button>
+        <button type="button" class="btn btn-primary btn-icon btn-lg" aria-label="Adicionar ao carrinho"><svg class="ico"><use href="#i-cart"/></svg></button>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Ícone leading</span>
+        <button type="button" class="btn btn-primary"><svg class="ico"><use href="#i-upload"/></svg>Enviar fotos</button>
+        <button type="button" class="btn btn-secondary"><svg class="ico"><use href="#i-filter"/></svg>Filtrar</button>
+        <button type="button" class="btn btn-ghost"><svg class="ico"><use href="#i-edit"/></svg>Editar</button>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Ícone trailing</span>
+        <button type="button" class="btn btn-primary">Continuar<svg class="ico"><use href="#i-arrow-right"/></svg></button>
+        <button type="button" class="btn btn-secondary">Ver mais<svg class="ico"><use href="#i-chevron-down"/></svg></button>
+        <button type="button" class="btn btn-link">Abrir no site<svg class="ico is-16"><use href="#i-external"/></svg></button>
+      </div>
+    </div>
+
+    <dl class="xref">
+      <dt>Live CSS</dt>
+      <dd><code>.btn</code>, <code>.btn-primary</code>, <code>.btn-secondary</code>, <code>.btn-ghost</code>, <code>.btn-danger</code>, <code>.btn-success</code>, <code>.btn-sm</code>, <code>.btn-lg</code>, <code>.btn-full</code> — <code>src/app/base.css</code> + <code>src/app/components.css</code></dd>
+      <dt>Uso atual</dt>
+      <dd>431 call-sites · primary 88 · secondary 68 · ghost 79 · danger 47 · success 32 · sm 91 · lg 18 · full 5</dd>
+      <dt>Preview</dt>
+      <dd><a class="link" href="preview/components-buttons.html">preview/components-buttons.html</a></dd>
+    </dl>
+  </section>
+
+  <!-- ────────────────────────────────────────────────
+       02 · INPUTS
+       ──────────────────────────────────────────────── -->
+  <section class="atom" id="inputs" data-screen-label="03 · Atômicos · Inputs">
+    <span class="s-num">02 · Inputs</span>
+    <h2 class="s-title">Eight types, six states, two layouts.</h2>
+    <p class="s-deck">
+      Todos os inputs compartilham o mesmo fundo <code class="type-mono">--ink-400</code>, a mesma borda <code class="type-mono">--ink-500</code> e o mesmo raio <code class="type-mono">--radius</code> (8px).
+      O foco é um anel de <code class="type-mono">var(--focus-ring)</code> + troca de borda para <code class="type-mono">--brand-500</code>. O erro reaproveita o mesmo padrão substituindo <code class="type-mono">--brand-500</code> por <code class="type-mono">--danger-500</code>.
+    </p>
+
+    <h3 class="row-title">Tipos — text · email · password · number · search · tel · date · url</h3>
+    <div class="demo">
+      <div class="form-row is-cols-2">
+        <label class="field"><span class="field-label">Nome completo</span>
+          <input type="text" placeholder="Como você assina">
+        </label>
+        <label class="field"><span class="field-label">E-mail</span>
+          <input type="email" placeholder="onde respondemos">
+        </label>
+        <label class="field"><span class="field-label">Senha</span>
+          <input type="password" placeholder="mínimo 10 caracteres">
+        </label>
+        <label class="field"><span class="field-label">Quantidade</span>
+          <input type="number" placeholder="0" value="3">
+        </label>
+        <label class="field"><span class="field-label">Buscar</span>
+          <div class="input-affix">
+            <svg class="ico is-16 leading"><use href="#i-search"/></svg>
+            <input type="search" class="input has-leading" placeholder="Álbum, mês, ano…">
+          </div>
+        </label>
+        <label class="field"><span class="field-label">WhatsApp</span>
+          <input type="tel" placeholder="(00) 00000-0000">
+        </label>
+        <label class="field"><span class="field-label">Data do evento</span>
+          <input type="date" value="2026-04-17">
+        </label>
+        <label class="field"><span class="field-label">URL do site</span>
+          <input type="url" placeholder="https://">
+        </label>
+      </div>
+    </div>
+
+    <h3 class="row-title">Textarea · select · file</h3>
+    <div class="demo">
+      <div class="form-row is-cols-2">
+        <label class="field"><span class="field-label">Mensagem</span>
+          <textarea placeholder="Conte o motivo, em até 280 caracteres."></textarea>
+        </label>
+        <label class="field"><span class="field-label">Categoria</span>
+          <select>
+            <option>Rodeio</option>
+            <option>Corrida</option>
+            <option>Editorial</option>
+            <option>Natureza</option>
+          </select>
+        </label>
+        <label class="field-file">
+          <svg class="ico"><use href="#i-upload"/></svg>
+          <span>Selecionar arquivo</span>
+          <span class="name">vs-portfolio-2026.zip · 12,4 MB</span>
+          <input type="file">
+        </label>
+        <label class="field-file">
+          <svg class="ico"><use href="#i-image"/></svg>
+          <span>Anexar foto de capa</span>
+          <span class="name">nenhum arquivo</span>
+          <input type="file">
+        </label>
+      </div>
+    </div>
+
+    <h3 class="row-title">Estados — rest · hover · focus · filled · error · disabled · read-only</h3>
+    <div class="demo">
+      <div class="form-row is-cols-2">
+        <label class="field"><span class="field-label">Rest</span>
+          <input type="text" placeholder="Toque para preencher">
+        </label>
+        <label class="field"><span class="field-label">Filled</span>
+          <input type="text" value="viniciusrsouza@gmail.com">
+        </label>
+        <label class="field"><span class="field-label">Focus (visualizado)</span>
+          <input type="text" value="viniciusrsouza@gmail.com" class="force-focus" style="border-color: var(--brand-500); background: var(--ink-300);">
+        </label>
+        <label class="field is-error"><span class="field-label">Error</span>
+          <input type="text" value="123.456.789-00">
+          <span class="field-error-msg"><svg class="ico is-16"><use href="#i-alert"/></svg>CPF inválido — verifique os dígitos.</span>
+        </label>
+        <label class="field"><span class="field-label">Disabled</span>
+          <input type="text" value="bloqueado durante o upload" disabled>
+        </label>
+        <label class="field"><span class="field-label">Read-only</span>
+          <input type="text" value="https://viniciussouza.foto/evento/abertura-safra-2026" readonly>
+        </label>
+      </div>
+    </div>
+
+    <h3 class="row-title">Com ícone · com prefixo · com helper · com erro</h3>
+    <div class="demo">
+      <div class="form-row is-cols-2">
+        <label class="field"><span class="field-label">Buscar (ícone líder)</span>
+          <div class="input-affix">
+            <svg class="ico is-16 leading"><use href="#i-search"/></svg>
+            <input type="search" class="input has-leading" placeholder="Álbum, mês, ano…">
+          </div>
+        </label>
+        <label class="field"><span class="field-label">Senha (ícone trailing)</span>
+          <div class="input-affix">
+            <input type="password" class="input has-trailing" value="••••••••••">
+            <svg class="ico trailing"><use href="#i-eye"/></svg>
+          </div>
+        </label>
+        <label class="field"><span class="field-label">Preço de foto</span>
+          <div class="input-affix has-prefix">
+            <span class="prefix">R$</span>
+            <input type="number" class="input" value="28,80" step="0.10">
+          </div>
+        </label>
+        <label class="field"><span class="field-label">Subdomínio</span>
+          <div class="input-affix has-prefix">
+            <span class="prefix">https://</span>
+            <input type="text" class="input" value="viniciussouza.foto">
+          </div>
+        </label>
+        <label class="field"><span class="field-label">CPF do cliente</span>
+          <input type="text" placeholder="000.000.000-00">
+          <span class="field-helper">Usamos só para emissão de nota fiscal — nunca aparece publicamente.</span>
+        </label>
+        <label class="field is-error"><span class="field-label">E-mail de recibo</span>
+          <input type="email" value="vinic@.com">
+          <span class="field-error-msg"><svg class="ico is-16"><use href="#i-alert"/></svg>E-mail incompleto — confirme o domínio.</span>
+        </label>
+      </div>
+    </div>
+
+    <h3 class="row-title">Tamanhos — sm · md · lg</h3>
+    <div class="demo">
+      <div class="form-row is-cols-2">
+        <label class="field is-sm"><span class="field-label">Pequeno (sm) · tabelas, admin denso</span>
+          <input type="text" placeholder="13px · padding 8 12">
+        </label>
+        <label class="field"><span class="field-label">Padrão (md) · UI geral</span>
+          <input type="text" placeholder="13px · padding 12 16">
+        </label>
+        <label class="field is-lg"><span class="field-label">Grande (lg) · hero, login, checkout</span>
+          <input type="text" placeholder="15px · padding 12 20">
+        </label>
+      </div>
+    </div>
+
+    <h3 class="row-title">Layout — label-top (default) · label-inline</h3>
+    <div class="demo">
+      <div class="form-row is-cols-2">
+        <label class="field"><span class="field-label">Label-top · default</span>
+          <input type="text" value="A label fica acima do controle.">
+        </label>
+        <div class="form-row is-inline">
+          <span class="field-label" id="lbl-inline-1">Label-inline</span>
+          <input type="text" value="A label fica à esquerda, alinhada à direita." aria-labelledby="lbl-inline-1">
+        </div>
+      </div>
+      <p class="doc-rule"><b>Quando usar inline:</b> formulários de admin com 4+ campos curtos lado a lado (preços, comissões, cupons). <b>Quando NÃO usar:</b> public/cliente — label-top sempre.</p>
+    </div>
+
+    <dl class="xref">
+      <dt>Live CSS</dt>
+      <dd><code>.form-input</code>, <code>.form-textarea</code>, <code>.form-select</code>, <code>.form-label</code>, <code>.password-wrapper</code>, <code>.password-toggle</code> — <code>src/app/forms.css</code></dd>
+      <dt>Uso atual</dt>
+      <dd>266 inputs · 156 labels — pervasivo em <code>/admin</code>, <code>/minha-conta</code>, <code>/checkout</code>, <code>/cadastro</code></dd>
+      <dt>Preview</dt>
+      <dd><a class="link" href="preview/components-inputs.html">preview/components-inputs.html</a></dd>
+    </dl>
+  </section>
+
+  <!-- ────────────────────────────────────────────────
+       03 · SELECTION
+       ──────────────────────────────────────────────── -->
+  <section class="atom" id="selection" data-screen-label="03 · Atômicos · Seleção">
+    <span class="s-num">03 · Seleção</span>
+    <h2 class="s-title">Checkbox, radio, toggle.</h2>
+    <p class="s-deck">
+      <b>Checkbox</b> — múltipla escolha; <b>radio</b> — escolha exclusiva entre 2–4 opções visíveis; <b>toggle</b> — liga/desliga uma configuração com efeito imediato. Quatro ou mais opções de escolha exclusiva viram <code class="type-mono">select</code>.
+    </p>
+
+    <h3 class="row-title">Checkbox</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">Estados</span>
+        <label class="check-row"><input type="checkbox">Não marcada</label>
+        <label class="check-row"><input type="checkbox" checked>Marcada</label>
+        <label class="check-row"><input type="checkbox" class="force-focus">Focus visualizado</label>
+        <label class="check-row is-disabled"><input type="checkbox" disabled>Desabilitada</label>
+        <label class="check-row is-disabled"><input type="checkbox" checked disabled>Marcada · desabilitada</label>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Empilhada</span>
+        <div style="display:flex; flex-direction:column; gap: var(--space-2);">
+          <label class="check-row"><input type="checkbox" checked>Receber e-mail quando o álbum for publicado</label>
+          <label class="check-row"><input type="checkbox" checked>Receber notificação de novo comentário</label>
+          <label class="check-row"><input type="checkbox">Receber comunicações de marketing</label>
+        </div>
+      </div>
+      <p class="doc-rule"><b>Regra de empilhamento:</b> checkboxes em coluna usam <code class="type-mono">gap: var(--space-2)</code> (8px). Em linha — uso raro — <code class="type-mono">gap: var(--space-5)</code> (20px). Texto-longo sempre quebra para a próxima linha, nunca alinha à direita do controle.</p>
+    </div>
+
+    <h3 class="row-title">Radio</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">Estados</span>
+        <label class="radio-row"><input type="radio" name="r-demo-1">Opção</label>
+        <label class="radio-row"><input type="radio" name="r-demo-1" checked>Selecionada</label>
+        <label class="radio-row"><input type="radio" name="r-demo-1" class="force-focus">Focus</label>
+        <label class="radio-row is-disabled"><input type="radio" disabled>Desabilitada</label>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Grupo</span>
+        <div style="display:flex; flex-direction:column; gap: var(--space-2);">
+          <label class="radio-row"><input type="radio" name="metodo-pgto" checked>Pix · à vista (R$ 75,60)</label>
+          <label class="radio-row"><input type="radio" name="metodo-pgto">Cartão de crédito · 1× R$ 75,60</label>
+          <label class="radio-row"><input type="radio" name="metodo-pgto">Cartão de crédito · 2× R$ 39,36 com taxa</label>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="row-title">Toggle</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">Estados</span>
+        <label class="toggle-row"><input type="checkbox">Desligado</label>
+        <label class="toggle-row"><input type="checkbox" checked>Ligado</label>
+        <label class="toggle-row"><input type="checkbox" class="force-focus">Focus</label>
+        <label class="toggle-row"><input type="checkbox" disabled>Desabilitado</label>
+        <label class="toggle-row"><input type="checkbox" checked disabled>Ligado · desabilitado</label>
+      </div>
+      <p class="doc-rule"><b>Quando usar toggle vs checkbox:</b> toggle = efeito imediato e reversível (notificações, modo escuro, álbum público). Checkbox = parte de um formulário a ser submetido. Toggle nunca aparece em wizard/checkout.</p>
+    </div>
+
+    <!-- check-row surface variant — adicionado em Patch v1.0.9 (2026-05-11) -->
+    <h3 class="row-title">check-row · variante de superfície (Patch v1.0.9)</h3>
+    <p class="s-deck">
+      Usado em formulários públicos (contato, remoção LGPD, cadastro) onde o checkbox precisa de mais peso visual — área clicável maior, borda de contenção e hover/focus explícitos. Estrutura canônica:
+      <code class="type-mono">&lt;label class="check-row"&gt;&lt;input type="checkbox"&gt; &lt;span class="check-row-label"&gt;Texto&lt;/span&gt;&lt;/label&gt;</code>
+    </p>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">Variantes</span>
+        <!-- Variante 1: default (não marcada) -->
+        <label class="check-row" style="display:flex;align-items:flex-start;gap:10px;font-size:12.5px;color:var(--ink-900);cursor:pointer;padding:10px 12px;border-radius:var(--radius);background:var(--ink-300);border:1px solid var(--ink-500);">
+          <input type="checkbox" style="margin-top:2px;flex-shrink:0;width:16px;height:16px;accent-color:var(--brand-500);"/>
+          <span class="check-row-label">Não marcada — estado padrão</span>
+        </label>
+        <!-- Variante 2: checked -->
+        <label class="check-row" style="display:flex;align-items:flex-start;gap:10px;font-size:12.5px;color:var(--ink-900);cursor:pointer;padding:10px 12px;border-radius:var(--radius);background:var(--ink-300);border:1px solid var(--brand-500);">
+          <input type="checkbox" checked style="margin-top:2px;flex-shrink:0;width:16px;height:16px;accent-color:var(--brand-500);"/>
+          <span class="check-row-label">Marcada — borda muda para <code class="type-mono">--brand-500</code></span>
+        </label>
+        <!-- Variante 3: focus-visible -->
+        <label class="check-row" style="display:flex;align-items:flex-start;gap:10px;font-size:12.5px;color:var(--ink-900);cursor:pointer;padding:10px 12px;border-radius:var(--radius);background:var(--ink-400);border:1px solid var(--brand-500);box-shadow:var(--focus-ring);">
+          <input type="checkbox" style="margin-top:2px;flex-shrink:0;width:16px;height:16px;accent-color:var(--brand-500);"/>
+          <span class="check-row-label">Focus-visible — <code class="type-mono">box-shadow: var(--focus-ring)</code></span>
+        </label>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Exemplo real</span>
+        <label class="check-row" style="display:flex;align-items:flex-start;gap:10px;font-size:12.5px;color:var(--ink-900);cursor:pointer;padding:10px 12px;border-radius:var(--radius);background:var(--ink-300);border:1px solid var(--ink-500);">
+          <input type="checkbox" checked style="margin-top:2px;flex-shrink:0;width:16px;height:16px;accent-color:var(--brand-500);"/>
+          <span class="check-row-label">Aceito ser contatado por e-mail ou WhatsApp conforme a <a class="link" href="#">política de privacidade</a>.</span>
+        </label>
+      </div>
+      <p class="doc-rule">
+        <b>Tokens consumidos:</b> <code class="type-mono">--ink-300</code> (bg), <code class="type-mono">--ink-500</code> (border default), <code class="type-mono">--ink-700</code> (border hover), <code class="type-mono">--brand-500</code> (accent + border checked + focus-ring), <code class="type-mono">--focus-ring</code> (focus-visible).<br/>
+        <b>Espaçamento:</b> padding <code class="type-mono">10px 12px</code>, gap <code class="type-mono">10px</code>, input <code class="type-mono">margin-top: 2px</code> para alinhar com a primeira linha do texto.<br/>
+        <b>Cross-ref src/:</b> <code>src/app/contato/page.js</code>, forms de cadastro (<code>src/app/cadastro/page.js</code>), modal de remoção LGPD (<code>src/components/RemovalModal.js</code>).
+      </p>
+    </div>
+
+    <dl class="xref">
+      <dt>Live CSS</dt>
+      <dd>Live src/ não define <code>.checkbox</code>, <code>.radio</code> ou <code>.toggle</code> dedicadas — usa <code>input[type=checkbox]</code> com <code>accent-color</code> implícito. <b>Componente novo</b> nesta página.</dd>
+      <dt>Cross-ref</dt>
+      <dd>Próxima migração: substituir <code>accent-color</code> por essas classes em <code>src/app/admin/configuracoes/*</code> e <code>src/app/minha-conta/configuracoes/page.js</code>.</dd>
+      <dt>check-row surface</dt>
+      <dd>Patch v1.0.9 · 2026-05-11 — variante com superfície escura para formulários públicos. Definido em <code>mockups/frontend-final/shared.css</code>. Ver uso em telas 10 (Contato), 03 (Modal remoção LGPD) e 09 (Cadastro).</dd>
+    </dl>
+  </section>
+
+  <!-- ────────────────────────────────────────────────
+       04 · BADGES
+       ──────────────────────────────────────────────── -->
+  <section class="atom" id="badges" data-screen-label="03 · Atômicos · Badges">
+    <span class="s-num">04 · Badges</span>
+    <h2 class="s-title">Marcadores curtos de tipo, contagem ou meta.</h2>
+    <p class="s-deck">
+      Badges marcam <em>o que algo é</em> — não <em>o estado atual de um processo</em>. Para status (Pago, Pendente…) use <a class="link" href="#chips">chips de status</a> na seção 05. Badges são tipográficos em <code class="type-mono">--font-mono</code>, ALL CAPS, com leve <em>letter-spacing</em>.
+    </p>
+
+    <h3 class="row-title">Semânticos — success · warning · danger · info · neutral · brand</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">Filled</span>
+        <span class="badge b-success">Pago</span>
+        <span class="badge b-warning">Pendente</span>
+        <span class="badge b-danger">Cancelado</span>
+        <span class="badge b-info">Novo</span>
+        <span class="badge b-neutral">Rascunho</span>
+        <span class="badge b-brand">VIP</span>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Com ponto</span>
+        <span class="badge b-success"><span class="dot"></span>Pago</span>
+        <span class="badge b-warning"><span class="dot"></span>Pendente</span>
+        <span class="badge b-danger"><span class="dot"></span>Falhou</span>
+        <span class="badge b-info"><span class="dot"></span>Em revisão</span>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Outline</span>
+        <span class="badge b-success is-outline">Pago</span>
+        <span class="badge b-warning is-outline">Pendente</span>
+        <span class="badge b-danger is-outline">Cancelado</span>
+        <span class="badge b-info is-outline">Novo</span>
+        <span class="badge b-neutral is-outline">Rascunho</span>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Tamanho sm</span>
+        <span class="badge b-success is-sm">PAGO</span>
+        <span class="badge b-warning is-sm">PEND</span>
+        <span class="badge b-info is-sm">12</span>
+        <span class="badge b-brand is-sm">3</span>
+        <span class="badge b-neutral is-sm">−</span>
+      </div>
+    </div>
+
+    <h3 class="row-title">Sub-marcas — uma badge por vertical</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">Verticais</span>
+        <span class="badge b-sub-editorial">Editorial</span>
+        <span class="badge b-sub-esportes">Esportes</span>
+        <span class="badge b-sub-natureza">Natureza</span>
+        <span class="badge b-sub-fotografia">Fotografia</span>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Com ponto</span>
+        <span class="badge b-sub-editorial"><span class="dot"></span>Editorial</span>
+        <span class="badge b-sub-esportes"><span class="dot"></span>Rodeio</span>
+        <span class="badge b-sub-natureza"><span class="dot"></span>Trilha</span>
+      </div>
+      <p class="doc-rule">Sub-marca não substitui um <em>chip de status</em>. Use sub-marca para <em>identificar</em> a vertical de um álbum/evento; use status chip para indicar <em>onde está</em> o pedido daquele álbum.</p>
+    </div>
+
+    <dl class="xref">
+      <dt>Live CSS</dt>
+      <dd>Live src/ define <code>.badge</code> mas sem variantes (zero) — uso atual é <em>inline styles</em>. As classes <code>.b-success</code>, <code>.b-warning</code>, etc. são canonizadas aqui. Existem variantes ad-hoc em <code>admin-sidebar-brand-badge</code> e <code>admin-header-badge</code> que devem migrar para <code>.badge.b-info</code>.</dd>
+      <dt>Preview</dt>
+      <dd><a class="link" href="preview/components-badges.html">preview/components-badges.html</a></dd>
+    </dl>
+  </section>
+
+  <!-- ────────────────────────────────────────────────
+       05 · CHIPS
+       ──────────────────────────────────────────────── -->
+  <section class="atom" id="chips" data-screen-label="03 · Atômicos · Chips">
+    <span class="s-num">05 · Chips</span>
+    <h2 class="s-title">Três famílias: status, filtro, eyebrow.</h2>
+    <p class="s-deck">
+      <b>Status chips</b> mostram o estado atual de um pedido/evento/proposta — pt-BR canônico, formato pill.
+      <b>Filter chips</b> são interativos (selecionável, com contagem, removível).
+      <b>Eyebrow chip</b> é o kicker editorial acima de títulos hero — não é interativo, não tem borda.
+    </p>
+
+    <h3 class="row-title">Status chips · pedido/pagamento (pt-BR canônico)</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">Pedido</span>
+        <span class="chip-status t-success"><span class="dot"></span>Pago</span>
+        <span class="chip-status t-success"><span class="dot"></span>Pago real</span>
+        <span class="chip-status t-warning"><span class="dot"></span>Pendente</span>
+        <span class="chip-status t-warning"><span class="dot"></span>Simulacao/liberacao</span>
+        <span class="chip-status t-danger"><span class="dot"></span>Cancelado</span>
+        <span class="chip-status t-danger"><span class="dot"></span>Reembolsado</span>
+        <span class="chip-status t-warning"><span class="dot"></span>Reembolso solicitado</span>
+        <span class="chip-status t-danger"><span class="dot"></span>Reembolso negado</span>
+      </div>
+      <p class="doc-rule">
+        <b>Origem:</b> rótulos pt-BR vêm byte-a-byte de <code class="type-mono">src/lib/commerceUtils.js:65–73</code> · <code class="type-mono">getFinancialStatus()</code>.
+        "Simulacao/liberacao" está sem acento <em>de propósito</em> (origem: live src/ — <code class="type-mono">commerceUtils.js:70</code>) — o DS replica fiel. É um único status agregado (<em>warning</em>) que cobre tanto o modo de teste quanto a liberação manual sem gateway real.
+      </p>
+    </div>
+
+    <h3 class="row-title">Status chips · proposta</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">Proposta</span>
+        <span class="chip-status t-warning"><span class="dot"></span>Pendente</span>
+        <span class="chip-status t-info"><span class="dot"></span>Contraproposta enviada</span>
+        <span class="chip-status t-success"><span class="dot"></span>Aceita</span>
+        <span class="chip-status t-success"><span class="dot"></span>Cliente aceitou</span>
+        <span class="chip-status t-danger"><span class="dot"></span>Rejeitada</span>
+        <span class="chip-status t-danger"><span class="dot"></span>Cliente rejeitou</span>
+        <span class="chip-status t-muted"><span class="dot"></span>Invalidada</span>
+        <span class="chip-status t-muted"><span class="dot"></span>Usada em pedido</span>
+      </div>
+      <p class="doc-rule"><b>Origem:</b> <code class="type-mono">src/app/admin/propostas/page.js</code> · <code class="type-mono">STATUS_META</code>.</p>
+    </div>
+
+    <h3 class="row-title">Status chips · evento · remoção · UI assíncrona</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">Evento</span>
+        <span class="chip-status t-success"><span class="dot"></span>Público</span>
+        <span class="chip-status t-danger"><span class="dot"></span>Privado</span>
+        <span class="chip-status t-muted"><span class="dot"></span>Não listado</span>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Remoção</span>
+        <span class="chip-status t-warning"><span class="dot"></span>Pendente</span>
+        <span class="chip-status t-danger"><span class="dot"></span>Aceita</span>
+        <span class="chip-status t-success"><span class="dot"></span>Rejeitada</span>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Async UI</span>
+        <span class="chip-status t-info"><span class="dot"></span>Processando…</span>
+        <span class="chip-status t-info"><span class="dot"></span>Aguardando confirmação…</span>
+        <span class="chip-status t-warning"><span class="dot"></span>Aguardando fotógrafo</span>
+        <span class="chip-status t-warning"><span class="dot"></span>Aguardando sua resposta</span>
+        <span class="chip-status t-success"><span class="dot"></span>Compra concluída</span>
+      </div>
+    </div>
+
+    <h3 class="row-title">Filter chips · selecionável · com contagem · removível</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">Galeria</span>
+        <button type="button" class="chip is-active">Todos<span class="count">142</span></button>
+        <button type="button" class="chip">Públicos<span class="count">128</span></button>
+        <button type="button" class="chip">Privados<span class="count">14</span></button>
+        <button type="button" class="chip">Rodeio<span class="count">38</span></button>
+        <button type="button" class="chip">Corrida<span class="count">47</span></button>
+        <button type="button" class="chip">Editorial<span class="count">23</span></button>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Removível</span>
+        <span class="chip">Abril 2026 <button class="remove" aria-label="Remover filtro"><svg class="ico"><use href="#i-x"/></svg></button></span>
+        <span class="chip">Itajá, GO <button class="remove" aria-label="Remover filtro"><svg class="ico"><use href="#i-x"/></svg></button></span>
+        <span class="chip is-active">Pago <button class="remove" aria-label="Remover filtro"><svg class="ico"><use href="#i-x"/></svg></button></span>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Estados</span>
+        <button type="button" class="chip">Rest</button>
+        <button type="button" class="chip is-active">Active</button>
+        <button type="button" class="chip force-focus">Focus</button>
+        <button type="button" class="chip" disabled style="opacity: 0.45; cursor: not-allowed;">Disabled</button>
+      </div>
+    </div>
+
+    <h3 class="row-title">Eyebrow chip · kicker editorial</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">Padrão</span>
+        <span class="chip-eyebrow">Fotografia Profissional</span>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Variações</span>
+        <span class="chip-eyebrow">142 álbuns · 38.217 fotos</span>
+        <span class="chip-eyebrow">Vinícius Souza · 2026</span>
+      </div>
+      <p class="doc-rule"><b>Usar onde:</b> apenas em hero/cover de página pública. Nunca no admin. Nunca em cards.</p>
+    </div>
+
+    <dl class="xref">
+      <dt>Live CSS</dt>
+      <dd>Filter chip: ad-hoc em <code>src/app/admin/*/page.js</code> e <code>src/app/evento/[id]/page.js</code> via inline styles. Status chip: <code>src/app/admin/pedidos/page.js · STATUS_META</code> + <code>src/app/admin/propostas/page.js</code> + <code>src/lib/commerceUtils.js</code>. <b>Componente novo</b>: classes <code>.chip</code>, <code>.chip-status</code>, <code>.chip-eyebrow</code>.</dd>
+      <dt>Preview</dt>
+      <dd><a class="link" href="preview/components-chips.html">preview/components-chips.html</a></dd>
+    </dl>
+  </section>
+
+  <!-- ────────────────────────────────────────────────
+       06 · TAGS
+       ──────────────────────────────────────────────── -->
+  <section class="atom" id="tags" data-screen-label="03 · Atômicos · Tags">
+    <span class="s-num">06 · Tags</span>
+    <h2 class="s-title">Marcadores de pasta, keyword e EXIF.</h2>
+    <p class="s-deck">
+      Tags são <em>metadados</em> — não interativos por padrão. Diferente de chips, não têm estado <em>active</em>. Caixa retangular com raio pequeno, mono-spaced, ícone líder opcional (line-svg, nunca emoji).
+    </p>
+
+    <h3 class="row-title">Variantes</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">Rest</span>
+        <span class="tag"><svg class="ico"><use href="#i-folder"/></svg>2026/abril</span>
+        <span class="tag"><svg class="ico"><use href="#i-tag"/></svg>rodeio</span>
+        <span class="tag"><svg class="ico"><use href="#i-map"/></svg>Itajá, GO</span>
+        <span class="tag"><svg class="ico"><use href="#i-image"/></svg>1 581 fotos</span>
+        <span class="tag">f/2.8 · 1/2000s · ISO 400</span>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Sem ícone</span>
+        <span class="tag">pôr-do-sol</span>
+        <span class="tag">retrato</span>
+        <span class="tag">contraluz</span>
+        <span class="tag">grão-fino</span>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Removível</span>
+        <span class="tag">rodeio <button class="remove" aria-label="Remover tag"><svg class="ico"><use href="#i-x"/></svg></button></span>
+        <span class="tag">corrida <button class="remove" aria-label="Remover tag"><svg class="ico"><use href="#i-x"/></svg></button></span>
+        <span class="tag">Itajá, GO <button class="remove" aria-label="Remover tag"><svg class="ico"><use href="#i-x"/></svg></button></span>
+      </div>
+    </div>
+
+    <p class="doc-rule"><b>Nunca:</b> usar emoji como ícone de tag (📂, 📁, 🏷️) — todos os ícones são SVG line via <code class="type-mono">&lt;use href="#i-..."&gt;</code>.</p>
+
+    <dl class="xref">
+      <dt>Live CSS</dt>
+      <dd>Não existe componente <code>.tag</code> em live src/ (2 uses sem CSS). <b>Componente novo</b>.</dd>
+    </dl>
+  </section>
+
+  <!-- ────────────────────────────────────────────────
+       07 · AVATARS
+       ──────────────────────────────────────────────── -->
+  <section class="atom" id="avatars" data-screen-label="03 · Atômicos · Avatares">
+    <span class="s-num">07 · Avatares</span>
+    <h2 class="s-title">Cinco tamanhos, fallback de iniciais, group-of-three.</h2>
+    <p class="s-deck">
+      Imagem se disponível; iniciais (até 2) sobre <code class="type-mono">--ink-400</code> como fallback. <code class="type-mono">--font-heading</code> peso 500. Borda hairline em <code class="type-mono">--ink-500</code> para garantir contorno sobre fundos escuros.
+    </p>
+
+    <h3 class="row-title">Tamanhos — xs · sm · md · lg · xl</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">Iniciais</span>
+        <span class="avatar is-xs">VS</span>
+        <span class="avatar is-sm">VS</span>
+        <span class="avatar is-md">VS</span>
+        <span class="avatar is-lg">VS</span>
+        <span class="avatar is-xl">VS</span>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Com imagem</span>
+        <span class="avatar is-xs"><img src="assets/imagery/sample-event-01.jpg" alt="Vinícius Souza"></span>
+        <span class="avatar is-sm"><img src="assets/imagery/sample-event-01.jpg" alt="Vinícius Souza"></span>
+        <span class="avatar is-md"><img src="assets/imagery/sample-event-01.jpg" alt="Vinícius Souza"></span>
+        <span class="avatar is-lg"><img src="assets/imagery/sample-event-01.jpg" alt="Vinícius Souza"></span>
+        <span class="avatar is-xl"><img src="assets/imagery/sample-event-01.jpg" alt="Vinícius Souza"></span>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Quadrado</span>
+        <span class="avatar is-md is-square">JD</span>
+        <span class="avatar is-lg is-square"><img src="assets/imagery/sample-event-02.jpg" alt="Joana Dias"></span>
+      </div>
+    </div>
+
+    <h3 class="row-title">Status-dot — online · away · busy · offline</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">md</span>
+        <span class="avatar-status"><span class="avatar is-md">VS</span></span>
+        <span class="avatar-status is-away"><span class="avatar is-md">JD</span></span>
+        <span class="avatar-status is-busy"><span class="avatar is-md">PL</span></span>
+        <span class="avatar-status is-offline"><span class="avatar is-md">MR</span></span>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">xs / sm</span>
+        <span class="avatar-status is-xs"><span class="avatar is-xs">VS</span></span>
+        <span class="avatar-status is-sm"><span class="avatar is-sm">JD</span></span>
+        <span class="avatar-status is-sm is-away"><span class="avatar is-sm">PL</span></span>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">lg / xl</span>
+        <span class="avatar-status is-lg"><span class="avatar is-lg">VS</span></span>
+        <span class="avatar-status is-xl is-busy"><span class="avatar is-xl">JD</span></span>
+      </div>
+    </div>
+
+    <h3 class="row-title">Group-of-three (patrocinadores · colaboradores)</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">3 + contagem</span>
+        <div class="avatar-stack">
+          <span class="avatar is-md">VS</span>
+          <span class="avatar is-md">JD</span>
+          <span class="avatar is-md">PL</span>
+          <span class="avatar is-md is-more">+12</span>
+        </div>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">3 mistos</span>
+        <div class="avatar-stack">
+          <span class="avatar is-sm"><img src="assets/imagery/sample-event-01.jpg" alt=""></span>
+          <span class="avatar is-sm">JD</span>
+          <span class="avatar is-sm"><img src="assets/imagery/sample-event-02.jpg" alt=""></span>
+        </div>
+      </div>
+    </div>
+
+    <dl class="xref">
+      <dt>Live React</dt>
+      <dd><code>src/components/Avatar.js</code> — props: <code>client</code>, <code>size</code> (default 40), <code>variant</code> (thumb|large), <code>rounded</code> (default true), <code>bordered</code> (default true), <code>fontScale</code> (default 0.42)</dd>
+      <dt>Live Uploader</dt>
+      <dd><code>src/components/AvatarUploader.js</code> — props: <code>client</code>, <code>onChange</code>, <code>size</code> (default 120), <code>disabled</code> · max 12 MB · <code>image/*</code></dd>
+      <dt>Uso atual</dt>
+      <dd>50+ chamadas — admin (clientes, colaboradores, pedidos, layout header), cliente (minha-conta header), público (event cards)</dd>
+      <dt>Preview</dt>
+      <dd><a class="link" href="preview/components-avatars.html">preview/components-avatars.html</a></dd>
+    </dl>
+  </section>
+
+  <!-- ────────────────────────────────────────────────
+       08 · ICONS
+       ──────────────────────────────────────────────── -->
+  <section class="atom" id="icons" data-screen-label="03 · Atômicos · Ícones">
+    <span class="s-num">08 · Ícones</span>
+    <h2 class="s-title">Sessenta e seis ícones em line-svg.</h2>
+    <p class="s-deck">
+      <b>Sempre inline SVG</b>, nunca emoji, nunca PNG, nunca Unicode glyph. Viewbox 24×24, <code class="type-mono">stroke-width: 2</code>, <code class="type-mono">stroke-linecap: round</code>, <code class="type-mono">stroke-linejoin: round</code>, <code class="type-mono">fill: none</code>. Cor herdada via <code class="type-mono">currentColor</code> — herda do texto pai. Tamanho via <code class="type-mono">.ico.is-16/is-20/is-24/is-32</code> ou <code class="type-mono">width</code>/<code class="type-mono">height</code> inline.
+    </p>
+
+    <h3 class="row-title">Tamanhos — 16 · 20 · 24 · 32</h3>
+    <div class="demo">
+      <div class="icon-sizes">
+        <div class="icon-size-cell"><svg class="ico is-16"><use href="#i-cart"/></svg><span class="label">16</span></div>
+        <div class="icon-size-cell"><svg class="ico is-20"><use href="#i-cart"/></svg><span class="label">20 · default</span></div>
+        <div class="icon-size-cell"><svg class="ico is-24"><use href="#i-cart"/></svg><span class="label">24</span></div>
+        <div class="icon-size-cell"><svg class="ico is-32"><use href="#i-cart"/></svg><span class="label">32</span></div>
+      </div>
+      <p class="doc-rule"><b>Stroke-width:</b> sempre 2px independente do tamanho. Em 32px isso fica perceptivelmente mais fino; é intencional — o sistema escolhe legibilidade ao invés de "presença".</p>
+    </div>
+
+    <h3 class="row-title">Catálogo (68)</h3>
+    <div class="demo" style="padding: var(--space-px);">
+      <div class="icon-grid">
+        <div class="icon-cell"><svg class="ico"><use href="#i-search"/></svg><span class="name">search</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-cart"/></svg><span class="name">cart</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-user"/></svg><span class="name">user</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-user-circle"/></svg><span class="name">user-circle</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-users"/></svg><span class="name">users</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-calendar"/></svg><span class="name">calendar</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-clock"/></svg><span class="name">clock</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-folder"/></svg><span class="name">folder</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-folder-open"/></svg><span class="name">folder-open</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-image"/></svg><span class="name">image</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-images"/></svg><span class="name">images</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-video"/></svg><span class="name">video</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-play"/></svg><span class="name">play</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-download"/></svg><span class="name">download</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-upload"/></svg><span class="name">upload</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-trash"/></svg><span class="name">trash</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-edit"/></svg><span class="name">edit</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-plus"/></svg><span class="name">plus</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-minus"/></svg><span class="name">minus</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-check"/></svg><span class="name">check</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-x"/></svg><span class="name">x · close</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-chevron-left"/></svg><span class="name">chevron-left</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-chevron-right"/></svg><span class="name">chevron-right</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-chevron-up"/></svg><span class="name">chevron-up</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-chevron-down"/></svg><span class="name">chevron-down</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-arrow-left"/></svg><span class="name">arrow-left</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-arrow-right"/></svg><span class="name">arrow-right</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-arrow-up"/></svg><span class="name">arrow-up</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-arrow-down"/></svg><span class="name">arrow-down</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-heart"/></svg><span class="name">heart</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-bookmark"/></svg><span class="name">bookmark</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-star"/></svg><span class="name">star</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-eye"/></svg><span class="name">eye</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-eye-off"/></svg><span class="name">eye-off</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-settings"/></svg><span class="name">settings</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-bell"/></svg><span class="name">bell</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-info"/></svg><span class="name">info</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-alert"/></svg><span class="name">alert</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-mail"/></svg><span class="name">mail</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-phone"/></svg><span class="name">phone</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-whatsapp"/></svg><span class="name">whatsapp</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-instagram"/></svg><span class="name">instagram</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-lock"/></svg><span class="name">lock</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-unlock"/></svg><span class="name">unlock</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-log-out"/></svg><span class="name">log-out</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-share"/></svg><span class="name">share</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-copy"/></svg><span class="name">copy</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-external"/></svg><span class="name">external-link</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-menu"/></svg><span class="name">menu</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-more-v"/></svg><span class="name">more-vertical</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-more-h"/></svg><span class="name">more-horizontal</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-filter"/></svg><span class="name">filter</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-sort"/></svg><span class="name">sort</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-tag"/></svg><span class="name">tag</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-credit-card"/></svg><span class="name">credit-card</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-receipt"/></svg><span class="name">receipt</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-refresh"/></svg><span class="name">refresh</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-zoom-in"/></svg><span class="name">zoom-in</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-zoom-out"/></svg><span class="name">zoom-out</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-grid"/></svg><span class="name">grid</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-list"/></svg><span class="name">list</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-map"/></svg><span class="name">map</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-comment"/></svg><span class="name">comment</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-link"/></svg><span class="name">link</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-pix"/></svg><span class="name">pix</span></div>
+        <div class="icon-cell"><svg class="ico"><use href="#i-fingerprint"/></svg><span class="name">fingerprint</span></div>
+      </div>
+    </div>
+
+    <dl class="xref">
+      <dt>Padrão</dt>
+      <dd>SVG sprite via <code>&lt;symbol id="i-name"&gt;</code> + <code>&lt;use href="#i-name"&gt;</code>. Inclua o sprite uma vez por página (ou via Next.js layout).</dd>
+      <dt>Preview</dt>
+      <dd><a class="link" href="preview/components-icons.html">preview/components-icons.html</a></dd>
+    </dl>
+  </section>
+
+  <!-- ────────────────────────────────────────────────
+       09 · DIVIDERS
+       ──────────────────────────────────────────────── -->
+  <section class="atom" id="dividers" data-screen-label="03 · Atômicos · Divisores">
+    <span class="s-num">09 · Divisores</span>
+    <h2 class="s-title">Hairline, etiquetado, vertical, tracejado, seção.</h2>
+    <p class="s-deck">Divisores não decoram, organizam. <code class="type-mono">--ink-500</code> é o hairline padrão; <code class="type-mono">--ink-600</code> é dashed para zona de upload; <code class="type-mono">--ink-1000</code> é o break de seção.</p>
+
+    <h3 class="row-title">Horizontal · hairline · etiquetado · tracejado · grosso</h3>
+    <div class="demo">
+      <div class="demo-row"><span class="demo-label">Hairline</span><div style="flex:1"><hr class="divider"></div></div>
+      <div class="divider-label">Pagamento</div>
+      <div class="demo-row"><span class="demo-label">Tracejado</span><div style="flex:1"><hr class="divider is-dashed"></div></div>
+      <div class="demo-row"><span class="demo-label">Grosso (seção)</span><div style="flex:1"><hr class="divider is-thick"></div></div>
+    </div>
+
+    <h3 class="row-title">Vertical (entre itens inline)</h3>
+    <div class="demo">
+      <div class="demo-row" style="align-items: center;">
+        <span style="color: var(--ink-900);">17 abr 2026</span>
+        <span class="divider-v"></span>
+        <span style="color: var(--ink-900);">Itajá, GO</span>
+        <span class="divider-v"></span>
+        <span style="color: var(--ink-900);">1 581 fotos</span>
+        <span class="divider-v"></span>
+        <span class="badge b-success">Pago</span>
+      </div>
+    </div>
+
+    <dl class="xref">
+      <dt>Live CSS</dt>
+      <dd><code>.divider</code> em <code>src/app/utilities.css</code> · 8 call-sites. <b>is-thick</b>, <b>is-dashed</b>, <b>vertical</b>, <b>labelled</b>: classes novas.</dd>
+    </dl>
+  </section>
+
+  <!-- ────────────────────────────────────────────────
+       10 · LINKS
+       ──────────────────────────────────────────────── -->
+  <section class="atom" id="links" data-screen-label="03 · Atômicos · Links">
+    <span class="s-num">10 · Links</span>
+    <h2 class="s-title">Inline · standalone · com-ícone · breadcrumb · back.</h2>
+    <p class="s-deck">Links são <code class="type-mono">--brand-400</code> com sublinhado on-hover. Em prose pública usam <code class="type-mono">.link.is-quiet</code> (sublinhado já visível em <code class="type-mono">--ink-600</code>) para não competir com a tipografia.</p>
+
+    <h3 class="row-title">Inline · standalone · com-ícone</h3>
+    <div class="demo">
+      <p style="margin: 0 0 var(--space-3); color: var(--ink-900);">
+        Texto corrido com um <a href="#" class="link">link inline</a> que aparece sem sublinhado até o hover. Em prose editorial use a variante <a href="#" class="link is-quiet">quiet</a>, que já vem sublinhada em <code class="type-mono">--ink-600</code>.
+      </p>
+      <div class="demo-row" style="margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px dashed var(--ink-500);">
+        <span class="demo-label">Standalone</span>
+        <a href="#" class="link">Ver todos os 142</a>
+        <a href="#" class="link">Política de privacidade</a>
+        <a href="#" class="link">Reenviar e-mail</a>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Com ícone</span>
+        <a href="#" class="link link-with-icon">Compartilhar<svg class="ico is-16"><use href="#i-share"/></svg></a>
+        <a href="#" class="link link-with-icon">Abrir no site<svg class="ico is-16"><use href="#i-external"/></svg></a>
+        <a href="#" class="link link-with-icon"><svg class="ico is-16"><use href="#i-download"/></svg>Baixar recibo</a>
+      </div>
+    </div>
+
+    <h3 class="row-title">Breadcrumb · back-link</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">Breadcrumb</span>
+        <nav class="breadcrumb">
+          <a href="#">Admin</a>
+          <span class="sep">›</span>
+          <a href="#">Eventos</a>
+          <span class="sep">›</span>
+          <a href="#">Abertura da Safra</a>
+          <span class="sep">›</span>
+          <span class="current">Mídia</span>
+        </nav>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Back-link</span>
+        <a href="#" class="back-link"><svg class="ico is-16"><use href="#i-arrow-left"/></svg>Voltar à galeria</a>
+        <a href="#" class="back-link"><svg class="ico is-16"><use href="#i-arrow-left"/></svg>Sistema</a>
+      </div>
+    </div>
+
+    <h3 class="row-title">Estados</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">link</span>
+        <a href="#" class="link">Rest</a>
+        <a href="#" class="link" style="color: var(--brand-300); border-bottom-color: var(--brand-400);">Hover</a>
+        <a href="#" class="link force-focus" style="border-radius: 2px;">Focus</a>
+        <a href="#" class="link" style="color: var(--brand-400);">Visited</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────────────────────────────────────────────
+       11 · TOOLTIPS
+       ──────────────────────────────────────────────── -->
+  <section class="atom" id="tooltips" data-screen-label="03 · Atômicos · Tooltips">
+    <span class="s-num">11 · Tooltips</span>
+    <h2 class="s-title">Top · bottom · left · right, sempre com seta.</h2>
+    <p class="s-deck">
+      Tooltips esclarecem affordances visuais — nunca contém ação. Texto curto (até 60 caracteres), uma linha. Aparecem após <code class="type-mono">--duration-base</code> (200ms) e somem em <code class="type-mono">--duration-quick</code> (120ms).
+      Aqui mostramos as 4 posições com tooltip permanentemente visível.
+    </p>
+
+    <h3 class="row-title">Posições</h3>
+    <div class="demo">
+      <div class="demo-row" style="gap: var(--space-12); padding: var(--space-8) var(--space-6);">
+        <span class="tt-pair">
+          <button type="button" class="btn btn-secondary btn-icon"><svg class="ico"><use href="#i-info"/></svg></button>
+          <span class="tt tt-top">Tooltip top</span>
+        </span>
+        <span class="tt-pair">
+          <button type="button" class="btn btn-secondary btn-icon"><svg class="ico"><use href="#i-info"/></svg></button>
+          <span class="tt tt-bottom">Tooltip bottom</span>
+        </span>
+        <span class="tt-pair">
+          <button type="button" class="btn btn-secondary btn-icon"><svg class="ico"><use href="#i-info"/></svg></button>
+          <span class="tt tt-left">Tooltip left</span>
+        </span>
+        <span class="tt-pair">
+          <button type="button" class="btn btn-secondary btn-icon"><svg class="ico"><use href="#i-info"/></svg></button>
+          <span class="tt tt-right">Tooltip right</span>
+        </span>
+      </div>
+    </div>
+
+    <p class="doc-rule"><b>Acessibilidade:</b> tooltip não é a única fonte de informação. Para ícone-só, sempre exporte <code class="type-mono">aria-label</code> na <code class="type-mono">&lt;button&gt;</code> — o tooltip é redundância visual, não acessibilidade.</p>
+  </section>
+
+  <!-- ────────────────────────────────────────────────
+       12 · LOADING
+       ──────────────────────────────────────────────── -->
+  <section class="atom" id="loading" data-screen-label="03 · Atômicos · Loading">
+    <span class="s-num">12 · Loading</span>
+    <h2 class="s-title">Spinner, skeleton, progress, upload.</h2>
+    <p class="s-deck">
+      Use <b>spinner</b> para esperas curtas (&lt;3s) e ações sem progresso conhecido. <b>Skeleton</b> para esperas com forma previsível (cards, listas). <b>Progress determinada</b> quando você sabe o percentual; <b>indeterminada</b> quando é tempo desconhecido mas a tarefa progride. <b>Upload-progress</b> é o caso específico de transferência de arquivo.
+    </p>
+
+    <h3 class="row-title">Spinner — sm · md · lg</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">Spinner</span>
+        <span class="spinner is-sm"></span>
+        <span class="spinner"></span>
+        <span class="spinner is-lg"></span>
+        <span style="color: var(--ink-800); font-family: var(--font-mono); font-size: var(--text-xs);">14 · 20 · 32 px</span>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Inline</span>
+        <span style="display:inline-flex; align-items:center; gap: var(--space-2); color: var(--ink-900); font-size: var(--text-sm);"><span class="spinner is-sm"></span>Processando pagamento…</span>
+      </div>
+    </div>
+
+    <h3 class="row-title">Skeleton</h3>
+    <div class="demo">
+      <div class="demo-row">
+        <span class="demo-label">Texto</span>
+        <div style="display:flex; flex-direction:column; gap:var(--space-2); flex:1; max-width: 360px;">
+          <span class="skeleton is-text is-medium"></span>
+          <span class="skeleton is-text"></span>
+          <span class="skeleton is-text is-short"></span>
+        </div>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Formas</span>
+        <span class="skeleton is-circle"></span>
+        <span class="skeleton is-square"></span>
+        <span class="skeleton is-block" style="max-width: 280px;"></span>
+      </div>
+      <div class="demo-row">
+        <span class="demo-label">Card</span>
+        <div style="width: 280px; padding: var(--space-4); background: var(--ink-300); border:1px solid var(--ink-500); border-radius: var(--radius-lg); display: flex; flex-direction: column; gap: var(--space-3);">
+          <span class="skeleton is-block" style="aspect-ratio: 16/10;"></span>
+          <span class="skeleton is-text is-medium"></span>
+          <span class="skeleton is-text is-short"></span>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="row-title">Progress — determinada · indeterminada · semânticas</h3>
+    <div class="demo">
+      <div class="demo-row" style="align-items: stretch;">
+        <span class="demo-label">Determinada</span>
+        <div style="flex:1; display:flex; flex-direction:column; gap: var(--space-2);">
+          <div class="progress"><span style="width: 32%;"></span></div>
+          <div class="progress"><span style="width: 68%;"></span></div>
+          <div class="progress"><span style="width: 100%;"></span></div>
+        </div>
+      </div>
+      <div class="demo-row" style="align-items: stretch;">
+        <span class="demo-label">Semânticas</span>
+        <div style="flex:1; display:flex; flex-direction:column; gap: var(--space-2);">
+          <div class="progress is-success"><span style="width: 100%;"></span></div>
+          <div class="progress is-warning"><span style="width: 62%;"></span></div>
+          <div class="progress is-danger"><span style="width: 23%;"></span></div>
+        </div>
+      </div>
+      <div class="demo-row" style="align-items: stretch;">
+        <span class="demo-label">Indeterminada</span>
+        <div style="flex:1;">
+          <div class="progress is-indeterminate"><span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="row-title">Upload-progress — nome · barra · percentual</h3>
+    <div class="demo">
+      <div style="display: grid; gap: var(--space-3); max-width: 520px;">
+        <div class="upload-progress">
+          <span class="name">DSC_3812.NEF</span>
+          <span class="pct">62%</span>
+          <div class="progress"><span style="width: 62%;"></span></div>
+        </div>
+        <div class="upload-progress">
+          <span class="name">DSC_3813.NEF</span>
+          <span class="pct">100%</span>
+          <div class="progress is-success"><span style="width: 100%;"></span></div>
+        </div>
+        <div class="upload-progress">
+          <span class="name">DSC_3814.NEF · falhou</span>
+          <span class="pct" style="color: var(--danger-500);">erro</span>
+          <div class="progress is-danger"><span style="width: 47%;"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <dl class="xref">
+      <dt>Live CSS</dt>
+      <dd><code>.spinner</code> em <code>src/app/components.css</code> · 45+ call-sites. <code>.upload-progress</code> ad-hoc em <code>src/app/admin/upload-fotos/[eventId]/page.js</code>. <b>Skeleton</b>: ainda não existe em src/.</dd>
+      <dt>Preview</dt>
+      <dd><a class="link" href="preview/components-loading.html">preview/components-loading.html</a></dd>
+    </dl>
+  </section>
+
+  <!-- ────────────────────────────────────────────────
+       ∆ · INCONSISTÊNCIAS
+       ──────────────────────────────────────────────── -->
+  <section class="atom" id="inconsistencies" data-screen-label="03 · Atômicos · Inconsistências">
+    <span class="s-num">∆ · Inconsistências</span>
+    <h2 class="s-title">Mockup vs. live src/.</h2>
+    <p class="s-deck">
+      O DS canoniza o conjunto definitivo de atoms. O live <code class="type-mono">src/</code> ainda usa tokens antigos (verde como acento, Inter/Space Grotesk, paddings ad-hoc, classes não definidas). Migrar é trabalho de produção — fora do escopo deste prompt. Esta tabela é o checklist para esse trabalho.
+    </p>
+
+    <table class="incon-table">
+      <thead>
+        <tr><th>Atom</th><th>Mockup (canônico)</th><th>Live src/</th><th>Decisão</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>btn-primary · padding</td>
+          <td><code>var(--space-3) var(--space-5)</code> = 12 · 20</td>
+          <td><code>0.7rem 1rem</code> = ~11.2 · 16</td>
+          <td>Mockup vence — alinha à grade 4 px. Mantenha o 0.7rem em live por enquanto (load-bearing em 47 lugares); migre quando tocar o arquivo.</td>
+        </tr>
+        <tr>
+          <td>btn-primary · cor</td>
+          <td><code>--brand-500</code> Anchor Blue <code>#1f7ae0</code></td>
+          <td><code>var(--accent)</code> = <code>#22c55e</code> (verde signal)</td>
+          <td>Mockup vence — verde é reservado para dinheiro (btn-success). Live src/ confunde acento com confirmação.</td>
+        </tr>
+        <tr>
+          <td>btn · convenção de classe</td>
+          <td><code>.btn-primary</code> (hyphen) — mantida</td>
+          <td><code>.btn-primary</code> (hyphen)</td>
+          <td>Match. Não confundir com <code>.btn primary</code> (space) usado em <code>mockups/frontend-final/</code> — esse é incorreto e será reconciliado.</td>
+        </tr>
+        <tr>
+          <td>btn-icon · btn-link</td>
+          <td>Definidos aqui (36×36 / inline com sublinhado)</td>
+          <td>Não definidos no CSS — 0 uses</td>
+          <td>Mockup adiciona. Nenhuma migração pendente.</td>
+        </tr>
+        <tr>
+          <td>input · fundo</td>
+          <td><code>--ink-400</code> = <code>#232327</code></td>
+          <td><code>--bg-input</code> = <code>#222222</code></td>
+          <td>Mockup vence — alinha à rampa obsidian de 12 passos. Diferença é &lt; 1%, migração indolor.</td>
+        </tr>
+        <tr>
+          <td>input · borda focus</td>
+          <td><code>var(--focus-ring)</code> (anel duplo) + borda <code>--brand-500</code></td>
+          <td><code>border-color: var(--accent)</code> sem anel</td>
+          <td>Mockup vence — anel duplo é WCAG-friendly e é a regra única do sistema (token <code>--focus-ring</code>).</td>
+        </tr>
+        <tr>
+          <td>form-input · classe</td>
+          <td>Direto no elemento + wrapper <code>.field</code></td>
+          <td><code>.form-input</code>, <code>.form-textarea</code>, <code>.form-select</code></td>
+          <td>Live src/ vence em compatibilidade — 266 call-sites. O DS deve aliasar: <code>.form-input { @apply .input }</code> equivalente. Migração futura.</td>
+        </tr>
+        <tr>
+          <td>badge · variantes</td>
+          <td><code>.badge.b-success</code>, <code>.b-warning</code>, <code>.b-danger</code>, <code>.b-info</code>, <code>.b-neutral</code>, <code>.b-brand</code>, <code>.b-sub-*</code></td>
+          <td><code>.badge</code> existe mas sem variantes; uso real é inline styles</td>
+          <td>Mockup adiciona. Migração: substituir inline styles em <code>STATUS_META</code> objects por classes (40+ call-sites).</td>
+        </tr>
+        <tr>
+          <td>chip-status · label "Pago real"</td>
+          <td>Exibido como <em>chip de status</em> (pill)</td>
+          <td><code>getFinancialStatus()</code> retorna <code>{ key: 'pago_real', label: 'Pago real', tone: 'success' }</code></td>
+          <td>Match — DS replica byte-a-byte.</td>
+        </tr>
+        <tr>
+          <td>chip-status · "Simulacao/liberacao"</td>
+          <td>Um único chip agregado, sem acento, tom warning</td>
+          <td>Live <code>commerceUtils.js:70</code> retorna <code>{ key: 'simulado', label: 'Simulacao/liberacao', tone: 'warning' }</code> sempre que <code>isSimulatedPayment(pedido)</code> é verdadeiro — cobre tanto sandbox/teste quanto liberação manual sem gateway real.</td>
+          <td>Match — DS replica byte-a-byte. Correção ortográfica para "Simulação/liberação" é tarefa de produção; cuidado pq há rotina lendo o label literalmente.</td>
+        </tr>
+        <tr>
+          <td>alert-warning</td>
+          <td>Reservado para uso futuro</td>
+          <td>5 uses em código mas <strong>0 regras CSS</strong> definidas — invisível</td>
+          <td>Bug existente. Migração: ou definir <code>.alert-warning { background: var(--warning-dim); color: var(--warning-500); }</code> em <code>utilities.css</code>, ou trocar os 5 uses por <code>.alert-info</code>.</td>
+        </tr>
+        <tr>
+          <td>upload-pill</td>
+          <td>Não modelado aqui (composito de status de upload)</td>
+          <td><code>.upload-pill</code> + <code>.upload-pill.error</code> definidos · 9 uses</td>
+          <td>Funcional, mantém. Será composto no Prompt 04 como parte do upload-zone.</td>
+        </tr>
+        <tr>
+          <td>icons · emoji vs SVG</td>
+          <td>SEMPRE inline SVG via <code>&lt;use href="#i-..."&gt;</code></td>
+          <td>Ainda há emojis em <code>src/lib/notificacoes.js</code> (💰, 🛒) e em <code>NOTIF_*</code> objects</td>
+          <td>Migração: emojis serão substituídos por ícones line-SVG correspondentes. Lista canônica fica nesta página.</td>
+        </tr>
+        <tr>
+          <td>focus-ring</td>
+          <td>Single token <code>--focus-ring</code> em todos os interativos</td>
+          <td>Vários elementos usam <code>outline: 2px solid var(--accent)</code> ad-hoc</td>
+          <td>Mockup vence. Migração: <code>outline: none; box-shadow: var(--focus-ring);</code> em todos os <code>:focus-visible</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="row-title" style="margin-top: var(--space-10);">Classes ao vivo candidatas a deprecation</h3>
+    <table class="incon-table">
+      <thead>
+        <tr><th>Classe</th><th>Status</th><th>Motivo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>.btn-icon</code></td><td>Nenhum CSS</td><td>0 uses · adicionada apenas no DS. Sem migração pendente, só novo uso.</td></tr>
+        <tr><td><code>.btn-link</code></td><td>Nenhum CSS</td><td>0 uses · idem.</td></tr>
+        <tr><td><code>.skeleton</code></td><td>Nenhum CSS</td><td>0 uses · adicionada no DS.</td></tr>
+        <tr><td><code>.tooltip</code></td><td>Nenhum CSS</td><td>0 uses · adicionada no DS.</td></tr>
+        <tr><td><code>.checkbox</code>, <code>.radio</code>, <code>.switch</code></td><td>Nenhum CSS</td><td>1 use em <code>.switch</code> sem CSS (provavelmente bug de digitação por <code>.toggle</code>). Verificar.</td></tr>
+        <tr><td><code>.tag</code></td><td>2 uses sem CSS</td><td>Substituir por classe canônica desta página.</td></tr>
+        <tr><td><code>.alert-warning</code></td><td>5 uses sem CSS</td><td>Bug visual ativo. Definir CSS ou migrar os 5 uses.</td></tr>
+        <tr><td><code>.dropzone</code></td><td>Não definida</td><td>Padrão real é <code>.upload-zone</code> em <code>components.css</code>. Documentar.</td></tr>
+        <tr><td><code>.form-control</code></td><td>Não definida</td><td>Padrão real é <code>.form-input</code>/<code>-textarea</code>/<code>-select</code>. Nunca usar <code>.form-control</code>.</td></tr>
+        <tr><td><code>.admin-sidebar-brand-badge</code>, <code>.admin-header-badge</code></td><td>Variantes ad-hoc</td><td>Migrar para <code>.badge.b-info</code> com size sm.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  </main>
+
+  <footer>
+    <span>VINÍCIUS SOUZA · COMPONENTS · ATOMIC · v1.0 · 2026-05-10</span>
+    <span><a href="index.html">Sistema</a> · <a href="SKILL.md">SKILL</a> · <a href="colors_and_type.css">tokens</a></span>
+  </footer>
+
+</div>
+</body>
+</html>

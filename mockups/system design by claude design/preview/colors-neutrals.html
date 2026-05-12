@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Neutrals · preview</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; padding: var(--space-6); background: var(--ink-100); color: var(--ink-1000); font-family: var(--font-body); }
+
+  .row { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--space-1); }
+  .sw { height: 90px; border-radius: var(--radius); position: relative; overflow: hidden; }
+  .sw span {
+    position: absolute; bottom: var(--space-1); left: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-wider); font-weight: 500;
+  }
+  .labels {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--space-1); margin-top: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-wide); color: var(--ink-800); text-align: center;
+  }
+
+  .sw.ink-0     { background: var(--ink-0); }
+  .sw.ink-50    { background: var(--ink-50); }
+  .sw.ink-100   { background: var(--ink-100); border: 1px solid var(--ink-400); }
+  .sw.ink-200   { background: var(--ink-200); }
+  .sw.ink-300   { background: var(--ink-300); }
+  .sw.ink-400   { background: var(--ink-400); }
+  .sw.ink-500   { background: var(--ink-500); }
+  .sw.ink-600   { background: var(--ink-600); }
+  .sw.ink-700   { background: var(--ink-700); }
+  .sw.ink-800   { background: var(--ink-800); }
+  .sw.ink-900   { background: var(--ink-900); }
+  .sw.ink-1000  { background: var(--ink-1000); }
+
+  .sw.dim   span { color: var(--ink-800); }
+  .sw.mid   span { color: var(--ink-900); }
+  .sw.light span { color: var(--ink-1000); }
+  .sw.dark  span { color: var(--ink-100); }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="sw ink-0 dim"><span>ink-0</span></div>
+    <div class="sw ink-50 dim"><span>ink-50</span></div>
+    <div class="sw ink-100 dim"><span>ink-100</span></div>
+    <div class="sw ink-200 dim"><span>ink-200</span></div>
+    <div class="sw ink-300 dim"><span>ink-300</span></div>
+    <div class="sw ink-400 mid"><span>ink-400</span></div>
+    <div class="sw ink-500 mid"><span>ink-500</span></div>
+    <div class="sw ink-600 mid"><span>ink-600</span></div>
+    <div class="sw ink-700 light"><span>ink-700</span></div>
+    <div class="sw ink-800 dark"><span>ink-800</span></div>
+    <div class="sw ink-900 dark"><span>ink-900</span></div>
+    <div class="sw ink-1000 dark"><span>ink-1000</span></div>
+  </div>
+  <div class="labels">
+    <div>ink-0</div><div>ink-50</div><div>ink-100</div><div>ink-200</div><div>ink-300</div><div>ink-400</div><div>ink-500</div><div>ink-600</div><div>ink-700</div><div>ink-800</div><div>ink-900</div><div>ink-1000</div>
+  </div>
+</body>
+</html>

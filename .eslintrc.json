@@ -1,0 +1,31 @@
+{
+  "extends": "next/core-web-vitals",
+  "ignorePatterns": [
+    "node_modules/",
+    ".next/",
+    "out/",
+    "storage/",
+    "public/uploads/",
+    "data/_backup_*/",
+    "tests/__snapshots__/",
+    "reports/",
+    "tools/"
+  ],
+  "rules": {
+    "react-hooks/exhaustive-deps": "warn",
+    "@next/next/no-img-element": "off",
+    "react/no-unescaped-entities": "off",
+    "@next/next/no-html-link-for-pages": "off",
+    "react/display-name": "off",
+    "react/jsx-key": "warn"
+  },
+  "overrides": [
+    {
+      "files": ["src/lib/**/*.js", "scripts/**/*.js", "tests/**/*.js"],
+      "rules": {
+        "react-hooks/rules-of-hooks": "off",
+        "react-hooks/exhaustive-deps": "off"
+      }
+    }
+  ]
+}

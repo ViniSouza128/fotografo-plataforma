@@ -1,0 +1,1409 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Vinícius Souza — UI Kit · Público</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { padding-bottom: var(--space-24); background: var(--ink-50); }
+  img { display: block; max-width: 100%; }
+
+  /* ─── PAGE CHROME ─────────────────────── */
+  .wrap { max-width: 1480px; margin: 0 auto; padding: var(--space-12) var(--space-8) var(--space-24); }
+  @media (max-width: 800px) { .wrap { padding: var(--space-8) var(--space-4); } }
+
+  .kit-head { padding-bottom: var(--space-8); border-bottom: 1px solid var(--ink-500); margin-bottom: var(--space-12); }
+  .kit-head .crumbs { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); margin-bottom: var(--space-4); display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; }
+  .kit-head .crumbs a { color: var(--ink-700); }
+  .kit-head .crumbs a:hover { color: var(--ink-1000); }
+  .kit-head .crumbs b { color: var(--ink-1000); font-weight: 500; }
+  .kit-head h1 { font-family: var(--font-display); font-style: italic; font-size: var(--text-5xl); line-height: var(--leading-flat); letter-spacing: var(--tracking-tight); margin: 0 0 var(--space-3); max-width: 24ch; color: var(--ink-1000); }
+  .kit-head .lede { max-width: 64ch; font-size: var(--text-md); line-height: var(--leading-relaxed); color: var(--ink-900); margin: 0 0 var(--space-6); }
+  .kit-head .lede em { font-family: var(--font-display); font-style: italic; color: var(--ink-1000); }
+  .kit-head .toc { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .kit-head .toc a { font-family: var(--font-mono); font-size: var(--text-xs); padding: var(--space-2) var(--space-3); background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius); color: var(--ink-900); letter-spacing: var(--tracking-snug); }
+  .kit-head .toc a:hover { background: var(--ink-300); color: var(--ink-1000); }
+
+  /* ─── SCREEN ROW ──────────────────── */
+  .screen { margin-top: var(--space-16); }
+  .screen-head { display: flex; gap: var(--space-3); align-items: baseline; padding-bottom: var(--space-3); border-bottom: 1px solid var(--ink-500); margin-bottom: var(--space-6); flex-wrap: wrap; }
+  .screen-head .num { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-widest); text-transform: uppercase; }
+  .screen-head h2 { font-family: var(--font-heading); font-size: var(--text-xl); font-weight: 500; color: var(--ink-1000); margin: 0; letter-spacing: var(--tracking-snug); }
+  .screen-head .copy { color: var(--ink-800); font-size: var(--text-sm); margin: 0; line-height: var(--leading-relaxed); max-width: 50ch; flex: 1; }
+  .screen-head .tags { display: inline-flex; gap: var(--space-2); }
+  .screen-head .tag { font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-wider); text-transform: uppercase; padding: 2px var(--space-2); border-radius: var(--radius-pill); background: var(--ink-200); border: 1px solid var(--ink-500); color: var(--ink-800); }
+
+  .frames { display: grid; grid-template-columns: 1fr 768px 390px; gap: var(--space-4); align-items: start; }
+  @media (max-width: 1380px) { .frames { grid-template-columns: 1fr 390px; } .frames .vp-tablet { display: none; } }
+  @media (max-width: 1080px) { .frames { grid-template-columns: 1fr; } .frames .vp-mobile { display: none; } }
+
+  .vp { background: var(--ink-100); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; position: relative; }
+  .vp .vp-ruler { padding: 4px var(--space-3); background: var(--ink-200); border-bottom: 1px solid var(--ink-500); font-family: var(--font-mono); font-size: 9.5px; color: var(--ink-700); letter-spacing: var(--tracking-wider); text-transform: uppercase; display: flex; justify-content: space-between; }
+  .vp .vp-stage { padding: 0; }
+  .vp.vp-desktop .vp-stage { min-height: 600px; }
+  .vp.vp-tablet .vp-stage { min-height: 500px; }
+  .vp.vp-mobile .vp-stage { min-height: 600px; }
+
+  /* ───── ATOMS (subset, byte-identical to atomic page) ───── */
+  .ico { display: inline-block; width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vertical-align: middle; flex-shrink: 0; }
+  .ico.is-12 { width: 12px; height: 12px; }
+  .ico.is-14 { width: 14px; height: 14px; }
+  .ico.is-16 { width: 16px; height: 16px; }
+  .ico.is-20 { width: 20px; height: 20px; }
+  .ico.is-24 { width: 24px; height: 24px; }
+  .ico.is-32 { width: 32px; height: 32px; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); font-family: var(--font-body); font-size: var(--text-sm); font-weight: 500; padding: var(--space-3) var(--space-5); background: transparent; color: var(--ink-1000); border: 1px solid transparent; border-radius: var(--radius); cursor: pointer; white-space: nowrap; transition: background var(--duration-quick) var(--ease-out); }
+  .btn-primary { background: var(--brand-500); color: var(--ink-1000); }
+  .btn-primary:hover { background: var(--brand-400); }
+  .btn-success { background: var(--signal-500); color: var(--ink-50); }
+  .btn-secondary { border-color: var(--ink-500); }
+  .btn-secondary:hover { border-color: var(--ink-700); background: var(--ink-200); }
+  .btn-ghost { color: var(--ink-800); }
+  .btn-sm { padding: var(--space-2) var(--space-3); font-size: var(--text-xs); }
+  .btn-lg { padding: var(--space-3) var(--space-6); font-size: var(--text-base); }
+  .btn-icon { padding: var(--space-2); width: 36px; height: 36px; min-width: 36px; }
+
+  .chip { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border: 1px solid var(--ink-500); border-radius: var(--radius); background: transparent; color: var(--ink-900); font-family: var(--font-body); font-size: var(--text-xs); font-weight: 500; cursor: pointer; white-space: nowrap; }
+  .chip.is-active { background: var(--brand-500); border-color: var(--brand-500); color: var(--ink-1000); }
+  .chip .count { font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--ink-700); }
+  .chip.is-active .count { color: rgba(237,232,224,0.7); }
+
+  .badge { display: inline-flex; align-items: center; gap: var(--space-1); padding: 3px var(--space-3); border-radius: var(--radius-pill); font-family: var(--font-mono); font-size: var(--text-xxs); font-weight: 500; letter-spacing: var(--tracking-wide); text-transform: uppercase; border: 1px solid transparent; white-space: nowrap; }
+  .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .badge.b-success { background: var(--signal-dim); color: var(--signal-400); border-color: rgba(34,197,94,0.30); }
+  .badge.b-warning { background: var(--warning-dim); color: var(--warning-500); border-color: rgba(232,163,58,0.30); }
+  .badge.b-danger  { background: var(--danger-dim); color: var(--danger-500); border-color: rgba(224,85,79,0.30); }
+  .badge.b-info    { background: var(--brand-dim); color: var(--brand-400); border-color: rgba(31,122,224,0.30); }
+  .badge.b-neutral { background: var(--ink-200); color: var(--ink-900); border-color: var(--ink-500); }
+  .badge.b-sub-esportes { background: var(--sub-esportes-dim); color: var(--sub-esportes-400); border-color: rgba(200,51,51,0.30); }
+  .badge.b-sub-natureza { background: var(--sub-natureza-dim); color: var(--sub-natureza-400); border-color: rgba(31,122,74,0.30); }
+  .badge.b-sub-editorial { background: var(--sub-editorial-dim); color: var(--sub-editorial-400); border-color: rgba(31,122,224,0.30); }
+
+  .input { background: var(--ink-400); color: var(--ink-1000); font-family: var(--font-body); font-size: var(--text-sm); padding: var(--space-3) var(--space-4); border: 1px solid var(--ink-500); border-radius: var(--radius); outline: none; width: 100%; }
+  .input:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  .input::placeholder { color: var(--ink-700); }
+
+  /* ── NAVBAR (public) ─────────────── */
+  .nav {
+    height: var(--nav-height); display: grid; grid-template-columns: max-content 1fr max-content;
+    gap: var(--space-6); align-items: center; padding: 0 var(--space-6);
+    background: rgba(7,7,8,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--ink-500);
+  }
+  .nav .brand { display: inline-flex; align-items: center; gap: var(--space-2); font-family: var(--font-brand); font-weight: 700; font-size: 14px; letter-spacing: -0.02em; color: var(--ink-1000); }
+  .nav .brand .gly { width: 24px; height: 24px; border-radius: var(--radius-sm); background: var(--brand-500); display: grid; place-items: center; font-family: var(--font-brand); font-weight: 800; font-size: 11px; color: var(--ink-1000); }
+  .nav .links { display: inline-flex; gap: var(--space-6); justify-self: start; padding-left: var(--space-6); }
+  .nav .links a { color: var(--ink-900); font-size: var(--text-sm); }
+  .nav .links a:hover, .nav .links a.is-active { color: var(--ink-1000); }
+  .nav .actions { display: inline-flex; gap: var(--space-2); align-items: center; }
+  .nav .cart-pill { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-pill); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-1000); }
+  .nav .cart-pill .count { background: var(--brand-500); color: var(--ink-1000); padding: 1px 6px; border-radius: var(--radius-pill); font-size: 10px; font-weight: 600; }
+  .nav .login { font-size: var(--text-sm); color: var(--ink-900); }
+
+  .m-nav {
+    height: var(--nav-height-mobile); display: grid; grid-template-columns: max-content 1fr max-content max-content;
+    gap: var(--space-3); align-items: center; padding: 0 var(--space-4);
+    background: rgba(7,7,8,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--ink-500);
+  }
+  .m-nav .burger { width: 36px; height: 36px; display: grid; place-items: center; border: 1px solid var(--ink-500); border-radius: var(--radius); color: var(--ink-1000); }
+  .m-nav .brand { font-family: var(--font-brand); font-weight: 700; font-size: 13px; color: var(--ink-1000); }
+  .m-nav .icon-btn { width: 36px; height: 36px; display: grid; place-items: center; border: 1px solid var(--ink-500); border-radius: var(--radius); color: var(--ink-1000); }
+  .m-nav .icon-btn .count { background: var(--brand-500); color: var(--ink-1000); border-radius: var(--radius-pill); padding: 1px 5px; font-size: 9px; font-family: var(--font-mono); font-weight: 600; margin-left: var(--space-1); }
+
+  /* ── HERO (home) ───────────── */
+  .hero {
+    position: relative; padding: var(--space-16) var(--space-8) var(--space-12); overflow: hidden;
+    background: linear-gradient(180deg, var(--ink-100) 0%, var(--ink-50) 100%);
+  }
+  .hero::before { content: ""; position: absolute; inset: -10% -10% auto -10%; height: 90%; background: var(--glow-radial); pointer-events: none; }
+  .hero > * { position: relative; z-index: 1; }
+  .hero .eyebrow { font-family: var(--font-body); font-size: var(--text-xs); font-weight: 500; letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--brand-400); margin-bottom: var(--space-4); display: inline-flex; gap: var(--space-2); align-items: center; }
+  .hero .eyebrow::before, .hero .eyebrow::after { content: ""; width: 18px; height: 1px; background: currentColor; opacity: 0.45; }
+  .hero h1 { font-family: var(--font-display); font-style: italic; font-size: var(--text-6xl); line-height: var(--leading-flat); letter-spacing: var(--tracking-tight); color: var(--ink-1000); margin: 0 0 var(--space-4); max-width: 16ch; }
+  .hero .lede { font-family: var(--font-body); font-size: var(--text-md); line-height: var(--leading-relaxed); color: var(--ink-900); max-width: 56ch; margin: 0 0 var(--space-8); }
+  .hero .ctas { display: inline-flex; gap: var(--space-2); }
+  .hero .stats { display: flex; gap: var(--space-12); margin-top: var(--space-10); }
+  .hero .stats .s { display: flex; flex-direction: column; gap: 2px; }
+  .hero .stats .v { font-family: var(--font-display); font-style: italic; font-size: var(--text-3xl); color: var(--ink-1000); line-height: 1; }
+  .hero .stats .k { font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--ink-800); letter-spacing: var(--tracking-widest); text-transform: uppercase; }
+
+  /* ── DISCOVERY ─────────── */
+  .disc-head { padding: var(--space-8); border-bottom: 1px solid var(--ink-500); display: grid; grid-template-columns: 1fr max-content; gap: var(--space-5); align-items: end; }
+  .disc-head h2 { font-family: var(--font-heading); font-size: var(--text-2xl); font-weight: 400; margin: 0; color: var(--ink-1000); letter-spacing: var(--tracking-snug); }
+  .disc-head .crumb { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-wider); text-transform: uppercase; margin-bottom: var(--space-2); }
+  .search { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3) var(--space-2) var(--space-4); background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius); min-width: 360px; }
+  .search input { background: transparent; border: 0; color: var(--ink-1000); font: inherit; font-size: var(--text-sm); outline: none; flex: 1; }
+  .search input::placeholder { color: var(--ink-700); }
+  .search .go { background: var(--brand-500); color: var(--ink-1000); padding: var(--space-2) var(--space-4); border-radius: var(--radius-sm); font-size: var(--text-xs); font-weight: 600; letter-spacing: var(--tracking-wide); border: 0; cursor: pointer; }
+
+  .filter-bar { padding: var(--space-3) var(--space-8); border-bottom: 1px solid var(--ink-500); display: flex; gap: var(--space-2); flex-wrap: wrap; align-items: center; }
+  .filter-bar .sort-select { margin-left: auto; display: inline-flex; align-items: center; gap: var(--space-2); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); }
+  .filter-bar select { background: var(--ink-200); border: 1px solid var(--ink-500); color: var(--ink-1000); padding: var(--space-2) var(--space-3); border-radius: var(--radius); font: inherit; font-size: var(--text-xs); cursor: pointer; appearance: none; padding-right: var(--space-8); background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%238a8a92' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>"); background-repeat: no-repeat; background-position: right 10px center; }
+
+  /* ── EVENT GRID ──────── */
+  .events { display: grid; padding: var(--space-6) var(--space-8) var(--space-12); grid-template-columns: repeat(3, 1fr); gap: var(--space-5); }
+  @media (max-width: 1200px) { .events { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) { .events { grid-template-columns: 1fr; padding: var(--space-5); gap: var(--space-3); } }
+
+  .event-card { background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; transition: border-color var(--duration-base) var(--ease-out), transform var(--duration-base) var(--ease-out); position: relative; }
+  .event-card:hover { border-color: var(--brand-500); transform: translateY(-2px); }
+  .event-card .cover { aspect-ratio: 16/10; background: var(--ink-300); position: relative; overflow: hidden; }
+  .event-card .cover .ph { position: absolute; inset: 0; background: linear-gradient(135deg, var(--ink-400) 0%, var(--ink-50) 100%); }
+  .event-card .cover .ph.t-a { background: var(--ph-rust); }
+  .event-card .cover .ph.t-b { background: var(--ph-forest); }
+  .event-card .cover .ph.t-c { background: var(--ph-anchor); }
+  .event-card .cover .ph.t-d { background: var(--ph-amber); }
+  .event-card .cover .ph.t-e { background: var(--ph-mono); }
+  .event-card .cover .ph.t-f { background: var(--ph-amber); }
+  .event-card .cover .cat { position: absolute; top: var(--space-3); left: var(--space-3); }
+  .event-card .stripe { position: absolute; top: 0; left: 0; width: 4px; height: 100%; }
+  .event-card .stripe.t-esportes  { background: var(--sub-esportes-500); }
+  .event-card .stripe.t-natureza  { background: var(--sub-natureza-500); }
+  .event-card .stripe.t-editorial { background: var(--sub-editorial-500); }
+  .event-card .body { padding: var(--space-4) var(--space-5) var(--space-5); }
+  .event-card h3 { font-family: var(--font-heading); font-size: var(--text-lg); font-weight: 500; color: var(--ink-1000); margin: 0 0 var(--space-1); letter-spacing: var(--tracking-snug); }
+  .event-card .meta { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); display: flex; gap: var(--space-3); }
+  .event-card .foot { display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--ink-500); font-size: var(--text-xs); }
+  .event-card .foot .price { font-family: var(--font-mono); color: var(--ink-1000); }
+  .event-card .foot .price em { font-style: normal; color: var(--ink-700); }
+  .event-card .foot .count { color: var(--ink-800); font-family: var(--font-mono); }
+
+  /* ── EVENT DETAIL · GALLERY ──── */
+  .ev-head { padding: var(--space-6) var(--space-8); border-bottom: 1px solid var(--ink-500); display: grid; grid-template-columns: 1fr max-content; gap: var(--space-5); align-items: end; }
+  .ev-head .crumb { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); letter-spacing: var(--tracking-wider); text-transform: uppercase; margin-bottom: var(--space-2); }
+  .ev-head .crumb a { color: var(--brand-400); }
+  .ev-head h1 { font-family: var(--font-display); font-style: italic; font-size: var(--text-4xl); line-height: 1.04; color: var(--ink-1000); margin: 0 0 var(--space-2); letter-spacing: var(--tracking-tight); }
+  .ev-head .meta { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); display: flex; gap: var(--space-3); flex-wrap: wrap; }
+  .ev-head .actions { display: inline-flex; gap: var(--space-2); }
+
+  .ev-tabs { padding: 0 var(--space-8); border-bottom: 1px solid var(--ink-500); display: flex; gap: var(--space-6); }
+  .ev-tabs a { padding: var(--space-3) 0; font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-800); border-bottom: 2px solid transparent; }
+  .ev-tabs a.is-active { color: var(--ink-1000); border-bottom-color: var(--brand-500); }
+
+  .ev-tools { padding: var(--space-3) var(--space-8); border-bottom: 1px solid var(--ink-500); display: flex; gap: var(--space-2); flex-wrap: wrap; align-items: center; }
+  .folder-row { display: flex; gap: var(--space-2); padding: var(--space-3) var(--space-8); border-bottom: 1px solid var(--ink-500); flex-wrap: wrap; }
+  .folder { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-900); }
+  .folder .ix { color: var(--ink-700); letter-spacing: var(--tracking-snug); }
+  .folder:hover { border-color: var(--ink-700); color: var(--ink-1000); }
+  .folder.is-active { background: var(--brand-dim); border-color: var(--brand-500); color: var(--brand-300); }
+
+  .ev-wrap { display: grid; grid-template-columns: 1fr 320px; min-height: 480px; }
+  @media (max-width: 1100px) { .ev-wrap { grid-template-columns: 1fr; } .ev-wrap .cart-aside { display: none; } }
+
+  .photo-grid { padding: var(--space-3) var(--space-8); display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--space-2); }
+  @media (max-width: 700px) { .photo-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); padding: var(--space-3); } }
+
+  .photo { position: relative; aspect-ratio: 1; border-radius: var(--radius); overflow: hidden; background: var(--ink-200); border: 1px solid var(--ink-500); cursor: pointer; }
+  .photo .ph { position: absolute; inset: 0; }
+  .photo .ph.t-a { background: var(--ph-anchor); }
+  .photo .ph.t-b { background: var(--ph-amber); }
+  .photo .ph.t-c { background: var(--ph-forest); }
+  .photo .ph.t-d { background: var(--ph-amber); }
+  .photo .ph.t-e { background: var(--ph-mono); }
+  .photo .ph.t-f { background: var(--ph-rust); }
+  /* faux watermark line on every photo */
+  .photo .ph::after {
+    content: "VINÍCIUS SOUZA · IMAGEM NÃO ADQUIRIDA";
+    position: absolute; inset: 0; display: grid; place-items: center;
+    font-family: var(--font-mono); font-size: 7px; letter-spacing: var(--tracking-widest);
+    color: rgba(237,232,224,0.18); transform: rotate(-25deg);
+    white-space: nowrap; pointer-events: none;
+  }
+  .photo .price { position: absolute; top: var(--space-2); left: var(--space-2); font-family: var(--font-mono); font-variant-numeric: tabular-nums; background: rgba(0,0,0,0.65); color: var(--ink-1000); font-size: var(--text-xs); padding: 2px var(--space-2); border-radius: var(--radius-sm); }
+  .photo .cart { position: absolute; bottom: var(--space-2); right: var(--space-2); width: 34px; height: 34px; border-radius: var(--radius-pill); background: rgba(0,0,0,0.7); display: grid; place-items: center; color: var(--ink-1000); border: 1px solid rgba(255,255,255,0.15); }
+  .photo.is-incart { border-color: var(--brand-500); }
+  .photo.is-incart .cart { background: var(--brand-500); border-color: transparent; }
+  .photo .pill {
+    position: absolute; top: var(--space-2); right: var(--space-2);
+    background: var(--brand-500); color: var(--ink-1000);
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 600;
+    letter-spacing: var(--tracking-wider); text-transform: uppercase;
+    padding: 3px var(--space-2); border-radius: var(--radius-sm);
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .photo .pill.is-free { background: var(--signal-500); color: var(--ink-on-signal); }
+
+  /* cart aside */
+  .cart-aside { background: var(--ink-200); border-left: 1px solid var(--ink-500); padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); }
+  .cart-aside h4 { font-family: var(--font-heading); font-size: var(--text-base); font-weight: 500; color: var(--ink-1000); margin: 0; }
+  .cart-aside .ca-count { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); letter-spacing: var(--tracking-snug); margin-bottom: var(--space-2); }
+  .cart-aside .ca-line { display: grid; grid-template-columns: 48px 1fr max-content; gap: var(--space-2); align-items: center; padding: var(--space-2) 0; border-bottom: 1px solid var(--ink-500); }
+  .cart-aside .ca-line .thumb { width: 48px; height: 48px; border-radius: var(--radius-sm); background: var(--ph-anchor); }
+  .cart-aside .ca-line .id { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-900); }
+  .cart-aside .ca-line .price { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-1000); }
+  .cart-aside .ca-tier { background: var(--signal-dim); border: 1px solid var(--signal-500); color: var(--signal-400); padding: var(--space-2) var(--space-3); border-radius: var(--radius); font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-snug); }
+  .cart-aside .ca-total { display: flex; justify-content: space-between; padding-top: var(--space-3); border-top: 1px solid var(--ink-500); font-family: var(--font-mono); font-size: var(--text-sm); color: var(--ink-1000); }
+  .cart-aside .ca-total .v { font-family: var(--font-display); font-style: italic; font-size: var(--text-xl); }
+
+  /* sponsors */
+  .sponsors { padding: var(--space-6) var(--space-8); border-top: 1px solid var(--ink-500); }
+  .sponsors .sp-head { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); margin-bottom: var(--space-4); }
+  .sponsors .sp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); }
+  @media (max-width: 800px) { .sponsors .sp-grid { grid-template-columns: 1fr 1fr; } }
+  .sponsor { background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-2); cursor: pointer; transition: border-color var(--duration-base) var(--ease-out); }
+  .sponsor:hover { border-color: var(--brand-500); }
+  .sponsor .tier { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--brand-400); }
+  .sponsor .name { font-family: var(--font-heading); font-size: var(--text-base); font-weight: 500; color: var(--ink-1000); }
+  .sponsor .domain { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); }
+
+  /* video block */
+  .vids { padding: var(--space-6) var(--space-8); border-top: 1px solid var(--ink-500); }
+  .vids .vh-row { display: flex; justify-content: space-between; align-items: end; margin-bottom: var(--space-4); }
+  .vids .vh-row h3 { font-family: var(--font-heading); font-size: var(--text-lg); margin: 0; font-weight: 500; }
+  .vids .v-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
+  @media (max-width: 900px) { .vids .v-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .vids .v-grid { grid-template-columns: 1fr; } }
+  .video-card { position: relative; aspect-ratio: 16/9; border-radius: var(--radius); overflow: hidden; background: var(--ink-200); border: 1px solid var(--ink-500); cursor: pointer; }
+  .video-card .poster { position: absolute; inset: 0; background: var(--ph-anchor); }
+  .video-card .play { position: absolute; inset: 0; display: grid; place-items: center; background: linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.45) 100%); }
+  .video-card .play .pc { width: 52px; height: 52px; border-radius: var(--radius-pill); background: rgba(0,0,0,0.55); display: grid; place-items: center; border: 1.5px solid rgba(255,255,255,0.5); }
+  .video-card .dur { position: absolute; bottom: var(--space-2); right: var(--space-2); font-family: var(--font-mono); font-variant-numeric: tabular-nums; background: rgba(0,0,0,0.7); color: var(--ink-1000); font-size: var(--text-xs); padding: 2px 6px; border-radius: var(--radius-sm); }
+  .video-card .badge-v { position: absolute; top: var(--space-2); left: var(--space-2); background: var(--ink-50); color: var(--brand-300); font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; letter-spacing: var(--tracking-widest); text-transform: uppercase; padding: 3px var(--space-2); border-radius: var(--radius-sm); border: 1px solid rgba(31,122,224,0.4); }
+  .video-card .price-v { position: absolute; top: var(--space-2); right: var(--space-2); font-family: var(--font-mono); background: rgba(0,0,0,0.65); color: var(--ink-1000); font-size: var(--text-xs); padding: 3px var(--space-2); border-radius: var(--radius-sm); }
+
+  /* ── LIGHTBOX MODAL ───────── */
+  .lb-scrim { position: relative; background: rgba(0,0,0,0.85); padding: var(--space-6); min-height: 600px; display: grid; grid-template-columns: 1fr 360px; gap: var(--space-5); }
+  @media (max-width: 1000px) { .lb-scrim { grid-template-columns: 1fr; min-height: 480px; } .lb-side { display: none; } }
+  .lb-stage { display: grid; place-items: center; position: relative; }
+  .lb-stage .lb-photo { width: 100%; max-width: 720px; aspect-ratio: 3/2; background: var(--ph-rust); border-radius: var(--radius); position: relative; overflow: hidden; }
+  .lb-stage .lb-photo::after { content: "VINÍCIUS SOUZA · IMAGEM NÃO ADQUIRIDA"; position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--font-mono); font-size: 13px; letter-spacing: var(--tracking-widest); color: rgba(237,232,224,0.18); transform: rotate(-25deg); white-space: nowrap; pointer-events: none; }
+  .lb-stage .arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: var(--radius-pill); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.16); color: var(--ink-1000); display: grid; place-items: center; cursor: pointer; }
+  .lb-stage .arrow.l { left: 0; }
+  .lb-stage .arrow.r { right: 0; }
+  .lb-stage .close { position: absolute; top: 0; right: 0; width: 36px; height: 36px; border-radius: var(--radius-pill); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.16); color: var(--ink-1000); display: grid; place-items: center; cursor: pointer; }
+
+  .lb-side { display: flex; flex-direction: column; gap: var(--space-3); background: var(--ink-100); border-radius: var(--radius-lg); padding: var(--space-5); border: 1px solid var(--ink-500); }
+  .lb-side .id { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); letter-spacing: var(--tracking-snug); }
+  .lb-side .price { font-family: var(--font-display); font-style: italic; font-size: var(--text-3xl); color: var(--ink-1000); line-height: 1; }
+  .lb-side .meta { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); }
+  .lb-side .row-acts { display: flex; gap: var(--space-2); flex-wrap: wrap; padding-top: var(--space-3); border-top: 1px solid var(--ink-500); }
+  .lb-side .row-acts a { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); padding: var(--space-2) var(--space-3); border: 1px solid var(--ink-500); border-radius: var(--radius); }
+  .lb-side .row-acts a:hover { color: var(--ink-1000); border-color: var(--ink-700); }
+  .lb-side .comments-title { font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); padding-top: var(--space-3); border-top: 1px solid var(--ink-500); }
+  .lb-side .comment { display: grid; grid-template-columns: 28px 1fr; gap: var(--space-2); font-size: var(--text-xs); color: var(--ink-900); line-height: var(--leading-relaxed); padding-bottom: var(--space-2); border-bottom: 1px dashed var(--ink-500); }
+  .lb-side .comment .av { width: 28px; height: 28px; border-radius: var(--radius-pill); background: var(--ink-400); display: grid; place-items: center; font-family: var(--font-heading); font-size: var(--text-xxs); font-weight: 500; color: var(--ink-1000); }
+  .lb-side .comment .who { font-weight: 500; color: var(--ink-1000); }
+  .lb-side .comment .when { font-family: var(--font-mono); font-size: 10px; color: var(--ink-700); margin-left: var(--space-2); }
+
+  /* ── CART PAGE ──────── */
+  .cart-page { padding: var(--space-8); display: grid; grid-template-columns: 1fr 360px; gap: var(--space-8); align-items: start; }
+  @media (max-width: 1000px) { .cart-page { grid-template-columns: 1fr; padding: var(--space-5); } }
+  .cart-page .events-group { background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; }
+  .cart-page .events-group .eg-head { padding: var(--space-3) var(--space-5); background: var(--ink-300); border-bottom: 1px solid var(--ink-500); display: flex; justify-content: space-between; align-items: center; }
+  .cart-page .events-group .eg-head .name { font-family: var(--font-heading); font-size: var(--text-base); color: var(--ink-1000); font-weight: 500; }
+  .cart-page .events-group .eg-head .count { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); }
+  .cart-page .cart-line { display: grid; grid-template-columns: 64px 1fr max-content max-content; gap: var(--space-4); padding: var(--space-3) var(--space-5); border-bottom: 1px solid var(--ink-500); align-items: center; }
+  .cart-page .cart-line:last-child { border-bottom: 0; }
+  .cart-page .cart-line .thumb { width: 64px; height: 64px; border-radius: var(--radius-sm); background: var(--ph-anchor); }
+  .cart-page .cart-line .id { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-900); display: block; }
+  .cart-page .cart-line .label { font-size: var(--text-sm); color: var(--ink-1000); }
+  .cart-page .cart-line .price { font-family: var(--font-display); font-style: italic; font-size: var(--text-base); color: var(--ink-1000); font-variant-numeric: tabular-nums; }
+  .cart-page .cart-line .x { width: 32px; height: 32px; border-radius: var(--radius-pill); background: transparent; border: 1px solid var(--ink-500); color: var(--ink-700); display: grid; place-items: center; cursor: pointer; }
+  .cart-page .cart-line .x:hover { color: var(--danger-500); border-color: var(--danger-500); }
+  .summary { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-5); position: sticky; top: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
+  .summary h4 { font-family: var(--font-heading); font-size: var(--text-base); margin: 0; font-weight: 500; }
+  .summary .row { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: var(--text-sm); color: var(--ink-900); font-variant-numeric: tabular-nums; }
+  .summary .row.tier { background: var(--signal-dim); border: 1px solid var(--signal-500); color: var(--signal-400); padding: var(--space-2) var(--space-3); border-radius: var(--radius); font-size: var(--text-xs); font-family: var(--font-mono); letter-spacing: var(--tracking-snug); }
+  .summary .coupon { display: grid; grid-template-columns: 1fr max-content; gap: var(--space-2); }
+  .summary .total { display: flex; justify-content: space-between; padding-top: var(--space-3); border-top: 1px solid var(--ink-500); }
+  .summary .total .v { font-family: var(--font-display); font-style: italic; font-size: var(--text-2xl); color: var(--ink-1000); }
+
+  /* ── CHECKOUT ─── */
+  .checkout-page { padding: var(--space-8); display: grid; grid-template-columns: 1fr 360px; gap: var(--space-8); align-items: start; }
+  @media (max-width: 1000px) { .checkout-page { grid-template-columns: 1fr; padding: var(--space-5); } }
+  .stepper { display: flex; gap: var(--space-2); margin-bottom: var(--space-6); }
+  .stepper .step { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border-radius: var(--radius); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); }
+  .stepper .step.is-active { color: var(--ink-1000); background: var(--brand-dim); }
+  .stepper .step.is-done { color: var(--signal-400); }
+  .stepper .step .ix { font-family: var(--font-mono); font-size: 10px; color: var(--ink-700); padding: 1px 5px; border-radius: var(--radius-pill); background: var(--ink-300); }
+  .stepper .step.is-active .ix { background: var(--brand-500); color: var(--ink-1000); }
+  .stepper .step.is-done .ix { background: var(--signal-500); color: var(--ink-50); }
+
+  .pay-tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
+  @media (max-width: 600px) { .pay-tiles { grid-template-columns: 1fr; } }
+  .pay-tile { background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); cursor: pointer; transition: border-color var(--duration-base) var(--ease-out); }
+  .pay-tile:hover { border-color: var(--ink-700); }
+  .pay-tile.is-active { border-color: var(--brand-500); box-shadow: 0 0 0 1px var(--brand-500) inset; background: var(--brand-dim); }
+  .pay-tile .top { display: flex; justify-content: space-between; align-items: center; }
+  .pay-tile h5 { font-family: var(--font-heading); font-size: var(--text-base); margin: 0; color: var(--ink-1000); font-weight: 500; }
+  .pay-tile .desc { font-size: var(--text-xs); color: var(--ink-800); line-height: var(--leading-relaxed); }
+  .pay-tile .meta { font-family: var(--font-mono); font-size: 10px; color: var(--ink-700); letter-spacing: var(--tracking-wider); text-transform: uppercase; }
+
+  .qr-card { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-5); display: grid; grid-template-columns: 160px 1fr; gap: var(--space-5); align-items: center; }
+  @media (max-width: 600px) { .qr-card { grid-template-columns: 1fr; } }
+  .qr-card .qr { width: 160px; height: 160px; background: var(--ink-1000); display: grid; place-items: center; border-radius: var(--radius-sm); position: relative; padding: var(--space-3); }
+  .qr-card .qr svg { width: 100%; height: 100%; }
+  .qr-card .qr-info { display: flex; flex-direction: column; gap: var(--space-2); }
+  .qr-card .qr-info code { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-900); background: var(--ink-100); padding: var(--space-2); border-radius: var(--radius-sm); border: 1px solid var(--ink-500); word-break: break-all; }
+
+  /* ── ORDER SUCCESS ── */
+  .receipt { padding: var(--space-12) var(--space-8); display: flex; flex-direction: column; gap: var(--space-6); align-items: center; }
+  .receipt .badge-ok { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-4); background: var(--signal-dim); color: var(--signal-400); border: 1px solid var(--signal-500); border-radius: var(--radius-pill); font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; }
+  .receipt h1 { font-family: var(--font-display); font-style: italic; font-size: var(--text-4xl); color: var(--ink-1000); margin: 0; text-align: center; line-height: 1.04; }
+  .receipt .id { font-family: var(--font-mono); font-size: var(--text-md); color: var(--ink-900); }
+  .receipt .next { text-align: center; max-width: 50ch; color: var(--ink-900); line-height: var(--leading-relaxed); }
+
+  /* ── AUTH PAGE ── */
+  .auth { padding: var(--space-16) var(--space-8); display: grid; place-items: center; }
+  .auth .card { width: 100%; max-width: 420px; background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-8); display: flex; flex-direction: column; gap: var(--space-4); }
+  .auth h2 { font-family: var(--font-display); font-style: italic; font-size: var(--text-2xl); color: var(--ink-1000); margin: 0; }
+  .auth .field { display: flex; flex-direction: column; gap: var(--space-2); }
+  .auth .field label { font-family: var(--font-body); font-size: var(--text-xs); font-weight: 500; letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-800); }
+  .auth .links { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: var(--text-xs); }
+  .auth .links a { color: var(--brand-400); }
+  .auth .alt { padding-top: var(--space-3); border-top: 1px solid var(--ink-500); font-size: var(--text-xs); color: var(--ink-800); text-align: center; }
+  .auth .alt a { color: var(--brand-400); }
+
+  /* ── STATIC PAGE ── */
+  .static { padding: var(--space-12) var(--space-8); max-width: 720px; margin: 0 auto; }
+  .static h1 { font-family: var(--font-display); font-style: italic; font-size: var(--text-4xl); color: var(--ink-1000); margin: 0 0 var(--space-3); line-height: 1.04; }
+  .static .updated { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-wider); text-transform: uppercase; margin-bottom: var(--space-6); }
+  .static h2 { font-family: var(--font-heading); font-size: var(--text-lg); font-weight: 500; color: var(--ink-1000); margin: var(--space-6) 0 var(--space-2); }
+  .static p { font-family: var(--font-body); font-size: var(--text-md); color: var(--ink-900); line-height: var(--leading-relaxed); margin: 0 0 var(--space-3); }
+
+  /* ── ERROR PAGE ── */
+  .err { padding: var(--space-16) var(--space-8); display: flex; flex-direction: column; align-items: center; gap: var(--space-5); text-align: center; }
+  .err .code { font-family: var(--font-display); font-style: italic; font-size: var(--text-6xl); color: var(--brand-400); line-height: 1; }
+  .err h1 { font-family: var(--font-heading); font-size: var(--text-2xl); font-weight: 400; color: var(--ink-1000); margin: 0; }
+  .err .copy { color: var(--ink-900); max-width: 50ch; }
+
+  /* ── FOOTER ── */
+  .public-foot { background: var(--ink-50); border-top: 1px solid var(--ink-500); padding: var(--space-12) var(--space-8) var(--space-5); }
+  .public-foot .stripe { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-bottom: var(--space-6); }
+  .public-foot .stripe span { height: 4px; }
+  .public-foot .stripe span:nth-child(1) { background: var(--sub-fotografia-500); }
+  .public-foot .stripe span:nth-child(2) { background: var(--sub-editorial-500); }
+  .public-foot .stripe span:nth-child(3) { background: var(--sub-esportes-500); }
+  .public-foot .stripe span:nth-child(4) { background: var(--sub-natureza-500); }
+  .public-foot .cols { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: var(--space-8); margin-bottom: var(--space-8); }
+  @media (max-width: 800px) { .public-foot .cols { grid-template-columns: 1fr 1fr; gap: var(--space-5); } }
+  .public-foot h4 { font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); margin: 0 0 var(--space-3); }
+  .public-foot ul { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-2); }
+  .public-foot a { color: var(--ink-900); font-size: var(--text-sm); }
+  .public-foot .news p { font-size: var(--text-sm); color: var(--ink-800); max-width: 38ch; margin: 0 0 var(--space-3); }
+  .public-foot .news .form { display: grid; grid-template-columns: 1fr max-content; gap: var(--space-2); }
+  .public-foot .legal { display: flex; justify-content: space-between; padding-top: var(--space-4); border-top: 1px solid var(--ink-500); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-snug); flex-wrap: wrap; gap: var(--space-3); }
+  .public-foot .legal a { color: var(--ink-700); }
+
+  /* ─── MOBILE-SPECIFIC ──── */
+  .m-hero { padding: var(--space-6) var(--space-4) var(--space-6); }
+  .m-hero h1 { font-size: var(--text-3xl); }
+  .m-hero .lede { font-size: var(--text-sm); }
+  .m-hero .ctas .btn { font-size: var(--text-xs); padding: var(--space-2) var(--space-3); }
+  .m-disc { padding: var(--space-4); border-bottom: 1px solid var(--ink-500); display: grid; gap: var(--space-3); }
+  .m-disc .search { min-width: 0; }
+  .m-disc .chips { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- KIT HEAD ─────────────── -->
+  <header class="kit-head" data-screen-label="UI Kit Public · Header">
+    <p class="crumbs">
+      <a href="index.html">DS</a> · <a href="index.html#surfaces">Surfaces</a> · <b>05.1 · UI Kit · Público</b>
+      <span style="color: var(--brand-400);">v1.0 · 1280 · 768 · 390 · pt-BR</span>
+    </p>
+    <h1>Onde a foto<br>encontra o leitor.</h1>
+    <p class="lede">
+      Todas as superfícies públicas — <em>landing</em>, descoberta, evento, lightbox, carrinho, checkout, recibo,
+      autenticação, páginas legais e erros — compostas a partir dos átomos e compostos dos Prompts 03–04. Cada cartão
+      a seguir mostra um <em>screen</em> em até três viewports.
+    </p>
+    <div class="toc">
+      <a href="#nav">01 · Navbar</a>
+      <a href="#home">02 · Home / hero</a>
+      <a href="#discovery">03 · Descoberta</a>
+      <a href="#evento">04 · Evento</a>
+      <a href="#lightbox">05 · Lightbox</a>
+      <a href="#cart">06 · Carrinho</a>
+      <a href="#checkout">07 · Checkout</a>
+      <a href="#recibo">08 · Recibo</a>
+      <a href="#auth">09 · Auth</a>
+      <a href="#static">10 · Estáticas</a>
+      <a href="#errors">11 · 404 · 403 · 500</a>
+      <a href="#footer">12 · Footer</a>
+    </div>
+  </header>
+
+  <!-- SVG defs ────────── -->
+  <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+      <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></symbol>
+      <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+      <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></symbol>
+      <!-- kit-local extension; not in canonical 68-sprite. Promote to components-atomic.html if reused. -->
+      <symbol id="i-flag" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></symbol>
+      <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+      <symbol id="i-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+      <symbol id="i-arrow-left" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+      <symbol id="i-play" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor" stroke="none"/></symbol>
+    </defs>
+  </svg>
+
+  <!-- ═════ 01 · NAVBAR ═════ -->
+  <section class="screen" id="nav">
+    <div class="screen-head">
+      <span class="num">01.1</span>
+      <h2>Navbar pública</h2>
+      <p class="copy">Sticky, 58 px de altura, blur + borda. Três estados: <em>rest</em>, <em>scrolled</em>, <em>mobile com hamburger</em>.</p>
+      <div class="tags"><span class="tag">composite · 04.6</span></div>
+    </div>
+    <div class="frames">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>rest</span></div>
+        <div class="vp-stage">
+          <header class="nav">
+            <a class="brand"><span class="gly">VS</span>VINÍCIUS SOUZA</a>
+            <nav class="links"><a class="is-active">Eventos</a><a>Autenticidade</a><a>Contato</a></nav>
+            <div class="actions">
+              <a class="login">Entrar</a>
+              <span class="cart-pill"><svg class="ico is-14"><use href="#i-cart"/></svg>2<span class="count">R$ 57,60</span></span>
+            </div>
+          </header>
+          <div style="padding: var(--space-12); display: grid; place-items: center; color: var(--ink-700); font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; min-height: 300px;">Conteúdo da página abaixo do nav</div>
+        </div>
+      </div>
+
+      <div class="vp vp-tablet">
+        <div class="vp-ruler"><span>Tablet · 768</span><span>scrolled</span></div>
+        <div class="vp-stage">
+          <header class="nav" style="background: rgba(7,7,8,0.98); border-bottom-color: var(--ink-600);">
+            <a class="brand"><span class="gly">VS</span>VS</a>
+            <nav class="links" style="gap: var(--space-4); padding-left: var(--space-4);"><a class="is-active">Eventos</a><a>Contato</a></nav>
+            <div class="actions">
+              <span class="cart-pill"><svg class="ico is-14"><use href="#i-cart"/></svg>2</span>
+            </div>
+          </header>
+        </div>
+      </div>
+
+      <div class="vp vp-mobile">
+        <div class="vp-ruler"><span>Mobile · 390</span><span>burger</span></div>
+        <div class="vp-stage">
+          <header class="m-nav">
+            <button class="burger" aria-label="Abrir menu"><svg class="ico is-20"><use href="#i-menu"/></svg></button>
+            <span class="brand">VINÍCIUS SOUZA</span>
+            <button class="icon-btn" aria-label="Conta"><svg class="ico is-16"><use href="#i-user"/></svg></button>
+            <button class="icon-btn" aria-label="Carrinho"><svg class="ico is-16"><use href="#i-cart"/></svg></button>
+          </header>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ 02 · HOME / HERO ═════ -->
+  <section class="screen" id="home">
+    <div class="screen-head">
+      <span class="num">02.1</span>
+      <h2>Home · hero + stats</h2>
+      <p class="copy">Hero editorial com <em>--glow-radial</em>, frase em <code class="type-mono" style="background: var(--ink-200); padding: 1px 4px; border-radius: 2px;">--text-6xl</code> itálico, stats em <em>tabular-nums</em>.</p>
+      <div class="tags"><span class="tag">layout · hero 80</span></div>
+    </div>
+    <div class="frames">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>home</span></div>
+        <div class="vp-stage">
+          <header class="nav">
+            <a class="brand"><span class="gly">VS</span>VINÍCIUS SOUZA</a>
+            <nav class="links"><a class="is-active">Eventos</a><a>Autenticidade</a><a>Contato</a></nav>
+            <div class="actions"><a class="login">Entrar</a><span class="cart-pill"><svg class="ico is-14"><use href="#i-cart"/></svg>0</span></div>
+          </header>
+          <section class="hero">
+            <p class="eyebrow">Cobertura editorial · 2026</p>
+            <h1>Encontre-se nas fotos do seu evento.</h1>
+            <p class="lede">Pague pelo PIX, baixe em até 48 h. Cobertura editorial de rodeio, corrida, equestre e festival — original protegido, derivada com marca-d'água até a compra.</p>
+            <div class="ctas">
+              <a class="btn btn-primary btn-lg">Ver eventos abertos<svg class="ico is-16"><use href="#i-arrow-right"/></svg></a>
+              <a class="btn btn-secondary btn-lg">Procurar pelo meu rosto</a>
+            </div>
+            <div class="stats">
+              <div class="s"><span class="v">142</span><span class="k">eventos cobertos</span></div>
+              <div class="s"><span class="v">186 mil</span><span class="k">fotos catalogadas</span></div>
+              <div class="s"><span class="v">&lt; 48h</span><span class="k">entrega após pagamento</span></div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div class="vp vp-tablet">
+        <div class="vp-ruler"><span>Tablet · 768</span><span>compact</span></div>
+        <div class="vp-stage">
+          <section class="hero" style="padding: var(--space-10) var(--space-6); ">
+            <p class="eyebrow">Cobertura editorial · 2026</p>
+            <h1 style="font-size: var(--text-4xl);">Encontre-se nas fotos do seu evento.</h1>
+            <p class="lede" style="font-size: var(--text-sm);">Pague pelo PIX, baixe em até 48 h.</p>
+            <div class="ctas"><a class="btn btn-primary">Ver eventos</a></div>
+            <div class="stats" style="gap: var(--space-6);">
+              <div class="s"><span class="v" style="font-size: var(--text-2xl);">142</span><span class="k">eventos</span></div>
+              <div class="s"><span class="v" style="font-size: var(--text-2xl);">186 mil</span><span class="k">fotos</span></div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div class="vp vp-mobile">
+        <div class="vp-ruler"><span>Mobile · 390</span><span>m-hero</span></div>
+        <div class="vp-stage">
+          <header class="m-nav">
+            <button class="burger"><svg class="ico is-20"><use href="#i-menu"/></svg></button>
+            <span class="brand">VS · FOTOGRAFIA</span>
+            <button class="icon-btn"><svg class="ico is-16"><use href="#i-user"/></svg></button>
+            <button class="icon-btn"><svg class="ico is-16"><use href="#i-cart"/></svg></button>
+          </header>
+          <section class="hero m-hero">
+            <p class="eyebrow">Cobertura · 2026</p>
+            <h1>Encontre-se nas fotos do seu evento.</h1>
+            <p class="lede">PIX, baixa em 48 h. Original protegido.</p>
+            <div class="ctas"><a class="btn btn-primary">Ver eventos</a></div>
+            <div class="stats" style="margin-top: var(--space-6); gap: var(--space-5);">
+              <div class="s"><span class="v" style="font-size: var(--text-xl);">142</span><span class="k">eventos</span></div>
+              <div class="s"><span class="v" style="font-size: var(--text-xl);">&lt; 48h</span><span class="k">entrega</span></div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ 03 · DISCOVERY GRID ═════ -->
+  <section class="screen" id="discovery">
+    <div class="screen-head">
+      <span class="num">03.1</span>
+      <h2>Descoberta de eventos · grid + busca + filtros</h2>
+      <p class="copy">Search input + filter chips (categoria canônica) + sort select. Grade 3-col desktop, 2 tablet, 1 mobile. <em>Loading</em> e <em>empty</em> mostrados abaixo.</p>
+      <div class="tags"><span class="tag">grid · 3 col</span><span class="tag">empty + loading</span></div>
+    </div>
+
+    <div class="frames">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>/eventos</span></div>
+        <div class="vp-stage">
+          <header class="nav">
+            <a class="brand"><span class="gly">VS</span>VINÍCIUS SOUZA</a>
+            <nav class="links"><a class="is-active">Eventos</a><a>Autenticidade</a><a>Contato</a></nav>
+            <div class="actions"><a class="login">Entrar</a><span class="cart-pill"><svg class="ico is-14"><use href="#i-cart"/></svg>0</span></div>
+          </header>
+
+          <div class="disc-head">
+            <div>
+              <p class="crumb">DS / Eventos abertos</p>
+              <h2>142 eventos abertos</h2>
+            </div>
+            <div class="search">
+              <svg class="ico is-16" style="color: var(--ink-700);"><use href="#i-search"/></svg>
+              <input placeholder="Busque pelo nome do evento ou pelo número do seu peito.">
+              <button class="go">Buscar</button>
+            </div>
+          </div>
+
+          <div class="filter-bar">
+            <button class="chip is-active">Todos<span class="count">142</span></button>
+            <button class="chip">Rodeio<span class="count">38</span></button>
+            <button class="chip">Corrida<span class="count">26</span></button>
+            <button class="chip">Equestre<span class="count">22</span></button>
+            <button class="chip">Festival<span class="count">31</span></button>
+            <button class="chip">Futebol<span class="count">14</span></button>
+            <button class="chip">Outros<span class="count">11</span></button>
+            <div class="sort-select"><span>Ordenar</span><select><option>Mais recentes</option><option>Maior acervo</option><option>Próximos</option></select></div>
+          </div>
+
+          <div class="events">
+            <article class="event-card">
+              <div class="cover"><div class="ph t-a"></div><span class="stripe t-esportes"></span><span class="badge b-sub-esportes cat" style="position: absolute; top: 12px; left: 12px;"><span class="dot"></span>Rodeio</span></div>
+              <div class="body">
+                <h3>Abertura da Safra 2026</h3>
+                <p class="meta"><span>22 mai 2026</span><span>·</span><span>Barretos / SP</span></p>
+                <div class="foot"><span class="price"><em>a partir de</em>R$ 28,80</span><span class="count">1.581 fotos</span></div>
+              </div>
+            </article>
+            <article class="event-card">
+              <div class="cover"><div class="ph t-b"></div><span class="stripe t-natureza"></span><span class="badge b-sub-natureza cat" style="position: absolute; top: 12px; left: 12px;"><span class="dot"></span>Festival</span></div>
+              <div class="body">
+                <h3>ExpoFlora Holambra</h3>
+                <p class="meta"><span>18 mai 2026</span><span>·</span><span>Holambra / SP</span></p>
+                <div class="foot"><span class="price"><em>a partir de</em>R$ 24,00</span><span class="count">982 fotos</span></div>
+              </div>
+            </article>
+            <article class="event-card">
+              <div class="cover"><div class="ph t-c"></div><span class="stripe t-editorial"></span><span class="badge b-sub-editorial cat" style="position: absolute; top: 12px; left: 12px;"><span class="dot"></span>Corrida</span></div>
+              <div class="body">
+                <h3>Meia de Anápolis</h3>
+                <p class="meta"><span>11 mai 2026</span><span>·</span><span>Anápolis / GO</span></p>
+                <div class="foot"><span class="price"><em>a partir de</em>R$ 19,90</span><span class="count">3.214 fotos</span></div>
+              </div>
+            </article>
+            <article class="event-card">
+              <div class="cover"><div class="ph t-d"></div><span class="stripe t-esportes"></span><span class="badge b-sub-esportes cat" style="position: absolute; top: 12px; left: 12px;"><span class="dot"></span>Rodeio</span></div>
+              <div class="body">
+                <h3>Festa do Peão · Jataí</h3>
+                <p class="meta"><span>04 mai 2026</span><span>·</span><span>Jataí / GO</span></p>
+                <div class="foot"><span class="price"><em>a partir de</em>R$ 28,80</span><span class="count">2.097 fotos</span></div>
+              </div>
+            </article>
+            <article class="event-card">
+              <div class="cover"><div class="ph t-e"></div><span class="stripe t-editorial"></span><span class="badge b-sub-editorial cat" style="position: absolute; top: 12px; left: 12px;"><span class="dot"></span>Equestre</span></div>
+              <div class="body">
+                <h3>GP de Brasília · Sela</h3>
+                <p class="meta"><span>27 abr 2026</span><span>·</span><span>Brasília / DF</span></p>
+                <div class="foot"><span class="price"><em>a partir de</em>R$ 34,00</span><span class="count">718 fotos</span></div>
+              </div>
+            </article>
+            <article class="event-card">
+              <div class="cover"><div class="ph t-f"></div><span class="stripe t-natureza"></span><span class="badge b-sub-natureza cat" style="position: absolute; top: 12px; left: 12px;"><span class="dot"></span>Festival</span></div>
+              <div class="body">
+                <h3>Pop Rural · Goiânia</h3>
+                <p class="meta"><span>20 abr 2026</span><span>·</span><span>Goiânia / GO</span></p>
+                <div class="foot"><span class="price"><em>a partir de</em>R$ 22,00</span><span class="count">1.106 fotos</span></div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-tablet">
+        <div class="vp-ruler"><span>Tablet · 768</span><span>2 col</span></div>
+        <div class="vp-stage">
+          <div class="disc-head" style="padding: var(--space-5);">
+            <div><p class="crumb">142 eventos</p><h2>Eventos abertos</h2></div>
+            <div></div>
+          </div>
+          <div class="filter-bar" style="padding: var(--space-3) var(--space-5);">
+            <button class="chip is-active">Todos</button><button class="chip">Rodeio</button><button class="chip">Corrida</button><button class="chip">Equestre</button>
+          </div>
+          <div class="events" style="grid-template-columns: 1fr 1fr; padding: var(--space-4) var(--space-5);">
+            <article class="event-card"><div class="cover"><div class="ph t-a"></div><span class="stripe t-esportes"></span></div><div class="body"><h3>Abertura da Safra</h3><p class="meta"><span>22 mai</span><span>·</span><span>1.581 fotos</span></p></div></article>
+            <article class="event-card"><div class="cover"><div class="ph t-c"></div><span class="stripe t-editorial"></span></div><div class="body"><h3>Meia de Anápolis</h3><p class="meta"><span>11 mai</span><span>·</span><span>3.214 fotos</span></p></div></article>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-mobile">
+        <div class="vp-ruler"><span>Mobile · 390</span><span>empty</span></div>
+        <div class="vp-stage">
+          <header class="m-nav"><button class="burger"><svg class="ico is-20"><use href="#i-menu"/></svg></button><span class="brand">VS · FOTOGRAFIA</span><button class="icon-btn"><svg class="ico is-16"><use href="#i-user"/></svg></button><button class="icon-btn"><svg class="ico is-16"><use href="#i-cart"/></svg></button></header>
+          <div class="m-disc">
+            <div class="search"><svg class="ico is-14"><use href="#i-search"/></svg><input placeholder="Nome do evento ou número do peito"></div>
+            <div class="chips">
+              <button class="chip is-active">Todos</button><button class="chip">Rodeio</button><button class="chip">Corrida</button>
+            </div>
+          </div>
+          <div style="padding: var(--space-12) var(--space-5); text-align: center; display: flex; flex-direction: column; gap: var(--space-3); color: var(--ink-800); font-size: var(--text-sm); line-height: var(--leading-relaxed);">
+            <svg class="ico is-32" style="margin: 0 auto; color: var(--ink-700);"><use href="#i-search"/></svg>
+            <p>Nenhum evento encontrado para <em>"rodeo de jaú"</em>.</p>
+            <p style="color: var(--ink-700); font-size: var(--text-xs); font-family: var(--font-mono);">Verifique a categoria ou tente outro termo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ 04 · EVENT DETAIL ═════ -->
+  <section class="screen" id="evento">
+    <div class="screen-head">
+      <span class="num">04.1</span>
+      <h2>Evento · galeria + folders + vídeos + patrocinadores + cart aside</h2>
+      <p class="copy">A página densa do produto. Galeria 180 px, folders, sticky cart aside no desktop. Tabs: Fotos · Vídeos · Patrocinadores · Comentários.</p>
+      <div class="tags"><span class="tag">composite · photo-card</span><span class="tag">composite · video-card</span></div>
+    </div>
+
+    <div class="frames">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>/evento/abertura-safra</span></div>
+        <div class="vp-stage">
+          <header class="nav">
+            <a class="brand"><span class="gly">VS</span>VINÍCIUS SOUZA</a>
+            <nav class="links"><a class="is-active">Eventos</a><a>Autenticidade</a><a>Contato</a></nav>
+            <div class="actions"><a class="login">Entrar</a><span class="cart-pill"><svg class="ico is-14"><use href="#i-cart"/></svg>3<span class="count">R$ 86,40</span></span></div>
+          </header>
+
+          <div class="ev-head">
+            <div>
+              <p class="crumb"><a>Eventos</a> · Rodeio · <span style="color: var(--ink-1000);">Abertura da Safra 2026</span></p>
+              <h1>Abertura da Safra 2026</h1>
+              <p class="meta"><span>22 de maio de 2026</span><span>·</span><span>Barretos / SP</span><span>·</span><span>1.581 fotos · 28 vídeos</span><span>·</span><span class="badge b-sub-esportes is-sm"><span class="dot"></span>Rodeio</span></p>
+            </div>
+            <div class="actions">
+              <button class="btn btn-secondary"><svg class="ico is-14"><use href="#i-share"/></svg>Compartilhar</button>
+              <button class="btn btn-primary"><svg class="ico is-14"><use href="#i-user"/></svg>Procurar pelo meu rosto</button>
+            </div>
+          </div>
+
+          <nav class="ev-tabs">
+            <a class="is-active">Fotos · 1.581</a><a>Vídeos · 28</a><a>Patrocinadores · 6</a><a>Comentários</a>
+          </nav>
+
+          <div class="folder-row">
+            <button class="folder is-active"><svg class="ico is-12"><use href="#i-check"/></svg>Todas<span class="ix">1.581</span></button>
+            <button class="folder">Abertura<span class="ix">198</span></button>
+            <button class="folder">Touro <em>Cabra Forte</em><span class="ix">412</span></button>
+            <button class="folder">Premiação<span class="ix">86</span></button>
+            <button class="folder">Bastidores<span class="ix">112</span></button>
+          </div>
+
+          <div class="ev-wrap">
+            <div>
+              <div class="photo-grid">
+                <div class="photo"><div class="ph t-a"></div><span class="price">R$ 28,80</span><button class="cart" aria-label="Adicionar"><svg class="ico is-14"><use href="#i-plus"/></svg></button></div>
+                <div class="photo is-incart"><div class="ph t-b"></div><span class="price">R$ 28,80</span><span class="pill"><svg class="ico is-12"><use href="#i-check"/></svg>No carrinho</span><button class="cart"><svg class="ico is-14"><use href="#i-check"/></svg></button></div>
+                <div class="photo"><div class="ph t-c"></div><span class="price">R$ 28,80</span><button class="cart"><svg class="ico is-14"><use href="#i-plus"/></svg></button></div>
+                <div class="photo"><div class="ph t-d"></div><span class="pill is-free">Grátis</span><button class="cart"><svg class="ico is-14"><use href="#i-plus"/></svg></button></div>
+                <div class="photo"><div class="ph t-e"></div><span class="price">R$ 28,80</span><button class="cart"><svg class="ico is-14"><use href="#i-plus"/></svg></button></div>
+                <div class="photo"><div class="ph t-f"></div><span class="price">R$ 28,80</span><button class="cart"><svg class="ico is-14"><use href="#i-plus"/></svg></button></div>
+                <div class="photo"><div class="ph t-a"></div><span class="price">R$ 28,80</span><button class="cart"><svg class="ico is-14"><use href="#i-plus"/></svg></button></div>
+                <div class="photo"><div class="ph t-c"></div><span class="price">R$ 28,80</span><button class="cart"><svg class="ico is-14"><use href="#i-plus"/></svg></button></div>
+                <div class="photo is-incart"><div class="ph t-b"></div><span class="price">R$ 28,80</span><button class="cart"><svg class="ico is-14"><use href="#i-check"/></svg></button></div>
+                <div class="photo"><div class="ph t-d"></div><span class="price">R$ 28,80</span><button class="cart"><svg class="ico is-14"><use href="#i-plus"/></svg></button></div>
+                <div class="photo"><div class="ph t-e"></div><span class="price">R$ 28,80</span><button class="cart"><svg class="ico is-14"><use href="#i-plus"/></svg></button></div>
+                <div class="photo"><div class="ph t-f"></div><span class="price">R$ 28,80</span><button class="cart"><svg class="ico is-14"><use href="#i-plus"/></svg></button></div>
+              </div>
+            </div>
+            <aside class="cart-aside">
+              <h4>Seu carrinho</h4>
+              <p class="ca-count">3 fotos · este evento</p>
+              <div class="ca-line"><div class="thumb"></div><div><span class="id">#0421-AX</span></div><span class="price">R$ 28,80</span></div>
+              <div class="ca-line"><div class="thumb" style="background: var(--ph-rust);"></div><div><span class="id">#0438-BL</span></div><span class="price">R$ 28,80</span></div>
+              <div class="ca-line"><div class="thumb" style="background: var(--ph-forest);"></div><div><span class="id">#0492-CK</span></div><span class="price">R$ 28,80</span></div>
+              <p class="ca-tier">Adicione 2 fotos · ganhe 10% no total.</p>
+              <div class="ca-total"><span>Subtotal</span><span class="v">R$ 86,40</span></div>
+              <a class="btn btn-success btn-lg">Ir para o pagamento</a>
+              <a class="btn btn-ghost btn-sm" style="align-self: center;">Ver carrinho completo</a>
+            </aside>
+          </div>
+
+          <section class="vids">
+            <div class="vh-row"><h3>Vídeos do evento</h3><a style="font-family: var(--font-mono); font-size: var(--text-xs); color: var(--brand-400);">Ver todos · 28</a></div>
+            <div class="v-grid">
+              <div class="video-card"><div class="poster" style="background: var(--ph-rust);"></div><div class="play"><div class="pc"><svg class="ico is-20" style="color: var(--ink-1000);"><use href="#i-play"/></svg></div></div><span class="badge-v">Vídeo</span><span class="price-v">R$ 89,00</span><span class="dur">1:42</span></div>
+              <div class="video-card"><div class="poster" style="background: var(--ph-anchor);"></div><div class="play"><div class="pc"><svg class="ico is-20" style="color: var(--ink-1000);"><use href="#i-play"/></svg></div></div><span class="badge-v">Vídeo</span><span class="price-v is-free" style="background: var(--signal-500); color: var(--ink-on-signal);">Grátis</span><span class="dur">0:56</span></div>
+              <div class="video-card"><div class="poster" style="background: var(--ph-forest);"></div><div class="play"><div class="pc"><svg class="ico is-20" style="color: var(--ink-1000);"><use href="#i-play"/></svg></div></div><span class="badge-v">Vídeo</span><span class="price-v">R$ 89,00</span><span class="dur">2:08</span></div>
+            </div>
+          </section>
+
+          <section class="sponsors">
+            <p class="sp-head">Patrocinadores · 6</p>
+            <div class="sp-grid">
+              <article class="sponsor"><span class="tier">Cota ouro</span><span class="name">Cervejaria Bandeira</span><span class="domain">cervejariabandeira.com.br</span></article>
+              <article class="sponsor"><span class="tier">Cota prata</span><span class="name">Selaria Ribeiro</span><span class="domain">selariaribeiro.com</span></article>
+              <article class="sponsor"><span class="tier">Cota prata</span><span class="name">Botas Couro Vivo</span><span class="domain">botascourovivo.com.br</span></article>
+              <article class="sponsor"><span class="tier">Apoio</span><span class="name">Pet Center Norte</span><span class="domain">petcenternorte.br</span></article>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div class="vp vp-tablet">
+        <div class="vp-ruler"><span>Tablet · 768</span><span>cart drawer</span></div>
+        <div class="vp-stage">
+          <div class="ev-head" style="padding: var(--space-4) var(--space-5); grid-template-columns: 1fr;">
+            <div><p class="crumb">Rodeio</p><h1 style="font-size: var(--text-2xl);">Abertura da Safra 2026</h1><p class="meta"><span>22 mai 2026</span><span>·</span><span>1.581 fotos</span></p></div>
+          </div>
+          <div class="folder-row" style="padding: var(--space-3) var(--space-5);"><button class="folder is-active">Todas<span class="ix">1.581</span></button><button class="folder">Abertura<span class="ix">198</span></button></div>
+          <div class="photo-grid" style="padding: var(--space-3) var(--space-5); grid-template-columns: repeat(4, 1fr);">
+            <div class="photo"><div class="ph t-a"></div><span class="price">R$ 28,80</span></div>
+            <div class="photo is-incart"><div class="ph t-b"></div><span class="price">R$ 28,80</span></div>
+            <div class="photo"><div class="ph t-c"></div><span class="price">R$ 28,80</span></div>
+            <div class="photo"><div class="ph t-d"></div><span class="price">R$ 28,80</span></div>
+            <div class="photo"><div class="ph t-e"></div><span class="price">R$ 28,80</span></div>
+            <div class="photo"><div class="ph t-f"></div><span class="price">R$ 28,80</span></div>
+            <div class="photo"><div class="ph t-a"></div><span class="price">R$ 28,80</span></div>
+            <div class="photo"><div class="ph t-b"></div><span class="price">R$ 28,80</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-mobile">
+        <div class="vp-ruler"><span>Mobile · 390</span><span>scroll</span></div>
+        <div class="vp-stage">
+          <header class="m-nav"><button class="burger"><svg class="ico is-20"><use href="#i-menu"/></svg></button><span class="brand">VS · FOTOGRAFIA</span><button class="icon-btn"><svg class="ico is-16"><use href="#i-user"/></svg></button><button class="icon-btn"><svg class="ico is-16"><use href="#i-cart"/></svg><span class="count">3</span></button></header>
+          <div class="ev-head" style="padding: var(--space-4); grid-template-columns: 1fr;">
+            <div>
+              <p class="crumb">Rodeio</p>
+              <h1 style="font-size: var(--text-xl);">Abertura da Safra 2026</h1>
+              <p class="meta" style="font-size: 10px;"><span>22 mai 2026</span><span>·</span><span>1.581 fotos</span></p>
+            </div>
+          </div>
+          <div class="folder-row" style="padding: var(--space-2) var(--space-4); gap: var(--space-1); overflow-x: auto; flex-wrap: nowrap;"><button class="folder is-active">Todas</button><button class="folder">Abertura</button><button class="folder">Touro</button></div>
+          <div class="photo-grid" style="padding: var(--space-2); grid-template-columns: repeat(3, 1fr); gap: 4px;">
+            <div class="photo"><div class="ph t-a"></div></div>
+            <div class="photo is-incart"><div class="ph t-b"></div></div>
+            <div class="photo"><div class="ph t-c"></div></div>
+            <div class="photo"><div class="ph t-d"></div></div>
+            <div class="photo"><div class="ph t-e"></div></div>
+            <div class="photo"><div class="ph t-f"></div></div>
+            <div class="photo"><div class="ph t-a"></div></div>
+            <div class="photo"><div class="ph t-c"></div></div>
+            <div class="photo"><div class="ph t-b"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ 05 · LIGHTBOX ═════ -->
+  <section class="screen" id="lightbox">
+    <div class="screen-head">
+      <span class="num">05.1</span>
+      <h2>Lightbox · foto com marca-d'água, ações &amp; comentários</h2>
+      <p class="copy">Modal full-screen. <em>Esc</em> fecha, <em>← →</em> navega. Ações: cart, salvar, compartilhar, solicitar remoção. Painel lateral em desktop; sheet inferior em mobile.</p>
+      <div class="tags"><span class="tag">composite · modal lg</span><span class="tag">aria-modal</span></div>
+    </div>
+
+    <div class="frames">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>lightbox + comments</span></div>
+        <div class="vp-stage">
+          <div class="lb-scrim">
+            <div class="lb-stage">
+              <button class="arrow l"><svg class="ico is-20"><use href="#i-arrow-left"/></svg></button>
+              <div class="lb-photo"></div>
+              <button class="arrow r"><svg class="ico is-20"><use href="#i-arrow-right"/></svg></button>
+              <button class="close"><svg class="ico is-16"><use href="#i-x"/></svg></button>
+            </div>
+            <aside class="lb-side">
+              <span class="id">#0421-AX · 4.2 MB · 6000×4000</span>
+              <span class="price">R$ 28,80</span>
+              <p class="meta">22 mai 2026 · 18:42 · arena central</p>
+              <button class="btn btn-success btn-lg">Adicionar ao carrinho</button>
+              <div class="row-acts">
+                <a><svg class="ico is-14"><use href="#i-heart"/></svg>Salvar</a>
+                <a><svg class="ico is-14"><use href="#i-share"/></svg>Compartilhar</a>
+                <a><svg class="ico is-14"><use href="#i-flag"/></svg>Solicitar remoção</a>
+              </div>
+              <p class="comments-title">Comentários · 3</p>
+              <div class="comment">
+                <span class="av">MA</span>
+                <div>
+                  <span class="who">Marina</span><span class="when">há 2 h</span>
+                  <p style="margin: 2px 0 0;">Que ângulo! Comprei na hora.</p>
+                </div>
+              </div>
+              <div class="comment">
+                <span class="av">JR</span>
+                <div>
+                  <span class="who">João Ricardo</span><span class="when">há 5 h</span>
+                  <p style="margin: 2px 0 0;">Quem é o cavaleiro?</p>
+                </div>
+              </div>
+              <input class="input" placeholder="Comentar nesta foto…" style="margin-top: var(--space-2);">
+            </aside>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-tablet">
+        <div class="vp-ruler"><span>Tablet · 768</span><span>side hidden</span></div>
+        <div class="vp-stage">
+          <div class="lb-scrim" style="padding: var(--space-4);">
+            <div class="lb-stage">
+              <button class="arrow l"><svg class="ico is-16"><use href="#i-arrow-left"/></svg></button>
+              <div class="lb-photo" style="max-width: 480px;"></div>
+              <button class="arrow r"><svg class="ico is-16"><use href="#i-arrow-right"/></svg></button>
+              <button class="close"><svg class="ico is-16"><use href="#i-x"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-mobile">
+        <div class="vp-ruler"><span>Mobile · 390</span><span>bottom sheet</span></div>
+        <div class="vp-stage" style="background: var(--ink-0);">
+          <div style="padding: var(--space-3); display: flex; justify-content: space-between; align-items: center; color: var(--ink-1000);">
+            <button style="background: transparent; border: 1px solid rgba(255,255,255,0.15); color: var(--ink-1000); width: 32px; height: 32px; border-radius: var(--radius-pill); display: grid; place-items: center;"><svg class="ico is-14"><use href="#i-arrow-left"/></svg></button>
+            <span style="font-family: var(--font-mono); font-size: var(--text-xs);">12 / 1.581</span>
+            <button style="background: transparent; border: 1px solid rgba(255,255,255,0.15); color: var(--ink-1000); width: 32px; height: 32px; border-radius: var(--radius-pill); display: grid; place-items: center;"><svg class="ico is-14"><use href="#i-x"/></svg></button>
+          </div>
+          <div style="margin: var(--space-2); aspect-ratio: 3/2; background: var(--ph-rust); border-radius: var(--radius); position: relative;">
+            <span style="position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--font-mono); font-size: 11px; letter-spacing: var(--tracking-widest); color: rgba(237,232,224,0.18); transform: rotate(-25deg);">VINÍCIUS SOUZA · IMAGEM NÃO ADQUIRIDA</span>
+          </div>
+          <div style="background: var(--ink-100); border-top-left-radius: 14px; border-top-right-radius: 14px; padding: var(--space-4); margin-top: var(--space-2); position: relative;">
+            <span style="position: absolute; top: 6px; left: 50%; transform: translateX(-50%); width: 38px; height: 4px; border-radius: 99px; background: var(--ink-500);"></span>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: var(--space-3);">
+              <span style="font-family: var(--font-display); font-style: italic; font-size: var(--text-2xl); color: var(--ink-1000);">R$ 28,80</span>
+              <button class="btn btn-success">Adicionar</button>
+            </div>
+            <p style="font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--ink-800); margin: var(--space-2) 0 0;">#0421-AX · 6000×4000 · 4.2 MB</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ 06 · CART PAGE ═════ -->
+  <section class="screen" id="cart">
+    <div class="screen-head">
+      <span class="num">06.1</span>
+      <h2>Carrinho · agrupado por evento</h2>
+      <p class="copy">Itens agrupados por evento; sticky summary à direita com tier message canônico, cupom inline e total. <em>Empty state</em> mostrado abaixo.</p>
+      <div class="tags"><span class="tag">composite · cart-summary</span></div>
+    </div>
+
+    <div class="frames">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>/carrinho</span></div>
+        <div class="vp-stage">
+          <header class="nav"><a class="brand"><span class="gly">VS</span>VINÍCIUS SOUZA</a><nav class="links"><a>Eventos</a></nav><div class="actions"><a class="login">Entrar</a><span class="cart-pill"><svg class="ico is-14"><use href="#i-cart"/></svg>5</span></div></header>
+          <div class="cart-page">
+            <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+              <h1 style="font-family: var(--font-display); font-style: italic; font-size: var(--text-3xl); color: var(--ink-1000); margin: 0;">Seu carrinho</h1>
+              <p style="font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); letter-spacing: var(--tracking-wider); text-transform: uppercase;">5 fotos · 2 eventos · R$ 144,00</p>
+              <div class="events-group">
+                <div class="eg-head"><span class="name">Abertura da Safra 2026</span><span class="count">3 fotos · R$ 86,40</span></div>
+                <div class="cart-line"><div class="thumb"></div><div><span class="id">#0421-AX</span><span class="label">6000×4000 · JPEG</span></div><span class="price">R$ 28,80</span><button class="x"><svg class="ico is-14"><use href="#i-x"/></svg></button></div>
+                <div class="cart-line"><div class="thumb" style="background: var(--ph-rust);"></div><div><span class="id">#0438-BL</span><span class="label">6000×4000 · JPEG</span></div><span class="price">R$ 28,80</span><button class="x"><svg class="ico is-14"><use href="#i-x"/></svg></button></div>
+                <div class="cart-line"><div class="thumb" style="background: var(--ph-forest);"></div><div><span class="id">#0492-CK</span><span class="label">6000×4000 · JPEG</span></div><span class="price">R$ 28,80</span><button class="x"><svg class="ico is-14"><use href="#i-x"/></svg></button></div>
+              </div>
+              <div class="events-group">
+                <div class="eg-head"><span class="name">Meia de Anápolis</span><span class="count">2 fotos · R$ 57,60</span></div>
+                <div class="cart-line"><div class="thumb" style="background: var(--ph-anchor);"></div><div><span class="id">#1844-MA</span><span class="label">5616×3744 · JPEG</span></div><span class="price">R$ 28,80</span><button class="x"><svg class="ico is-14"><use href="#i-x"/></svg></button></div>
+                <div class="cart-line"><div class="thumb" style="background: var(--ph-mono);"></div><div><span class="id">#1899-MV</span><span class="label">5616×3744 · JPEG</span></div><span class="price">R$ 28,80</span><button class="x"><svg class="ico is-14"><use href="#i-x"/></svg></button></div>
+              </div>
+            </div>
+            <aside class="summary">
+              <h4>Resumo</h4>
+              <div class="row"><span>Subtotal · 5 fotos</span><span>R$ 144,00</span></div>
+              <div class="row tier">Adicione 1 foto · ganhe 10% no total.</div>
+              <p style="font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--ink-700); letter-spacing: var(--tracking-wider); text-transform: uppercase;">Cupom</p>
+              <div class="coupon"><input class="input" placeholder="EX: RODEIO10"><button class="btn btn-secondary btn-sm">Aplicar</button></div>
+              <div class="total"><span>Total</span><span class="v">R$ 144,00</span></div>
+              <button class="btn btn-success btn-lg">Ir para o pagamento</button>
+              <a class="btn btn-ghost btn-sm" style="align-self: center;">Continuar comprando</a>
+            </aside>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-tablet">
+        <div class="vp-ruler"><span>Tablet · 768</span><span>1 col</span></div>
+        <div class="vp-stage">
+          <div class="cart-page" style="grid-template-columns: 1fr; padding: var(--space-5);">
+            <h1 style="font-family: var(--font-display); font-style: italic; font-size: var(--text-2xl); color: var(--ink-1000); margin: 0 0 var(--space-4);">Seu carrinho</h1>
+            <div class="events-group">
+              <div class="eg-head"><span class="name">Abertura da Safra</span><span class="count">3 fotos</span></div>
+              <div class="cart-line"><div class="thumb"></div><div><span class="id">#0421-AX</span></div><span class="price">R$ 28,80</span><button class="x"><svg class="ico is-14"><use href="#i-x"/></svg></button></div>
+              <div class="cart-line"><div class="thumb"></div><div><span class="id">#0438-BL</span></div><span class="price">R$ 28,80</span><button class="x"><svg class="ico is-14"><use href="#i-x"/></svg></button></div>
+            </div>
+            <aside class="summary" style="position: static;">
+              <div class="row"><span>Subtotal</span><span>R$ 57,60</span></div>
+              <div class="total"><span>Total</span><span class="v">R$ 57,60</span></div>
+              <button class="btn btn-success btn-lg">Ir para o pagamento</button>
+            </aside>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-mobile">
+        <div class="vp-ruler"><span>Mobile · 390</span><span>empty</span></div>
+        <div class="vp-stage">
+          <header class="m-nav"><button class="burger"><svg class="ico is-20"><use href="#i-menu"/></svg></button><span class="brand">VS · CARRINHO</span><button class="icon-btn"><svg class="ico is-16"><use href="#i-user"/></svg></button><button class="icon-btn"><svg class="ico is-16"><use href="#i-cart"/></svg></button></header>
+          <div style="padding: var(--space-12) var(--space-5); text-align: center; display: flex; flex-direction: column; gap: var(--space-4); align-items: center; color: var(--ink-800);">
+            <svg class="ico is-32" style="color: var(--ink-700);"><use href="#i-cart"/></svg>
+            <h2 style="font-family: var(--font-display); font-style: italic; font-size: var(--text-2xl); color: var(--ink-1000); margin: 0;">Carrinho vazio</h2>
+            <p style="font-size: var(--text-sm); color: var(--ink-900); line-height: var(--leading-relaxed); max-width: 32ch;">Seu carrinho está vazio. Encontre fotos em um evento aberto.</p>
+            <a class="btn btn-primary">Ver eventos</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ 07 · CHECKOUT ═════ -->
+  <section class="screen" id="checkout">
+    <div class="screen-head">
+      <span class="num">07.1</span>
+      <h2>Checkout · stepper + payment tiles + QR PIX</h2>
+      <p class="copy">Três passos: identificação · pagamento · entrega. Tiles para PIX (Asaas), Cartão (Stripe), Mercado Pago, PagSeguro. QR exibido inline + código copia-cola.</p>
+      <div class="tags"><span class="tag">composite · pay-tile</span><span class="tag">pix · stripe · mp</span></div>
+    </div>
+
+    <div class="frames">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>/checkout · step 2</span></div>
+        <div class="vp-stage">
+          <header class="nav"><a class="brand"><span class="gly">VS</span>VINÍCIUS SOUZA</a><nav class="links"><a>Eventos</a></nav><div class="actions"><a class="login">marina@example.com</a></div></header>
+          <div class="checkout-page">
+            <div style="display: flex; flex-direction: column; gap: var(--space-5);">
+              <h1 style="font-family: var(--font-display); font-style: italic; font-size: var(--text-3xl); color: var(--ink-1000); margin: 0;">Pagamento</h1>
+              <div class="stepper">
+                <span class="step is-done"><span class="ix">01</span>Identificação<svg class="ico is-12"><use href="#i-check"/></svg></span>
+                <span class="step is-active"><span class="ix">02</span>Pagamento</span>
+                <span class="step"><span class="ix">03</span>Entrega</span>
+              </div>
+              <div class="pay-tiles">
+                <article class="pay-tile is-active">
+                  <div class="top"><h5>PIX</h5><span class="meta">Asaas</span></div>
+                  <p class="desc">Pague em segundos. Liberação imediata após confirmação.</p>
+                </article>
+                <article class="pay-tile">
+                  <div class="top"><h5>Cartão</h5><span class="meta">Stripe</span></div>
+                  <p class="desc">3 × sem juros. Taxa de 3% por transação.</p>
+                </article>
+                <article class="pay-tile">
+                  <div class="top"><h5>Mercado Pago</h5><span class="meta">MP</span></div>
+                  <p class="desc">Débito · cartão · saldo · QR Code.</p>
+                </article>
+                <article class="pay-tile">
+                  <div class="top"><h5>PagSeguro</h5><span class="meta">UOL</span></div>
+                  <p class="desc">Boleto e cartão. Liberação em até 2 dias úteis.</p>
+                </article>
+              </div>
+              <div class="qr-card">
+                <div class="qr">
+                  <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="0" y="0" width="60" height="60" fill="var(--ink-1000)"/>
+                    <g fill="var(--ink-50)">
+                      <rect x="4" y="4" width="14" height="14"/><rect x="42" y="4" width="14" height="14"/><rect x="4" y="42" width="14" height="14"/>
+                      <rect x="7" y="7" width="8" height="8" fill="var(--ink-1000)"/><rect x="9" y="9" width="4" height="4" fill="var(--ink-50)"/>
+                      <rect x="45" y="7" width="8" height="8" fill="var(--ink-1000)"/><rect x="47" y="9" width="4" height="4" fill="var(--ink-50)"/>
+                      <rect x="7" y="45" width="8" height="8" fill="var(--ink-1000)"/><rect x="9" y="47" width="4" height="4" fill="var(--ink-50)"/>
+                      <rect x="22" y="6" width="4" height="4"/><rect x="28" y="10" width="4" height="4"/><rect x="34" y="6" width="4" height="4"/>
+                      <rect x="6" y="24" width="4" height="4"/><rect x="14" y="22" width="4" height="4"/><rect x="22" y="22" width="4" height="4"/>
+                      <rect x="28" y="28" width="6" height="6"/><rect x="38" y="22" width="4" height="4"/><rect x="46" y="22" width="4" height="4"/>
+                      <rect x="22" y="34" width="4" height="4"/><rect x="34" y="38" width="4" height="4"/><rect x="42" y="34" width="4" height="4"/>
+                      <rect x="22" y="42" width="4" height="4"/><rect x="30" y="46" width="4" height="4"/><rect x="38" y="46" width="4" height="4"/>
+                      <rect x="46" y="50" width="4" height="4"/><rect x="50" y="42" width="4" height="4"/>
+                    </g>
+                  </svg>
+                </div>
+                <div class="qr-info">
+                  <p style="font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); margin: 0;">Escaneie o QR no app do seu banco · ou copie o código:</p>
+                  <code>00020126360014BR.GOV.BCB.PIX0114+5511987654321520400005303986540514400.005802BR5917VINICIUS R DE SOUZA6009BARRETOS62290525CHK20260522184215123ABCDE6304A8F2</code>
+                  <div style="display: flex; gap: var(--space-2);">
+                    <button class="btn btn-secondary btn-sm">Copiar código</button>
+                    <span style="font-family: var(--font-mono); font-size: var(--text-xs); color: var(--warning-500); align-self: center;">Aguardando PIX · 14:32 restantes</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <aside class="summary">
+              <h4>Resumo</h4>
+              <div class="row"><span>5 fotos</span><span>R$ 144,00</span></div>
+              <div class="row"><span>Cupom · RODEIO10</span><span style="color: var(--signal-400);">− R$ 14,40</span></div>
+              <div class="total"><span>Total</span><span class="v">R$ 129,60</span></div>
+              <p style="font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--ink-700); line-height: var(--leading-relaxed); margin: 0;">Ao pagar você aceita os <a style="color: var(--brand-400);">Termos de Uso</a> e a <a style="color: var(--brand-400);">Política de Privacidade</a>.</p>
+            </aside>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-tablet">
+        <div class="vp-ruler"><span>Tablet · 768</span><span>card option</span></div>
+        <div class="vp-stage">
+          <div class="checkout-page" style="grid-template-columns: 1fr; padding: var(--space-5);">
+            <div>
+              <h1 style="font-family: var(--font-display); font-style: italic; font-size: var(--text-2xl); color: var(--ink-1000); margin: 0 0 var(--space-4);">Pagamento</h1>
+              <div class="pay-tiles" style="grid-template-columns: 1fr 1fr;">
+                <article class="pay-tile"><div class="top"><h5>PIX</h5><span class="meta">Asaas</span></div><p class="desc">Liberação imediata.</p></article>
+                <article class="pay-tile is-active"><div class="top"><h5>Cartão</h5><span class="meta">Stripe</span></div><p class="desc">3× sem juros.</p></article>
+              </div>
+              <div style="background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-5); margin-top: var(--space-4); display: grid; gap: var(--space-3);">
+                <input class="input" placeholder="Número do cartão">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);"><input class="input" placeholder="MM / AA"><input class="input" placeholder="CVV"></div>
+                <input class="input" placeholder="Nome no cartão">
+                <button class="btn btn-success btn-lg">Pagar R$ 129,60</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-mobile">
+        <div class="vp-ruler"><span>Mobile · 390</span><span>tiles stack</span></div>
+        <div class="vp-stage">
+          <header class="m-nav"><button class="burger"><svg class="ico is-20"><use href="#i-menu"/></svg></button><span class="brand">CHECKOUT</span><span></span><span></span></header>
+          <div class="checkout-page" style="grid-template-columns: 1fr; padding: var(--space-4); gap: var(--space-4);">
+            <h1 style="font-family: var(--font-display); font-style: italic; font-size: var(--text-2xl); color: var(--ink-1000); margin: 0;">Pagamento</h1>
+            <div class="stepper" style="overflow-x: auto;">
+              <span class="step is-done"><span class="ix">01</span>OK</span>
+              <span class="step is-active"><span class="ix">02</span>Pagar</span>
+              <span class="step"><span class="ix">03</span>Entrega</span>
+            </div>
+            <div class="pay-tiles" style="grid-template-columns: 1fr;">
+              <article class="pay-tile is-active"><div class="top"><h5>PIX</h5><span class="meta">Asaas</span></div><p class="desc">Liberação imediata.</p></article>
+              <article class="pay-tile"><div class="top"><h5>Cartão</h5><span class="meta">Stripe</span></div><p class="desc">3× sem juros.</p></article>
+            </div>
+            <button class="btn btn-success btn-lg">Pagar R$ 129,60</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ 08 · RECIBO ═════ -->
+  <section class="screen" id="recibo">
+    <div class="screen-head">
+      <span class="num">08.1</span>
+      <h2>Recibo · pagamento confirmado</h2>
+      <p class="copy">Confirmação. Badge verde, ID, próximos passos. <em>Loading</em> (gerando ZIP) e <em>error</em> (PIX expirou) também documentados.</p>
+      <div class="tags"><span class="tag">empty / loading / error</span></div>
+    </div>
+
+    <div class="frames">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>success</span></div>
+        <div class="vp-stage">
+          <header class="nav"><a class="brand"><span class="gly">VS</span>VINÍCIUS SOUZA</a><nav class="links"><a>Eventos</a></nav><div class="actions"><a class="login">marina@example.com</a></div></header>
+          <div class="receipt">
+            <span class="badge-ok"><svg class="ico is-14"><use href="#i-check"/></svg>Pagamento confirmado</span>
+            <h1>Suas fotos estão prontas.</h1>
+            <span class="id">Pedido <b style="color: var(--brand-400); font-weight: 500;">#A8F2-91D0</b> · 22 mai 2026 · 18:48</span>
+            <p class="next">Enviamos o link para baixar em <b style="color: var(--ink-1000); font-weight: 500;">marina@example.com</b>. Você também pode baixar agora pela área do cliente — os links permanecem disponíveis por 30 dias.</p>
+            <div style="display: flex; gap: var(--space-3);">
+              <button class="btn btn-success btn-lg">Baixar todas em ZIP</button>
+              <a class="btn btn-secondary btn-lg">Ver pedido</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-tablet">
+        <div class="vp-ruler"><span>Tablet · 768</span><span>loading · gerando ZIP</span></div>
+        <div class="vp-stage">
+          <div class="receipt" style="padding: var(--space-12) var(--space-5);">
+            <span class="badge-ok" style="background: var(--warning-dim); color: var(--warning-500); border-color: var(--warning-500);">Gerando arquivo</span>
+            <h1 style="font-size: var(--text-3xl);">Preparando seu ZIP…</h1>
+            <p class="next">Comprimindo 14 fotos · 380 MB · estimado 38 s.</p>
+            <div style="width: 100%; max-width: 360px; height: 4px; background: var(--ink-300); border-radius: var(--radius-pill); overflow: hidden;">
+              <div style="width: 62%; height: 100%; background: var(--brand-500);"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-mobile">
+        <div class="vp-ruler"><span>Mobile · 390</span><span>error · QR expired</span></div>
+        <div class="vp-stage">
+          <header class="m-nav"><button class="burger"><svg class="ico is-20"><use href="#i-menu"/></svg></button><span class="brand">CHECKOUT</span><span></span><span></span></header>
+          <div style="padding: var(--space-12) var(--space-5); text-align: center; display: flex; flex-direction: column; gap: var(--space-3); align-items: center;">
+            <span style="display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-4); background: var(--danger-dim); color: var(--danger-500); border: 1px solid var(--danger-500); border-radius: var(--radius-pill); font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase;">QR expirou</span>
+            <h2 style="font-family: var(--font-display); font-style: italic; font-size: var(--text-2xl); color: var(--ink-1000); margin: 0;">QR Code expirou.</h2>
+            <p style="font-size: var(--text-sm); color: var(--ink-900); max-width: 32ch;">Gere outro para continuar. Seu carrinho está salvo.</p>
+            <button class="btn btn-primary">Gerar outro QR Code</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ 09 · AUTH ═════ -->
+  <section class="screen" id="auth">
+    <div class="screen-head">
+      <span class="num">09.1</span>
+      <h2>Auth · login, cadastro, recuperar, trocar-senha</h2>
+      <p class="copy">Card em 720 px de largura máxima. Mesmos campos, mesmo botão, diferentes lemas.</p>
+      <div class="tags"><span class="tag">layout · 720 narrow</span></div>
+    </div>
+
+    <div class="frames">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>/login</span></div>
+        <div class="vp-stage">
+          <header class="nav"><a class="brand"><span class="gly">VS</span>VINÍCIUS SOUZA</a><nav class="links"><a>Eventos</a></nav><div class="actions"><a class="login">Criar conta</a></div></header>
+          <div class="auth">
+            <div class="card">
+              <h2>Entrar</h2>
+              <div class="field"><label>E-mail</label><input class="input" type="email" placeholder="seu@email.com"></div>
+              <div class="field"><label>Senha</label><input class="input" type="password" placeholder="••••••••"></div>
+              <div class="links"><a>Esqueci a senha</a><a>Criar conta</a></div>
+              <button class="btn btn-primary btn-lg">Entrar</button>
+              <p class="alt">Ainda não tem conta? <a>Criar uma agora</a>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-tablet">
+        <div class="vp-ruler"><span>Tablet · 768</span><span>/cadastro</span></div>
+        <div class="vp-stage">
+          <div class="auth" style="padding: var(--space-12) var(--space-5);">
+            <div class="card">
+              <h2>Criar conta</h2>
+              <div class="field"><label>Nome completo</label><input class="input" placeholder="Marina Albuquerque"></div>
+              <div class="field"><label>E-mail</label><input class="input" type="email"></div>
+              <div class="field"><label>Senha</label><input class="input" type="password" placeholder="ao menos 8 caracteres"></div>
+              <button class="btn btn-primary btn-lg">Criar conta</button>
+              <p class="alt">Já tem conta? <a>Entrar</a>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-mobile">
+        <div class="vp-ruler"><span>Mobile · 390</span><span>/trocar-senha</span></div>
+        <div class="vp-stage">
+          <header class="m-nav"><button class="burger"><svg class="ico is-20"><use href="#i-menu"/></svg></button><span class="brand">VS · CONTA</span><span></span><span></span></header>
+          <div class="auth" style="padding: var(--space-6) var(--space-4);">
+            <div class="card" style="padding: var(--space-5);">
+              <h2 style="font-size: var(--text-xl);">Definir nova senha</h2>
+              <div class="field"><label>Nova senha</label><input class="input" type="password"></div>
+              <div class="field"><label>Confirmar</label><input class="input" type="password"></div>
+              <button class="btn btn-primary btn-lg">Salvar nova senha</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ 10 · STATIC PAGES ═════ -->
+  <section class="screen" id="static">
+    <div class="screen-head">
+      <span class="num">10.1</span>
+      <h2>Páginas estáticas · sobre, contato, termos, privacidade</h2>
+      <p class="copy">Largura de prosa · <em>--content-narrow</em> 720 px. Cabeçalho em <em>type-display</em>, corpo em 17 px para leitura longa.</p>
+      <div class="tags"><span class="tag">layout · 720 narrow</span></div>
+    </div>
+
+    <div class="frames">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>/politica-de-privacidade</span></div>
+        <div class="vp-stage">
+          <header class="nav"><a class="brand"><span class="gly">VS</span>VINÍCIUS SOUZA</a><nav class="links"><a>Eventos</a><a>Autenticidade</a><a>Contato</a></nav><div class="actions"><a class="login">Entrar</a></div></header>
+          <article class="static">
+            <h1>Política de privacidade.</h1>
+            <p class="updated">Atualizada em 22 mai 2026</p>
+            <p>Esta política descreve quais dados pessoais coletamos, por que coletamos e como você pode pedir alteração, exportação ou exclusão. Estamos sujeitos à <b>Lei Geral de Proteção de Dados (LGPD)</b>.</p>
+            <h2>1 · Dados que coletamos</h2>
+            <p>Quando você compra uma foto, coletamos seu e-mail, nome (se preencheu), os dados mínimos do meio de pagamento (sem armazenar cartão), o histórico de pedidos e o IP da sessão. Quando você ativa reconhecimento facial, coletamos um embedding biométrico — não sua foto.</p>
+            <h2>2 · Como usamos</h2>
+            <p>Os dados servem para entregar a foto, manter o link de download ativo por 30 dias e contatar você se algo no pedido precisar de atenção. Não vendemos, não cedemos para parceiros de marketing e não usamos para perfil publicitário.</p>
+            <h2>3 · Direito de imagem</h2>
+            <p>Se sua imagem aparece em alguma foto deste site e você não quer mais que apareça, pode pedir a remoção em <a style="color: var(--brand-400);">/remocoes</a>. Avaliamos em até 7 dias úteis e respondemos por e-mail.</p>
+          </article>
+        </div>
+      </div>
+
+      <div class="vp vp-tablet">
+        <div class="vp-ruler"><span>Tablet · 768</span><span>/contato</span></div>
+        <div class="vp-stage">
+          <article class="static" style="padding: var(--space-8) var(--space-5);">
+            <h1 style="font-size: var(--text-3xl);">Entre em contato.</h1>
+            <p>Resposta em até 24 h em dia útil.</p>
+            <div style="display: flex; flex-direction: column; gap: var(--space-3); max-width: 480px;">
+              <input class="input" placeholder="Seu nome">
+              <input class="input" type="email" placeholder="Seu e-mail">
+              <textarea class="input" rows="6" placeholder="Como podemos ajudar?"></textarea>
+              <button class="btn btn-primary btn-lg" style="align-self: flex-start;">Enviar mensagem</button>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="vp vp-mobile">
+        <div class="vp-ruler"><span>Mobile · 390</span><span>/sobre</span></div>
+        <div class="vp-stage">
+          <header class="m-nav"><button class="burger"><svg class="ico is-20"><use href="#i-menu"/></svg></button><span class="brand">SOBRE</span><span></span><span></span></header>
+          <article class="static" style="padding: var(--space-6) var(--space-4);">
+            <h1 style="font-size: var(--text-2xl);">Sobre o estúdio.</h1>
+            <p class="updated">Desde 2022 · Barretos / SP</p>
+            <p>Vinícius Souza é fotógrafo de eventos com foco em cobertura editorial de rodeio, corrida e equestre. As fotos do site são todas dele, todas com original protegido e marca-d'água até a compra.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ 11 · ERROR PAGES ═════ -->
+  <section class="screen" id="errors">
+    <div class="screen-head">
+      <span class="num">11.1</span>
+      <h2>404 · 403 · 500</h2>
+      <p class="copy">Página enxuta. Código grande, frase curta, link para casa. <em>500</em> menciona o status real e propõe ação.</p>
+      <div class="tags"><span class="tag">err.404 · 403 · 500</span></div>
+    </div>
+
+    <div class="frames">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>/404</span></div>
+        <div class="vp-stage">
+          <header class="nav"><a class="brand"><span class="gly">VS</span>VINÍCIUS SOUZA</a><nav class="links"><a>Eventos</a></nav><div class="actions"><a class="login">Entrar</a></div></header>
+          <div class="err">
+            <span class="code">404</span>
+            <h1>Esta página não existe.</h1>
+            <p class="copy">O link pode ter expirado, ou o evento foi despublicado.</p>
+            <div style="display: flex; gap: var(--space-2);">
+              <a class="btn btn-primary">Voltar ao início</a>
+              <a class="btn btn-secondary">Ver eventos abertos</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-tablet">
+        <div class="vp-ruler"><span>Tablet · 768</span><span>/403</span></div>
+        <div class="vp-stage">
+          <div class="err">
+            <span class="code" style="color: var(--warning-500);">403</span>
+            <h1>Você não tem acesso a esta página.</h1>
+            <p class="copy">Faça login com a conta correta — ou volte para a página inicial.</p>
+            <div style="display: flex; gap: var(--space-2);"><a class="btn btn-primary">Entrar</a><a class="btn btn-secondary">Início</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-mobile">
+        <div class="vp-ruler"><span>Mobile · 390</span><span>/500</span></div>
+        <div class="vp-stage">
+          <header class="m-nav"><button class="burger"><svg class="ico is-20"><use href="#i-menu"/></svg></button><span class="brand">VS</span><span></span><span></span></header>
+          <div class="err" style="padding: var(--space-12) var(--space-4);">
+            <span class="code" style="color: var(--danger-500); font-size: var(--text-5xl);">500</span>
+            <h1 style="font-size: var(--text-xl);">Algo travou no servidor.</h1>
+            <p class="copy" style="font-size: var(--text-sm);">Estamos olhando. Tente em 1 min.</p>
+            <a class="btn btn-secondary btn-sm">Voltar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ 12 · FOOTER ═════ -->
+  <section class="screen" id="footer">
+    <div class="screen-head">
+      <span class="num">12.1</span>
+      <h2>Footer público · 4 colunas + sub-brand stripe</h2>
+      <p class="copy">Newsletter opcional, três colunas de links, stripe das quatro sub-marcas, linha legal com CNPJ.</p>
+      <div class="tags"><span class="tag">layout · public-footer</span></div>
+    </div>
+
+    <div class="frames" style="grid-template-columns: 1fr;">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>rodapé canônico</span></div>
+        <div class="vp-stage">
+          <footer class="public-foot">
+            <div class="stripe"><span></span><span></span><span></span><span></span></div>
+            <div class="cols">
+              <div class="news">
+                <h4 style="font-family: var(--font-brand); font-weight: 700; font-size: 16px; color: var(--ink-1000); letter-spacing: -0.02em; text-transform: none;">VINÍCIUS SOUZA</h4>
+                <p>Cobertura editorial de rodeio, corrida, equestre e festival. Receba os próximos eventos por e-mail.</p>
+                <div class="form"><input class="input" placeholder="seu@email.com"><button class="btn btn-primary btn-sm">Assinar</button></div>
+              </div>
+              <div><h4>Comprar</h4><ul><li><a>Eventos abertos</a></li><li><a>Procurar pelo rosto</a></li><li><a>Meus pedidos</a></li><li><a>Cupons</a></li></ul></div>
+              <div><h4>Verticais</h4><ul><li><a>Esportes</a></li><li><a>Natureza</a></li><li><a>Editorial</a></li><li><a>Fotografia · institucional</a></li></ul></div>
+              <div><h4>Suporte</h4><ul><li><a>Autenticidade</a></li><li><a>Contato</a></li><li><a>Termos de uso</a></li><li><a>Política de privacidade</a></li><li><a>Cookies</a></li><li><a>Solicitar remoção</a></li></ul></div>
+            </div>
+            <div class="legal">
+              <span>© 2026 Vinícius Rodrigues de Souza · CNPJ 12.345.678/0001-90</span>
+              <span><a>@vinicius.souza</a> · <a>WhatsApp</a> · <a>Maps</a></span>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="margin-top: var(--space-24); padding-top: var(--space-6); border-top: 1px solid var(--ink-500); display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-wider);">
+    <span>VINÍCIUS SOUZA · UI KIT PÚBLICO v1.0 · 2026-05-10</span>
+    <span><a href="index.html" style="color: var(--ink-700);">Index</a> · <a href="ui-kit-account.html" style="color: var(--ink-700);">Cliente</a> · <a href="ui-kit-admin.html" style="color: var(--ink-700);">Admin</a></span>
+  </footer>
+
+</div>
+</body>
+</html>

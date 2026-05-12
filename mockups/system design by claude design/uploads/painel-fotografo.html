@@ -1,0 +1,1496 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Mockup · Painel do Fotógrafo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#0c0c0c; --bg-secondary:#141414; --bg-card:#1c1c1c; --bg-input:#222;
+  --border:#2e2e2e; --border-light:#3a3a3a;
+  --text:#ede8e0; --text-muted:#888880; --text-dim:#555550;
+  --accent:#22c55e; --accent-hover:#16a34a; --accent-dim:rgba(34,197,94,0.15);
+  --danger:#d96c6c; --danger-dim:rgba(217,108,108,0.15);
+  --success:#6cc47a; --success-dim:rgba(108,196,122,0.15);
+  --radius:6px; --radius-lg:12px;
+  --shadow:0 4px 24px rgba(0,0,0,0.5);
+  --font-heading:'Space Grotesk',sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.6;font-weight:300;-webkit-font-smoothing:antialiased}
+*{scrollbar-width:thin;scrollbar-color:var(--accent) var(--bg-secondary)}
+*::-webkit-scrollbar{width:10px;height:10px}
+*::-webkit-scrollbar-track{background:var(--bg-secondary)}
+*::-webkit-scrollbar-thumb{background:var(--accent);border-radius:999px;border:2px solid var(--bg-secondary)}
+*::-webkit-scrollbar-thumb:hover{background:var(--accent-hover)}
+h1,h2,h3,h4{font-family:var(--font-heading);font-weight:400;line-height:1.2;letter-spacing:0.02em}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+button{font-family:inherit}
+
+/* === BUTTONS === */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.55rem 1.1rem;border-radius:var(--radius);font-family:var(--font-body);font-size:.85rem;font-weight:400;letter-spacing:.06em;cursor:pointer;border:none;transition:all .2s ease;text-decoration:none;color:inherit;background:transparent}
+.btn-primary{background:var(--accent);color:#03130a;font-weight:500;border-radius:6px;padding:.7rem 1rem}
+.btn-primary:hover{background:var(--accent-hover);transform:translateY(-1px)}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border-light)}
+.btn-secondary:hover{border-color:var(--text-muted);background:rgba(255,255,255,.04)}
+.btn-ghost{background:transparent;color:var(--text-muted);border:1px solid transparent}
+.btn-ghost:hover{color:var(--text);border-color:var(--border)}
+.btn-danger{background:var(--danger-dim);color:var(--danger);border:1px solid rgba(217,108,108,.3)}
+.btn-danger:hover{background:var(--danger);color:#fff}
+.btn-success{background:var(--success);color:#0a1a0c}
+.btn-sm{padding:.4rem .9rem;font-size:.78rem}
+.btn-full{width:100%}
+
+/* === FORMS === */
+.form-group{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1.25rem}
+.form-label{font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted)}
+.form-input,.form-textarea,.form-select{background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font-body);font-size:.9rem;padding:.7rem 1rem;width:100%;transition:border-color .2s;outline:none}
+.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--accent)}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--text-dim)}
+.form-textarea{resize:vertical;min-height:100px}
+.form-select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;padding-right:2.5rem}
+
+.alert{padding:.85rem 1.1rem;border-radius:var(--radius);font-size:.85rem;margin-bottom:1rem;border:1px solid transparent}
+.alert-success{background:var(--success-dim);border-color:rgba(108,196,122,.3);color:var(--success)}
+.alert-error{background:var(--danger-dim);border-color:rgba(217,108,108,.3);color:var(--danger)}
+.alert-warning{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.35);color:#f59e0b}
+
+.spinner{width:20px;height:20px;border:2px solid rgba(34,197,94,.2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+.flex-between{display:flex;justify-content:space-between;align-items:center}
+.flex-center{display:flex;align-items:center;justify-content:center}
+.empty-state{text-align:center;padding:5rem 2rem;color:var(--text-muted)}
+.empty-state-icon{font-size:3.5rem;margin-bottom:1rem;opacity:.4}
+.empty-state-title{font-family:var(--font-heading);font-size:1.6rem;color:var(--text-dim);margin-bottom:.5rem}
+
+/* === ADMIN LAYOUT === */
+.admin-layout{display:flex;min-height:100vh}
+.admin-sidebar{width:240px;background:#0f1115;border-right:1px solid var(--border);padding:1.2rem 0;display:flex;flex-direction:column;gap:.2rem;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0;z-index:50}
+.admin-sidebar-brand{font-family:var(--font-heading);font-size:1.1rem;color:var(--text);margin:0 0 1rem;padding:0 1rem 1rem;border-bottom:1px solid var(--border);letter-spacing:.05em}
+.admin-sidebar-brand span{color:var(--accent)}
+.admin-sidebar-brand-badge{display:inline-block;margin-top:.45rem;font-size:.62rem;font-weight:700;letter-spacing:.08em;padding:.18rem .55rem;border-radius:999px;background:rgba(34,197,94,.18);color:var(--accent);border:1px solid rgba(34,197,94,.35)}
+.admin-nav-section{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);padding:.75rem .75rem .25rem;margin-top:.5rem}
+.admin-nav-item{display:flex;align-items:center;gap:.6rem;padding:.55rem 1.2rem;font-size:.85rem;color:var(--text-muted);border-left:2px solid transparent;transition:all .2s;cursor:pointer;background:transparent;border-top:none;border-right:none;border-bottom:none;width:100%;font-family:inherit;text-align:left;text-decoration:none}
+.admin-nav-item:hover{background:var(--bg-secondary);color:var(--text)}
+.admin-nav-item.active{background:var(--bg-secondary);color:var(--accent);border-left:2px solid var(--accent)}
+.admin-nav-item .badge-count{margin-left:auto;background:var(--accent);color:#1a1200;border-radius:100px;padding:.1rem .45rem;font-size:.65rem;font-weight:500}
+.admin-sidebar-divider{margin:.65rem .75rem 0;border-top:1px solid var(--border)}
+.admin-site-actions{display:flex;flex-direction:column;gap:.45rem;padding:0 .75rem .75rem}
+.admin-site-action-row{display:flex;gap:.45rem}
+.admin-site-link{flex:1;min-width:0}
+.admin-site-copy{display:inline-flex;align-items:center;justify-content:center;width:40px;min-width:40px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-secondary);color:var(--text-muted);cursor:pointer;transition:all .15s ease}
+.admin-site-copy:hover{color:var(--text);background:var(--bg-input)}
+.admin-site-feedback{font-size:.72rem;color:var(--accent);padding-left:.15rem;min-height:1rem}
+
+.admin-main{flex:1;padding:2.5rem;overflow-y:auto;min-width:0}
+.admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.admin-page-title{font-family:var(--font-heading);font-size:2rem;font-weight:300}
+.admin-page-sub{margin-top:.35rem;color:var(--text-muted);font-size:.88rem}
+.admin-header-user{display:flex;align-items:center;gap:.75rem}
+.admin-header-avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,rgba(34,197,94,.28),rgba(34,197,94,.12));border:1px solid rgba(34,197,94,.35);color:var(--accent);font-weight:700;letter-spacing:.04em;flex-shrink:0}
+.admin-header-user-name{font-size:.96rem;font-weight:600;color:var(--text);white-space:nowrap}
+.admin-header-badge{display:inline-flex;align-items:center;gap:.35rem;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;padding:.22rem .55rem;border-radius:999px;background:rgba(34,197,94,.14);color:var(--accent);border:1px solid rgba(34,197,94,.28);white-space:nowrap;margin-top:.2rem}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.25rem;margin-bottom:2.5rem}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem}
+.stat-label{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.5rem}
+.stat-value{font-family:var(--font-heading);font-size:2.2rem;font-weight:300;color:var(--accent)}
+.stat-value.success{color:var(--success)}
+.stat-sub{font-size:.75rem;color:var(--text-muted);margin-top:.2rem}
+
+/* Pages */
+.page{display:none;animation:fadeIn .25s ease}
+.page.active{display:block}
+
+/* Section card */
+.section-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:2rem}
+.section-card-head{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.section-card-title{font-family:var(--font-heading);font-size:1.1rem;color:var(--text)}
+
+/* Recent order line */
+.recent-line{display:flex;align-items:center;gap:1rem;padding:.85rem 1.5rem;border-bottom:1px solid var(--border);transition:background .1s;cursor:pointer}
+.recent-line:hover{background:var(--bg-secondary)}
+.recent-line:last-child{border-bottom:none}
+.thumb-row{display:flex;gap:3px;flex-shrink:0}
+.tr-thumb{width:40px;height:30px;border-radius:3px;overflow:hidden}
+.tr-more{width:40px;height:30px;border-radius:3px;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--text-dim)}
+
+/* Status badges */
+.status-badge{font-size:.72rem;padding:.15rem .5rem;border-radius:100px;font-weight:500;letter-spacing:.05em}
+.s-pago{background:var(--success-dim);color:var(--success)}
+.s-pendente{background:rgba(245,158,11,.15);color:#f59e0b}
+.s-cancelado{background:var(--danger-dim);color:var(--danger)}
+.s-reembolso{background:rgba(168,85,247,.15);color:#a855f7}
+.s-novo{background:rgba(96,165,250,.15);color:#60a5fa}
+.s-resolvido{background:var(--success-dim);color:var(--success)}
+
+/* Filter bar */
+.filter-bar{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;margin-bottom:1.5rem}
+.filter-label{font-size:.82rem;color:var(--text-muted);margin-right:.25rem}
+
+/* Pedidos accordion */
+.order-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;transition:border-color .2s}
+.order-card.open{border-color:var(--accent)}
+.order-head{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;cursor:pointer;background:none;border:none;color:inherit;font-family:inherit;width:100%;text-align:left;flex-wrap:wrap}
+.order-info{flex:1;min-width:0}
+.order-name{font-size:.9rem;color:var(--text);overflow:hidden;text-overflow:ellipsis}
+.order-id{font-size:.72rem;color:var(--accent);font-family:monospace;letter-spacing:.05em}
+.order-contacts{display:flex;gap:1rem;margin-top:.2rem;flex-wrap:wrap}
+.order-contacts span{font-size:.75rem;color:var(--text-dim)}
+.order-total{font-family:var(--font-heading);font-size:1.2rem;color:var(--accent);flex-shrink:0}
+.chev{font-size:.72rem;color:var(--text-dim);transition:transform .2s}
+.order-card.open .chev{transform:rotate(90deg)}
+.order-body{display:none;border-top:1px solid var(--border);padding:1.25rem;background:var(--bg-secondary)}
+.order-card.open .order-body{display:grid;grid-template-columns:1.4fr 1fr;gap:1.5rem;align-items:start;animation:slideUp .2s}
+@media(max-width:880px){.order-card.open .order-body{grid-template-columns:1fr}}
+.col-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:.75rem}
+.foto-line{display:flex;align-items:center;gap:.75rem;background:var(--bg-card);border-radius:var(--radius);padding:.5rem .75rem;margin-bottom:.4rem}
+.foto-thumb{width:48px;height:36px;object-fit:cover;border-radius:3px;flex-shrink:0}
+.foto-info{flex:1;min-width:0;font-size:.82rem;color:var(--text)}
+.foto-info small{display:block;font-size:.7rem;color:var(--text-dim)}
+.foto-price{font-size:.85rem;color:var(--accent);flex-shrink:0}
+
+/* Tables */
+.events-table{width:100%;border-collapse:collapse}
+.events-table th{text-align:left;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);padding:.75rem 1rem;border-bottom:1px solid var(--border);font-weight:500}
+.events-table td{padding:1rem;border-bottom:1px solid var(--border);font-size:.88rem}
+.events-table tr:hover td{background:var(--bg-secondary)}
+.album-thumb{width:40px;height:40px;border-radius:6px;object-fit:cover;flex-shrink:0}
+.viz-public{background:var(--success-dim);color:var(--success);font-size:.68rem;padding:.15rem .5rem;border-radius:100px}
+.viz-unlisted{background:rgba(245,158,11,.15);color:#f59e0b;font-size:.68rem;padding:.15rem .5rem;border-radius:100px}
+.viz-private{background:var(--danger-dim);color:var(--danger);font-size:.68rem;padding:.15rem .5rem;border-radius:100px}
+
+/* Modal */
+.modal-back{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;padding:1rem;animation:fadeIn .2s}
+.modal-panel{background:var(--bg-card);border-radius:var(--radius-lg);border:1px solid var(--border);max-width:780px;width:100%;max-height:88vh;overflow:auto;padding:2rem;animation:slideUp .2s}
+
+/* Tabs (estatísticas, modal cliente) */
+.tabs{display:flex;gap:.25rem;flex-wrap:wrap;border-bottom:1px solid var(--border);margin-bottom:1.25rem}
+.tab{padding:.55rem 1rem;font-size:.85rem;background:none;border:none;cursor:pointer;color:var(--text-muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s;font-family:inherit}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab:hover:not(.active){color:var(--text)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* Bar inline */
+.bar-cell{display:flex;align-items:center;gap:.5rem}
+.bar-track{flex:1;height:6px;background:var(--bg-secondary);border-radius:99px;overflow:hidden;min-width:60px}
+.bar-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
+.bar-pct{font-size:.72rem;color:var(--text-muted);min-width:32px;text-align:right}
+
+/* Watermark */
+.wm-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+@media(max-width:1080px){.wm-grid{grid-template-columns:1fr}}
+.wm-preview{aspect-ratio:3/2;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);background:linear-gradient(45deg,#222 25%,transparent 25%),linear-gradient(-45deg,#222 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#222 75%),linear-gradient(-45deg,transparent 75%,#222 75%);background-size:24px 24px;background-position:0 0,0 12px,12px -12px,-12px 0;background-color:#0a0a0a;position:relative}
+.wm-preview-img{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);font-size:1.1rem;letter-spacing:.2em;text-transform:uppercase}
+.wm-watermark-overlay{position:absolute;color:rgba(255,255,255,.55);font-family:var(--font-heading);font-size:1.3rem;letter-spacing:.18em;pointer-events:none}
+
+/* Upload zone */
+.upload-zone{border:2px dashed var(--border-light);border-radius:var(--radius-lg);padding:5rem 2.5rem;min-height:340px;text-align:center;cursor:pointer;transition:all .2s;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015)),var(--bg-secondary);display:flex;flex-direction:column;align-items:center;justify-content:center;outline:1px solid rgba(255,255,255,.03)}
+.upload-zone:hover{border-color:var(--accent);background:var(--accent-dim);transform:translateY(-1px)}
+.upload-zone-icon{font-size:3.4rem;margin-bottom:1.1rem;opacity:.8}
+.upload-zone-text{font-family:var(--font-heading);font-size:1.45rem;margin-bottom:.5rem}
+.upload-zone-sub{font-size:.9rem;color:var(--text-muted);max-width:58ch;line-height:1.5}
+.upload-zone-badges{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem;margin-top:1.25rem}
+.upload-zone-badges span{border:1px solid var(--border);border-radius:999px;background:rgba(0,0,0,.18);color:var(--text-muted);font-size:.72rem;padding:.28rem .72rem}
+
+.event-card{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;overflow:hidden;transition:border-color .2s ease,transform .2s ease;cursor:pointer}
+.event-card:hover{border-color:var(--border-light);transform:translateY(-2px)}
+.event-card-cover{aspect-ratio:16/10;overflow:hidden;background:var(--bg-secondary);position:relative}
+.event-card-cover img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
+.event-card:hover .event-card-cover img{transform:scale(1.04)}
+.event-card-body{padding:1.25rem 1.5rem 1.5rem}
+
+/* Comment card admin (reused) */
+.comment-card{padding:.9rem 1.15rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:.75rem}
+.comment-card.hidden{border-color:rgba(239,68,68,.3);opacity:.85}
+.badge{font-size:.68rem;padding:.1rem .45rem;border-radius:100px;display:inline-flex;align-items:center}
+.badge-scope{color:var(--accent);background:var(--accent-dim)}
+.badge-reply{color:var(--text-dim);background:var(--bg-input)}
+.badge-visible{color:var(--success);background:var(--success-dim)}
+.badge-hidden{color:var(--danger);background:var(--danger-dim)}
+.badge-edited{color:#93c5fd;background:rgba(59,130,246,.15)}
+.badge-edited-self{color:var(--text-dim);background:var(--bg-input)}
+
+/* Photo grid (placeholder) */
+.ph{position:relative}
+.ph-1{background:linear-gradient(135deg,#1e3a8a,#1e40af 60%,#0c4a6e)}
+.ph-2{background:linear-gradient(135deg,#831843,#9d174d 60%,#581c87)}
+.ph-3{background:linear-gradient(135deg,#365314,#3f6212 60%,#14532d)}
+.ph-4{background:linear-gradient(135deg,#7c2d12,#9a3412 60%,#4a044e)}
+.ph-5{background:linear-gradient(135deg,#0f766e,#155e75 60%,#1e3a8a)}
+.ph-6{background:linear-gradient(135deg,#a16207,#ca8a04 60%,#7c2d12)}
+.ph-7{background:linear-gradient(135deg,#475569,#334155 60%,#1e293b)}
+.ph-8{background:linear-gradient(135deg,#86198f,#7e22ce 60%,#4338ca)}
+
+/* Mock flag */
+.mock-flag{position:fixed;bottom:1rem;left:1rem;z-index:9999;background:rgba(34,197,94,.18);color:var(--accent);border:1px solid rgba(34,197,94,.35);padding:.35rem .8rem;border-radius:999px;font-size:.7rem;letter-spacing:.05em;font-weight:600;backdrop-filter:blur(8px);pointer-events:none}
+
+/* Mobile */
+.admin-topbar-mobile{display:none}
+@media(max-width:880px){
+  .admin-topbar-mobile{display:flex;align-items:center;gap:.65rem;position:sticky;top:0;z-index:200;background:#0f1115;border-bottom:1px solid var(--border);padding:.75rem 1rem;width:100%}
+  .admin-layout{flex-direction:column}
+  .admin-sidebar{position:fixed;top:0;left:0;width:260px;height:100vh;z-index:300;transform:translateX(-100%);transition:transform .25s ease;box-shadow:4px 0 24px rgba(0,0,0,.5)}
+  .admin-sidebar.open{transform:translateX(0)}
+  .admin-main{padding:1.5rem}
+  .admin-header{flex-direction:column;align-items:flex-start;gap:1rem}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+/* sidebar overlay (mobile) */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:299}
+.sidebar-overlay.show{display:block}
+
+/* Configurações tabs (sub-tabs) */
+.cfg-tab-content{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem}
+
+/* Drawer cliente modal */
+.client-meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.75rem;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:1.25rem}
+.client-meta-field label{font-size:.72rem;color:var(--text-muted);display:block;margin-bottom:.2rem}
+.client-meta-field span{font-size:.86rem;color:var(--text)}
+</style>
+</head>
+<body>
+
+<div class="admin-layout">
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="admin-sidebar-brand">
+      Vinícius<span>.</span><br>
+      <span class="admin-sidebar-brand-badge">⭐ Super Admin</span>
+    </div>
+
+    <p class="admin-nav-section">Navegação</p>
+    <button class="admin-nav-item active" data-goto="dashboard"><span>📊</span>Dashboard</button>
+    <button class="admin-nav-item" data-goto="estatisticas"><span>📈</span>Estatísticas</button>
+    <button class="admin-nav-item" data-goto="pedidos"><span>🧾</span>Pedidos<span class="badge-count">3</span></button>
+    <button class="admin-nav-item" data-goto="albuns"><span>📅</span>Álbuns</button>
+    <button class="admin-nav-item" data-goto="comentarios"><span>💬</span>Comentários</button>
+    <button class="admin-nav-item" data-goto="contas"><span>👥</span>Contas</button>
+    <button class="admin-nav-item" data-goto="carrinhos"><span>🛒</span>Carrinhos</button>
+    <button class="admin-nav-item" data-goto="contatos"><span>✉️</span>Contatos</button>
+    <button class="admin-nav-item" data-goto="marca-dagua"><span>🔏</span>Marca d'água</button>
+    <button class="admin-nav-item" data-goto="remocoes"><span>🚫</span>Remoções<span class="badge-count">2</span></button>
+
+    <div class="admin-sidebar-divider"></div>
+    <p class="admin-nav-section">Site</p>
+    <div class="admin-site-actions">
+      <div class="admin-site-action-row">
+        <a class="admin-nav-item admin-site-link" href="painel-cliente.html"><span>🌐</span>Ver site</a>
+        <button class="admin-site-copy" id="copyBtn" title="Copiar URL do site">📋</button>
+      </div>
+      <button class="admin-nav-item admin-site-link" data-goto="personalizar"><span>🎨</span>Personalizar site</button>
+      <button class="admin-nav-item admin-site-link" data-goto="configuracoes"><span>⚙️</span>Configurações</button>
+      <button class="admin-nav-item admin-site-link" data-goto="reset"><span>🛟</span>Backup e Reset</button>
+      <span class="admin-site-feedback" id="copyFeedback" role="status"></span>
+    </div>
+
+    <div style="margin-top:auto;padding:1rem .75rem">
+      <button id="openLogout" style="width:100%;display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.7rem 1rem;border-radius:var(--radius);background:rgba(220,38,38,.15);color:#ef4444;border:1px solid rgba(220,38,38,.3);cursor:pointer;font-size:.88rem;font-weight:600;transition:all .15s">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Desconectar
+      </button>
+    </div>
+  </aside>
+
+  <div class="admin-topbar-mobile">
+    <button class="btn btn-ghost btn-sm" id="hamburger">☰</button>
+    <strong style="font-family:var(--font-heading)">Vinícius<span style="color:var(--accent)">.</span></strong>
+  </div>
+
+  <main class="admin-main">
+
+    <!-- =================== DASHBOARD =================== -->
+    <section class="page active" data-page="dashboard">
+      <div class="admin-header">
+        <div>
+          <h1 class="admin-page-title">Dashboard</h1>
+          <p class="admin-page-sub">Resumo do estúdio em tempo real</p>
+        </div>
+        <div class="admin-header-user">
+          <div style="display:flex;flex-direction:column;align-items:flex-end">
+            <span class="admin-header-user-name">Vinícius Rodrigues</span>
+            <span class="admin-header-badge">⭐ Super Admin</span>
+          </div>
+          <div class="admin-header-avatar">VR</div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card"><p class="stat-label">Receita do mês</p><p class="stat-value success">R$ 8.420</p><p class="stat-sub">+24% vs. mês anterior</p></div>
+        <div class="stat-card"><p class="stat-label">Pedidos pagos</p><p class="stat-value">37</p><p class="stat-sub">3 nas últimas 24h</p></div>
+        <div class="stat-card"><p class="stat-label">Álbuns ativos</p><p class="stat-value">14</p><p class="stat-sub">2 públicos esta semana</p></div>
+        <div class="stat-card"><p class="stat-label">Carrinhos abertos</p><p class="stat-value">19</p><p class="stat-sub">R$ 4.310 em fotos</p></div>
+        <div class="stat-card"><p class="stat-label">Contatos novos</p><p class="stat-value">5</p><p class="stat-sub">2 ainda sem resposta</p></div>
+        <div class="stat-card"><p class="stat-label">Remoções pendentes</p><p class="stat-value">2</p><p class="stat-sub">Aguardando análise</p></div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-card-head">
+          <span class="section-card-title">Pedidos recentes</span>
+          <a class="text-accent" data-goto="pedidos" style="cursor:pointer;color:var(--accent);font-size:.85rem">Ver todos →</a>
+        </div>
+        <div class="recent-line" data-goto="pedidos">
+          <div class="thumb-row"><div class="tr-thumb ph ph-1"></div><div class="tr-thumb ph ph-2"></div><div class="tr-thumb ph ph-3"></div><div class="tr-more">+3</div></div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:.9rem">Marina Carvalho <span style="color:var(--accent);font-family:monospace;font-size:.72rem">#A47C2D</span></div>
+            <div style="font-size:.72rem;color:var(--text-dim)">14/04/2026 19:32 · 6 fotos · marina@email.com</div>
+          </div>
+          <span class="status-badge s-pago">PAGO</span>
+          <span style="font-family:var(--font-heading);font-size:1.1rem;color:var(--accent)">R$ 240,00</span>
+          <span style="color:var(--text-dim)">›</span>
+        </div>
+        <div class="recent-line" data-goto="pedidos">
+          <div class="thumb-row"><div class="tr-thumb ph ph-5"></div><div class="tr-thumb ph ph-6"></div><div class="tr-thumb ph ph-7"></div><div class="tr-thumb ph ph-8"></div></div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:.9rem">Ricardo Souza <span style="color:var(--accent);font-family:monospace;font-size:.72rem">#9F1B33</span></div>
+            <div style="font-size:.72rem;color:var(--text-dim)">02/04/2026 11:08 · 4 fotos · ricardo@email.com</div>
+          </div>
+          <span class="status-badge s-pendente">PENDENTE</span>
+          <span style="font-family:var(--font-heading);font-size:1.1rem;color:var(--accent)">R$ 160,00</span>
+          <span style="color:var(--text-dim)">›</span>
+        </div>
+        <div class="recent-line" data-goto="pedidos">
+          <div class="thumb-row"><div class="tr-thumb ph ph-2"></div><div class="tr-thumb ph ph-3"></div><div class="tr-thumb ph ph-1"></div><div class="tr-more">+9</div></div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:.9rem">Juliana Mendes <span style="color:var(--accent);font-family:monospace;font-size:.72rem">#7E0049</span></div>
+            <div style="font-size:.72rem;color:var(--text-dim)">25/03/2026 16:51 · 12 fotos · juliana@email.com</div>
+          </div>
+          <span class="status-badge s-pago">PAGO</span>
+          <span style="font-family:var(--font-heading);font-size:1.1rem;color:var(--accent)">R$ 480,00</span>
+          <span style="color:var(--text-dim)">›</span>
+        </div>
+        <div class="recent-line" data-goto="pedidos">
+          <div class="thumb-row"><div class="tr-thumb ph ph-4"></div></div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:.9rem">Cliente convidado <span style="color:var(--accent);font-family:monospace;font-size:.72rem">#6C7A11</span></div>
+            <div style="font-size:.72rem;color:var(--text-dim)">14/02/2026 21:15 · 1 foto</div>
+          </div>
+          <span class="status-badge s-cancelado">CANCELADO</span>
+          <span style="font-family:var(--font-heading);font-size:1.1rem;color:var(--accent)">R$ 40,00</span>
+          <span style="color:var(--text-dim)">›</span>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-card-head">
+          <span class="section-card-title">Atividade do estúdio</span>
+        </div>
+        <div style="padding:1rem 1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem">
+          <div><div style="font-size:.72rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em">Álbum mais vendido</div><div style="font-size:1rem;color:var(--text);margin-top:.25rem">Casamento Marina &amp; Léo</div><div style="font-size:.78rem;color:var(--success);margin-top:.1rem">R$ 3.840 · 22 fotos vendidas</div></div>
+          <div><div style="font-size:.72rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em">Foto top do mês</div><div style="font-size:1rem;color:var(--text);margin-top:.25rem">F0021A.jpg</div><div style="font-size:.78rem;color:var(--accent);margin-top:.1rem">8 vendas · 132 curtidas</div></div>
+          <div><div style="font-size:.72rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em">Ticket médio</div><div style="font-size:1rem;color:var(--text);margin-top:.25rem">R$ 227,57</div><div style="font-size:.78rem;color:var(--text-muted);margin-top:.1rem">5,2 fotos por pedido</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== ESTATÍSTICAS =================== -->
+    <section class="page" data-page="estatisticas">
+      <div class="admin-header">
+        <div>
+          <h1 class="admin-page-title">Estatísticas</h1>
+          <p class="admin-page-sub">Filtre por período e explore as métricas</p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:.75rem;align-items:flex-end;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:1.5rem;flex-wrap:wrap">
+        <div class="form-group" style="margin:0"><label class="form-label">De</label><input class="form-input" type="date" value="2026-04-01" /></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Até</label><input class="form-input" type="date" value="2026-05-09" /></div>
+        <button class="btn btn-ghost btn-sm">Limpar filtro</button>
+        <span style="margin-left:auto;font-size:.75rem;color:var(--text-dim)">Período: 39 dias</span>
+      </div>
+
+      <div class="tabs" id="statsTabs">
+        <button class="tab active" data-stab="receita">Receita</button>
+        <button class="tab" data-stab="albuns">Álbuns</button>
+        <button class="tab" data-stab="fotos">Fotos</button>
+        <button class="tab" data-stab="clientes">Clientes</button>
+        <button class="tab" data-stab="formas">Formas de pagamento</button>
+      </div>
+
+      <div class="tab-panel active" data-stab="receita">
+        <div class="stats-grid">
+          <div class="stat-card"><p class="stat-label">Receita bruta</p><p class="stat-value success">R$ 12.840</p><p class="stat-sub">+18% no período</p></div>
+          <div class="stat-card"><p class="stat-label">Receita líquida</p><p class="stat-value">R$ 11.310</p><p class="stat-sub">Após taxas de gateway</p></div>
+          <div class="stat-card"><p class="stat-label">Pedidos pagos</p><p class="stat-value">56</p></div>
+          <div class="stat-card"><p class="stat-label">Reembolsos</p><p class="stat-value">R$ 240</p><p class="stat-sub">2 reembolsos parciais</p></div>
+        </div>
+        <div class="section-card">
+          <div class="section-card-head"><span class="section-card-title">Receita por álbum</span></div>
+          <table class="events-table">
+            <thead><tr><th>Álbum</th><th>Pedidos</th><th>Fotos vendidas</th><th>% receita</th><th style="text-align:right">Total</th></tr></thead>
+            <tbody>
+              <tr><td>Casamento Marina &amp; Léo</td><td>11</td><td>62</td><td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:48%"></div></div><span class="bar-pct">48%</span></div></td><td style="text-align:right;color:var(--accent)">R$ 6.180</td></tr>
+              <tr><td>Aniversário 30 anos</td><td>8</td><td>38</td><td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:23%"></div></div><span class="bar-pct">23%</span></div></td><td style="text-align:right;color:var(--accent)">R$ 2.940</td></tr>
+              <tr><td>Ensaio Família Lima</td><td>5</td><td>26</td><td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:14%"></div></div><span class="bar-pct">14%</span></div></td><td style="text-align:right;color:var(--accent)">R$ 1.770</td></tr>
+              <tr><td>Corporativo Tech 2026</td><td>3</td><td>14</td><td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:9%"></div></div><span class="bar-pct">9%</span></div></td><td style="text-align:right;color:var(--accent)">R$ 1.140</td></tr>
+              <tr><td>Outros álbuns</td><td>2</td><td>8</td><td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:6%"></div></div><span class="bar-pct">6%</span></div></td><td style="text-align:right;color:var(--accent)">R$ 810</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-stab="albuns">
+        <div class="section-card">
+          <div class="section-card-head"><span class="section-card-title">Top álbuns por engajamento</span></div>
+          <table class="events-table">
+            <thead><tr><th>Álbum</th><th>Visitas</th><th>Curtidas</th><th>Comentários</th><th>Conversão</th></tr></thead>
+            <tbody>
+              <tr><td>Casamento Marina &amp; Léo</td><td>1.420</td><td>312</td><td>48</td><td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:32%"></div></div><span class="bar-pct">32%</span></div></td></tr>
+              <tr><td>Aniversário 30 anos</td><td>820</td><td>164</td><td>22</td><td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:18%"></div></div><span class="bar-pct">18%</span></div></td></tr>
+              <tr><td>Ensaio Família Lima</td><td>410</td><td>72</td><td>14</td><td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:12%"></div></div><span class="bar-pct">12%</span></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-stab="fotos">
+        <div class="section-card">
+          <div class="section-card-head"><span class="section-card-title">Fotos mais vendidas</span></div>
+          <table class="events-table">
+            <thead><tr><th>Foto</th><th>Álbum</th><th>Vendas</th><th>Curtidas</th><th style="text-align:right">Receita</th></tr></thead>
+            <tbody>
+              <tr><td><span style="font-family:monospace;color:var(--accent)">#F0021A</span></td><td>Casamento Marina &amp; Léo</td><td>8</td><td>132</td><td style="text-align:right">R$ 320</td></tr>
+              <tr><td><span style="font-family:monospace;color:var(--accent)">#F0021B</span></td><td>Casamento Marina &amp; Léo</td><td>6</td><td>97</td><td style="text-align:right">R$ 240</td></tr>
+              <tr><td><span style="font-family:monospace;color:var(--accent)">#F1119Z</span></td><td>Aniversário 30 anos</td><td>5</td><td>71</td><td style="text-align:right">R$ 200</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-stab="clientes">
+        <div class="section-card">
+          <div class="section-card-head"><span class="section-card-title">Top clientes do período</span></div>
+          <table class="events-table">
+            <thead><tr><th>Cliente</th><th>Pedidos</th><th>Fotos</th><th style="text-align:right">Total gasto</th></tr></thead>
+            <tbody>
+              <tr><td>Marina Carvalho</td><td>3</td><td>18</td><td style="text-align:right;color:var(--success)">R$ 1.240</td></tr>
+              <tr><td>Juliana Mendes</td><td>2</td><td>14</td><td style="text-align:right;color:var(--success)">R$ 720</td></tr>
+              <tr><td>Ricardo Souza</td><td>2</td><td>9</td><td style="text-align:right;color:var(--success)">R$ 480</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-stab="formas">
+        <div class="stats-grid">
+          <div class="stat-card"><p class="stat-label">Pix</p><p class="stat-value">62%</p><p class="stat-sub">35 pedidos</p></div>
+          <div class="stat-card"><p class="stat-label">Cartão à vista</p><p class="stat-value">21%</p><p class="stat-sub">12 pedidos</p></div>
+          <div class="stat-card"><p class="stat-label">Cartão parcelado</p><p class="stat-value">17%</p><p class="stat-sub">9 pedidos · taxa R$ 84</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== PEDIDOS =================== -->
+    <section class="page" data-page="pedidos">
+      <div class="admin-header">
+        <div>
+          <h1 class="admin-page-title">Pedidos</h1>
+          <p class="admin-page-sub">Gerencie status, contatos e financeiro</p>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <input class="form-input" placeholder="Buscar cliente, ID ou foto..." style="max-width:280px" />
+        <button class="btn btn-primary btn-sm">Todos <span style="opacity:.7;font-size:.7rem">(56)</span></button>
+        <button class="btn btn-ghost btn-sm">Pago <span style="opacity:.7;font-size:.7rem">(48)</span></button>
+        <button class="btn btn-ghost btn-sm">Pendente <span style="opacity:.7;font-size:.7rem">(5)</span></button>
+        <button class="btn btn-ghost btn-sm">Cancelado <span style="opacity:.7;font-size:.7rem">(3)</span></button>
+      </div>
+
+      <div class="order-card open">
+        <button class="order-head">
+          <div class="thumb-row">
+            <div class="tr-thumb ph ph-1"></div><div class="tr-thumb ph ph-2"></div><div class="tr-thumb ph ph-3"></div><div class="tr-more">+3</div>
+          </div>
+          <div class="order-info">
+            <div class="order-name">Marina Carvalho</div>
+            <div class="order-id">#A47C2D</div>
+            <div class="order-contacts">
+              <span>📱 (11) 98765-4321</span><span>✉️ marina@email.com</span><span>📅 14/04/2026 19:32</span><span>🖼 6 fotos</span>
+            </div>
+          </div>
+          <span class="order-total">R$ 240,00</span>
+          <span class="status-badge s-pago">PAGO</span>
+          <span class="chev">›</span>
+        </button>
+        <div class="order-body">
+          <div>
+            <p class="col-label">Fotos vendidas</p>
+            <div class="foto-line">
+              <div class="foto-thumb ph ph-1"></div>
+              <div class="foto-info">Casamento Marina &amp; Léo<small><span style="color:var(--accent);font-family:monospace">#F0021A</span> · IMG_4421.jpg</small></div>
+              <div class="foto-price">R$ 40</div>
+              <button class="btn btn-ghost btn-sm">⬇</button>
+            </div>
+            <div class="foto-line">
+              <div class="foto-thumb ph ph-2"></div>
+              <div class="foto-info">Casamento Marina &amp; Léo<small><span style="color:var(--accent);font-family:monospace">#F0021B</span> · IMG_4422.jpg</small></div>
+              <div class="foto-price">R$ 40</div>
+              <button class="btn btn-ghost btn-sm">⬇</button>
+            </div>
+            <div class="foto-line">
+              <div class="foto-thumb ph ph-3"></div>
+              <div class="foto-info">Casamento Marina &amp; Léo<small><span style="color:var(--accent);font-family:monospace">#F0021C</span> · IMG_4423.jpg</small></div>
+              <div class="foto-price">R$ 40</div>
+              <button class="btn btn-ghost btn-sm">⬇</button>
+            </div>
+
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem;margin-top:1rem;font-size:.78rem">
+              <div style="color:var(--text);font-weight:600;margin-bottom:.3rem">Comentário do cliente</div>
+              <div>"Ficaram lindas, Vinícius! Vou indicar para a família toda."</div>
+            </div>
+
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem;margin-top:.75rem;font-size:.78rem">
+              <div style="color:var(--text);font-weight:600;margin-bottom:.3rem">Feedback pós-compra · ★★★★★</div>
+              <div>"Fotografia impecável. Recomendo!"</div>
+            </div>
+          </div>
+
+          <div>
+            <p class="col-label">Ações</p>
+            <div style="display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap">
+              <button class="btn btn-primary btn-sm">Pago</button>
+              <button class="btn btn-ghost btn-sm">Pendente</button>
+              <button class="btn btn-ghost btn-sm">Cancelado</button>
+            </div>
+            <button class="btn btn-sm btn-full" style="background:#25D366;color:#fff;margin-bottom:.5rem">📱 Falar no WhatsApp</button>
+            <button class="btn btn-sm btn-primary btn-full">Gerar novo link de pagamento</button>
+
+            <p class="col-label" style="margin-top:1.25rem">Notas do fotógrafo</p>
+            <div style="padding:.45rem .55rem;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;margin-bottom:.5rem">
+              <div style="font-size:.66rem;text-transform:uppercase;color:var(--success)">Pública · 15/04 09:14</div>
+              <div style="font-size:.78rem;margin-top:.2rem">Originais já estão liberados para download.</div>
+            </div>
+            <div style="padding:.45rem .55rem;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;margin-bottom:.5rem">
+              <div style="font-size:.66rem;text-transform:uppercase;color:var(--text-dim)">Privada · 14/04 22:05</div>
+              <div style="font-size:.78rem;margin-top:.2rem">Cliente fidelizada — aplicar 5% no próximo orçamento.</div>
+            </div>
+            <textarea class="form-textarea" rows="2" placeholder="Nova nota..." style="margin-bottom:.45rem"></textarea>
+            <select class="form-select" style="height:34px;font-size:.75rem;margin-bottom:.45rem"><option>Privada</option><option>Pública</option></select>
+            <button class="btn btn-sm btn-primary btn-full">Adicionar nota</button>
+
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem;margin-top:1rem;font-size:.75rem;line-height:1.7;color:var(--text-dim)">
+              <div style="color:var(--text);font-weight:600;margin-bottom:.25rem">Resumo financeiro</div>
+              Subtotal: <strong style="color:var(--text)">R$ 240,00</strong><br>
+              Desconto progressivo: <strong style="color:var(--accent)">− R$ 24,00</strong><br>
+              Juros parcelamento (3x): <strong style="color:#f59e0b">+ R$ 12,00</strong><br>
+              Taxa Asaas: <strong style="color:var(--text)">R$ 8,40</strong><br>
+              <strong style="color:var(--success)">Líquido: R$ 219,60</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-card">
+        <button class="order-head">
+          <div class="thumb-row"><div class="tr-thumb ph ph-5"></div><div class="tr-thumb ph ph-6"></div><div class="tr-thumb ph ph-7"></div><div class="tr-thumb ph ph-8"></div></div>
+          <div class="order-info">
+            <div class="order-name">Ricardo Souza</div>
+            <div class="order-id">#9F1B33</div>
+            <div class="order-contacts"><span>📱 (21) 98123-0099</span><span>📅 02/04/2026 11:08</span><span>🖼 4 fotos</span></div>
+          </div>
+          <span class="order-total">R$ 160,00</span>
+          <span class="status-badge s-pendente">PENDENTE</span>
+          <span class="chev">›</span>
+        </button>
+        <div class="order-body">
+          <div style="grid-column:1/-1;color:var(--text-dim)">PIX gerado em 02/04. Aguardando pagamento. Link expira em 24h.</div>
+        </div>
+      </div>
+
+      <div class="order-card">
+        <button class="order-head">
+          <div class="thumb-row"><div class="tr-thumb ph ph-2"></div><div class="tr-thumb ph ph-3"></div><div class="tr-thumb ph ph-1"></div><div class="tr-more">+9</div></div>
+          <div class="order-info">
+            <div class="order-name">Juliana Mendes</div>
+            <div class="order-id">#7E0049</div>
+            <div class="order-contacts"><span>✉️ juliana@email.com</span><span>📅 25/03/2026 16:51</span><span>🖼 12 fotos</span></div>
+          </div>
+          <span class="order-total">R$ 480,00</span>
+          <span class="status-badge s-pago">PAGO</span>
+          <span class="chev">›</span>
+        </button>
+        <div class="order-body">
+          <div style="grid-column:1/-1;color:var(--text-dim)">Pedido finalizado.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== ÁLBUNS =================== -->
+    <section class="page" data-page="albuns">
+      <div class="admin-header">
+        <div>
+          <h1 class="admin-page-title">Álbuns</h1>
+          <p class="admin-page-sub">Crie, edite e publique galerias por evento</p>
+        </div>
+        <div style="display:flex;gap:.5rem">
+          <button class="btn btn-secondary btn-sm" data-goto="upload">📤 Upload em álbum</button>
+          <button class="btn btn-primary" data-goto="criar-evento">+ Novo álbum</button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card"><p class="stat-label">Álbuns públicos</p><p class="stat-value">9</p></div>
+        <div class="stat-card"><p class="stat-label">Não listados</p><p class="stat-value">3</p></div>
+        <div class="stat-card"><p class="stat-label">Privados</p><p class="stat-value">2</p></div>
+        <div class="stat-card"><p class="stat-label">Total de fotos</p><p class="stat-value">3.482</p></div>
+      </div>
+
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;flex-wrap:wrap;gap:.75rem">
+        <input class="form-input" placeholder="Buscar álbum..." style="max-width:280px" />
+        <select class="form-select" style="max-width:180px"><option>Todas categorias</option><option>Casamento</option><option>Aniversário</option><option>Ensaio</option><option>Corporativo</option></select>
+        <select class="form-select" style="max-width:180px"><option>Visibilidade: Todos</option><option>Público</option><option>Não listado</option><option>Privado</option></select>
+      </div>
+
+      <div class="section-card" style="overflow:visible">
+        <table class="events-table">
+          <thead><tr><th>Álbum</th><th>Data</th><th>Categoria</th><th>Visibilidade</th><th>Fotos</th><th>Vendidas</th><th>Faturamento</th><th>Ações</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>
+                <div style="display:flex;align-items:center;gap:.75rem">
+                  <div class="album-thumb ph ph-1"></div>
+                  <div>
+                    <div style="color:var(--text);font-weight:500;font-size:.88rem">Casamento Marina &amp; Léo</div>
+                    <div style="font-size:.65rem;color:var(--text-dim);font-family:monospace">marina-leo-2026</div>
+                    <div style="font-size:.72rem;color:var(--text-dim)">São Paulo, SP</div>
+                  </div>
+                </div>
+              </td>
+              <td>14/04/2026</td>
+              <td>Casamento</td>
+              <td><span class="viz-public">Público</span></td>
+              <td>482</td>
+              <td>62</td>
+              <td style="color:var(--success)">R$ 6.180</td>
+              <td>
+                <div style="display:flex;gap:.3rem">
+                  <button class="btn btn-ghost btn-sm" title="Abrir">🌐</button>
+                  <button class="btn btn-ghost btn-sm" title="Copiar link">📋</button>
+                  <button class="btn btn-ghost btn-sm" title="Editar">✏️</button>
+                  <button class="btn btn-ghost btn-sm" title="Lixeira" style="color:var(--danger)">🗑</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display:flex;align-items:center;gap:.75rem">
+                  <div class="album-thumb ph ph-7"></div>
+                  <div>
+                    <div style="color:var(--text);font-weight:500;font-size:.88rem">Aniversário 30 anos</div>
+                    <div style="font-size:.65rem;color:var(--text-dim);font-family:monospace">ana-30-2026</div>
+                    <div style="font-size:.72rem;color:var(--text-dim)">Campinas, SP</div>
+                  </div>
+                </div>
+              </td>
+              <td>28/03/2026</td>
+              <td>Aniversário</td>
+              <td><span class="viz-unlisted">Não listado</span></td>
+              <td>312</td>
+              <td>38</td>
+              <td style="color:var(--success)">R$ 2.940</td>
+              <td>
+                <div style="display:flex;gap:.3rem">
+                  <button class="btn btn-ghost btn-sm">🌐</button>
+                  <button class="btn btn-ghost btn-sm">📋</button>
+                  <button class="btn btn-ghost btn-sm">✏️</button>
+                  <button class="btn btn-ghost btn-sm" style="color:var(--danger)">🗑</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display:flex;align-items:center;gap:.75rem">
+                  <div class="album-thumb ph ph-3"></div>
+                  <div>
+                    <div style="color:var(--text);font-weight:500;font-size:.88rem">Ensaio Família Lima</div>
+                    <div style="font-size:.65rem;color:var(--text-dim);font-family:monospace">familia-lima</div>
+                    <div style="font-size:.72rem;color:var(--text-dim)">Embu das Artes, SP</div>
+                  </div>
+                </div>
+              </td>
+              <td>12/03/2026</td>
+              <td>Ensaio</td>
+              <td><span class="viz-private">Privado</span></td>
+              <td>184</td>
+              <td>26</td>
+              <td style="color:var(--success)">R$ 1.770</td>
+              <td>
+                <div style="display:flex;gap:.3rem">
+                  <button class="btn btn-ghost btn-sm">🌐</button>
+                  <button class="btn btn-ghost btn-sm">📋</button>
+                  <button class="btn btn-ghost btn-sm">✏️</button>
+                  <button class="btn btn-ghost btn-sm" style="color:var(--danger)">🗑</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display:flex;align-items:center;gap:.75rem">
+                  <div class="album-thumb ph ph-5"></div>
+                  <div>
+                    <div style="color:var(--text);font-weight:500;font-size:.88rem">Corporativo Tech 2026</div>
+                    <div style="font-size:.65rem;color:var(--text-dim);font-family:monospace">tech-2026</div>
+                    <div style="font-size:.72rem;color:var(--text-dim)">São Paulo, SP</div>
+                  </div>
+                </div>
+              </td>
+              <td>02/03/2026</td>
+              <td>Corporativo</td>
+              <td><span class="viz-public">Público</span></td>
+              <td>620</td>
+              <td>14</td>
+              <td style="color:var(--success)">R$ 1.140</td>
+              <td>
+                <div style="display:flex;gap:.3rem">
+                  <button class="btn btn-ghost btn-sm">🌐</button>
+                  <button class="btn btn-ghost btn-sm">📋</button>
+                  <button class="btn btn-ghost btn-sm">✏️</button>
+                  <button class="btn btn-ghost btn-sm" style="color:var(--danger)">🗑</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =================== CRIAR EVENTO =================== -->
+    <section class="page" data-page="criar-evento">
+      <div class="admin-header">
+        <div>
+          <h1 class="admin-page-title">Novo álbum</h1>
+          <p class="admin-page-sub">Cadastre o evento antes de fazer o upload das fotos</p>
+        </div>
+        <button class="btn btn-ghost btn-sm" data-goto="albuns">← Voltar para álbuns</button>
+      </div>
+      <div style="max-width:760px">
+        <div class="cfg-tab-content">
+          <div class="form-group"><label class="form-label">Nome do álbum</label><input class="form-input" placeholder="Ex.: Casamento Joana &amp; Pedro" /></div>
+          <div class="form-group"><label class="form-label">Slug (URL)</label><input class="form-input" placeholder="joana-pedro-2026" /></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+            <div class="form-group"><label class="form-label">Data do evento</label><input class="form-input" type="date" /></div>
+            <div class="form-group"><label class="form-label">Categoria</label><select class="form-select"><option>Casamento</option><option>Aniversário</option><option>Ensaio</option><option>Corporativo</option></select></div>
+          </div>
+          <div class="form-group"><label class="form-label">Cidade / Estado</label><input class="form-input" placeholder="São Paulo, SP" /></div>
+          <div class="form-group"><label class="form-label">Visibilidade</label>
+            <div style="display:flex;gap:.5rem"><button class="btn btn-primary btn-sm">Público</button><button class="btn btn-ghost btn-sm">Não listado</button><button class="btn btn-ghost btn-sm">Privado</button></div>
+          </div>
+          <div class="form-group"><label class="form-label">Preço padrão por foto</label><input class="form-input" placeholder="R$ 40,00" /></div>
+          <div class="form-group"><label class="form-label">Descrição</label><textarea class="form-textarea" rows="4" placeholder="Texto exibido na página do álbum"></textarea></div>
+          <div style="display:flex;gap:.6rem"><button class="btn btn-primary">Criar álbum</button><button class="btn btn-ghost" data-goto="albuns">Cancelar</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== UPLOAD =================== -->
+    <section class="page" data-page="upload">
+      <div class="admin-header">
+        <div>
+          <h1 class="admin-page-title">Upload de fotos</h1>
+          <p class="admin-page-sub">Casamento Marina &amp; Léo · 482 fotos no álbum</p>
+        </div>
+        <button class="btn btn-ghost btn-sm" data-goto="albuns">← Voltar para álbuns</button>
+      </div>
+
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.15rem;margin-bottom:1rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;align-items:center">
+        <div>
+          <strong style="display:block;color:var(--text);font-family:var(--font-heading);font-size:.95rem;margin-bottom:.2rem">Lote atual</strong>
+          <span style="color:var(--text-muted);font-size:.76rem">42 selecionadas · 218 MB · 3 ainda em fila</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,minmax(86px,1fr));gap:.5rem;font-size:.72rem">
+          <span style="border:1px solid var(--border);background:var(--bg-secondary);border-radius:var(--radius);padding:.45rem .6rem">OK <strong style="color:var(--accent);margin-left:.25rem">39</strong></span>
+          <span style="border:1px solid var(--border);background:var(--bg-secondary);border-radius:var(--radius);padding:.45rem .6rem">Enviando <strong style="color:var(--accent);margin-left:.25rem">3</strong></span>
+          <span style="border:1px solid var(--border);background:var(--bg-secondary);border-radius:var(--radius);padding:.45rem .6rem">Erro <strong style="color:var(--danger);margin-left:.25rem">0</strong></span>
+          <span style="border:1px solid var(--border);background:var(--bg-secondary);border-radius:var(--radius);padding:.45rem .6rem">Total <strong style="color:var(--accent);margin-left:.25rem">42</strong></span>
+        </div>
+      </div>
+
+      <div style="border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-card);padding:.9rem 1rem;margin-bottom:1rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:.82rem;color:var(--text-muted);margin-bottom:.55rem">
+          <span>Progresso geral</span>
+          <span><strong style="color:var(--accent);font-family:var(--font-heading)">76%</strong> · 218 MB / 287 MB</span>
+        </div>
+        <div style="width:100%;height:8px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.08)"><div style="height:100%;width:76%;background:var(--accent);transition:width .18s linear"></div></div>
+        <p style="margin-top:.55rem;color:var(--text-dim);font-size:.72rem;line-height:1.4">Marca d'água será aplicada automaticamente após upload. Originais ficam disponíveis apenas para clientes que comprarem.</p>
+      </div>
+
+      <div class="upload-zone">
+        <div class="upload-zone-icon">📤</div>
+        <div class="upload-zone-text">Arraste suas fotos aqui</div>
+        <div class="upload-zone-sub">Ou clique para selecionar. Aceita JPG, PNG e RAW. Recomendamos exportar a 3000px no lado maior.</div>
+        <div class="upload-zone-badges">
+          <span>JPG · PNG · WEBP</span>
+          <span>Até 25 MB por foto</span>
+          <span>Sem limite de quantidade</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== COMENTÁRIOS =================== -->
+    <section class="page" data-page="comentarios">
+      <div class="admin-header">
+        <div>
+          <h1 class="admin-page-title">Comentários</h1>
+          <p class="admin-page-sub">112 registros · 8 omitidos</p>
+        </div>
+      </div>
+
+      <div class="filter-bar" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:1.5rem">
+        <input class="form-input" placeholder="Buscar comentários..." style="max-width:320px" />
+        <span class="filter-label">Ordenar:</span>
+        <button class="btn btn-primary btn-sm">Mais curtidos</button>
+        <button class="btn btn-ghost btn-sm">Mais recentes</button>
+        <span class="filter-label">Status:</span>
+        <button class="btn btn-primary btn-sm">Todos</button>
+        <button class="btn btn-ghost btn-sm">Visíveis</button>
+        <button class="btn btn-ghost btn-sm">Omitidos</button>
+        <span class="filter-label">Tipo:</span>
+        <button class="btn btn-ghost btn-sm">Principais</button>
+        <button class="btn btn-ghost btn-sm">Respostas</button>
+      </div>
+
+      <div class="comment-card">
+        <div style="display:flex;align-items:center;gap:.45rem;flex-wrap:wrap;margin-bottom:.45rem">
+          <a class="text-accent" style="color:var(--accent);font-weight:600;font-size:.88rem">Marina Carvalho</a>
+          <span class="badge badge-scope">Foto</span>
+          <span class="badge badge-visible">Visível</span>
+          <span style="margin-left:auto;font-size:.72rem;color:var(--text-dim)">11/04/2026</span>
+        </div>
+        <div style="display:flex;gap:.85rem;align-items:center;margin-bottom:.75rem;flex-wrap:wrap">
+          <div style="width:56px;height:56px;border-radius:12px;border:1px solid var(--border)" class="ph ph-3"></div>
+          <div style="flex:1;min-width:220px;font-size:.78rem;color:var(--text-dim)">
+            <strong>Álbum:</strong> Casamento Marina &amp; Léo · <strong>Pasta:</strong> Cerimônia · <strong>Curtidas:</strong> 4
+          </div>
+        </div>
+        <p style="font-size:.86rem;color:var(--text);line-height:1.5">Essa foto ficou maravilhosa! Capturou exatamente o momento do "sim". Obrigada Vinícius!</p>
+        <div style="display:flex;gap:.5rem;margin-top:.65rem;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm">Editar</button>
+          <button class="btn btn-ghost btn-sm" style="color:var(--danger)">Omitir</button>
+          <button class="btn btn-ghost btn-sm">Responder</button>
+          <button class="btn btn-ghost btn-sm">Ver respostas (2)</button>
+        </div>
+      </div>
+
+      <div class="comment-card hidden">
+        <div style="display:flex;align-items:center;gap:.45rem;flex-wrap:wrap;margin-bottom:.45rem">
+          <a class="text-accent" style="color:var(--accent);font-weight:600;font-size:.88rem">Conta apagada</a>
+          <span class="badge badge-scope">Pasta</span>
+          <span class="badge badge-hidden">Omitido por admin</span>
+          <span style="margin-left:auto;font-size:.72rem;color:var(--text-dim)">28/03/2026</span>
+        </div>
+        <div style="display:flex;gap:.85rem;align-items:center;margin-bottom:.75rem;flex-wrap:wrap">
+          <div style="width:56px;height:56px;border-radius:12px;border:1px solid var(--border)" class="ph ph-7"></div>
+          <div style="flex:1;min-width:220px;font-size:.78rem;color:var(--text-dim)">
+            <strong>Álbum:</strong> Aniversário 30 anos · <strong>Pasta:</strong> Festa
+          </div>
+        </div>
+        <p style="font-size:.86rem;color:var(--text);line-height:1.5">spam removido — link suspeito promovendo concurso falso.</p>
+        <div style="display:flex;gap:.5rem;margin-top:.65rem">
+          <button class="btn btn-ghost btn-sm" style="color:var(--success)">Restaurar</button>
+        </div>
+      </div>
+
+      <div class="comment-card">
+        <div style="display:flex;align-items:center;gap:.45rem;flex-wrap:wrap;margin-bottom:.45rem">
+          <a class="text-accent" style="color:var(--accent);font-weight:600;font-size:.88rem">Bruno Tavares</a>
+          <span class="badge badge-scope">Álbum</span>
+          <span class="badge badge-reply">Resposta</span>
+          <span class="badge badge-visible">Visível</span>
+          <span style="margin-left:auto;font-size:.72rem;color:var(--text-dim)">19/04/2026</span>
+        </div>
+        <p style="font-size:.86rem;color:var(--text);line-height:1.5">Concordo com a Marina! Foi um dos melhores casamentos que já cobri.</p>
+      </div>
+    </section>
+
+    <!-- =================== CONTAS (CLIENTES) =================== -->
+    <section class="page" data-page="contas">
+      <div class="admin-header">
+        <div>
+          <h1 class="admin-page-title">Contas</h1>
+          <p class="admin-page-sub">128 clientes cadastrados</p>
+        </div>
+      </div>
+
+      <div class="filter-bar" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:1.5rem">
+        <input class="form-input" placeholder="Buscar por nome, email, CPF..." style="max-width:320px" />
+        <select class="form-select" style="max-width:200px"><option>Todos</option><option>VIP (R$ 500+)</option><option>Sem compra</option><option>Com pendências</option></select>
+      </div>
+
+      <div class="section-card" style="overflow:visible">
+        <table class="events-table">
+          <thead><tr><th>Cliente</th><th>Cadastro</th><th>Compras</th><th>Última compra</th><th>Carrinho</th><th style="text-align:right">Total gasto</th></tr></thead>
+          <tbody>
+            <tr style="cursor:pointer" onclick="openClientModal()">
+              <td><div style="font-weight:500;color:var(--text)">Marina Carvalho</div><div style="font-size:.72rem;color:var(--text-dim)">marina@email.com</div></td>
+              <td>02/01/2026</td><td>3</td><td>14/04/2026</td><td><span style="color:var(--accent)">R$ 120</span></td><td style="text-align:right;color:var(--success)">R$ 1.240</td>
+            </tr>
+            <tr style="cursor:pointer" onclick="openClientModal()">
+              <td><div style="font-weight:500;color:var(--text)">Juliana Mendes</div><div style="font-size:.72rem;color:var(--text-dim)">juliana@email.com</div></td>
+              <td>18/12/2025</td><td>2</td><td>25/03/2026</td><td><span style="color:var(--text-dim)">—</span></td><td style="text-align:right;color:var(--success)">R$ 720</td>
+            </tr>
+            <tr style="cursor:pointer" onclick="openClientModal()">
+              <td><div style="font-weight:500;color:var(--text)">Ricardo Souza</div><div style="font-size:.72rem;color:var(--text-dim)">ricardo@email.com</div></td>
+              <td>05/02/2026</td><td>1</td><td>02/04/2026</td><td><span style="color:var(--text-dim)">—</span></td><td style="text-align:right;color:var(--success)">R$ 480</td>
+            </tr>
+            <tr style="cursor:pointer" onclick="openClientModal()">
+              <td><div style="font-weight:500;color:var(--text)">Família Lima</div><div style="font-size:.72rem;color:var(--text-dim)">familialima@email.com</div></td>
+              <td>10/03/2026</td><td>0</td><td>—</td><td><span style="color:var(--accent)">R$ 200</span></td><td style="text-align:right;color:var(--text-dim)">R$ 0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =================== CARRINHOS =================== -->
+    <section class="page" data-page="carrinhos">
+      <div class="admin-header">
+        <div>
+          <h1 class="admin-page-title">Carrinhos abertos</h1>
+          <p class="admin-page-sub">Recupere vendas perdidas falando direto no WhatsApp</p>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card"><p class="stat-label">Carrinhos abertos</p><p class="stat-value">19</p></div>
+        <div class="stat-card"><p class="stat-label">Itens totais</p><p class="stat-value">87</p></div>
+        <div class="stat-card"><p class="stat-label">Valor potencial</p><p class="stat-value success">R$ 4.310</p></div>
+      </div>
+
+      <div class="filter-bar">
+        <span class="filter-label">Status:</span>
+        <button class="btn btn-primary btn-sm">Não revisados</button>
+        <button class="btn btn-ghost btn-sm">Revisados</button>
+        <button class="btn btn-ghost btn-sm">Todos</button>
+      </div>
+
+      <div class="order-card">
+        <button class="order-head">
+          <div class="order-info">
+            <div class="order-name">Família Lima</div>
+            <div class="order-id">familialima@email.com</div>
+            <div class="order-contacts"><span>📱 (11) 95555-1212</span><span>Última atividade: 5h atrás</span></div>
+          </div>
+          <span class="status-badge" style="background:var(--accent-dim);color:var(--accent)">5 itens</span>
+          <span class="order-total">R$ 200,00</span>
+          <span class="chev">›</span>
+        </button>
+      </div>
+
+      <div class="order-card open">
+        <button class="order-head">
+          <div class="order-info">
+            <div class="order-name">Marina Carvalho</div>
+            <div class="order-id">marina@email.com</div>
+            <div class="order-contacts"><span>📱 (11) 98765-4321</span><span>Última atividade: 12 min atrás</span></div>
+          </div>
+          <span class="status-badge" style="background:var(--accent-dim);color:var(--accent)">3 itens</span>
+          <span class="order-total">R$ 120,00</span>
+          <span class="chev">›</span>
+        </button>
+        <div class="order-body" style="display:block">
+          <p class="col-label">Fotos no carrinho</p>
+          <div class="foto-line"><div class="foto-thumb ph ph-1"></div><div class="foto-info">Casamento Marina &amp; Léo<small><span style="color:var(--accent);font-family:monospace">#F0021A</span></small></div><div class="foto-price">R$ 40</div></div>
+          <div class="foto-line"><div class="foto-thumb ph ph-2"></div><div class="foto-info">Casamento Marina &amp; Léo<small><span style="color:var(--accent);font-family:monospace">#F0021B</span></small></div><div class="foto-price">R$ 40</div></div>
+          <div class="foto-line"><div class="foto-thumb ph ph-5"></div><div class="foto-info">Aniversário 30 anos<small><span style="color:var(--accent);font-family:monospace">#F0033Z</span></small></div><div class="foto-price">R$ 40</div></div>
+
+          <div style="padding:.75rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-card);margin-top:1rem">
+            <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:.35rem">Comentário do cliente</div>
+            <div style="font-size:.82rem">"Posso parcelar em 3x sem juros?"</div>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:.75rem;border-top:1px solid var(--border);margin-top:1rem;gap:.5rem;flex-wrap:wrap">
+            <span style="font-size:.85rem;color:var(--text-muted)">Total: <strong style="color:var(--accent);font-family:var(--font-heading);font-size:1.1rem">R$ 120,00</strong></span>
+            <div style="display:flex;gap:.5rem">
+              <button class="btn btn-sm" style="background:#25D366;color:#fff">📱 WhatsApp</button>
+              <button class="btn btn-ghost btn-sm">Marcar revisado</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== CONTATOS =================== -->
+    <section class="page" data-page="contatos">
+      <div class="admin-header">
+        <div>
+          <p style="font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:.35rem">Atendimento</p>
+          <h1 class="admin-page-title">Contatos recebidos</h1>
+          <p class="admin-page-sub">5 mensagens · 2 ainda sem resposta</p>
+        </div>
+        <button class="btn btn-secondary btn-sm">↻ Atualizar</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:1rem;margin-bottom:1.25rem">
+        <input class="form-input" placeholder="Buscar por nome, email ou mensagem..." />
+        <select class="form-select"><option>Status: Todos</option><option>Novo</option><option>Em andamento</option><option>Resolvido</option></select>
+      </div>
+
+      <article style="border:1px solid var(--border);border-radius:8px;background:var(--bg-card);padding:1.25rem;margin-bottom:1rem">
+        <div style="display:flex;justify-content:space-between;gap:1rem;margin-bottom:.75rem;flex-wrap:wrap">
+          <div>
+            <h2 style="font-size:1.1rem;margin-bottom:.25rem">Orçamento — Casamento em outubro</h2>
+            <div style="color:var(--text-muted);font-size:.9rem">Camila Reis · 06/05/2026 14:22</div>
+          </div>
+          <select class="form-select" style="width:190px"><option>Novo</option><option>Em andamento</option><option>Resolvido</option></select>
+        </div>
+        <p style="white-space:pre-wrap;color:var(--text);margin-bottom:1rem">Oi Vinícius, casamos em 18/10. Cerimônia ao ar livre na fazenda em Itu. Me passa proposta para 8h de cobertura + álbum impresso?</p>
+        <div style="display:flex;flex-wrap:wrap;gap:.75rem;margin-bottom:1rem;color:var(--text-muted)">
+          <a class="text-accent" style="color:var(--accent)">camila.reis@email.com</a>
+          <a class="text-accent" style="color:var(--accent)">📱 (15) 99888-7766</a>
+        </div>
+        <label class="form-label">Nota interna</label>
+        <textarea class="form-textarea" style="min-height:84px;margin-top:.4rem">Confirmar disponibilidade da equipe — checar agenda 17 e 18/10.</textarea>
+        <button class="btn btn-secondary btn-sm" style="margin-top:.75rem">Salvar nota</button>
+      </article>
+
+      <article style="border:1px solid var(--border);border-radius:8px;background:var(--bg-card);padding:1.25rem;margin-bottom:1rem">
+        <div style="display:flex;justify-content:space-between;gap:1rem;margin-bottom:.75rem;flex-wrap:wrap">
+          <div>
+            <h2 style="font-size:1.1rem;margin-bottom:.25rem">Foto perdida do álbum</h2>
+            <div style="color:var(--text-muted);font-size:.9rem">Anônimo · 02/05/2026 09:11</div>
+          </div>
+          <select class="form-select" style="width:190px"><option>Em andamento</option><option>Novo</option><option>Resolvido</option></select>
+        </div>
+        <p style="color:var(--text);margin-bottom:1rem">Comprei uma foto na semana passada e o link de download expirou. Pode reenviar?</p>
+        <div style="color:var(--text-muted);font-size:.9rem">Pedido referenciado: <span style="color:var(--accent);font-family:monospace">#A47C2D</span></div>
+      </article>
+    </section>
+
+    <!-- =================== MARCA D'ÁGUA =================== -->
+    <section class="page" data-page="marca-dagua">
+      <div class="admin-header">
+        <div>
+          <h1 class="admin-page-title">Marca d'água</h1>
+          <p class="admin-page-sub">Gravada nos pixels via Sharp · não é overlay CSS</p>
+        </div>
+        <button class="btn btn-primary btn-sm">Salvar configuração</button>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" data-vtab="global">Global</button>
+        <button class="tab" data-vtab="grid">Grid</button>
+        <button class="tab" data-vtab="thumbs">Thumbs</button>
+        <button class="tab" data-vtab="mini">Mini</button>
+        <button class="tab" data-vtab="covers">Covers</button>
+      </div>
+
+      <div class="tab-panel active" data-vtab="global">
+        <div class="wm-grid">
+          <div>
+            <div class="wm-preview">
+              <div class="wm-preview-img">PRÉVIA · 3:2</div>
+              <div class="wm-watermark-overlay" style="bottom:1rem;right:1rem">VINÍCIUS .</div>
+            </div>
+            <div style="display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap">
+              <button class="btn btn-ghost btn-sm">2:3</button>
+              <button class="btn btn-primary btn-sm">3:2</button>
+              <button class="btn btn-ghost btn-sm">3:4</button>
+              <button class="btn btn-ghost btn-sm">4:3</button>
+              <button class="btn btn-ghost btn-sm">1:1</button>
+              <button class="btn btn-ghost btn-sm">16:9</button>
+              <button class="btn btn-ghost btn-sm">9:16</button>
+            </div>
+          </div>
+          <div class="cfg-tab-content">
+            <div class="form-group"><label class="form-label">Arquivo da marca</label>
+              <div style="display:flex;gap:.5rem;align-items:center">
+                <button class="btn btn-secondary btn-sm">Escolher arquivo</button>
+                <span style="font-size:.78rem;color:var(--text-muted)">marca-dourada.png · 412 KB</span>
+              </div>
+            </div>
+            <div class="form-group"><label class="form-label">Posição</label>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem">
+                <button class="btn btn-ghost btn-sm">↖</button><button class="btn btn-ghost btn-sm">↑</button><button class="btn btn-ghost btn-sm">↗</button>
+                <button class="btn btn-ghost btn-sm">←</button><button class="btn btn-ghost btn-sm">●</button><button class="btn btn-ghost btn-sm">→</button>
+                <button class="btn btn-ghost btn-sm">↙</button><button class="btn btn-ghost btn-sm">↓</button><button class="btn btn-primary btn-sm">↘</button>
+              </div>
+            </div>
+            <div class="form-group"><label class="form-label">Escala (% da largura da imagem)</label>
+              <input type="range" min="2" max="40" value="14" style="width:100%" />
+              <div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--text-dim)"><span>2%</span><span><strong style="color:var(--accent)">14%</strong></span><span>40%</span></div>
+            </div>
+            <div class="form-group"><label class="form-label">Opacidade</label>
+              <input type="range" min="10" max="100" value="55" style="width:100%" />
+              <div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--text-dim)"><span>10%</span><span><strong style="color:var(--accent)">55%</strong></span><span>100%</span></div>
+            </div>
+            <div class="form-group"><label class="form-label">Margem das bordas (px)</label><input class="form-input" type="number" value="36" /></div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-panel" data-vtab="grid"><div class="cfg-tab-content"><p style="color:var(--text-muted);font-size:.9rem">Variante para a grade de listagem (galeria pública). Use uma marca menor e mais discreta.</p></div></div>
+      <div class="tab-panel" data-vtab="thumbs"><div class="cfg-tab-content"><p style="color:var(--text-muted);font-size:.9rem">Variante para as miniaturas usadas em pedidos e carrinhos.</p></div></div>
+      <div class="tab-panel" data-vtab="mini"><div class="cfg-tab-content"><p style="color:var(--text-muted);font-size:.9rem">Variante miniaturizada para a tela de "minha conta".</p></div></div>
+      <div class="tab-panel" data-vtab="covers"><div class="cfg-tab-content"><p style="color:var(--text-muted);font-size:.9rem">Variante usada nas capas de álbum (geralmente sem marca).</p></div></div>
+    </section>
+
+    <!-- =================== REMOÇÕES =================== -->
+    <section class="page" data-page="remocoes">
+      <div class="admin-header">
+        <div>
+          <h1 class="admin-page-title">Solicitações de remoção</h1>
+          <p class="admin-page-sub">2 pendentes · LGPD / direito de imagem</p>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <button class="btn btn-primary btn-sm">Pendentes (2)</button>
+        <button class="btn btn-ghost btn-sm">Aceitas</button>
+        <button class="btn btn-ghost btn-sm">Negadas</button>
+        <button class="btn btn-ghost btn-sm">Todas</button>
+      </div>
+
+      <div class="order-card open">
+        <button class="order-head">
+          <div class="thumb-row"><div class="tr-thumb ph ph-1" style="width:60px;height:46px"></div></div>
+          <div class="order-info">
+            <div class="order-name">Marina Carvalho · solicita remoção</div>
+            <div class="order-id">Foto #F0021A · Casamento Marina &amp; Léo</div>
+            <div class="order-contacts"><span>📱 (11) 98765-4321</span><span>Solicitada em 09/04/2026</span></div>
+          </div>
+          <span class="status-badge s-pendente">PENDENTE</span>
+          <span class="chev">›</span>
+        </button>
+        <div class="order-body" style="display:block">
+          <p class="col-label">Motivo do cliente</p>
+          <p style="font-size:.86rem;color:var(--text);margin-bottom:1rem">"Aparece de olho fechado em pose ruim. Gostaria que fosse removida da galeria pública."</p>
+
+          <p class="col-label">Decisão</p>
+          <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
+            <button class="btn btn-success btn-sm">Aceitar e remover</button>
+            <button class="btn btn-danger btn-sm">Negar</button>
+            <button class="btn btn-ghost btn-sm">Pedir mais info</button>
+          </div>
+
+          <p class="col-label">Nota pública (visível ao cliente)</p>
+          <textarea class="form-textarea" rows="3" style="margin-bottom:.5rem">Já analisei. Vou trocar pela foto seguinte da sequência. Aguarde 24h.</textarea>
+          <p class="col-label">Nota interna (privada)</p>
+          <textarea class="form-textarea" rows="2">Trocar para F0021A2 e re-aplicar marca d'água.</textarea>
+        </div>
+      </div>
+
+      <div class="order-card">
+        <button class="order-head">
+          <div class="thumb-row"><div class="tr-thumb ph ph-7" style="width:60px;height:46px"></div></div>
+          <div class="order-info">
+            <div class="order-name">Pedro Almeida · solicita remoção</div>
+            <div class="order-id">Foto #F1119Z · Aniversário 30 anos</div>
+            <div class="order-contacts"><span>✉️ pedro@email.com</span><span>Solicitada em 07/05/2026</span></div>
+          </div>
+          <span class="status-badge s-pendente">PENDENTE</span>
+          <span class="chev">›</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- =================== PERSONALIZAR =================== -->
+    <section class="page" data-page="personalizar">
+      <div class="admin-header">
+        <div>
+          <h1 class="admin-page-title">Personalizar site</h1>
+          <p class="admin-page-sub">Identidade visual, hero, links sociais</p>
+        </div>
+        <button class="btn btn-primary btn-sm">Salvar tudo</button>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" data-ptab="brand">Marca</button>
+        <button class="tab" data-ptab="hero">Hero</button>
+        <button class="tab" data-ptab="links">Links sociais</button>
+        <button class="tab" data-ptab="seo">SEO</button>
+      </div>
+
+      <div class="tab-panel active" data-ptab="brand">
+        <div class="cfg-tab-content">
+          <div class="form-group"><label class="form-label">Nome do estúdio</label><input class="form-input" value="Vinícius Rodrigues Fotografia" /></div>
+          <div class="form-group"><label class="form-label">Slogan</label><input class="form-input" value="Memórias com tempero de cinema." /></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+            <div class="form-group"><label class="form-label">Cor de destaque</label>
+              <div style="display:flex;gap:.5rem;align-items:center"><input class="form-input" value="#22c55e" style="max-width:120px" /><span style="width:32px;height:32px;border-radius:50%;background:#22c55e;border:1px solid var(--border)"></span></div>
+            </div>
+            <div class="form-group"><label class="form-label">Família tipográfica</label><select class="form-select"><option>Inter + Space Grotesk</option><option>Playfair + Inter</option><option>Cormorant + Lato</option></select></div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-panel" data-ptab="hero"><div class="cfg-tab-content">
+        <div class="form-group"><label class="form-label">Imagem de capa</label><button class="btn btn-secondary btn-sm">Escolher imagem</button></div>
+        <div class="form-group"><label class="form-label">Título</label><input class="form-input" value="Histórias autênticas, fotografia atemporal." /></div>
+        <div class="form-group"><label class="form-label">Texto secundário</label><textarea class="form-textarea" rows="3">Atendo casamentos, ensaios e eventos corporativos em SP, RJ e MG.</textarea></div>
+      </div></div>
+      <div class="tab-panel" data-ptab="links"><div class="cfg-tab-content">
+        <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" value="@viniciusrodriguesfoto" /></div>
+        <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" value="(11) 99999-0000" /></div>
+        <div class="form-group"><label class="form-label">YouTube</label><input class="form-input" placeholder="URL do canal" /></div>
+      </div></div>
+      <div class="tab-panel" data-ptab="seo"><div class="cfg-tab-content">
+        <div class="form-group"><label class="form-label">Title (homepage)</label><input class="form-input" value="Vinícius Rodrigues · Fotografia de eventos" /></div>
+        <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" rows="3">Fotógrafo de casamentos, ensaios e eventos corporativos em São Paulo. Galerias online e venda direta de fotos.</textarea></div>
+      </div></div>
+    </section>
+
+    <!-- =================== CONFIGURAÇÕES =================== -->
+    <section class="page" data-page="configuracoes">
+      <div class="admin-header">
+        <div>
+          <h1 class="admin-page-title">Configurações</h1>
+          <p class="admin-page-sub">Comerciais, fiscais e operacionais</p>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" data-ctab="contato">Contato</button>
+        <button class="tab" data-ctab="imagens">Imagens</button>
+        <button class="tab" data-ctab="pagamento">Pagamento</button>
+        <button class="tab" data-ctab="descontos">Descontos</button>
+        <button class="tab" data-ctab="auditoria">Auditoria</button>
+      </div>
+
+      <div class="tab-panel active" data-ctab="contato"><div class="cfg-tab-content">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div class="form-group"><label class="form-label">CPF</label><input class="form-input" value="123.456.789-00" /></div>
+          <div class="form-group"><label class="form-label">CNPJ</label><input class="form-input" value="12.345.678/0001-99" /></div>
+          <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" value="(11) 99999-0000" /></div>
+          <div class="form-group"><label class="form-label">Cidade base</label><input class="form-input" value="São Paulo, SP" /></div>
+        </div>
+      </div></div>
+
+      <div class="tab-panel" data-ctab="imagens"><div class="cfg-tab-content">
+        <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:1rem">Tamanhos derivados gerados automaticamente para cada upload (Sharp).</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem">
+          <div class="stat-card"><p class="stat-label">Grid</p><p style="font-size:1rem">1600px / 82% qualidade</p></div>
+          <div class="stat-card"><p class="stat-label">Thumb</p><p style="font-size:1rem">600px / 78% qualidade</p></div>
+          <div class="stat-card"><p class="stat-label">Mini</p><p style="font-size:1rem">240px / 70% qualidade</p></div>
+          <div class="stat-card"><p class="stat-label">Cover</p><p style="font-size:1rem">2400px / 86% qualidade</p></div>
+        </div>
+      </div></div>
+
+      <div class="tab-panel" data-ctab="pagamento"><div class="cfg-tab-content">
+        <div class="form-group"><label class="form-label">Gateway</label><select class="form-select"><option>Asaas</option><option>Mercado Pago</option><option>Stripe</option></select></div>
+        <div class="form-group"><label class="form-label">Chave Pix de recebimento</label><input class="form-input" value="vinicius@email.com" /></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div class="form-group"><label class="form-label">Parcelamento até</label><select class="form-select"><option>3x sem juros</option><option>6x sem juros</option><option>12x com juros</option></select></div>
+          <div class="form-group"><label class="form-label">Taxa repassada</label><select class="form-select"><option>100% para o cliente</option><option>50/50</option><option>Absorvida pelo estúdio</option></select></div>
+        </div>
+      </div></div>
+
+      <div class="tab-panel" data-ctab="descontos"><div class="cfg-tab-content">
+        <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:1rem">Desconto progressivo aplicado automaticamente no carrinho.</p>
+        <table class="events-table">
+          <thead><tr><th>Quantidade mínima</th><th>Desconto</th><th>Ações</th></tr></thead>
+          <tbody>
+            <tr><td>3 fotos</td><td>5%</td><td><button class="btn btn-ghost btn-sm">Editar</button></td></tr>
+            <tr><td>6 fotos</td><td>10%</td><td><button class="btn btn-ghost btn-sm">Editar</button></td></tr>
+            <tr><td>12 fotos</td><td>18%</td><td><button class="btn btn-ghost btn-sm">Editar</button></td></tr>
+            <tr><td>24 fotos</td><td>25%</td><td><button class="btn btn-ghost btn-sm">Editar</button></td></tr>
+          </tbody>
+        </table>
+        <button class="btn btn-secondary btn-sm" style="margin-top:1rem">+ Adicionar faixa</button>
+      </div></div>
+
+      <div class="tab-panel" data-ctab="auditoria"><div class="cfg-tab-content">
+        <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:1rem">Log de ações administrativas (últimos 30 dias).</p>
+        <table class="events-table">
+          <thead><tr><th>Data</th><th>Ação</th><th>Detalhe</th></tr></thead>
+          <tbody>
+            <tr><td>09/05 09:14</td><td>Editar comentário</td><td>ID c#A11 (Marina Carvalho)</td></tr>
+            <tr><td>08/05 22:03</td><td>Alterar visibilidade</td><td>Álbum "Aniversário 30 anos" → Não listado</td></tr>
+            <tr><td>07/05 18:40</td><td>Aceitar remoção</td><td>Foto #F1119Z</td></tr>
+            <tr><td>06/05 14:22</td><td>Novo contato</td><td>Camila Reis · orçamento 18/10</td></tr>
+          </tbody>
+        </table>
+      </div></div>
+    </section>
+
+    <!-- =================== RESET =================== -->
+    <section class="page" data-page="reset">
+      <div class="admin-header">
+        <div>
+          <h1 class="admin-page-title">Backup e Reset</h1>
+          <p class="admin-page-sub">Cuidado: ações destrutivas afetam todos os clientes</p>
+        </div>
+      </div>
+
+      <div class="cfg-tab-content" style="margin-bottom:1.25rem">
+        <h2 style="font-family:var(--font-heading);font-size:1.1rem;margin-bottom:.5rem">Backup completo</h2>
+        <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:1rem">Gera um ZIP com os JSONs de <code>data/</code> e índice das mídias. Não inclui originais.</p>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <button class="btn btn-primary btn-sm">📦 Baixar backup agora</button>
+          <button class="btn btn-secondary btn-sm">Configurar agendamento semanal</button>
+        </div>
+      </div>
+
+      <div class="cfg-tab-content" style="margin-bottom:1.25rem">
+        <h2 style="font-family:var(--font-heading);font-size:1.1rem;margin-bottom:.5rem">Importar backup</h2>
+        <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:1rem">Restaure dados de um backup anterior. Operação atômica — falha → rollback.</p>
+        <div style="display:flex;gap:.5rem;align-items:center">
+          <button class="btn btn-secondary btn-sm">Escolher arquivo .zip</button>
+          <span style="color:var(--text-dim);font-size:.78rem">Nenhum arquivo selecionado</span>
+        </div>
+      </div>
+
+      <div class="cfg-tab-content" style="border-color:rgba(217,108,108,.35)">
+        <h2 style="font-family:var(--font-heading);font-size:1.1rem;margin-bottom:.5rem;color:var(--danger)">Zona de perigo</h2>
+        <div class="alert alert-error" style="margin-bottom:1rem">Estas ações são irreversíveis. Faça um backup antes.</div>
+        <div style="display:flex;flex-direction:column;gap:.6rem">
+          <button class="btn btn-danger" style="align-self:flex-start">Esvaziar todos os carrinhos abertos</button>
+          <button class="btn btn-danger" style="align-self:flex-start">Apagar todos os pedidos cancelados (3)</button>
+          <button class="btn btn-danger" style="align-self:flex-start">Reset total da plataforma</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Logout modal -->
+<div id="logoutBackdrop" style="position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:1rem;animation:fadeIn .2s">
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;max-width:360px;width:100%;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.5);animation:slideUp .2s">
+    <div style="font-size:2.5rem;margin-bottom:.75rem">🔌</div>
+    <h2 style="font-family:var(--font-heading);font-size:1.2rem;color:var(--text);margin-bottom:.5rem">Desconectar da Área do fotógrafo?</h2>
+    <p style="font-size:.85rem;color:var(--text-muted);line-height:1.5;margin-bottom:1.75rem">Você será redirecionado para a página de login.</p>
+    <div style="display:flex;gap:.75rem">
+      <button class="btn btn-secondary" id="cancelLogout" style="flex:1">Cancelar</button>
+      <button class="btn btn-danger" id="doLogout" style="flex:1">Desconectar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Client modal -->
+<div id="clientBack" class="modal-back" style="display:none">
+  <div class="modal-panel" onclick="event.stopPropagation()">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;flex-wrap:wrap;gap:.75rem">
+      <div>
+        <h2 style="font-family:var(--font-heading);font-size:1.2rem">Marina Carvalho</h2>
+        <a class="text-accent" style="color:var(--accent);font-size:.8rem;margin-top:.25rem;display:inline-block">marina@email.com</a>
+        <div style="display:flex;gap:1rem;margin-top:.5rem;flex-wrap:wrap">
+          <span style="font-size:.75rem;color:var(--text-muted)">Total gasto: <strong style="color:var(--success)">R$ 1.240</strong></span>
+          <span style="font-size:.75rem;color:var(--text-muted)">Compras: <strong>3</strong></span>
+          <span style="font-size:.75rem;color:var(--accent)">Carrinho: R$ 120</span>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm" id="closeClient">✕ Fechar</button>
+    </div>
+
+    <div class="client-meta-grid">
+      <div class="client-meta-field"><label>WhatsApp</label><span>(11) 98765-4321</span></div>
+      <div class="client-meta-field"><label>CPF</label><span>123.456.789-00</span></div>
+      <div class="client-meta-field"><label>Nascimento</label><span>22/08/1995</span></div>
+      <div class="client-meta-field"><label>Cidade</label><span>São Paulo, SP</span></div>
+      <div class="client-meta-field"><label>Cadastro em</label><span>02/01/2026</span></div>
+      <div class="client-meta-field"><label>Instagram</label><span>@marina.carvalho</span></div>
+    </div>
+
+    <div class="tabs" id="cliTabs">
+      <button class="tab active" data-cltab="compras">Compras</button>
+      <button class="tab" data-cltab="carrinho">Carrinho</button>
+      <button class="tab" data-cltab="reclamacoes">Reclamações</button>
+      <button class="tab" data-cltab="comentarios">Comentários</button>
+    </div>
+
+    <div class="tab-panel active" data-cltab="compras">
+      <div class="foto-line"><div class="foto-thumb ph ph-1"></div><div class="foto-info">#A47C2D · 14/04/2026<small>6 fotos</small></div><span class="status-badge s-pago">PAGO</span><div class="foto-price">R$ 240</div></div>
+      <div class="foto-line"><div class="foto-thumb ph ph-3"></div><div class="foto-info">#7E0049 · 25/03/2026<small>12 fotos</small></div><span class="status-badge s-pago">PAGO</span><div class="foto-price">R$ 480</div></div>
+      <div class="foto-line"><div class="foto-thumb ph ph-7"></div><div class="foto-info">#5B0231 · 02/03/2026<small>14 fotos</small></div><span class="status-badge s-pago">PAGO</span><div class="foto-price">R$ 520</div></div>
+    </div>
+    <div class="tab-panel" data-cltab="carrinho">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.5rem">
+        <div style="background:var(--bg-secondary);border-radius:var(--radius);overflow:hidden"><div class="ph ph-1" style="height:75px"></div><div style="padding:.3rem .4rem"><div style="font-size:.65rem;color:var(--text-dim)">F0021A.jpg</div><div style="font-size:.72rem;color:var(--success);font-weight:600">R$ 40</div></div></div>
+        <div style="background:var(--bg-secondary);border-radius:var(--radius);overflow:hidden"><div class="ph ph-2" style="height:75px"></div><div style="padding:.3rem .4rem"><div style="font-size:.65rem;color:var(--text-dim)">F0021B.jpg</div><div style="font-size:.72rem;color:var(--success);font-weight:600">R$ 40</div></div></div>
+        <div style="background:var(--bg-secondary);border-radius:var(--radius);overflow:hidden"><div class="ph ph-5" style="height:75px"></div><div style="padding:.3rem .4rem"><div style="font-size:.65rem;color:var(--text-dim)">F0033Z.jpg</div><div style="font-size:.72rem;color:var(--success);font-weight:600">R$ 40</div></div></div>
+      </div>
+    </div>
+    <div class="tab-panel" data-cltab="reclamacoes">
+      <div style="background:var(--bg-secondary);border-radius:var(--radius);padding:.75rem 1rem">
+        <span class="status-badge s-pendente">PENDENTE</span>
+        <span style="font-size:.72rem;color:var(--text-dim);margin-left:.5rem">09/04/2026</span>
+        <div style="font-size:.78rem;color:var(--text-dim);font-family:monospace;margin-top:.25rem">Foto #F0021A · Casamento Marina &amp; Léo</div>
+      </div>
+    </div>
+    <div class="tab-panel" data-cltab="comentarios">
+      <p style="color:var(--text-dim);font-size:.85rem">8 comentários (3 visíveis · 5 omitidos por ela mesma).</p>
+    </div>
+  </div>
+</div>
+
+<div class="mock-flag">MOCKUP — sem backend</div>
+
+<script>
+const $=q=>document.querySelector(q);
+const $$=q=>document.querySelectorAll(q);
+
+function goto(name){
+  $$('.page').forEach(p=>p.classList.toggle('active',p.dataset.page===name));
+  $$('.admin-nav-item').forEach(b=>b.classList.toggle('active',b.dataset.goto===name));
+  closeSidebar();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-goto]');
+  if(t){e.preventDefault();goto(t.dataset.goto)}
+});
+
+// Mobile sidebar
+function openSidebar(){$('#adminSidebar').classList.add('open');$('#sidebarOverlay').classList.add('show');}
+function closeSidebar(){$('#adminSidebar').classList.remove('open');$('#sidebarOverlay').classList.remove('show');}
+const ham=$('#hamburger');if(ham)ham.addEventListener('click',openSidebar);
+$('#sidebarOverlay').addEventListener('click',closeSidebar);
+
+// Order accordion
+$$('.order-head').forEach(h=>h.addEventListener('click',()=>{
+  h.parentElement.classList.toggle('open');
+}));
+
+// Tabs (generic: stab/vtab/ptab/ctab/cltab)
+['stab','vtab','ptab','ctab','cltab'].forEach(key=>{
+  $$('[data-'+key+']').forEach(el=>{
+    if(el.classList.contains('tab')){
+      el.addEventListener('click',()=>{
+        const k=el.dataset[key];
+        const parent=el.closest('section, .modal-panel')||document;
+        parent.querySelectorAll('.tab[data-'+key+']').forEach(t=>t.classList.toggle('active',t.dataset[key]===k));
+        parent.querySelectorAll('.tab-panel[data-'+key+']').forEach(p=>p.classList.toggle('active',p.dataset[key]===k));
+      });
+    }
+  });
+});
+
+// Logout
+$('#openLogout').addEventListener('click',()=>$('#logoutBackdrop').style.display='flex');
+$('#cancelLogout').addEventListener('click',()=>$('#logoutBackdrop').style.display='none');
+$('#doLogout').addEventListener('click',()=>{$('#logoutBackdrop').style.display='none';alert('Mockup: aqui o logout aconteceria de verdade.');});
+$('#logoutBackdrop').addEventListener('click',e=>{if(e.target===$('#logoutBackdrop'))$('#logoutBackdrop').style.display='none';});
+
+// Copy URL feedback
+$('#copyBtn').addEventListener('click',()=>{
+  const fb=$('#copyFeedback');fb.textContent='Copiado!';
+  setTimeout(()=>fb.textContent='',1800);
+});
+
+// Client modal
+function openClientModal(){$('#clientBack').style.display='flex';}
+$('#closeClient').addEventListener('click',()=>$('#clientBack').style.display='none');
+$('#clientBack').addEventListener('click',e=>{if(e.target===$('#clientBack'))$('#clientBack').style.display='none';});
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    $('#logoutBackdrop').style.display='none';
+    $('#clientBack').style.display='none';
+    closeSidebar();
+  }
+});
+</script>
+</body>
+</html>

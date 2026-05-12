@@ -1,0 +1,1360 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Vinícius Souza — Manual da Marca</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Manual da identidade visual de Vinícius Souza · fotografia · 4 lockups × 4 versões × 4 assinaturas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ─────────────────────────────────────────────────────────
+     TOKENS — match the brand system (Montserrat, cream, ink)
+     ───────────────────────────────────────────────────────── */
+  :root{
+    --bg:        #f4f4f4;
+    --bg-warm:   #ececec;
+    --bg-cream:  #f1f1f1;
+    --ink:       #0d0d0d;
+    --ink-soft:  #2a2a2a;
+    --ink-mid:   #4a4a4a;
+    --muted:     #787878;
+    --hair:      #d8d8d8;
+    --hair-warm: #dddddd;
+    --paper:     #ffffff;
+
+    --c-fotografia: #000000;
+    --c-editorial:  #1F7AE0;
+    --c-esportes:   #C83333;
+    --c-natureza:   #1F7A4A;
+
+    --font-display: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    --font-body:    "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    --font-mono:    "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+    --max:   1440px;
+    --gutter: 48px;
+    --rule:  1px solid var(--hair);
+  }
+
+  *,*::before,*::after{ box-sizing:border-box }
+  html,body{ margin:0 }
+  html{ scroll-behavior:smooth; scroll-padding-top:80px }
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:var(--font-body); font-weight:300; font-size:16px; line-height:1.55;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  }
+  ::selection{ background:var(--ink); color:var(--bg) }
+
+  a{ color:inherit; text-decoration:none }
+  button{ font-family:inherit; cursor:pointer; border:none; background:transparent; color:inherit }
+  button:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; border-radius:6px }
+
+  .wrap{ max-width:var(--max); margin:0 auto; padding:0 var(--gutter) }
+
+  /* ─────────────────────────────────────────────────────────
+     TOPBAR — minimal, sticky, hairline
+     ───────────────────────────────────────────────────────── */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    background:rgba(244,244,242,.92);
+    backdrop-filter:saturate(1.1) blur(10px);
+    -webkit-backdrop-filter:saturate(1.1) blur(10px);
+    border-bottom:var(--rule);
+  }
+  .topbar .inner{
+    display:flex; align-items:center; justify-content:space-between;
+    height:64px; gap:32px;
+  }
+  .brand{
+    display:flex; align-items:center; gap:14px;
+    font-family:var(--font-display); font-weight:800; font-size:13px;
+    letter-spacing:.18em; text-transform:uppercase;
+  }
+  .brand .mark{
+    width:26px; height:26px; display:grid; place-items:center;
+    background:var(--ink); color:var(--paper);
+    border-radius:4px;
+    font-size:11px; letter-spacing:.04em;
+  }
+  .topnav{
+    display:flex; gap:30px; font-size:12px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--muted); font-weight:500;
+  }
+  .topnav a{ position:relative; padding:6px 0; transition:color .18s ease }
+  .topnav a:hover{ color:var(--ink) }
+  .topnav a::after{
+    content:""; position:absolute; left:0; right:0; bottom:-2px;
+    height:1px; background:var(--ink); transform:scaleX(0);
+    transform-origin:left; transition:transform .25s ease;
+  }
+  .topnav a:hover::after{ transform:scaleX(1) }
+  @media (max-width:920px){ .topnav{ display:none } }
+
+  /* ─────────────────────────────────────────────────────────
+     HERO — generous, editorial
+     ───────────────────────────────────────────────────────── */
+  .hero{ padding:56px 0 36px; border-bottom:var(--rule); position:relative }
+  .hero::after{
+    content:""; position:absolute; left:var(--gutter); right:var(--gutter); bottom:-1px;
+    height:1px; background:var(--ink); width:80px;
+  }
+  .eyebrow{
+    font-size:11px; letter-spacing:.32em; text-transform:uppercase;
+    color:var(--muted); font-weight:600; margin:0 0 16px;
+  }
+  .eyebrow .num{ color:var(--ink); margin-right:14px; font-family:var(--font-mono); letter-spacing:.05em; font-weight:500 }
+  .hero h1{
+    font-family:var(--font-display); font-weight:200;
+    font-size:clamp(2.4rem, 6vw, 5rem); line-height:.96; letter-spacing:-.035em;
+    margin:0 0 18px; color:var(--ink);
+  }
+  .hero h1 em{
+    font-style:italic; font-weight:300; color:var(--ink-mid);
+  }
+  .hero .lede{
+    max-width:62ch; font-size:15.5px; line-height:1.52;
+    color:var(--ink-mid); font-weight:300; margin:0;
+  }
+
+  .stat-row{
+    display:grid; grid-template-columns:repeat(5, 1fr);
+    margin-top:64px; border-top:var(--rule); border-bottom:var(--rule);
+  }
+  .stat{
+    padding:14px 18px; border-right:var(--rule);
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .stat:last-child{ border-right:none }
+  .stat .n{
+    font-family:var(--font-display); font-weight:200;
+    font-size:28px; line-height:1; letter-spacing:-.02em; color:var(--ink);
+  }
+  .stat .l{
+    font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--muted); font-weight:500;
+  }
+  @media (max-width:780px){
+    .stat-row{ grid-template-columns:repeat(2,1fr) }
+    .stat{ border-bottom:var(--rule) }
+    .stat:nth-child(odd){ border-right:var(--rule) }
+    .stat:nth-child(even){ border-right:none }
+  }
+
+  /* ─────────────────────────────────────────────────────────
+     SECTION SCAFFOLDING
+     ───────────────────────────────────────────────────────── */
+  section{ padding:40px 0; border-bottom:var(--rule) }
+  .sec-head{ display:grid; grid-template-columns:90px 1fr; gap:26px; margin-bottom:22px }
+  .sec-head .num{
+    font-family:var(--font-mono); font-size:13px; color:var(--muted);
+    letter-spacing:.06em; padding-top:8px;
+  }
+  .sec-head h2{
+    font-family:var(--font-display); font-weight:200;
+    font-size:clamp(1.7rem, 3.4vw, 2.6rem); line-height:1.05; letter-spacing:-.025em;
+    margin:0 0 14px; color:var(--ink);
+  }
+  .sec-head .intro{
+    max-width:64ch; font-size:14.5px; color:var(--ink-mid); margin:0; font-weight:300; line-height:1.5;
+  }
+  @media (max-width:780px){
+    .sec-head{ grid-template-columns:1fr; gap:18px }
+    section{ padding:40px 0 }
+  }
+
+  /* ─────────────────────────────────────────────────────────
+     CARDS / PREVIEW FRAMES
+     ───────────────────────────────────────────────────────── */
+  .frame{
+    background:var(--paper); border:var(--rule);
+    display:flex; align-items:center; justify-content:center;
+    padding:32px; min-height:200px;
+    transition:border-color .2s ease;
+  }
+  .frame.dark{
+    background:var(--ink); border-color:var(--ink);
+  }
+  .frame > svg{ display:block; width:100%; height:auto; max-width:100%; max-height:100% }
+
+  /* ─────────────────────────────────────────────────────────
+     SÍMBOLO — large feature
+     ───────────────────────────────────────────────────────── */
+  .symbol-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:32px; align-items:start;
+  }
+  .symbol-frame{
+    background:var(--bg-cream); border:var(--rule);
+    aspect-ratio:1/1; display:grid; place-items:center; padding:28px;
+  }
+  .symbol-frame > svg{ width:88%; height:auto }
+  .symbol-notes h3{
+    font-family:var(--font-display); font-weight:300; font-size:20px;
+    letter-spacing:-.01em; margin:0 0 10px;
+  }
+  .symbol-notes p{ color:var(--ink-mid); margin:0 0 14px; max-width:50ch; font-size:14px; line-height:1.5 }
+  .key-list{ list-style:none; padding:0; margin:16px 0 0; border-top:var(--rule) }
+  .key-list li{
+    display:grid; grid-template-columns:110px 1fr; gap:20px;
+    padding:11px 0; border-bottom:var(--rule);
+    font-size:14px;
+  }
+  .key-list .k{
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--muted);
+  }
+  .key-list .v{ color:var(--ink); font-weight:400 }
+  @media (max-width:780px){ .symbol-grid{ grid-template-columns:1fr } }
+
+  /* ─────────────────────────────────────────────────────────
+     LOCKUPS — 4 cards detailed
+     ───────────────────────────────────────────────────────── */
+  .lockup-grid{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:1px;
+    background:var(--hair); border:var(--rule);
+  }
+  .lockup-card{
+    background:var(--paper); padding:16px;
+    display:flex; flex-direction:column; gap:11px;
+  }
+  .lockup-card .preview{ min-height:120px; padding:14px }
+  .lockup-card .hdr .name{ font-size:18px }
+  .lockup-card .hdr .badge{ font-size:9.5px }
+  .lockup-card > p{ font-size:12px; line-height:1.45 }
+  .lockup-card .when{ gap:14px; margin-top:auto }
+  .lockup-card .when dt{ font-size:9.5px; margin-bottom:6px }
+  .lockup-card .when dd{ font-size:11.5px; padding:2px 0 }
+  @media (max-width:1100px){ .lockup-grid{ grid-template-columns:repeat(2, 1fr) } }
+  @media (max-width:640px){  .lockup-grid{ grid-template-columns:1fr } }
+  .lockup-card .hdr{
+    display:flex; justify-content:space-between; align-items:baseline; gap:24px;
+    padding-bottom:16px; border-bottom:var(--rule);
+  }
+  .lockup-card .hdr .name{
+    font-family:var(--font-display); font-weight:300; font-size:24px;
+    letter-spacing:-.01em;
+  }
+  .lockup-card .hdr .badge{
+    font-family:var(--font-mono); font-size:11px;
+    color:var(--muted); letter-spacing:.06em;
+  }
+  .lockup-card .preview{
+    background:var(--bg-cream); border:var(--rule);
+    min-height:160px; display:grid; place-items:center; padding:20px;
+  }
+  .lockup-card .preview > svg{ width:100%; max-width:380px; height:auto }
+  .lockup-card .when{
+    display:grid; grid-template-columns:1fr 1fr; gap:24px; font-size:13px;
+  }
+  .lockup-card .when h4{
+    font-family:var(--font-mono); font-size:10px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--muted);
+    margin:0 0 10px; font-weight:500;
+  }
+  .lockup-card .when ul{
+    list-style:none; padding:0; margin:0; color:var(--ink-mid);
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .lockup-card .when li{
+    padding-left:14px; position:relative;
+  }
+  .lockup-card .when li::before{
+    content:""; position:absolute; left:0; top:.65em;
+    width:6px; height:1px; background:var(--muted);
+  }
+  .lockup-card .when .dont li::before{ background:var(--c-esportes); width:6px; height:6px; top:.45em; transform:rotate(45deg); border-radius:1px }
+  @media (max-width:900px){
+    .lockup-grid{ grid-template-columns:1fr }
+    .lockup-card .when{ grid-template-columns:1fr }
+  }
+
+  /* ─────────────────────────────────────────────────────────
+     VERSIONS — 4 cromaticidades
+     ───────────────────────────────────────────────────────── */
+  .version-grid{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:1px;
+    background:var(--hair); border:var(--rule);
+  }
+  @media (max-width:1280px){ .version-grid{ grid-template-columns:repeat(2, 1fr) } }
+  .ver-card{
+    background:var(--paper); padding:22px 22px 24px;
+    display:flex; flex-direction:column; gap:20px;
+  }
+  .ver-card .preview{
+    height:180px; display:grid; place-items:center; padding:18px;
+    background:var(--bg-cream); border:var(--rule);
+  }
+  .ver-card.dark .preview{ background:var(--ink); border-color:var(--ink) }
+  .ver-card .preview > svg{ width:auto; height:100%; max-width:100% }
+  .ver-card h3{
+    font-family:var(--font-display); font-weight:400; font-size:18px;
+    margin:0; letter-spacing:-.005em;
+  }
+  .ver-card p{ font-size:13.5px; color:var(--ink-mid); margin:0; line-height:1.55 }
+  .ver-card .tag{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted);
+  }
+  .ver-card .tag::before{
+    content:""; width:8px; height:8px; border-radius:50%; background:var(--ink);
+  }
+  .ver-card.mono .tag::before{ background:var(--muted) }
+  .ver-card.dark .tag::before{ background:var(--paper); border:1px solid var(--muted) }
+  @media (max-width:900px){ .version-grid{ grid-template-columns:1fr } }
+
+  /* ─────────────────────────────────────────────────────────
+     ASSINATURAS — 4 vertical brand colors
+     ───────────────────────────────────────────────────────── */
+  .vertical-grid{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:1px;
+    background:var(--hair); border:var(--rule);
+  }
+  .vc{ background:var(--paper); padding:28px 26px 30px; display:flex; flex-direction:column; gap:18px }
+  .vc .swatch{
+    aspect-ratio:1/1; border-radius:2px; position:relative;
+    border:var(--rule);
+  }
+  .vc .swatch .hex{
+    position:absolute; left:14px; bottom:12px;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.08em;
+    color:var(--paper); mix-blend-mode:difference;
+  }
+  .vc h3{
+    font-family:var(--font-display); font-weight:400; font-size:18px;
+    margin:0; letter-spacing:-.005em;
+  }
+  .vc .role{
+    font-family:var(--font-mono); font-size:10px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--muted);
+  }
+  .vc p{ font-size:13px; color:var(--ink-mid); margin:0; line-height:1.55 }
+  @media (max-width:900px){ .vertical-grid{ grid-template-columns:1fr 1fr } }
+
+  /* ─────────────────────────────────────────────────────────
+     BOAS PRÁTICAS — do/don't
+     ───────────────────────────────────────────────────────── */
+  .practice{ display:grid; grid-template-columns:1fr 1fr; gap:48px }
+  .practice .col h3{
+    font-family:var(--font-display); font-weight:300; font-size:20px;
+    margin:0 0 18px; padding-bottom:14px; border-bottom:var(--rule);
+    display:flex; align-items:center; gap:12px;
+  }
+  .practice .col h3::before{
+    content:""; width:14px; height:14px; border-radius:50%;
+    border:2px solid var(--ink);
+  }
+  .practice .dont h3::before{ background:var(--ink); border-color:var(--ink); position:relative }
+  .practice ul{ list-style:none; padding:0; margin:0 }
+  .practice li{
+    padding:18px 0; border-bottom:var(--rule);
+    display:grid; grid-template-columns:1fr; gap:6px;
+  }
+  .practice li b{ font-weight:600; color:var(--ink); font-size:14.5px }
+  .practice li span{ color:var(--ink-mid); font-size:13.5px }
+  @media (max-width:780px){ .practice{ grid-template-columns:1fr } }
+
+  /* ─────────────────────────────────────────────────────────
+     SPECS — typographic + color tokens
+     ───────────────────────────────────────────────────────── */
+  .specs-grid{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:1px;
+    background:var(--hair); border:var(--rule);
+  }
+  .spec{ background:var(--paper); padding:28px 28px 30px }
+  .spec h4{
+    margin:0 0 14px; font-family:var(--font-mono); font-size:11px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--muted); font-weight:500;
+  }
+  .spec .big{
+    font-family:var(--font-display); font-weight:800; font-size:32px;
+    letter-spacing:-.005em; line-height:1.1; margin:0 0 8px;
+  }
+  .spec p{ font-size:13px; color:var(--ink-mid); margin:0; line-height:1.55 }
+  .spec code{
+    font-family:var(--font-mono); font-size:12px;
+    background:var(--bg-cream); padding:2px 7px; border-radius:3px;
+    color:var(--ink);
+  }
+  @media (max-width:780px){ .specs-grid{ grid-template-columns:1fr } }
+
+  /* ─────────────────────────────────────────────────────────
+     DOWNLOADS — filterable grid
+     ───────────────────────────────────────────────────────── */
+  .filters{
+    position:sticky; top:65px; z-index:10;
+    background:var(--bg);
+    padding:16px 0; margin-bottom:32px;
+    border-bottom:var(--rule);
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:14px;
+  }
+  .filter-group{
+    background:var(--paper); border:var(--rule); border-radius:10px;
+    padding:8px; display:flex; flex-wrap:wrap; gap:4px; align-items:center;
+  }
+  .filter-group .label{
+    font-family:var(--font-mono); font-size:10px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--muted); font-weight:500;
+    padding:0 10px 0 6px;
+  }
+  .chip{
+    border:none; background:transparent; cursor:pointer;
+    font-family:inherit; font-size:12px; font-weight:500; color:var(--ink-soft);
+    padding:7px 12px; border-radius:6px;
+    display:inline-flex; align-items:center; gap:7px;
+    transition:background .15s ease, color .15s ease;
+  }
+  .chip:hover{ background:var(--bg) }
+  .chip.active{ background:var(--ink); color:var(--paper) }
+  .chip .swatch-dot{
+    width:8px; height:8px; border-radius:50%; background:var(--c);
+    border:1px solid rgba(0,0,0,.18);
+  }
+  .chip.active .swatch-dot{ border-color:rgba(255,255,255,.4) }
+  @media (max-width:1280px){ .filters{ grid-template-columns:repeat(2, 1fr) } }
+  @media (max-width:780px){ .filters{ grid-template-columns:1fr; position:static } }
+
+  .meta-line{
+    display:flex; justify-content:space-between; align-items:baseline;
+    margin:0 0 24px; font-size:13px; color:var(--ink-mid); flex-wrap:wrap; gap:14px;
+  }
+  .meta-line .count{
+    font-family:var(--font-mono); font-size:12px; color:var(--ink); font-weight:500;
+  }
+  .meta-line .count em{ font-style:normal; color:var(--muted); margin-left:6px }
+
+  .dl-grid{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:1px;
+    background:var(--hair); border:var(--rule);
+  }
+  /* Cards are tighter at 4-col: trim card padding too */
+  .dl-card{ padding:16px 16px 14px !important; gap:12px !important }
+  .dl-card .pv{ min-height:120px !important; padding:14px !important }
+  .dl-card .meta .n{ font-size:10.5px !important }
+  .dl-card .tag{ font-size:9px !important; padding:1px 6px !important }
+  @media (max-width:1280px){ .dl-grid{ grid-template-columns:repeat(3, 1fr) } }
+  @media (max-width:1000px){ .dl-grid{ grid-template-columns:repeat(2, 1fr) } }
+  @media (max-width:640px){  .dl-grid{ grid-template-columns:1fr } }
+
+  .dl-card{
+    background:var(--paper); padding:22px 22px 18px;
+    display:flex; flex-direction:column; gap:16px;
+    transition:background .15s ease;
+  }
+  .dl-card.hidden{ display:none }
+  .dl-card .pv{
+    background:var(--bg-cream); border:var(--rule); border-radius:4px;
+    height:160px; display:grid; place-items:center; padding:16px;
+    transition:background .2s ease;
+  }
+  .dl-card.dark .pv{ background:var(--ink); border-color:var(--ink) }
+  .dl-card .pv > svg{ width:auto; max-width:100%; max-height:100%; height:100% }
+  .dl-card .info{
+    display:flex; justify-content:space-between; align-items:flex-start; gap:12px;
+  }
+  .dl-card .meta{ display:flex; flex-direction:column; gap:4px; min-width:0 }
+  .dl-card .meta .n{
+    font-family:var(--font-mono); font-size:11px;
+    color:var(--ink); font-weight:500; letter-spacing:.02em;
+    word-break:break-all; line-height:1.4;
+  }
+  .dl-card .meta .tags{
+    display:flex; gap:6px; flex-wrap:wrap; margin-top:4px;
+  }
+  .dl-card .tag{
+    font-family:var(--font-mono); font-size:9.5px;
+    letter-spacing:.12em; text-transform:uppercase;
+    padding:3px 7px; border-radius:99px;
+    background:var(--bg-cream); color:var(--ink-mid); font-weight:500;
+  }
+  .dl-card .tag.col{ color:var(--paper); background:var(--c) }
+  .dl-btn{
+    flex-shrink:0;
+    background:var(--ink); color:var(--paper);
+    padding:9px 14px; border-radius:6px;
+    font-size:11px; letter-spacing:.12em; text-transform:uppercase; font-weight:600;
+    display:inline-flex; align-items:center; gap:8px;
+    transition:transform .12s ease, background .15s ease;
+  }
+  .dl-btn:hover{ background:var(--ink-soft) }
+  .dl-btn:active{ transform:translateY(1px) }
+  .dl-btn .arrow{
+    width:10px; height:10px; display:inline-block;
+    border-right:1.5px solid currentColor;
+    border-bottom:1.5px solid currentColor;
+    transform:rotate(45deg) translate(-1px,-1px);
+  }
+  .dl-btn.copied{ background:var(--c-natureza) }
+
+  .dl-actions{
+    display:flex; justify-content:space-between; align-items:center; gap:18px;
+    padding:24px; margin-top:32px;
+    background:var(--ink); color:var(--paper); border-radius:10px;
+    flex-wrap:wrap;
+  }
+  .dl-actions .text{ display:flex; flex-direction:column; gap:4px }
+  .dl-actions .text strong{ font-size:14px; font-weight:600; letter-spacing:.01em }
+  .dl-actions .text span{ font-size:12.5px; color:#b8b8b8; letter-spacing:.02em }
+  .dl-actions button{
+    background:var(--paper); color:var(--ink);
+    padding:11px 18px; border-radius:6px;
+    font-size:11px; letter-spacing:.14em; text-transform:uppercase; font-weight:700;
+    transition:transform .12s ease, background .15s ease;
+  }
+  .dl-actions button:hover{ background:var(--bg-warm) }
+  .dl-actions button:active{ transform:translateY(1px) }
+
+  
+  .dl-zip-btn{
+    background:var(--paper); color:var(--ink);
+    padding:13px 22px; border-radius:6px;
+    font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+    transition:transform .12s ease, background .15s ease;
+    text-decoration:none; display:inline-block;
+  }
+  .dl-zip-btn:hover{ background:var(--bg-warm) }
+  .dl-zip-btn:active{ transform:translateY(1px) }
+
+/* ─────────────────────────────────────────────────────────
+     FOOTER
+     ───────────────────────────────────────────────────────── */
+  footer{
+    padding:48px 0 64px; color:var(--muted);
+    font-size:12px; letter-spacing:.06em;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:18px;
+    font-family:var(--font-mono);
+  }
+  footer span:last-child{ color:var(--ink-mid) }
+
+  /* "+ câmera" tag in download cards */
+  .dl-card .tag.tag-cam{
+    background:var(--ink); color:var(--paper);
+  }
+
+  /* SVG / PNG buttons row in each download card */
+  .dl-card .dl-btns{
+    display:flex; gap:6px; flex-shrink:0;
+  }
+  .dl-card .dl-btn{
+    background:var(--ink); color:var(--paper);
+    padding:8px 11px; border-radius:5px;
+    font-size:10.5px; letter-spacing:.10em; text-transform:uppercase; font-weight:600;
+    transition:background .15s ease, transform .12s ease;
+    min-width:48px;
+  }
+  .dl-card .dl-btn-alt{
+    background:var(--paper); color:var(--ink); border:1px solid var(--ink);
+  }
+  .dl-card .dl-btn:hover{ background:var(--ink-soft) }
+  .dl-card .dl-btn-alt:hover{ background:var(--bg-cream) }
+  .dl-card .dl-btn:active{ transform:translateY(1px) }
+  .dl-card .dl-btn.copied{ background:#0d0d0d; color:var(--paper) }
+</style>
+</head>
+<body>
+
+<!-- ───────────────────────── TOPBAR ───────────────────────── -->
+<header class="topbar">
+  <div class="wrap inner">
+    <a class="brand" href="#top">
+      <span class="mark">VS</span>
+      <span>Vinícius Souza · Manual</span>
+    </a>
+    <nav class="topnav" aria-label="Seções">
+      <a href="#simbolo">Símbolo</a>
+      <a href="#lockups">Lockups</a>
+      <a href="#versoes">Versões</a>
+      <a href="#assinaturas">Assinaturas</a>
+      <a href="#boas-praticas">Boas práticas</a>
+      <a href="#downloads">Downloads</a>
+    </nav>
+  </div>
+</header>
+
+<a id="top"></a>
+
+<!-- ───────────────────────── HERO ───────────────────────── -->
+<section class="hero" style="border-top:none">
+  <div class="wrap">
+    <p class="eyebrow"><span class="num">001</span> Identidade Visual · v1.0 · 2026</p>
+    <h1>Manual da<br>marca <em>e suas assinaturas</em></h1>
+    <p class="lede">
+      Como, quando e onde aplicar cada versão da identidade. A forma canônica
+      é o composite câmera + VS dentro, em quatro lockups, quatro versões
+      cromáticas e quatro assinaturas. Tudo pronto para uso, em 64 arquivos.
+    </p>
+
+    <div class="stat-row" role="list">
+      <div class="stat" role="listitem"><span class="n">1</span><span class="l">Conceito</span></div>
+      <div class="stat" role="listitem"><span class="n">4</span><span class="l">Lockups</span></div>
+      <div class="stat" role="listitem"><span class="n">4</span><span class="l">Versões</span></div>
+      <div class="stat" role="listitem"><span class="n">4</span><span class="l">Assinaturas</span></div>
+      <div class="stat" role="listitem"><span class="n">64</span><span class="l">Arquivos SVG</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── SÍMBOLO ───────────────────────── -->
+<section id="simbolo">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num">002 · Símbolo</span>
+      <div>
+        <h2>O monograma <em style="font-style:italic;font-weight:300;color:var(--ink-mid)">VS</em></h2>
+        <p class="intro">
+          Duas letras entrelaçadas — V e S — emolduradas por uma silhueta
+          de câmera. É essa a forma reduzida da marca: monograma e câmera
+          juntos, com o indicador da subassinatura na cor da assinatura ativa.
+        </p>
+      </div>
+    </div>
+
+    <div class="symbol-grid">
+      <div class="symbol-frame" id="symbol-feature"><!-- JS injects symbol --></div>
+      <div class="symbol-notes">
+        <h3>Características</h3>
+        <p>
+          O símbolo é um vetor único — não deve ser redesenhado, redesenhado à mão
+          ou recriado a partir das letras V e S separadamente. Use sempre o arquivo
+          oficial.
+        </p>
+        <ul class="key-list">
+          <li><span class="k">Estrutura</span><span class="v">Monograma fechado, sem contornos abertos.</span></li>
+          <li><span class="k">Cor</span><span class="v">Sempre uma única cor sólida (preto, branco ou cor da assinatura).</span></li>
+          <li><span class="k">Tamanho mínimo</span><span class="v">24 px em tela · 8 mm em impressão.</span></li>
+          <li><span class="k">Área de respiro</span><span class="v">No mínimo a altura da letra V em todas as direções.</span></li>
+          <li><span class="k">Forma</span><span class="v">Composite câmera + VS dentro (grande). O monograma puro fica disponível como variante para casos onde o composite não couber.</span></li>
+          <li><span class="k">Origem</span><span class="v">Vetor original — não recriar, apenas reproduzir.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── LOCKUPS ───────────────────────── -->
+<section id="lockups">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num">003 · Lockups</span>
+      <div>
+        <h2>Os <em style="font-style:italic;font-weight:300;color:var(--ink-mid)">quatro</em> lockups<br><span style="font-size:.42em;letter-spacing:.16em;color:var(--muted);font-family:var(--font-mono);text-transform:uppercase;font-weight:500">Quatro arranjos · símbolo, quadrada, horizontal, vertical</span></h2>
+        <p class="intro">
+          Quatro arranjos · símbolo, quadrada, horizontal, vertical. Cada um foi pensado para uma proporção
+          específica de aplicação. Ao escolher, parta do espaço disponível, não
+          da preferência estética.
+        </p>
+      </div>
+    </div>
+
+    <div class="lockup-grid" id="lockup-grid"><!-- JS injects 4 cards --></div>
+  </div>
+</section>
+
+<!-- ───────────────────────── VERSÕES ───────────────────────── -->
+<section id="versoes">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num">004 · Versões</span>
+      <div>
+        <h2>Quatro versões <em style="font-style:italic;font-weight:300;color:var(--ink-mid)">cromáticas</em></h2>
+        <p class="intro">
+          A escolha do regime depende da peça: o que está atrás da marca,
+          como ela vai ser reproduzida e quanta atenção a subassinatura
+          merece naquele contexto.
+        </p>
+      </div>
+    </div>
+
+    <div class="version-grid" id="version-grid"><!-- JS injects 3 cards --></div>
+  </div>
+</section>
+
+<!-- ───────────────────────── ASSINATURAS ───────────────────────── -->
+<section id="assinaturas">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num">005 · Assinaturas</span>
+      <div>
+        <h2>Quatro <em style="font-style:italic;font-weight:300;color:var(--ink-mid)">assinaturas</em></h2>
+        <p class="intro">
+          A arquitetura prevê uma marca-mãe (Fotografia) e três especializações
+          temáticas. Cada assinatura tem uma cor única que aparece apenas na
+          subassinatura — a marca em si permanece preta, branca ou cinza.
+        </p>
+      </div>
+    </div>
+
+    <div class="vertical-grid" id="vertical-grid"><!-- JS injects 4 cards --></div>
+  </div>
+</section>
+
+<!-- ───────────────────────── BOAS PRÁTICAS ───────────────────────── -->
+<section id="boas-praticas">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num">006 · Boas práticas</span>
+      <div>
+        <h2>O que fazer<br><em style="font-style:italic;font-weight:300;color:var(--ink-mid)">e o que não</em></h2>
+        <p class="intro">
+          Regras curtas, decididas no projeto. Ler antes de aplicar a marca em
+          qualquer peça nova evita 95% dos problemas de uso.
+        </p>
+      </div>
+    </div>
+
+    <div class="practice">
+      <div class="col do">
+        <h3>Sempre</h3>
+        <ul>
+          <li><b>Use o arquivo original</b><span>Baixe o SVG da seção de downloads. Vetor não distorce e não pixeliza.</span></li>
+          <li><b>Respeite a área de respiro</b><span>Mínimo a altura da letra V em volta da marca toda — sem texto, ícone ou aresta encostada.</span></li>
+          <li><b>Combine assinatura e contexto</b><span>Editorial em portfólios e revistas; Esportes em coberturas atléticas; Natureza em paisagens.</span></li>
+          <li><b>Use o regime certo para o fundo</b><span>Fundo claro → principal ou monocromática. Fundo escuro → versão fundo escuro.</span></li>
+          <li><b>Prefira o lockup horizontal</b><span>Em headers, papel timbrado e e-mails — é o mais legível em proporção wide.</span></li>
+        </ul>
+      </div>
+      <div class="col dont">
+        <h3>Nunca</h3>
+        <ul>
+          <li><b>Não distorça nem rotacione</b><span>Mantenha sempre a proporção do arquivo. Nada de squish, skew, rotação livre.</span></li>
+          <li><b>Não recrie a partir do zero</b><span>O símbolo é um vetor único — não redesenhe à mão nem reconstrua com tipografia.</span></li>
+          <li><b>Não troque a tipografia</b><span>Montserrat ExtraBold 800 para o wordmark, Bold 700 para a subassinatura. Sem substituição.</span></li>
+          <li><b>Não invente cores novas</b><span>Use só as quatro cores das assinaturas oficiais. Sem gradientes, neon ou pastel.</span></li>
+          <li><b>Não aplique em fundo de baixo contraste</b><span>Marca azul sobre azul, vermelha sobre vermelha — nunca. Contraste mínimo de 4.5:1.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── ESPECIFICAÇÕES ───────────────────────── -->
+<section id="specs">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num">007 · Especificações</span>
+      <div>
+        <h2>Tipografia <em style="font-style:italic;font-weight:300;color:var(--ink-mid)">e tokens</em></h2>
+        <p class="intro">
+          Os valores técnicos por trás da marca. Use estes mesmos tokens em
+          qualquer peça digital ou impressa para garantir consistência.
+        </p>
+      </div>
+    </div>
+
+    <div class="specs-grid">
+      <div class="spec">
+        <h4>Wordmark</h4>
+        <p class="big" style="letter-spacing:.04em">VINÍCIUS</p>
+        <p>Montserrat <strong>ExtraBold 800</strong>, caixa alta, tracking <code>+0.04em</code>.</p>
+      </div>
+      <div class="spec">
+        <h4>Subassinatura</h4>
+        <p class="big" style="font-weight:700;letter-spacing:.09em;font-size:24px">EDITORIAL</p>
+        <p>Montserrat <strong>Bold 700</strong>, caixa alta, traços flanqueando. Tamanho por lockup: <code>quadrada 42 px</code> · <code>horizontal 32 px</code> · <code>vertical 55 px</code>. (O símbolo não tem texto.)</p>
+      </div>
+      <div class="spec">
+        <h4>Cores oficiais</h4>
+        <p style="display:flex;gap:6px;margin:0 0 12px">
+          <span style="width:24px;height:24px;border-radius:4px;background:#000;border:1px solid var(--hair)"></span>
+          <span style="width:24px;height:24px;border-radius:4px;background:#1F7AE0"></span>
+          <span style="width:24px;height:24px;border-radius:4px;background:#C83333"></span>
+          <span style="width:24px;height:24px;border-radius:4px;background:#1F7A4A"></span>
+        </p>
+        <p><code>#000000</code> · <code>#1F7AE0</code> · <code>#C83333</code> · <code>#1F7A4A</code></p>
+      </div>
+      <div class="spec">
+        <h4>Formato preferido</h4>
+        <p class="big" style="font-size:24px;letter-spacing:.08em">.SVG</p>
+        <p>Vetor — não pixeliza, não distorce. Para web e impressão. Use PNG só quando o sistema não aceitar SVG.</p>
+      </div>
+      <div class="spec">
+        <h4>Tamanho mínimo</h4>
+        <p class="big" style="font-size:24px">24<span style="color:var(--muted);font-weight:300"> px</span></p>
+        <p>Em tela. Em impressão, 8&nbsp;mm de altura para o símbolo, 16&nbsp;mm para o lockup horizontal.</p>
+      </div>
+      <div class="spec">
+        <h4>Fundos seguros</h4>
+        <p>
+          <strong>Principal/Mono:</strong> branco, creme, cinza claro.<br>
+          <strong>Fundo escuro:</strong> preto, cinza escuro, fotografias com áreas escuras &gt; 70%.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── DOWNLOADS ───────────────────────── -->
+<section id="downloads">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num">008 · Downloads</span>
+      <div>
+        <h2>Central de <em style="font-style:italic;font-weight:300;color:var(--ink-mid)">arquivos</em></h2>
+        <p class="intro">
+          64 arquivos cobrindo todas as combinações. Filtre por assinatura, versão
+          ou lockup. Baixe individualmente em SVG ou PNG, ou pegue o pacote
+          completo no botão abaixo. Filtre por assinatura,
+          versão ou lockup e baixe individualmente. Os arquivos são vetoriais,
+          leves e prontos para qualquer aplicação.
+        </p>
+      </div>
+    </div>
+
+    <div class="filters" role="region" aria-label="Filtros">
+      <div class="filter-group" role="group" aria-label="Assinatura">
+        <span class="label">Assinatura</span>
+        <button class="chip f-vertical active" data-vertical="all">Todas</button>
+        <button class="chip f-vertical" data-vertical="fotografia" style="--c:#000000"><span class="swatch-dot"></span>Fotografia</button>
+        <button class="chip f-vertical" data-vertical="editorial"  style="--c:#1F7AE0"><span class="swatch-dot"></span>Editorial</button>
+        <button class="chip f-vertical" data-vertical="esportes"   style="--c:#C83333"><span class="swatch-dot"></span>Esportes</button>
+        <button class="chip f-vertical" data-vertical="natureza"   style="--c:#1F7A4A"><span class="swatch-dot"></span>Natureza</button>
+      </div>
+      <div class="filter-group" role="group" aria-label="Versão">
+        <span class="label">Versão</span>
+        <button class="chip f-version active" data-version="all">Todas</button>
+        <button class="chip f-version" data-version="principal">Principal</button>
+        <button class="chip f-version" data-version="mono-cinza">Mono cinza</button>
+        <button class="chip f-version" data-version="mono-solido">Mono sólido</button>
+        <button class="chip f-version" data-version="fundo-preto">Fundo escuro</button>
+      </div>
+      <div class="filter-group" role="group" aria-label="Lockup">
+        <span class="label">Lockup</span>
+        <button class="chip f-lockup active" data-lockup="all">Todos</button>
+        <button class="chip f-lockup" data-lockup="simbolo">Símbolo</button>
+        <button class="chip f-lockup" data-lockup="quadrada">Quadrada</button>
+        <button class="chip f-lockup" data-lockup="horizontal">Horizontal</button>
+        <button class="chip f-lockup" data-lockup="vertical">Vertical</button>
+      </div>
+    </div>
+
+    <div class="meta-line">
+      <span class="count"><span id="visible-count">64</span><em>de 64 arquivos visíveis</em></span>
+      <span style="color:var(--muted);font-size:12px;letter-spacing:.04em">
+        Cada arquivo: <strong style="color:var(--ink)">SVG</strong> (vetor) ou <strong style="color:var(--ink)">PNG</strong> (raster)
+      </span>
+    </div>
+
+    <div class="dl-grid" id="dl-grid"><!-- JS injects 48 cards --></div>
+
+    <div class="dl-actions">
+      <div class="text">
+        <strong>Pacote completo</strong>
+        <span>64 SVG + 64 PNG · organizados em pastas por <em style="font-style:normal;color:#dcdcdc">assinatura</em> &gt; <em style="font-style:normal;color:#dcdcdc">versão</em> &gt; <em style="font-style:normal;color:#dcdcdc">lockup</em>. Coloque o ZIP na mesma pasta deste manual para o link funcionar.</span>
+      </div>
+      <a class="dl-zip-btn" href="./vsouza-logos.zip" download>Baixar ZIP completo</a>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── FOOTER ───────────────────────── -->
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:18px;width:100%">
+    <span>VINÍCIUS SOUZA · IDENTIDADE VISUAL · v1.0 · 2026</span>
+    <span>Manual da identidade visual · 4 × 3 × (1 + 2) × 4 = 120</span>
+  </div>
+</footer>
+
+<!-- ─────────────────────────────────────────────────────────
+     SCRIPTS — SVG generator, filters, downloads
+     ───────────────────────────────────────────────────────── -->
+<script>
+/* ════════════════════════════════════════════════════════════
+   1 — DATA
+   ════════════════════════════════════════════════════════════ */
+const SYMBOL_PATH = "M 445.00 596.00 C 440.01 599.06, 428.00 601.00, 428.00 601.00 C 428.00 601.00, 394.93 601.91, 387.00 601.00 C 379.07 600.09, 370.77 595.95, 367.00 594.00 C 363.23 592.05, 358.00 586.00, 358.00 586.00 C 358.00 586.00, 47.40 65.97, 45.00 61.80 C 37.92 53.03, 37.92 36.70, 53.72 34.90 C 56.40 34.80, 138.06 33.36, 150.00 35.00 C 166.13 36.88, 171.67 42.47, 182.00 52.61 C 185.09 57.81, 408.07 444.73, 408.07 444.73 C 408.07 444.73, 457.48 355.64, 459.00 353.00 C 463.18 345.91, 465.66 341.75, 469.81 341.20 C 474.85 340.93, 486.38 354.43, 491.00 358.00 C 495.62 361.57, 505.35 368.68, 513.00 373.00 C 520.65 377.32, 547.48 388.10, 549.38 389.23 C 551.27 390.37, 555.11 394.62, 554.34 400.23 C 553.48 404.70, 550.54 409.12, 548.27 414.51 C 546.00 419.90, 540.68 428.18, 537.00 435.00 C 533.32 441.82, 530.14 447.91, 520.00 467.00 C 509.86 486.09, 462.30 576.16, 459.00 581.84 C 455.70 587.52, 449.99 592.94, 445.00 596.00 Z M 872.22 91.62 C 872.68 125.01, 843.18 147.44, 819.11 147.49 C 809.41 147.93, 701.44 148.17, 615.18 149.00 C 563.14 157.43, 561.99 199.04, 561.63 208.41 C 563.14 229.70, 577.76 255.04, 611.62 262.47 C 650.19 262.52, 781.54 261.79, 798.00 263.00 C 814.46 264.21, 832.43 271.01, 846.00 277.00 C 859.57 282.99, 873.01 291.05, 884.00 301.00 C 894.99 310.95, 910.82 327.93, 920.00 344.00 C 929.18 360.07, 937.00 379.92, 940.00 399.00 C 943.00 418.08, 944.46 460.35, 932.77 491.21 C 910.20 540.45, 871.48 572.49, 850.46 583.12 C 825.64 599.19, 781.95 601.90, 772.00 602.00 C 762.05 602.10, 519.08 602.05, 515.00 602.00 C 510.92 601.95, 505.05 601.48, 502.08 599.50 C 499.11 597.52, 496.82 594.03, 496.31 590.50 C 495.81 586.97, 498.17 581.65, 500.00 578.00 C 501.83 574.35, 529.18 523.73, 533.00 517.68 C 536.82 511.62, 542.75 505.61, 548.00 502.00 C 553.25 498.39, 559.56 496.33, 565.93 496.09 C 572.29 495.85, 777.60 494.40, 785.35 494.00 C 793.11 493.60, 800.80 487.12, 807.00 482.68 C 813.20 478.24, 819.11 471.95, 823.00 466.00 C 826.89 460.05, 829.61 452.97, 831.00 446.00 C 832.39 439.03, 833.65 429.09, 832.00 421.00 C 830.35 412.91, 826.85 399.77, 820.00 392.00 C 813.15 384.23, 805.62 374.86, 787.00 370.00 C 773.99 368.55, 625.16 371.25, 595.00 367.00 C 519.94 352.27, 499.24 323.23, 477.10 293.20 C 453.35 258.78, 452.08 212.30, 455.58 182.20 C 459.09 152.10, 472.00 119.54, 496.15 95.51 C 515.61 74.26, 562.68 41.53, 607.00 40.54 C 615.03 40.41, 813.94 39.62, 819.16 39.73 C 840.03 39.83, 871.79 58.94, 872.22 91.62 Z";
+
+const FONT  = "Montserrat, 'Helvetica Neue', Arial, sans-serif";
+const WMARK = "VIN\u00CDCIUS SOUZA";
+
+const VERTICALS = [
+  { key:"fotografia", label:"FOTOGRAFIA", title:"Fotografia", color:"#000000",
+    role:"Marca-mãe", desc:"Assinatura geral — portfólio, releases, identidade pessoal. Quando dúvida, é sempre Fotografia." },
+  { key:"editorial",  label:"EDITORIAL",  title:"Editorial",  color:"#1F7AE0",
+    role:"Especialização", desc:"Publicações, ensaios e colaborações com revistas, jornais e plataformas editoriais." },
+  { key:"esportes",   label:"ESPORTES",   title:"Esportes",   color:"#C83333",
+    role:"Especialização", desc:"Coberturas de competição, atletas, clubes e eventos esportivos." },
+  { key:"natureza",   label:"NATUREZA",   title:"Natureza",   color:"#1F7A4A",
+    role:"Especialização", desc:"Paisagem, fauna, expedições e fotografia ambiental de longo prazo." },
+];
+
+const VERSIONS = [
+  { key:"principal",   title:"Principal",  file:"principal",
+    short:"Lockup canônico — usar como padrão.",
+    desc:"Marca preta com a câmera em cinza claro e a subassinatura na cor da assinatura. É a versão padrão para a maioria das aplicações em fundos claros.",
+    when:"Fundo claro · qualquer aplicação digital ou impressa em cores · padrão." },
+  { key:"mono-cinza",  title:"Mono cinza", file:"monocromatica-cinza",
+    short:"Tons de cinza — impressão PB com halftones.",
+    desc:"Hierarquia em cinza: VS e wordmark em preto, subassinatura em cinza escuro, câmera em cinza claro, indicador em cinza médio. Para impressão em preto e branco que aceita meios-tons (jornal, fotocópia em alta).",
+    when:"Impressão PB com halftones · jornal · fotocópia colorida em PB." },
+  { key:"mono-solido", title:"Mono sólido", file:"monocromatica-solida",
+    short:"Tudo preto — gravação 1-bit.",
+    desc:"Silhueta inteira em preto sólido, sem cinzas. Para reproduções binárias onde não há meio-tom: gravação a laser, hot-stamping, serigrafia simples, carimbo, fax, fotocópia básica.",
+    when:"1 cor sólida · laser · hot-stamping · serigrafia · carimbo." },
+  { key:"fundo-preto", title:"Fundo escuro", file:"fundo-escuro",
+    short:"Marca branca para fundos escuros.",
+    desc:"VS e wordmark em branco, câmera em cinza-escuro discreto, indicador na cor da assinatura. SVG com fundo transparente — aplique sobre qualquer fundo escuro real.",
+    when:"Fundo escuro · fotografia escura · vídeo · cinema · web dark mode." },
+];
+
+const LOCKUPS = [
+  { key:"simbolo",    title:"Símbolo",    ratio:"4:3 · favicon", canvasW:1638,
+    desc:"Apenas a marca reduzida — câmera com VS dentro. Sem texto. Para favicons, ícones de app e marca-d'água pequena.",
+    use:["Favicon de site (16-32 px)", "Ícone de app", "Marca-d'água em foto", "Ícone em redes sociais"],
+    avoid:["Onde precisa do nome legível", "Aplicações grandes (use quadrada)"] },
+  { key:"quadrada",   title:"Quadrada",   ratio:"1:1 · vertical-pesada", canvasW:820,
+    desc:"Símbolo no topo, wordmark no centro, subassinatura embaixo. A versão mais 'selo' — funciona como avatar e marca-d'água.",
+    use:["Avatar de Instagram, X, LinkedIn", "Selo em embalagens e papelaria", "Foto de perfil em qualquer rede", "Carimbo aplicado a fotografias"],
+    avoid:["Headers de e-mail (use horizontal)", "Espaços muito estreitos e altos"] },
+  { key:"horizontal", title:"Horizontal", ratio:"4:1 · wide", canvasW:1100,
+    desc:"Símbolo à esquerda, wordmark e subassinatura à direita. Lockup mais legível e versátil — o padrão para a maioria das peças.",
+    use:["Header de site e papel timbrado", "Assinatura de e-mail", "Banner de redes sociais (capa)", "Crédito em peças impressas"],
+    avoid:["Caixas quadradas (use quadrada)", "Marca-d'água em foto vertical"] },
+  { key:"vertical",   title:"Vertical",   ratio:"2:3 · portrait", canvasW:520,
+    desc:"Símbolo no topo, wordmark em duas linhas, subassinatura ao final. Para quando a peça é mais alta que larga.",
+    use:["Marca-d'água em foto retrato", "Stories e Reels", "Lateral de página vertical", "Banners verticais (roll-up)"],
+    avoid:["Cabeçalhos largos (use horizontal)", "Espaços muito pequenos"] },
+];
+
+const FS = { simbolo:0, quadrada:42, horizontal:32, vertical:55 };  /* simbolo has no text */
+
+/* ════════════════════════════════════════════════════════════
+   2 — SVG GENERATION
+   ════════════════════════════════════════════════════════════ */
+function halfLen(label, fs, ls){
+  return (label.length * fs * 0.72 + ls * (label.length - 1)) / 2;
+}
+
+/* getColors returns four colors per (version, vertical):
+     wm  = monogram VS + wordmark
+     sub = subassinatura
+     cam = camera body strokes
+     ind = REC indicator (the small rect at top right)                  */
+function getColors(versionKey, verticalColor){
+  const vc = verticalColor;
+  if (versionKey === "principal")   return { wm:"#0d0d0d", sub:vc,        cam:"#d8d8d8", ind:vc };
+  if (versionKey === "mono-cinza")  return { wm:"#0d0d0d", sub:"#2a2a2a", cam:"#c8c8c8", ind:"#4a4a4a" };
+  if (versionKey === "mono-solido") return { wm:"#0d0d0d", sub:"#0d0d0d", cam:"#0d0d0d", ind:"#0d0d0d" };
+  /* fundo-preto */
+  const w = "#ffffff";
+  return { wm:w, sub: vc === "#000000" ? w : vc, cam:"#343434", ind: vc === "#000000" ? w : vc };
+}
+
+function strokeLines(cx, label, fs, ls, y, canvasW){
+  const half = halfLen(label, fs, ls);
+  let dl = Math.max(14, Math.round(fs * 0.65));
+  let dg = Math.max(10, Math.round(fs * 0.40));
+  const sw = Math.max(2.0, +(fs * 0.07).toFixed(2));
+  if (canvasW){
+    const available = (canvasW / 2) - 8 - half;
+    if (available < dg + dl){
+      const r = Math.max(0, available) / (dg + dl);
+      dg = Math.max(6, Math.floor(dg * r));
+      dl = Math.max(6, Math.floor(dl * r));
+    }
+  }
+  const x1l = cx - half - dg - dl, x2l = cx - half - dg;
+  const x1r = cx + half + dg,      x2r = cx + half + dg + dl;
+  return `<line x1="${x1l.toFixed(2)}" y1="${y}" x2="${x2l.toFixed(2)}" y2="${y}" stroke-width="${sw}" stroke-linecap="round"/>`
+       + `<line x1="${x1r.toFixed(2)}" y1="${y}" x2="${x2r.toFixed(2)}" y2="${y}" stroke-width="${sw}" stroke-linecap="round"/>`;
+}
+
+/* Camera+VS internals (defs + body + VS), in native 1638×1229 coords.
+   Two configurations:
+     • Mono-solido (cam == wm): VS shrunk to scale 0.7020 and centered inside
+       the lens circle (819.5, 713.5). Lens circle is preserved — VS no longer
+       overlaps it, so they don't visually collide. Mask is skipped (no effect).
+     • Everything else: VS at scale 1.17 with a dilate=17 halo so the camera
+       body opens up around the monogram. */
+function cameraInner(c, uid){
+  const isSolid = c.cam === c.wm;
+  const vsScale = isSolid ? 0.7020 : 1.17;
+  const vsTy    = isSolid ? 713.5  : 685.5;
+  const useMask = !isSolid;
+  const defs = useMask ? `<defs>
+<filter id="ef-${uid}" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="linearRGB">
+<feMorphology in="SourceAlpha" operator="dilate" radius="17" result="d"/>
+<feFlood flood-color="black" flood-opacity="1" result="blk"/>
+<feComposite in="blk" in2="d" operator="in"/>
+</filter>
+<mask id="cm-${uid}" maskUnits="userSpaceOnUse">
+<rect fill="white" x="-2000" y="-2000" width="8000" height="8000"/>
+<g transform="translate(819.5,${vsTy}) scale(${vsScale}) translate(-490,-310.5)">
+<path fill="black" fill-rule="evenodd" filter="url(#ef-${uid})" d="${SYMBOL_PATH}"/>
+</g>
+</mask>
+</defs>` : "";
+  const open = useMask ? `<g mask="url(#cm-${uid})">` : `<g>`;
+  return `${defs}
+${open}
+<path d="M185,1150 Q53,1150 53,1018 L53,353 Q53,221 185,221 L1247,221 M1454,221 L1454,221 Q1586,221 1586,353 L1586,1018 Q1586,1150 1454,1150 L185,1150" stroke="${c.cam}" stroke-width="30" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M216,214 L216,198 Q216,153 261,153 L344,153 Q389,153 389,198 L389,214" stroke="${c.cam}" stroke-width="30" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M508,211 L590.62,83.77 Q618.40,41 669.40,41 L988.60,41 Q1039.60,41 1067.38,83.77 L1150,211" stroke="${c.cam}" stroke-width="30" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="1295" y="205" width="114" height="30" rx="18" ry="18" stroke="${c.ind}" stroke-width="3" fill="${c.ind}"/>
+<circle cx="816" cy="689" r="400" stroke="${c.cam}" stroke-width="30" fill="none"/>
+</g>
+<g transform="translate(819.5,${vsTy}) scale(${vsScale}) translate(-490,-310.5)">
+<path fill="${c.wm}" fill-rule="evenodd" d="${SYMBOL_PATH}"/>
+</g>`;
+}
+
+/* Wraps cameraInner in a nested <svg> with x/y/w/h — for embedding inside
+   another SVG (quadrada / horizontal / vertical). */
+function cameraComposite(c, uid, x, y, w){
+  const h = w * 1229 / 1638;
+  return `<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="0 0 1638 1229">
+${cameraInner(c, uid)}
+</svg>`;
+}
+
+const SVG_BUILDERS = {
+  /* Just the camera+VS at native 4:3. No text. For favicon/icon use. */
+  simbolo: (label, c, uid) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1638 1229" preserveAspectRatio="xMidYMid meet">
+${cameraInner(c, uid)}
+</svg>`,
+
+  quadrada: (label, c, uid) => {
+    const fs = FS.quadrada, ls = 6, cx = 410, ywm = 380, yt = 465;
+    const yl = yt - Math.round(fs / 4);
+    const lines = strokeLines(cx, label, fs, ls, yl, 820);
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 600" preserveAspectRatio="xMidYMid meet">
+${cameraComposite(c, uid, 235, 18, 350)}
+<text fill="${c.wm}" x="410" y="${ywm}" text-anchor="middle" font-family="${FONT}" font-weight="800" font-size="72" letter-spacing="3">${WMARK}</text>
+<g stroke="${c.sub}">${lines}</g>
+<text fill="${c.sub}" x="${cx}" y="${yt}" text-anchor="middle" font-family="${FONT}" font-weight="700" font-size="${fs}" letter-spacing="${ls}">${label}</text>
+</svg>`;
+  },
+
+  horizontal: (label, c, uid) => {
+    const fs = FS.horizontal, ls = 6, cx = 717.0289855072464, yt = 215;
+    const yl = yt - Math.round(fs / 4);
+    const lines = strokeLines(cx, label, fs, ls, yl, 1100);
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet">
+${cameraComposite(c, uid, 8, 32, 290)}
+<text fill="${c.wm}" x="${cx.toFixed(4)}" y="155" text-anchor="middle" font-family="${FONT}" font-weight="800" font-size="72" letter-spacing="3">${WMARK}</text>
+<g stroke="${c.sub}">${lines}</g>
+<text fill="${c.sub}" x="${cx.toFixed(4)}" y="${yt}" text-anchor="middle" font-family="${FONT}" font-weight="700" font-size="${fs}" letter-spacing="${ls}">${label}</text>
+</svg>`;
+  },
+
+  vertical: (label, c, uid) => {
+    const fs = FS.vertical, ls = 7, cx = 260, yt = 615;
+    const yl = yt - Math.round(fs / 4);
+    const lines = strokeLines(cx, label, fs, ls, yl, 520);
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 760" preserveAspectRatio="xMidYMid meet">
+${cameraComposite(c, uid, 80, 25, 360)}
+<text fill="${c.wm}" x="260" y="430" text-anchor="middle" font-family="${FONT}" font-weight="800" font-size="84" letter-spacing="3">VIN\u00CDCIUS</text>
+<text fill="${c.wm}" x="260" y="525" text-anchor="middle" font-family="${FONT}" font-weight="800" font-size="84" letter-spacing="3">SOUZA</text>
+<g stroke="${c.sub}">${lines}</g>
+<text fill="${c.sub}" x="${cx}" y="${yt}" text-anchor="middle" font-family="${FONT}" font-weight="700" font-size="${fs}" letter-spacing="${ls}">${label}</text>
+</svg>`;
+  },
+};
+
+function buildSvg(lockupKey, vertical, version){
+  const c = getColors(version.key, vertical.color);
+  const uid = `${lockupKey}-${vertical.key}-${version.key}`;
+  return SVG_BUILDERS[lockupKey](vertical.label, c, uid);
+}
+
+/* ════════════════════════════════════════════════════════════
+   3 — DOWNLOAD HELPER
+   ════════════════════════════════════════════════════════════ */
+function downloadSvg(svgString, filename){
+  const blob = new Blob([svgString], { type:"image/svg+xml;charset=utf-8" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 100);
+}
+
+/* PNG export widths per lockup (vector → raster size) */
+const PNG_WIDTH = { quadrada:1800, horizontal:2400, vertical:1500, wordmark:2400 };
+
+/* Convert an SVG string to a PNG Blob via the browser's canvas.
+   Notes:
+     • Fonts: the browser renders the SVG in isolation; if "Montserrat"
+       isn't bundled in the SVG, the canvas will use the system fallback.
+       Vector SVG remains the canonical/typographically-perfect export. */
+async function svgStringToPngBlob(svgString, targetWidth){
+  /* Pull viewBox to know native aspect ratio */
+  const m = svgString.match(/viewBox\s*=\s*["']([^"']+)["']/);
+  let nativeW = 1000, nativeH = 1000;
+  if (m){
+    const parts = m[1].trim().split(/\s+/).map(parseFloat);
+    if (parts.length === 4){ nativeW = parts[2]; nativeH = parts[3]; }
+  }
+  const scale = targetWidth / nativeW;
+  const W = Math.round(nativeW * scale);
+  const H = Math.round(nativeH * scale);
+
+  const blob = new Blob([svgString], { type:"image/svg+xml;charset=utf-8" });
+  const url  = URL.createObjectURL(blob);
+
+  try {
+    const img = await new Promise((resolve, reject) => {
+      const i = new Image();
+      i.onload = () => resolve(i);
+      i.onerror = reject;
+      i.src = url;
+    });
+    const canvas = document.createElement("canvas");
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, W, H);
+    const out = await new Promise(res => canvas.toBlob(b => res(b), "image/png"));
+    return out;
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
+async function downloadPngFromSvg(svgString, filename, lockupKey, isDark){
+  /* Bake a white background for principal/mono so the PNG is usable on
+     light surfaces. fundo-preto stays transparent so it composes on dark. */
+  let svg = svgString;
+  if (!isDark){
+    svg = svg.replace(/<svg([^>]*?)>/, '<svg$1><rect width="100%" height="100%" fill="#ffffff"/>');
+  }
+  const blob = await svgStringToPngBlob(svg, PNG_WIDTH[lockupKey] || 2000);
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 200);
+}
+
+/* ════════════════════════════════════════════════════════════
+   4 — RENDER: Symbol feature (square-ish, just symbol)
+   ════════════════════════════════════════════════════════════ */
+function renderSymbolFeature(){
+  const wrap = document.getElementById("symbol-feature");
+  /* Featured visual: the símbolo lockup (camera+VS, Fotografia / principal). */
+  const v = VERTICALS.find(x => x.key === "fotografia");
+  const r = VERSIONS.find(x => x.key === "principal");
+  wrap.innerHTML = buildSvg("simbolo", v, r);
+}
+
+/* ════════════════════════════════════════════════════════════
+   5 — RENDER: Lockup explainer cards
+   ════════════════════════════════════════════════════════════ */
+function renderLockupCards(){
+  /* Use Editorial / Principal as the canonical preview.
+     Camera-with is the primary form — show it where compatible. */
+  const v = VERTICALS.find(x => x.key === "editorial");
+  const r = VERSIONS.find(x => x.key === "principal");
+  const grid = document.getElementById("lockup-grid");
+
+  grid.innerHTML = LOCKUPS.map(l => `
+    <article class="lockup-card">
+      <header class="hdr">
+        <span class="name">${l.title}</span>
+        <span class="badge">${l.ratio}</span>
+      </header>
+      <div class="preview">${buildSvg(l.key, v, r)}</div>
+      <p style="margin:0;color:var(--ink-mid);font-size:13.5px;line-height:1.55">${l.desc}</p>
+      <div class="when">
+        <div>
+          <h4>Use quando</h4>
+          <ul>${l.use.map(u => `<li>${u}</li>`).join("")}</ul>
+        </div>
+        <div class="dont">
+          <h4>Evite quando</h4>
+          <ul>${l.avoid.map(a => `<li>${a}</li>`).join("")}</ul>
+        </div>
+      </div>
+    </article>
+  `).join("");
+}
+
+/* ════════════════════════════════════════════════════════════
+   6 — RENDER: Version cards
+   ════════════════════════════════════════════════════════════ */
+function renderVersionCards(){
+  const v = VERTICALS.find(x => x.key === "editorial");
+  const grid = document.getElementById("version-grid");
+
+  grid.innerHTML = VERSIONS.map(r => {
+    const cls = r.key === "fundo-preto" ? "dark" : (r.key === "mono" ? "mono" : "");
+    return `
+    <article class="ver-card ${cls}">
+      <span class="tag">${r.title}</span>
+      <div class="preview">${buildSvg("horizontal", v, r)}</div>
+      <h3>${r.short}</h3>
+      <p>${r.desc}</p>
+      <p style="font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:.04em;margin-top:auto;padding-top:8px;border-top:var(--rule)">
+        ${r.when}
+      </p>
+    </article>
+    `;
+  }).join("");
+}
+
+/* ════════════════════════════════════════════════════════════
+   7 — RENDER: Vertical (assinaturas) cards
+   ════════════════════════════════════════════════════════════ */
+function renderVerticalCards(){
+  const grid = document.getElementById("vertical-grid");
+  grid.innerHTML = VERTICALS.map(v => `
+    <article class="vc">
+      <div class="swatch" style="background:${v.color}">
+        <span class="hex">${v.color.toUpperCase()}</span>
+      </div>
+      <span class="role">${v.role}</span>
+      <h3>${v.title}</h3>
+      <p>${v.desc}</p>
+    </article>
+  `).join("");
+}
+
+/* ════════════════════════════════════════════════════════════
+   8 — RENDER: Download grid (84 cards: 4 verticais × 3 versões ×
+        4 lockups + 3 lockups com câmera = 84)
+   ════════════════════════════════════════════════════════════ */
+function renderDownloadGrid(){
+  const grid = document.getElementById("dl-grid");
+  const cards = [];
+  for (const v of VERTICALS){
+    for (const r of VERSIONS){
+      for (const l of LOCKUPS){
+        const svgString = buildSvg(l.key, v, r);
+        const filename  = `vsouza-${l.key}-${v.key}-${r.file}.svg`;
+        const isDark    = r.key === "fundo-preto";
+        const tagColor  = v.color;
+
+        cards.push(`
+          <article class="dl-card${isDark ? " dark" : ""}"
+                   data-vertical="${v.key}"
+                   data-version="${r.key}"
+                   data-lockup="${l.key}"
+                   data-svg="${encodeURIComponent(svgString)}"
+                   data-filename="${filename}">
+            <div class="pv">${svgString}</div>
+            <div class="info">
+              <div class="meta">
+                <span class="n">${filename}</span>
+                <div class="tags">
+                  <span class="tag col" style="--c:${tagColor}">${v.title}</span>
+                  <span class="tag">${r.title}</span>
+                  <span class="tag">${l.title}</span>
+                </div>
+              </div>
+              <div class="dl-btns">
+                <button class="dl-btn" type="button" data-fmt="svg">SVG</button>
+                <button class="dl-btn dl-btn-alt" type="button" data-fmt="png">PNG</button>
+              </div>
+            </div>
+          </article>
+        `);
+      }
+    }
+  }
+  grid.innerHTML = cards.join("");
+
+  /* Wire individual SVG and PNG download buttons */
+  grid.querySelectorAll(".dl-card").forEach(card => {
+    card.querySelectorAll(".dl-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const svg  = decodeURIComponent(card.dataset.svg);
+        const fmt  = btn.dataset.fmt;
+        const baseName = card.dataset.filename.replace(/\.svg$/, "");
+        const lockupKey = card.dataset.lockup;
+        const isDark    = card.dataset.version === "fundo-preto";
+
+        const original = btn.innerHTML;
+        btn.classList.add("copied");
+        btn.innerHTML = "...";
+
+        try {
+          if (fmt === "svg") {
+            downloadSvg(svg, baseName + ".svg");
+          } else {
+            await downloadPngFromSvg(svg, baseName + ".png", lockupKey, isDark);
+          }
+          btn.innerHTML = "✓";
+        } catch (err) {
+          console.error("download failed", err);
+          btn.innerHTML = "erro";
+        }
+        setTimeout(() => {
+          btn.classList.remove("copied");
+          btn.innerHTML = original;
+        }, 1100);
+      });
+    });
+  });
+
+  /* Re-apply current filters so visibility stays consistent across re-renders */
+  if (typeof applyFilters === "function") applyFilters();
+}
+
+/* ════════════════════════════════════════════════════════════
+   9 — FILTERS — 4 dimensions: vertical, version, lockup, camera
+   ════════════════════════════════════════════════════════════ */
+const filterState = { vertical:"all", version:"all", lockup:"all" };
+
+function applyFilters(){
+  const cards = document.querySelectorAll(".dl-card");
+  let visible = 0;
+  cards.forEach(c => {
+    const ok = (filterState.vertical === "all" || c.dataset.vertical === filterState.vertical)
+            && (filterState.version  === "all" || c.dataset.version  === filterState.version)
+            && (filterState.lockup   === "all" || c.dataset.lockup   === filterState.lockup);
+    c.classList.toggle("hidden", !ok);
+    if (ok) visible++;
+  });
+  document.getElementById("visible-count").textContent = visible;
+}
+
+function wireFilters(){
+  ["vertical","version","lockup"].forEach(kind => {
+    document.querySelectorAll(`.f-${kind}`).forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(`.f-${kind}`).forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        filterState[kind] = btn.dataset[kind];
+        applyFilters();
+      });
+    });
+  });
+}
+
+/* ════════════════════════════════════════════════════════════
+   10 — DOWNLOAD ALL
+   ════════════════════════════════════════════════════════════ */
+function wireDownloadAll(){
+  const btn = document.getElementById("btn-download-all");
+  if (!btn) return;          /* no bulk-download button in this build */
+  btn.addEventListener("click", () => {
+    const cards = [...document.querySelectorAll(".dl-card:not(.hidden)")];
+    if (!cards.length) return;
+    const ok = confirm(`Baixar ${cards.length} arquivos SVG individualmente?\n\nDica: pode ser mais rápido pegar o ZIP completo que acompanha este manual.`);
+    if (!ok) return;
+    cards.forEach((c, i) => {
+      setTimeout(() => {
+        downloadSvg(decodeURIComponent(c.dataset.svg), c.dataset.filename);
+      }, i * 220);
+    });
+  });
+}
+
+/* ════════════════════════════════════════════════════════════
+   BOOT
+   ════════════════════════════════════════════════════════════ */
+document.addEventListener("DOMContentLoaded", () => {
+  renderSymbolFeature();
+  renderLockupCards();
+  renderVersionCards();
+  renderVerticalCards();
+  renderDownloadGrid();
+  wireFilters();
+  wireDownloadAll();
+});
+</script>
+
+</body>
+</html>

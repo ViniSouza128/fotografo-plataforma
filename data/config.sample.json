@@ -1,0 +1,68 @@
+{
+  "nomeEstudio": "Nome do Estudio",
+  "whatsapp": "11999999999",
+  "instagram": "seuinstagram",
+  "cpf": "",
+  "cnpj": "",
+  "razaoSocial": "",
+  "localizacao": "",
+  "precoFotoDefault": 29.9,
+  "descontosGlobais": [
+    {
+      "quantidade": 3,
+      "desconto": 5
+    },
+    {
+      "quantidade": 5,
+      "desconto": 10
+    }
+  ],
+  "descontosGlobaisAtivos": false,
+  "categoriasCustom": [],
+  "pagamento": {
+    "gateway_pix": "manual",
+    "gateway_pix_fallback": null,
+    "gateway_cartao": "manual",
+    "gateway_cartao_fallback": null,
+    "metodos_ativos": [
+      "pix",
+      "cartao"
+    ],
+    "asaas_sandbox": {
+      "api_key": "",
+      "wallet_id": ""
+    },
+    "asaas_producao": {
+      "api_key": "",
+      "wallet_id": ""
+    },
+    "stripe": {
+      "public_key": "",
+      "secret_key": ""
+    }
+  },
+  "derivatives": {
+    "grid": {
+      "width": 1600,
+      "quality": 60
+    },
+    "thumbs": {
+      "width": 400,
+      "quality": 70
+    },
+    "mini": {
+      "width": 90,
+      "quality": 45
+    },
+    "covers": {
+      "width": 400,
+      "quality": 78
+    }
+  },
+  "watermarkVariants": {
+    "grid": {},
+    "thumbs": {},
+    "mini": {},
+    "covers": {}
+  }
+}

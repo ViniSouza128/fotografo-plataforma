@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Vinícius Souza — Marca · Logo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { padding-bottom: var(--space-24); }
+  .wrap { max-width: var(--content-max); margin: 0 auto; padding: var(--space-20) var(--space-12) var(--space-24); }
+  @media (max-width: 800px) { .wrap { padding: var(--space-12) var(--space-5); } }
+
+  /* HERO ──────────────────────────────────────────────── */
+  .hero { position: relative; padding-bottom: var(--space-16); border-bottom: 1px solid var(--ink-500); margin-bottom: var(--space-16); overflow: hidden; }
+  .hero::before { content: ""; position: absolute; inset: -10% -10% auto -10%; height: 70%; background: var(--glow-radial); pointer-events: none; }
+  .hero > * { position: relative; }
+  .hero .crumbs { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); margin-bottom: var(--space-4); display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; }
+  .hero .crumbs a { color: var(--ink-700); }
+  .hero .crumbs a:hover { color: var(--ink-1000); }
+  .hero .crumbs b { color: var(--ink-1000); font-weight: 500; }
+  .hero h1 { font-family: var(--font-display); font-style: italic; font-size: var(--text-5xl); line-height: var(--leading-flat); letter-spacing: var(--tracking-tight); margin: 0 0 var(--space-5); max-width: 22ch; color: var(--ink-1000); }
+  .hero .lede { max-width: 64ch; font-size: var(--text-md); line-height: var(--leading-relaxed); color: var(--ink-900); margin: 0; }
+  .hero .lede em { font-family: var(--font-display); font-style: italic; color: var(--ink-1000); }
+
+  /* SECTION ───────────────────────────────────────────── */
+  .section { margin-top: var(--space-20); }
+  .section-head { padding-bottom: var(--space-4); border-bottom: 1px solid var(--ink-500); margin-bottom: var(--space-8); display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-5); flex-wrap: wrap; }
+  .section-head .num { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); }
+  .section-head h2 { font-family: var(--font-heading); font-weight: 400; font-size: var(--text-2xl); margin: var(--space-1) 0 0; color: var(--ink-1000); letter-spacing: var(--tracking-snug); }
+  .section-head p { margin: var(--space-2) 0 0; color: var(--ink-800); font-size: var(--text-sm); max-width: 60ch; line-height: var(--leading-relaxed); }
+  .section-head .tag { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--brand-400); border: 1px solid var(--brand-500); background: var(--brand-dim); padding: var(--space-1) var(--space-3); border-radius: var(--radius-pill); }
+
+  /* STAGES (demo cells) ───────────────────────────────── */
+  .stage-grid { display: grid; gap: var(--space-4); }
+  .stage-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+  .stage-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .stage-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 980px) {
+    .stage-grid.cols-3, .stage-grid.cols-4 { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .stage-grid.cols-2, .stage-grid.cols-3, .stage-grid.cols-4 { grid-template-columns: 1fr; }
+  }
+
+  .stage {
+    background: var(--ink-300);
+    border: 1px solid var(--ink-500);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .stage .canvas {
+    flex: 1;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-8);
+  }
+  .stage .canvas.light  { background: var(--ink-1000); color: var(--ink-50); }
+  .stage .canvas.dark   { background: var(--ink-50);   color: var(--ink-1000); }
+  .stage .canvas.bone   { background: var(--sub-fotografia-500); color: var(--ink-50); }
+  .stage .canvas svg.lockup { width: 100%; max-width: 360px; height: auto; display: block; }
+  .stage .meta {
+    border-top: 1px solid var(--ink-500);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-3);
+    background: var(--ink-300);
+  }
+  .stage .meta .label { font-family: var(--font-heading); font-size: var(--text-sm); font-weight: 500; color: var(--ink-1000); }
+  .stage .meta .hint  { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); letter-spacing: var(--tracking-wide); }
+
+  /* Sub-brand color binding via class on the SVG */
+  .lockup { color: currentColor; }
+  .lockup .descriptor { fill: currentColor; }
+  .lockup .descriptor-rule { stroke: currentColor; }
+  .lockup.editorial .descriptor,
+  .lockup.editorial .descriptor-rule { fill: var(--sub-editorial-500); stroke: var(--sub-editorial-500); }
+  .lockup.esportes .descriptor,
+  .lockup.esportes .descriptor-rule { fill: var(--sub-esportes-500); stroke: var(--sub-esportes-500); }
+  .lockup.natureza .descriptor,
+  .lockup.natureza .descriptor-rule { fill: var(--sub-natureza-500); stroke: var(--sub-natureza-500); }
+  .lockup .glyph,
+  .lockup .wordmark { fill: currentColor; }
+
+  /* CONSTRUCTION GRID ─────────────────────────────────── */
+  .construction {
+    background: var(--ink-1000);
+    color: var(--ink-50);
+    border: 1px solid var(--ink-500);
+    border-radius: var(--radius-lg);
+    padding: var(--space-12) var(--space-8);
+    position: relative;
+  }
+  .construction svg { display: block; width: 100%; height: auto; max-width: 920px; margin: 0 auto; }
+  .construction .legend {
+    margin-top: var(--space-6);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    color: var(--ink-50);
+  }
+  .construction .legend b { color: var(--brand-500); font-weight: 500; }
+  @media (max-width: 700px) { .construction .legend { grid-template-columns: 1fr; } }
+
+  /* MINIMUMS row ──────────────────────────────────────── */
+  .min-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); margin-top: var(--space-6); }
+  @media (max-width: 900px) { .min-row { grid-template-columns: 1fr 1fr; } }
+  .min-card {
+    background: var(--ink-300);
+    border: 1px solid var(--ink-500);
+    border-radius: var(--radius);
+    padding: var(--space-5);
+  }
+  .min-card .min-eyebrow { font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-800); margin-bottom: var(--space-2); }
+  .min-card .min-value { font-family: var(--font-display); font-style: italic; font-size: var(--text-3xl); color: var(--ink-1000); margin-bottom: var(--space-2); line-height: 1; }
+  .min-card .min-context { font-size: var(--text-sm); color: var(--ink-800); line-height: var(--leading-relaxed); }
+
+  /* DON'TS grid ───────────────────────────────────────── */
+  .dont {
+    background: var(--ink-300);
+    border: 1px solid var(--ink-500);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .dont .canvas {
+    background: var(--ink-1000);
+    color: var(--ink-50);
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-6);
+    position: relative;
+  }
+  .dont .canvas .x-tag {
+    position: absolute; top: var(--space-3); right: var(--space-3);
+    font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase;
+    color: var(--danger-500); background: var(--ink-1000);
+    border: 1px solid var(--danger-500); border-radius: var(--radius-pill);
+    padding: 2px var(--space-2);
+  }
+  .dont .body { padding: var(--space-4) var(--space-5) var(--space-5); }
+  .dont .body h4 { margin: 0 0 var(--space-1); font-size: var(--text-sm); font-weight: 500; color: var(--ink-1000); font-family: var(--font-heading); }
+  .dont .body p  { margin: 0; font-size: var(--text-xs); color: var(--ink-800); line-height: var(--leading-relaxed); }
+
+  /* SUB-BRAND grid ────────────────────────────────────── */
+  .subs { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); }
+  @media (max-width: 1000px) { .subs { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .subs { grid-template-columns: 1fr; } }
+  .sub {
+    background: var(--ink-300);
+    border: 1px solid var(--ink-500);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .sub .canvas { background: var(--ink-50); color: var(--ink-1000); min-height: 200px; display: flex; align-items: center; justify-content: center; padding: var(--space-6); }
+  .sub .body { padding: var(--space-5); border-top: 1px solid var(--ink-500); }
+  .sub .body .pill {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase;
+    padding: 2px var(--space-2); border-radius: var(--radius-pill);
+    border: 1px solid currentColor;
+    margin-bottom: var(--space-3);
+  }
+  .sub .body .pill .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  .sub.fotografia .body .pill { color: var(--sub-fotografia-500); background: var(--sub-fotografia-dim); }
+  .sub.editorial  .body .pill { color: var(--sub-editorial-500);  background: var(--sub-editorial-dim); }
+  .sub.esportes   .body .pill { color: var(--sub-esportes-500);   background: var(--sub-esportes-dim); }
+  .sub.natureza   .body .pill { color: var(--sub-natureza-500);   background: var(--sub-natureza-dim); }
+  .sub .body h4 { margin: 0 0 var(--space-2); font-family: var(--font-heading); font-weight: 500; font-size: var(--text-lg); color: var(--ink-1000); }
+  .sub .body p  { margin: 0; font-size: var(--text-sm); line-height: var(--leading-relaxed); color: var(--ink-800); }
+
+  /* CODE BLOCKS ───────────────────────────────────────── */
+  .code-block {
+    background: var(--ink-200);
+    border: 1px solid var(--ink-500);
+    border-radius: var(--radius-lg);
+    margin-top: var(--space-4);
+    overflow: hidden;
+  }
+  .code-block header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--ink-500);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--ink-800);
+    letter-spacing: var(--tracking-wide);
+    background: var(--ink-300);
+  }
+  .code-block header b { color: var(--ink-1000); font-weight: 500; }
+  .code-block pre {
+    margin: 0;
+    padding: var(--space-5);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    line-height: 1.55;
+    color: var(--ink-900);
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .code-block pre .tk-tag { color: var(--brand-400); }
+  .code-block pre .tk-attr { color: var(--warning-400); }
+  .code-block pre .tk-val { color: var(--signal-400); }
+
+  /* SIZE row ──────────────────────────────────────────── */
+  .size-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-4); align-items: end; }
+  @media (max-width: 800px) { .size-row { grid-template-columns: 1fr; } }
+  .size-cell { background: var(--ink-1000); color: var(--ink-50); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-6); display: flex; flex-direction: column; align-items: center; gap: var(--space-3); }
+  .size-cell svg { display: block; height: auto; }
+  .size-cell.display svg { width: 100%; max-width: 420px; }
+  .size-cell.signature svg { width: 240px; }
+  .size-cell.viewfinder svg { width: 80px; }
+  .size-cell .cap { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); }
+
+  /* POLICY TABLE ──────────────────────────────────────── */
+  .policy { border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; background: var(--ink-300); }
+  .policy table { width: 100%; border-collapse: collapse; }
+  .policy th, .policy td { padding: var(--space-3) var(--space-4); font-size: var(--text-sm); border-bottom: 1px solid var(--ink-500); text-align: left; }
+  .policy thead th { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-800); background: var(--ink-200); }
+  .policy tbody tr:last-child td { border-bottom: none; }
+  .policy tbody td:first-child { font-weight: 500; color: var(--ink-1000); }
+  .policy tbody td { color: var(--ink-900); }
+  .policy td.swatch { width: 36px; }
+  .policy .sw {
+    display: inline-block; width: 18px; height: 18px; border-radius: var(--radius-sm); border: 1px solid var(--ink-500); vertical-align: middle;
+  }
+
+  /* FOOTER ──────────────────────────────────────────── */
+  footer { margin-top: var(--space-24); padding-top: var(--space-6); border-top: 1px solid var(--ink-500); display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-wider); }
+  footer a { color: var(--ink-700); }
+  footer a:hover { color: var(--ink-1000); }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     CANONICAL SVG DEFS — single source of paths for the page.
+     The VS monogram path appears ONCE here. Every visible lockup
+     references it via <use href="#vs-glyph">.
+     ============================================================ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <!-- The VS monogram glyph — canonical path. -->
+    <path id="vs-glyph" fill-rule="evenodd" d="M 445.00 596.00 C 440.01 599.06, 428.00 601.00, 428.00 601.00 C 428.00 601.00, 394.93 601.91, 387.00 601.00 C 379.07 600.09, 370.77 595.95, 367.00 594.00 C 363.23 592.05, 358.00 586.00, 358.00 586.00 C 358.00 586.00, 47.40 65.97, 45.00 61.80 C 37.92 53.03, 37.92 36.70, 53.72 34.90 C 56.40 34.80, 138.06 33.36, 150.00 35.00 C 166.13 36.88, 171.67 42.47, 182.00 52.61 C 185.09 57.81, 408.07 444.73, 408.07 444.73 C 408.07 444.73, 457.48 355.64, 459.00 353.00 C 463.18 345.91, 465.66 341.75, 469.81 341.20 C 474.85 340.93, 486.38 354.43, 491.00 358.00 C 495.62 361.57, 505.35 368.68, 513.00 373.00 C 520.65 377.32, 547.48 388.10, 549.38 389.23 C 551.27 390.37, 555.11 394.62, 554.34 400.23 C 553.48 404.70, 550.54 409.12, 548.27 414.51 C 546.00 419.90, 540.68 428.18, 537.00 435.00 C 533.32 441.82, 530.14 447.91, 520.00 467.00 C 509.86 486.09, 462.30 576.16, 459.00 581.84 C 455.70 587.52, 449.99 592.94, 445.00 596.00 Z M 872.22 91.62 C 872.68 125.01, 843.18 147.44, 819.11 147.49 C 809.41 147.93, 701.44 148.17, 615.18 149.00 C 563.14 157.43, 561.99 199.04, 561.63 208.41 C 563.14 229.70, 577.76 255.04, 611.62 262.47 C 650.19 262.52, 781.54 261.79, 798.00 263.00 C 814.46 264.21, 832.43 271.01, 846.00 277.00 C 859.57 282.99, 873.01 291.05, 884.00 301.00 C 894.99 310.95, 910.82 327.93, 920.00 344.00 C 929.18 360.07, 937.00 379.92, 940.00 399.00 C 943.00 418.08, 944.46 460.35, 932.77 491.21 C 910.20 540.45, 871.48 572.49, 850.46 583.12 C 825.64 599.19, 781.95 601.90, 772.00 602.00 C 762.05 602.10, 519.08 602.05, 515.00 602.00 C 510.92 601.95, 505.05 601.48, 502.08 599.50 C 499.11 597.52, 496.82 594.03, 496.31 590.50 C 495.81 586.97, 498.17 581.65, 500.00 578.00 C 501.83 574.35, 529.18 523.73, 533.00 517.68 C 536.82 511.62, 542.75 505.61, 548.00 502.00 C 553.25 498.39, 559.56 496.33, 565.93 496.09 C 572.29 495.85, 777.60 494.40, 785.35 494.00 C 793.11 493.60, 800.80 487.12, 807.00 482.68 C 813.20 478.24, 819.11 471.95, 823.00 466.00 C 826.89 460.05, 829.61 452.97, 831.00 446.00 C 832.39 439.03, 833.65 429.09, 832.00 421.00 C 830.35 412.91, 826.85 399.77, 820.00 392.00 C 813.15 384.23, 805.62 374.86, 787.00 370.00 C 773.99 368.55, 625.16 371.25, 595.00 367.00 C 519.94 352.27, 499.24 323.23, 477.10 293.20 C 453.35 258.78, 452.08 212.30, 455.58 182.20 C 459.09 152.10, 472.00 119.54, 496.15 95.51 C 515.61 74.26, 562.68 41.53, 607.00 40.54 C 615.03 40.41, 813.94 39.62, 819.16 39.73 C 840.03 39.83, 871.79 58.94, 872.22 91.62 Z"/>
+
+    <!-- Symbol (camera + VS) — used when the mark stands alone. -->
+    <symbol id="symbol" viewBox="0 0 1638 1229" preserveAspectRatio="xMidYMid meet">
+      <g class="cam">
+        <path d="M185,1150 Q53,1150 53,1018 L53,353 Q53,221 185,221 L1247,221 M1454,221 L1454,221 Q1586,221 1586,353 L1586,1018 Q1586,1150 1454,1150 L185,1150" stroke="currentColor" stroke-width="30" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.32"/>
+        <path d="M216,214 L216,198 Q216,153 261,153 L344,153 Q389,153 389,198 L389,214" stroke="currentColor" stroke-width="30" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.32"/>
+        <path d="M508,211 L590.62,83.77 Q618.40,41 669.40,41 L988.60,41 Q1039.60,41 1067.38,83.77 L1150,211" stroke="currentColor" stroke-width="30" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.32"/>
+        <rect x="1295" y="205" width="114" height="30" rx="18" ry="18" class="indicator" fill="currentColor"/>
+        <circle cx="816" cy="689" r="400" stroke="currentColor" stroke-width="30" fill="none" opacity="0.32"/>
+      </g>
+      <g transform="translate(819.5,685.5) scale(1.17) translate(-490,-310.5)">
+        <use href="#vs-glyph" fill="currentColor"/>
+      </g>
+    </symbol>
+
+    <!-- Horizontal lockup template — descriptor text supplied by aria via JS-free CSS swap. -->
+    <symbol id="lockup-horizontal-fot" viewBox="0 0 1100 280" preserveAspectRatio="xMinYMid meet">
+      <g class="glyph" transform="translate(30 50) scale(0.2898550724637681)"><use href="#vs-glyph"/></g>
+      <text class="wordmark" x="717.03" y="155" text-anchor="middle" font-family="var(--font-brand), Montserrat, sans-serif" font-weight="800" font-size="72" letter-spacing="3">VINÍCIUS SOUZA</text>
+      <g class="descriptor-rule">
+        <line x1="524" y1="198" x2="552" y2="198" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="882" y1="198" x2="910" y2="198" stroke-width="2.2" stroke-linecap="round"/>
+      </g>
+      <text class="descriptor" x="717.03" y="206" text-anchor="middle" font-family="var(--font-brand), Montserrat, sans-serif" font-weight="700" font-size="36" letter-spacing="6">FOTOGRAFIA</text>
+    </symbol>
+    <symbol id="lockup-horizontal-edt" viewBox="0 0 1100 280" preserveAspectRatio="xMinYMid meet">
+      <g class="glyph" transform="translate(30 50) scale(0.2898550724637681)"><use href="#vs-glyph"/></g>
+      <text class="wordmark" x="717.03" y="155" text-anchor="middle" font-family="var(--font-brand), Montserrat, sans-serif" font-weight="800" font-size="72" letter-spacing="3">VINÍCIUS SOUZA</text>
+      <g class="descriptor-rule">
+        <line x1="546" y1="198" x2="574" y2="198" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="860" y1="198" x2="888" y2="198" stroke-width="2.2" stroke-linecap="round"/>
+      </g>
+      <text class="descriptor" x="717.03" y="206" text-anchor="middle" font-family="var(--font-brand), Montserrat, sans-serif" font-weight="700" font-size="36" letter-spacing="6">EDITORIAL</text>
+    </symbol>
+    <symbol id="lockup-horizontal-esp" viewBox="0 0 1100 280" preserveAspectRatio="xMinYMid meet">
+      <g class="glyph" transform="translate(30 50) scale(0.2898550724637681)"><use href="#vs-glyph"/></g>
+      <text class="wordmark" x="717.03" y="155" text-anchor="middle" font-family="var(--font-brand), Montserrat, sans-serif" font-weight="800" font-size="72" letter-spacing="3">VINÍCIUS SOUZA</text>
+      <g class="descriptor-rule">
+        <line x1="538" y1="198" x2="566" y2="198" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="868" y1="198" x2="896" y2="198" stroke-width="2.2" stroke-linecap="round"/>
+      </g>
+      <text class="descriptor" x="717.03" y="206" text-anchor="middle" font-family="var(--font-brand), Montserrat, sans-serif" font-weight="700" font-size="36" letter-spacing="6">ESPORTES</text>
+    </symbol>
+    <symbol id="lockup-horizontal-nat" viewBox="0 0 1100 280" preserveAspectRatio="xMinYMid meet">
+      <g class="glyph" transform="translate(30 50) scale(0.2898550724637681)"><use href="#vs-glyph"/></g>
+      <text class="wordmark" x="717.03" y="155" text-anchor="middle" font-family="var(--font-brand), Montserrat, sans-serif" font-weight="800" font-size="72" letter-spacing="3">VINÍCIUS SOUZA</text>
+      <g class="descriptor-rule">
+        <line x1="538" y1="198" x2="566" y2="198" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="868" y1="198" x2="896" y2="198" stroke-width="2.2" stroke-linecap="round"/>
+      </g>
+      <text class="descriptor" x="717.03" y="206" text-anchor="middle" font-family="var(--font-brand), Montserrat, sans-serif" font-weight="700" font-size="36" letter-spacing="6">NATUREZA</text>
+    </symbol>
+
+    <!-- Stacked / vertical lockup — descriptor under wordmark, centered. -->
+    <symbol id="lockup-stacked-fot" viewBox="0 0 520 480" preserveAspectRatio="xMidYMid meet">
+      <g class="glyph" transform="translate(180 30) scale(0.16)"><use href="#vs-glyph"/></g>
+      <text class="wordmark" x="260" y="300" text-anchor="middle" font-family="var(--font-brand), Montserrat, sans-serif" font-weight="800" font-size="56" letter-spacing="3">VINÍCIUS SOUZA</text>
+      <g class="descriptor-rule">
+        <line x1="138" y1="364" x2="160" y2="364" stroke-width="2" stroke-linecap="round"/>
+        <line x1="360" y1="364" x2="382" y2="364" stroke-width="2" stroke-linecap="round"/>
+      </g>
+      <text class="descriptor" x="260" y="372" text-anchor="middle" font-family="var(--font-brand), Montserrat, sans-serif" font-weight="700" font-size="26" letter-spacing="6">FOTOGRAFIA</text>
+    </symbol>
+
+    <!-- Wordmark-only -->
+    <symbol id="lockup-wordmark" viewBox="0 0 820 200" preserveAspectRatio="xMidYMid meet">
+      <text class="wordmark" x="410" y="120" text-anchor="middle" font-family="var(--font-brand), Montserrat, sans-serif" font-weight="800" font-size="72" letter-spacing="3">VINÍCIUS SOUZA</text>
+      <g class="descriptor-rule">
+        <line x1="278" y1="172" x2="304" y2="172" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="516" y1="172" x2="542" y2="172" stroke-width="2.2" stroke-linecap="round"/>
+      </g>
+      <text class="descriptor" x="410" y="180" text-anchor="middle" font-family="var(--font-brand), Montserrat, sans-serif" font-weight="700" font-size="32" letter-spacing="6">FOTOGRAFIA</text>
+    </symbol>
+
+    <!-- Viewfinder / monogram only -->
+    <symbol id="lockup-monogram" viewBox="0 0 200 130" preserveAspectRatio="xMidYMid meet">
+      <g class="glyph" transform="translate(20 10) scale(0.165)"><use href="#vs-glyph"/></g>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+  <!-- HERO ──────────────────────────────────────────── -->
+  <header class="hero" data-screen-label="Brand · Header">
+    <p class="crumbs">
+      <a href="index.html">DS</a> · <a href="index.html#brand">Brand</a> · <b>02.1 · Marca</b>
+      <span style="color: var(--brand-400);">v2.0 · 2026-05-10</span>
+    </p>
+    <h1>A marca-mãe e<br>três verticais.</h1>
+    <p class="lede">
+      <em>Vinícius Souza · Fotografia</em> é a marca-mãe; <em>Esportes</em>, <em>Natureza</em> e <em>Editorial</em>
+      são as três verticais. Compartilham o monograma <b style="color:var(--ink-1000);">VS</b> e o wordmark; trocam
+      apenas o descritor e o acento da rampa. Esta página define o canônico, a construção e o que é proibido fazer.
+    </p>
+  </header>
+
+  <!-- 1 · MASTER MARK at three sizes ─────────────────── -->
+  <section class="section" data-screen-label="Brand · Master mark">
+    <div class="section-head">
+      <div>
+        <span class="num">01 · A marca-mãe</span>
+        <h2>Três tamanhos canônicos.</h2>
+        <p>Display preserva o ar de capa editorial; signature funciona em e-mail e papelaria; o monograma viewfinder é o último recurso de assinatura quando há menos de 80 px de largura.</p>
+      </div>
+      <span class="tag">Master · Fotografia</span>
+    </div>
+
+    <div class="size-row">
+      <div class="size-cell display">
+        <svg class="lockup" aria-label="Vinícius Souza Fotografia · display"><use href="#lockup-horizontal-fot"/></svg>
+        <span class="cap">Display · ≥ 360 px</span>
+      </div>
+      <div class="size-cell signature">
+        <svg class="lockup" aria-label="Vinícius Souza Fotografia · signature"><use href="#lockup-horizontal-fot"/></svg>
+        <span class="cap">Signature · 240 px</span>
+      </div>
+      <div class="size-cell viewfinder">
+        <svg class="lockup" aria-label="Monograma VS · viewfinder" viewBox="0 0 200 130"><use href="#lockup-monogram"/></svg>
+        <span class="cap">Viewfinder · 80 px</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · CONSTRUCTION GRID ────────────────────────── -->
+  <section class="section" data-screen-label="Brand · Construction">
+    <div class="section-head">
+      <div>
+        <span class="num">02 · Construção</span>
+        <h2>Grade, clear-space, alinhamentos.</h2>
+        <p>A altura da letra <code class="type-mono">X</code> do wordmark (capital, sem ornamento) é a unidade de medida — <b style="color:var(--ink-1000);">1 X</b>. Cada distância na marca é múltiplo dessa unidade.</p>
+      </div>
+      <span class="tag">1 X = altura caixa-alta</span>
+    </div>
+
+    <div class="construction">
+      <svg viewBox="0 0 1100 360" xmlns="http://www.w3.org/2000/svg" aria-label="Grade de construção do lockup horizontal"
+           style="--gridline: var(--brand-500); --mark: var(--ink-50);">
+        <!-- clear-space frame: 1X all around -->
+        <g style="stroke: var(--brand-500);" stroke-width="1.4" fill="none" stroke-dasharray="6 4">
+          <rect x="62" y="62" width="976" height="236"/>
+          <rect x="30" y="30" width="1040" height="300"/>
+        </g>
+        <!-- 1X markers -->
+        <g style="fill: var(--brand-500);" font-family="JetBrains Mono, monospace" font-size="12">
+          <text x="46" y="200">1X</text>
+          <text x="1050" y="200">1X</text>
+          <text x="550" y="22">1X</text>
+          <text x="550" y="350">1X</text>
+        </g>
+        <!-- The lockup -->
+        <g transform="translate(62 62)">
+          <svg viewBox="0 0 1100 280" width="976" height="236" preserveAspectRatio="xMidYMid meet">
+            <g style="fill: var(--ink-50); stroke: var(--ink-50);">
+              <g transform="translate(30 50) scale(0.2898550724637681)"><use href="#vs-glyph"/></g>
+              <text x="717.03" y="155" text-anchor="middle" font-family="Montserrat, 'Helvetica Neue', Arial, sans-serif" font-weight="800" font-size="72" letter-spacing="3">VINÍCIUS SOUZA</text>
+              <g>
+                <line x1="524" y1="198" x2="552" y2="198" stroke-width="2.2" stroke-linecap="round"/>
+                <line x1="882" y1="198" x2="910" y2="198" stroke-width="2.2" stroke-linecap="round"/>
+              </g>
+              <text x="717.03" y="206" text-anchor="middle" font-family="Montserrat, 'Helvetica Neue', Arial, sans-serif" font-weight="700" font-size="36" letter-spacing="6">FOTOGRAFIA</text>
+            </g>
+          </svg>
+        </g>
+        <!-- baseline -->
+        <g style="stroke: var(--brand-500);" stroke-width="0.6" stroke-dasharray="2 3" opacity="0.7">
+          <line x1="62" y1="190" x2="1038" y2="190"/>
+        </g>
+        <text x="62" y="184" font-family="JetBrains Mono, monospace" font-size="10" style="fill: var(--brand-500);">baseline · wordmark</text>
+      </svg>
+      <div class="legend">
+        <div><b>Clear-space</b> — mínimo de 1 X em todos os lados; nenhum elemento gráfico cruza a moldura tracejada.</div>
+        <div><b>Alinhamento</b> — descritor centralizado horizontalmente sob o wordmark, com -2X abaixo da baseline.</div>
+        <div><b>Tracking</b> — wordmark +0.04em (3 / 72); descritor +0.083em (6 / 72).</div>
+      </div>
+    </div>
+
+    <div class="min-row">
+      <div class="min-card">
+        <p class="min-eyebrow">Tamanho mínimo · digital</p>
+        <p class="min-value">160 px</p>
+        <p class="min-context">Largura mínima do lockup horizontal em tela. Abaixo disso, usar o monograma sozinho.</p>
+      </div>
+      <div class="min-card">
+        <p class="min-eyebrow">Tamanho mínimo · impresso</p>
+        <p class="min-value">28 mm</p>
+        <p class="min-context">Largura mínima do lockup horizontal em papel. Cartões, etiquetas, faixas adesivas.</p>
+      </div>
+      <div class="min-card">
+        <p class="min-eyebrow">Monograma · digital</p>
+        <p class="min-value">24 px</p>
+        <p class="min-context">Mínimo absoluto. Favicon, app icon, marca-d'água miniatura.</p>
+      </div>
+      <div class="min-card">
+        <p class="min-eyebrow">Monograma · impresso</p>
+        <p class="min-value">8 mm</p>
+        <p class="min-context">Hot-stamping, gravação a laser, selo de relevo em capa dura.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · LOCKUP VARIANTS ──────────────────────────── -->
+  <section class="section" data-screen-label="Brand · Lockups">
+    <div class="section-head">
+      <div>
+        <span class="num">03 · Lockups</span>
+        <h2>Horizontal · empilhado · monograma · wordmark.</h2>
+        <p>Quatro variantes da marca-mãe. Use horizontal por padrão; recorra às outras só quando o espaço ou o contexto exigir.</p>
+      </div>
+    </div>
+    <div class="stage-grid cols-4">
+      <div class="stage">
+        <div class="canvas light"><svg class="lockup" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet"><use href="#lockup-horizontal-fot"/></svg></div>
+        <div class="meta"><span class="label">Horizontal</span><span class="hint">1100 × 280</span></div>
+      </div>
+      <div class="stage">
+        <div class="canvas light"><svg class="lockup" viewBox="0 0 520 480" preserveAspectRatio="xMidYMid meet" style="max-width:200px"><use href="#lockup-stacked-fot"/></svg></div>
+        <div class="meta"><span class="label">Empilhado</span><span class="hint">520 × 480</span></div>
+      </div>
+      <div class="stage">
+        <div class="canvas light"><svg class="lockup" viewBox="0 0 200 130" preserveAspectRatio="xMidYMid meet" style="max-width:120px"><use href="#lockup-monogram"/></svg></div>
+        <div class="meta"><span class="label">Monograma</span><span class="hint">200 × 130</span></div>
+      </div>
+      <div class="stage">
+        <div class="canvas light"><svg class="lockup" viewBox="0 0 820 200" preserveAspectRatio="xMidYMid meet" style="max-width:300px"><use href="#lockup-wordmark"/></svg></div>
+        <div class="meta"><span class="label">Wordmark</span><span class="hint">Símbolo já está na peça.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · ON-LIGHT vs ON-DARK ──────────────────────── -->
+  <section class="section" data-screen-label="Brand · On light vs on dark">
+    <div class="section-head">
+      <div>
+        <span class="num">04 · Fundo claro × fundo escuro</span>
+        <h2>Política de regime.</h2>
+        <p>A marca foi desenhada para o escuro — onde o produto vive. No claro, o monograma cai para <code class="type-mono">ink-50</code>; nunca para um cinza médio. Sobre foto, sempre com gradiente de scrim.</p>
+      </div>
+    </div>
+
+    <div class="stage-grid cols-3">
+      <div class="stage">
+        <div class="canvas dark"><svg class="lockup" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet"><use href="#lockup-horizontal-fot"/></svg></div>
+        <div class="meta"><span class="label">Sobre obsidian</span><span class="hint">ink-50 → bone</span></div>
+      </div>
+      <div class="stage">
+        <div class="canvas light"><svg class="lockup" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet"><use href="#lockup-horizontal-fot"/></svg></div>
+        <div class="meta"><span class="label">Sobre bone</span><span class="hint">bone → ink-50</span></div>
+      </div>
+      <div class="stage">
+        <div class="canvas bone"><svg class="lockup" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet"><use href="#lockup-horizontal-fot"/></svg></div>
+        <div class="meta"><span class="label">Sobre papel</span><span class="hint">sub-fotografia-500</span></div>
+      </div>
+    </div>
+
+    <div class="policy" style="margin-top: var(--space-5);">
+      <table>
+        <thead>
+          <tr>
+            <th></th><th>Fundo</th><th>Monograma + wordmark</th><th>Descritor (sub-marca)</th><th>Token</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="swatch"><span class="sw" style="background:var(--ink-50);"></span></td><td>Obsidian (app, hero)</td><td>Bone-white (ink-1000)</td><td>Sub-brand 500 (saturação plena)</td><td><code class="type-mono">ink-50 → ink-1000</code></td></tr>
+          <tr><td class="swatch"><span class="sw" style="background:var(--ink-100);"></span></td><td>Página padrão</td><td>Bone-white (ink-1000)</td><td>Sub-brand 500</td><td><code class="type-mono">ink-100 → ink-1000</code></td></tr>
+          <tr><td class="swatch"><span class="sw" style="background:var(--ink-1000); border-color:var(--ink-600);"></span></td><td>Papel bone (impresso)</td><td>Ink-50</td><td>Sub-brand 600 (mais saturação)</td><td><code class="type-mono">ink-1000 → ink-50</code></td></tr>
+          <!-- This row demonstrates the forbidden "pure white" surface.
+               var(--paper-bg) IS #ffffff (colors_and_type.css § 19), so
+               the visual stays identical while the demo also routes
+               through the token layer. Do NOT swap to --ink-1000 (bone). -->
+          <tr><td class="swatch"><span class="sw" style="background: var(--paper-bg); border-color: var(--ink-600);"></span></td><td>Branco puro (evitar)</td><td>Ink-50 — só se inevitável</td><td>Sub-brand 600</td><td><code class="type-mono">#fff (evitar)</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 5 · DON'TS ──────────────────────────────────── -->
+  <section class="section" data-screen-label="Brand · Don'ts">
+    <div class="section-head">
+      <div>
+        <span class="num">05 · Não faça</span>
+        <h2>Sete erros recorrentes.</h2>
+        <p>Tudo aqui foi reportado em uso real — não invenção. Se você se pegar fazendo qualquer um dos sete, refaça.</p>
+      </div>
+    </div>
+    <div class="stage-grid cols-3">
+
+      <div class="dont">
+        <div class="canvas">
+          <span class="x-tag">não</span>
+          <svg class="lockup" viewBox="0 0 1100 280" preserveAspectRatio="none" style="width:100%;height:140px"><use href="#lockup-horizontal-fot"/></svg>
+        </div>
+        <div class="body"><h4>Não distorça.</h4><p>Sempre <code class="type-mono">preserveAspectRatio="xMidYMid meet"</code>. Esticar é sinal de descuido.</p></div>
+      </div>
+
+      <div class="dont">
+        <div class="canvas">
+          <span class="x-tag">não</span>
+          <svg class="lockup" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet" style="color: var(--warning-500); max-width:280px"><use href="#lockup-horizontal-fot"/></svg>
+        </div>
+        <div class="body"><h4>Não recolora.</h4><p>Fora da paleta — âncora, sinal, sub-marcas, ink — a marca não existe.</p></div>
+      </div>
+
+      <div class="dont">
+        <div class="canvas">
+          <span class="x-tag">não</span>
+          <svg class="lockup" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet" style="max-width:280px; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.55));"><use href="#lockup-horizontal-fot"/></svg>
+        </div>
+        <div class="body"><h4>Não jogue sombra.</h4><p>A marca é plana. Drop-shadow, glow, embossing — todos proibidos.</p></div>
+      </div>
+
+      <div class="dont">
+        <div class="canvas">
+          <span class="x-tag">não</span>
+          <svg class="lockup" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet" style="max-width:280px; transform: rotate(-8deg);"><use href="#lockup-horizontal-fot"/></svg>
+        </div>
+        <div class="body"><h4>Não gire.</h4><p>O lockup é horizontal. Rotação só na variante vertical já desenhada.</p></div>
+      </div>
+
+      <div class="dont">
+        <div class="canvas" style="background-image: linear-gradient(135deg, var(--sub-esportes-500), var(--sub-natureza-500)); color: var(--ink-1000);">
+          <span class="x-tag">não</span>
+          <svg class="lockup" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet" style="max-width:280px"><use href="#lockup-horizontal-fot"/></svg>
+        </div>
+        <div class="body"><h4>Não use sobre gradiente cheio.</h4><p>Sobre foto: aplique scrim <code class="type-mono">linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.15))</code>.</p></div>
+      </div>
+
+      <div class="dont">
+        <div class="canvas" style="background-image: repeating-linear-gradient(45deg, var(--ink-300), var(--ink-300) 8px, var(--ink-500) 8px, var(--ink-500) 16px); color: var(--ink-1000);">
+          <span class="x-tag">não</span>
+          <svg class="lockup" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet" style="max-width:280px"><use href="#lockup-horizontal-fot"/></svg>
+        </div>
+        <div class="body"><h4>Não aplique sobre padrão.</h4><p>Listras, ruído, halftone, glitter. A marca precisa de um plano sólido por trás.</p></div>
+      </div>
+
+      <div class="dont">
+        <div class="canvas" style="background: var(--paper-bg); color: var(--ink-100);">
+          <span class="x-tag">não</span>
+          <svg class="lockup" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet" style="max-width:280px"><use href="#lockup-horizontal-fot"/></svg>
+        </div>
+        <div class="body"><h4>Sem superfície branca pura.</h4><p><code class="type-mono">var(--paper-bg)</code> proibido como background de logo. Use <code class="type-mono">--ink-50</code> ou um tom de papel quente quando on-light for inevitável.</p></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 6 · SUB-BRAND LOCKUPS ────────────────────────── -->
+  <section class="section" data-screen-label="Brand · Sub-brands">
+    <div class="section-head">
+      <div>
+        <span class="num">06 · Sub-marcas</span>
+        <h2>Esportes · Natureza · Editorial.</h2>
+        <p>O wordmark fica; o descritor troca; o acento puxa a rampa da sub-marca. As três verticais não competem com a mãe — herdam-na.</p>
+      </div>
+    </div>
+
+    <div class="subs">
+
+      <div class="sub fotografia">
+        <div class="canvas"><svg class="lockup" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet"><use href="#lockup-horizontal-fot"/></svg></div>
+        <div class="body">
+          <span class="pill"><span class="dot"></span>Fotografia</span>
+          <h4>Marca-mãe</h4>
+          <p>Portfólio geral, papelaria, papel timbrado. Use quando o trabalho não cabe em uma vertical específica — ou quando você quer assinar como autor, não como cobertura.</p>
+        </div>
+      </div>
+
+      <div class="sub editorial">
+        <div class="canvas"><svg class="lockup editorial" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet"><use href="#lockup-horizontal-edt"/></svg></div>
+        <div class="body">
+          <span class="pill"><span class="dot"></span>Editorial</span>
+          <h4>Editorial · azul-âncora</h4>
+          <p>Publicações, colaborações, ensaio autoral. O acento é o mesmo <code class="type-mono">brand-500</code> do produto — porque editorial <em>é</em> o tom-mãe do sistema.</p>
+        </div>
+      </div>
+
+      <div class="sub esportes">
+        <div class="canvas"><svg class="lockup esportes" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet"><use href="#lockup-horizontal-esp"/></svg></div>
+        <div class="body">
+          <span class="pill"><span class="dot"></span>Esportes</span>
+          <h4>Esportes · escarlate</h4>
+          <p>Rodeio, corrida, equestre, futebol, festival. Carmim dessaturado, nunca tomate vivo — para não brigar com a foto do atleta.</p>
+        </div>
+      </div>
+
+      <div class="sub natureza">
+        <div class="canvas"><svg class="lockup natureza" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet"><use href="#lockup-horizontal-nat"/></svg></div>
+        <div class="body">
+          <span class="pill"><span class="dot"></span>Natureza</span>
+          <h4>Natureza · floresta</h4>
+          <p>Paisagem, fauna, expedição. Verde floresta — distinto do <code class="type-mono">signal-500</code> que é reservado para dinheiro/confirmação.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 7 · COPY-PASTE SVG ──────────────────────────── -->
+  <section class="section" data-screen-label="Brand · SVG snippets">
+    <div class="section-head">
+      <div>
+        <span class="num">07 · Snippets prontos</span>
+        <h2>SVG inline, copia e cola.</h2>
+        <p>Todos os snippets usam <code class="type-mono">currentColor</code> para o monograma e classe de sub-marca para o descritor. O path canônico aparece uma única vez na página em <code class="type-mono">&lt;defs&gt;</code> e é reaproveitado via <code class="type-mono">&lt;use&gt;</code>.</p>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <header><span>Lockup horizontal · marca-mãe (FOTOGRAFIA)</span><b>copiar</b></header>
+<pre>&lt;svg class="lockup" viewBox="0 0 1100 280" preserveAspectRatio="xMidYMid meet"&gt;
+  &lt;g transform="translate(30 50) scale(0.2898550724637681)"&gt;
+    &lt;use href="#vs-glyph" fill="currentColor"/&gt;
+  &lt;/g&gt;
+  &lt;text x="717" y="155" text-anchor="middle"
+        font-family="var(--font-brand)" font-weight="800" font-size="72" letter-spacing="3"
+        fill="currentColor"&gt;VINÍCIUS SOUZA&lt;/text&gt;
+  &lt;g stroke="currentColor"&gt;
+    &lt;line x1="524" y1="198" x2="552" y2="198" stroke-width="2.2" stroke-linecap="round"/&gt;
+    &lt;line x1="882" y1="198" x2="910" y2="198" stroke-width="2.2" stroke-linecap="round"/&gt;
+  &lt;/g&gt;
+  &lt;text x="717" y="206" text-anchor="middle"
+        font-family="var(--font-brand)" font-weight="700" font-size="36" letter-spacing="6"
+        fill="currentColor"&gt;FOTOGRAFIA&lt;/text&gt;
+&lt;/svg&gt;</pre>
+    </div>
+
+    <div class="code-block">
+      <header><span>Sub-marca · EDITORIAL (azul-âncora)</span><b>copiar</b></header>
+<pre>&lt;svg class="lockup editorial" viewBox="0 0 1100 280"&gt;...&lt;/svg&gt;
+
+/* CSS — bind descritor à rampa da sub-marca */
+.lockup.editorial .descriptor,
+.lockup.editorial .descriptor-rule {
+  fill:   var(--sub-editorial-500);
+  stroke: var(--sub-editorial-500);
+}
+.lockup.esportes  .descriptor,
+.lockup.esportes  .descriptor-rule {
+  fill:   var(--sub-esportes-500);
+  stroke: var(--sub-esportes-500);
+}
+.lockup.natureza  .descriptor,
+.lockup.natureza  .descriptor-rule {
+  fill:   var(--sub-natureza-500);
+  stroke: var(--sub-natureza-500);
+}</pre>
+    </div>
+
+    <div class="code-block">
+      <header><span>Monograma · viewfinder (favicon, marca-d'água miniatura)</span><b>copiar</b></header>
+<pre>&lt;svg viewBox="0 0 980 621" class="lockup"&gt;
+  &lt;use href="#vs-glyph" fill="currentColor"/&gt;
+&lt;/svg&gt;
+
+&lt;!-- ou referenciando o arquivo canônico --&gt;
+&lt;img src="assets/logos/vs-monogram.svg" width="48" height="48"
+     alt="Vinícius Souza" /&gt;</pre>
+    </div>
+
+    <p style="font-size: var(--text-sm); color: var(--ink-800); line-height: var(--leading-relaxed); margin-top: var(--space-5);">
+      Arquivos canônicos prontos no disco — usados pelo <code class="type-mono">src/</code> e pelos mockups
+      <code class="type-mono">frontend-final/</code>:
+      <a href="assets/logos/vs-monogram.svg">assets/logos/vs-monogram.svg</a> ·
+      <a href="assets/logos/symbol.svg">symbol.svg</a> ·
+      <a href="assets/logos/wordmark.svg">wordmark.svg</a> ·
+      <a href="assets/logos/lockup-fotografia.svg">lockup-fotografia.svg</a>.
+    </p>
+  </section>
+
+  <footer data-screen-label="Brand · Footer">
+    <span>VINÍCIUS SOUZA · MARCA v2.0 · 2026-05-10</span>
+    <span><a href="index.html">Index</a> · <a href="voice-tone.html">Voz</a> · <a href="photography-style.html">Foto</a> · <a href="business-cards.html">Cartões</a></span>
+  </footer>
+
+</div>
+</body>
+</html>

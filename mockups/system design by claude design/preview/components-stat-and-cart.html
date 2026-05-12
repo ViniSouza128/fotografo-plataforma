@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>KPI + cart summary · preview</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; padding: var(--space-6); background: var(--ink-100); color: var(--ink-1000); font-family: var(--font-body); }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-4); align-items: start; }
+
+  /* Canonical .kpi contract — mirrors components-composite.html § 06. */
+  .kpi {
+    background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg);
+    padding: var(--space-5); display: grid; gap: var(--space-2);
+  }
+  .kpi .k-label {
+    font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest);
+    text-transform: uppercase; color: var(--ink-800); font-weight: 500;
+  }
+  .kpi .k-value {
+    font-family: var(--font-display); font-style: italic;
+    font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
+    font-size: var(--text-3xl); color: var(--ink-1000);
+    line-height: var(--leading-flat); letter-spacing: var(--tracking-snug);
+  }
+  .kpi .k-value.is-money { color: var(--signal-400); }
+  .kpi .k-delta {
+    font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: var(--text-xs);
+    color: var(--ink-800); display: inline-flex; align-items: center; gap: var(--space-1);
+  }
+  .kpi .k-delta.is-up   { color: var(--signal-400); }
+  .kpi .k-delta b { color: var(--ink-1000); font-weight: 500; }
+
+  /* Canonical .cart-summary contract — mirrors components-composite.html § 05. */
+  .cart-summary {
+    background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg);
+    padding: var(--space-5);
+  }
+  .cart-summary .cs-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: var(--space-3); padding-bottom: var(--space-3); border-bottom: 1px solid var(--ink-500);
+  }
+  .cart-summary .cs-head h4 {
+    font-family: var(--font-heading); font-size: var(--text-base); font-weight: 500;
+    color: var(--ink-1000); margin: 0; letter-spacing: var(--tracking-snug);
+  }
+  .cart-summary .cs-head .count { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); }
+  .cart-summary .cs-row {
+    display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-3);
+    padding: var(--space-2) 0; font-size: var(--text-sm); color: var(--ink-900);
+  }
+  .cart-summary .cs-row .label { font-family: var(--font-body); }
+  .cart-summary .cs-row .value { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--ink-1000); }
+  .cart-summary .cs-row.is-discount .value { color: var(--signal-400); }
+  .cart-summary .cs-total {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-top: var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--ink-500);
+  }
+  .cart-summary .cs-total .label {
+    font-family: var(--font-heading); font-size: var(--text-base); font-weight: 500; color: var(--ink-1000);
+  }
+  .cart-summary .cs-total .value {
+    font-family: var(--font-display); font-style: italic;
+    font-variant-numeric: tabular-nums; font-size: var(--text-2xl);
+    color: var(--ink-1000); letter-spacing: var(--tracking-snug);
+  }
+</style>
+</head>
+<body>
+  <div class="grid">
+    <div class="kpi">
+      <span class="k-label">Total de fotos</span>
+      <span class="k-value">1 581</span>
+      <span class="k-delta">4 álbuns ativos</span>
+    </div>
+
+    <div class="kpi">
+      <span class="k-label">Receita · abril</span>
+      <span class="k-value is-money">R$ 10.088</span>
+      <span class="k-delta is-up"><b>+ 12,4%</b> vs março</span>
+    </div>
+
+    <aside class="cart-summary">
+      <div class="cs-head">
+        <h4>Resumo do carrinho</h4>
+        <span class="count">3 fotos</span>
+      </div>
+      <div class="cs-row"><span class="label">Subtotal</span><span class="value">R$ 84,00</span></div>
+      <div class="cs-row is-discount"><span class="label">Desconto progressivo · 10%</span><span class="value">− R$ 8,40</span></div>
+      <div class="cs-total"><span class="label">Total</span><span class="value">R$ 75,60</span></div>
+    </aside>
+  </div>
+</body>
+</html>

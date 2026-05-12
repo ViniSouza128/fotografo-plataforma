@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Event card · preview</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; padding: var(--space-6); background: var(--ink-100); color: var(--ink-1000); font-family: var(--font-body); }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+
+  /* Canonical .event-card contract — mirrors components-composite.html § 04. */
+  .event-card {
+    display: grid; grid-template-rows: auto max-content;
+    background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg);
+    overflow: hidden; cursor: pointer; position: relative;
+    transition: border-color var(--duration-base) var(--ease-out), transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out);
+  }
+  .event-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--brand-500); }
+  .event-card[data-sub="esportes"]::before  { background: var(--sub-esportes-500); }
+  .event-card[data-sub="natureza"]::before  { background: var(--sub-natureza-500); }
+  .event-card[data-sub="editorial"]::before { background: var(--sub-editorial-500); }
+  .event-card[data-sub="fotografia"]::before { background: var(--sub-fotografia-500); }
+  .event-card:hover { border-color: var(--brand-500); transform: translateY(-2px); box-shadow: 0 22px 48px -28px rgba(31,122,224,0.45); }
+
+  .ec-cover { aspect-ratio: 16/10; position: relative; overflow: hidden; background: var(--ink-200); }
+  .ec-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ec-cat {
+    position: absolute; top: var(--space-3); left: var(--space-3);
+    background: rgba(0,0,0,0.55); color: var(--brand-300);
+    font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase;
+    padding: var(--space-1) var(--space-3); border-radius: var(--radius-pill);
+    border: 1px solid rgba(31,122,224,0.30); backdrop-filter: blur(6px);
+  }
+
+  .ec-body { padding: var(--space-5); }
+  .ec-body h3 {
+    font-family: var(--font-heading); font-size: var(--text-xl); font-weight: 500;
+    margin: 0 0 var(--space-2); color: var(--ink-1000); letter-spacing: var(--tracking-snug);
+  }
+  .ec-meta {
+    display: flex; flex-wrap: wrap; gap: var(--space-3);
+    font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); letter-spacing: var(--tracking-snug);
+  }
+  .ec-meta span { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .ec-meta span + span::before { content: "·"; color: var(--ink-600); margin-right: var(--space-3); }
+</style>
+</head>
+<body>
+  <div class="grid">
+    <a class="event-card" data-sub="esportes">
+      <div class="ec-cover">
+        <img src="../assets/imagery/sample-event-01.jpg" alt="Capa · Abertura da Safra">
+        <span class="ec-cat">Rodeio</span>
+      </div>
+      <div class="ec-body">
+        <h3>Abertura da Safra</h3>
+        <div class="ec-meta">
+          <span>17 abr 2026</span>
+          <span>Itajá · GO</span>
+          <span>1 581 fotos</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="event-card" data-sub="editorial">
+      <div class="ec-cover">
+        <img src="../assets/imagery/sample-event-02.jpg" alt="Capa · Festival de Dança">
+        <span class="ec-cat">Festival</span>
+      </div>
+      <div class="ec-body">
+        <h3>Festival de Dança</h3>
+        <div class="ec-meta">
+          <span>02 abr 2026</span>
+          <span>Goiânia · GO</span>
+          <span>412 fotos</span>
+        </div>
+      </div>
+    </a>
+  </div>
+</body>
+</html>

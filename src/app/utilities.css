@@ -1,0 +1,131 @@
+/* ============================================================
+   ALERTS / TOASTS
+   ============================================================ */
+.alert {
+  padding: 0.85rem 1.1rem;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+}
+
+.alert-info {
+  background: var(--accent-dim);
+  border-color: rgba(201, 169, 110, 0.3);
+  color: var(--accent);
+}
+
+.alert-success {
+  background: var(--success-dim);
+  border-color: rgba(108, 196, 122, 0.3);
+  color: var(--success);
+}
+
+.alert-error {
+  background: var(--danger-dim);
+  border-color: rgba(217, 108, 108, 0.3);
+  color: var(--danger);
+}
+
+/* ============================================================
+   DIVISOR / UTILITÁRIOS
+   ============================================================ */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.5rem 0;
+}
+
+.text-muted { color: var(--text-muted); }
+.text-accent { color: var(--accent); }
+.text-center { text-align: center; }
+
+.flex { display: flex; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.gap-1 { gap: 0.5rem; }
+.gap-2 { gap: 1rem; }
+
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+
+/* --- Loading spinner --- */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(201, 169, 110, 0.2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   CONFIRMAÇÃO CUSTOM
+   ============================================================ */
+.confirm-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  background: rgba(0, 0, 0, 0.66);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.confirm-dialog {
+  width: min(100%, 460px);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 1.15rem 1.15rem 1rem;
+}
+
+.confirm-dialog-title {
+  font-family: var(--font-heading);
+  font-size: 1.02rem;
+  margin-bottom: 0.45rem;
+  color: var(--text);
+}
+
+.confirm-dialog-message {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 0.95rem;
+  white-space: pre-line;
+}
+
+.confirm-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.55rem;
+}
+
+/* ============================================================
+   BOTÃO: SALVO VS ALTERADO
+   ============================================================ */
+.btn-state-clean {
+  background: #404040 !important;
+  color: #d2d2d2 !important;
+  border: 1px solid #525252 !important;
+}
+
+.btn-state-clean:disabled {
+  opacity: 1 !important;
+}
+
+.btn-state-dirty {
+  background: var(--accent) !important;
+  color: #052010 !important;
+  border: 1px solid rgba(34, 197, 94, 0.38) !important;
+}

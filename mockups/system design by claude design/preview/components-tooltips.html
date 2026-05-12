@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Tooltips · 4 posições</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; padding: var(--space-12); background: var(--ink-100); color: var(--ink-1000); font-family: var(--font-body); }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-12); padding: var(--space-12) var(--space-6); }
+  .col { display: flex; flex-direction: column; align-items: center; gap: var(--space-3); }
+  .col .lbl { font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); }
+
+  .btn-icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 0; background: transparent; color: var(--ink-1000); border: 1px solid var(--ink-500); border-radius: var(--radius); cursor: pointer; }
+  .btn-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .tt-pair { position: relative; display: inline-flex; align-items: center; }
+  .tt { position: absolute; padding: var(--space-2) var(--space-3); background: var(--ink-50); color: var(--ink-1000); font-family: var(--font-body); font-size: var(--text-xs); border: 1px solid var(--ink-500); border-radius: var(--radius); white-space: nowrap; box-shadow: var(--shadow-2); pointer-events: none; }
+  .tt::after { content: ""; position: absolute; width: 8px; height: 8px; background: var(--ink-50); border: 1px solid var(--ink-500); transform: rotate(45deg); }
+  .tt.tt-top    { bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%); }
+  .tt.tt-top::after    { top: calc(100% - 5px); left: 50%; transform: translateX(-50%) rotate(45deg); border-top: 0; border-left: 0; }
+  .tt.tt-bottom { top: calc(100% + 10px); left: 50%; transform: translateX(-50%); }
+  .tt.tt-bottom::after { bottom: calc(100% - 5px); left: 50%; transform: translateX(-50%) rotate(45deg); border-bottom: 0; border-right: 0; }
+  .tt.tt-left   { right: calc(100% + 10px); top: 50%; transform: translateY(-50%); }
+  .tt.tt-left::after   { left: calc(100% - 5px); top: 50%; transform: translateY(-50%) rotate(45deg); border-bottom: 0; border-left: 0; }
+  .tt.tt-right  { left: calc(100% + 10px); top: 50%; transform: translateY(-50%); }
+  .tt.tt-right::after  { right: calc(100% - 5px); top: 50%; transform: translateY(-50%) rotate(45deg); border-top: 0; border-right: 0; }
+</style></head>
+<body>
+  <div class="grid">
+    <div class="col">
+      <span class="tt-pair">
+        <button class="btn-icon" aria-label="Info">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        </button>
+        <span class="tt tt-top">Tooltip top</span>
+      </span>
+      <span class="lbl">top</span>
+    </div>
+    <div class="col">
+      <span class="tt-pair">
+        <button class="btn-icon" aria-label="Info">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        </button>
+        <span class="tt tt-bottom">Tooltip bottom</span>
+      </span>
+      <span class="lbl">bottom</span>
+    </div>
+    <div class="col">
+      <span class="tt-pair">
+        <button class="btn-icon" aria-label="Info">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        </button>
+        <span class="tt tt-left">Tooltip left</span>
+      </span>
+      <span class="lbl">left</span>
+    </div>
+    <div class="col">
+      <span class="tt-pair">
+        <button class="btn-icon" aria-label="Info">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        </button>
+        <span class="tt tt-right">Tooltip right</span>
+      </span>
+      <span class="lbl">right</span>
+    </div>
+  </div>
+</body></html>

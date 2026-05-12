@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Body + UI type · preview</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; padding: var(--space-8); background: var(--ink-100); color: var(--ink-1000); font-family: var(--font-body); }
+
+  .row {
+    display: grid; grid-template-columns: 140px 1fr; gap: var(--space-6); align-items: baseline;
+    border-bottom: 1px solid var(--ink-300); padding: var(--space-3) 0;
+  }
+  .row:last-child { border-bottom: none; }
+  .label {
+    font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--ink-700); letter-spacing: var(--tracking-wide);
+  }
+  .body { font-family: var(--font-body); color: var(--ink-900); font-weight: 300; line-height: var(--leading-relaxed); }
+  .strong { font-weight: 500; color: var(--ink-1000); }
+  .mono { font-family: var(--font-mono); }
+  .eyebrow {
+    font-family: var(--font-body); font-size: var(--text-xs); letter-spacing: var(--tracking-widest);
+    text-transform: uppercase; color: var(--ink-800); font-weight: 500;
+  }
+</style>
+</head>
+<body>
+  <div class="row"><div class="label">xl · 24</div><div class="body" style="font-size: var(--text-xl);">Encontre suas fotos — sem marca d'água.</div></div>
+  <div class="row"><div class="label">lg · 20</div><div class="body" style="font-size: var(--text-lg);">Selecione as fotos que você quer levar para casa.</div></div>
+  <div class="row"><div class="label">md · 17</div><div class="body" style="font-size: var(--text-md);">Carrinho salvo localmente — retome a compra quando quiser.</div></div>
+  <div class="row"><div class="label">base · 15</div><div class="body" style="font-size: var(--text-base);">Body padrão. General Sans 300 · 1.65 leading — leitura confortável em galerias densas, sem chamar atenção do hero.</div></div>
+  <div class="row"><div class="label">sm · 13</div><div class="body" style="font-size: var(--text-sm);">Meta, captions, labels de tabela e estado vazio.</div></div>
+  <div class="row"><div class="label">xs · 12</div><div class="body" style="font-size: var(--text-xs);">Micro copy · timestamps · footer</div></div>
+  <div class="row"><div class="label">eyebrow</div><div class="eyebrow">Fotografia Profissional</div></div>
+  <div class="row"><div class="label">mono · 13</div><div class="body mono" style="font-size: var(--text-sm);">#A8F2-91D0 · R$ 35,00 · 2026-04-22T17:39</div></div>
+</body>
+</html>

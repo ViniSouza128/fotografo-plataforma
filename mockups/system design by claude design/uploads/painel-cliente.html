@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Mockup · Painel do Cliente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#0c0c0c; --bg-secondary:#141414; --bg-card:#1c1c1c; --bg-input:#222;
+  --border:#2e2e2e; --border-light:#3a3a3a;
+  --text:#ede8e0; --text-muted:#888880; --text-dim:#555550;
+  --accent:#22c55e; --accent-hover:#16a34a; --accent-dim:rgba(34,197,94,0.15);
+  --danger:#d96c6c; --danger-dim:rgba(217,108,108,0.15);
+  --success:#6cc47a; --success-dim:rgba(108,196,122,0.15);
+  --radius:6px; --radius-lg:12px;
+  --shadow:0 4px 24px rgba(0,0,0,0.5);
+  --font-heading:'Space Grotesk',sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.6;font-weight:300;-webkit-font-smoothing:antialiased}
+*{scrollbar-width:thin;scrollbar-color:var(--accent) var(--bg-secondary)}
+*::-webkit-scrollbar{width:10px;height:10px}
+*::-webkit-scrollbar-track{background:var(--bg-secondary)}
+*::-webkit-scrollbar-thumb{background:var(--accent);border-radius:999px;border:2px solid var(--bg-secondary)}
+*::-webkit-scrollbar-thumb:hover{background:var(--accent-hover)}
+h1,h2,h3,h4{font-family:var(--font-heading);font-weight:400;line-height:1.2;letter-spacing:0.02em}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+button{font-family:inherit}
+
+/* ===== BOTÕES ===== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.55rem 1.1rem;border-radius:var(--radius);font-family:var(--font-body);font-size:.85rem;font-weight:400;letter-spacing:.06em;cursor:pointer;border:none;transition:all .2s ease;text-decoration:none;color:inherit;background:transparent}
+.btn-primary{background:var(--accent);color:#03130a;font-weight:500;border-radius:6px;padding:.7rem 1rem}
+.btn-primary:hover{background:var(--accent-hover);transform:translateY(-1px)}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border-light)}
+.btn-secondary:hover{border-color:var(--text-muted);background:rgba(255,255,255,.04)}
+.btn-ghost{background:transparent;color:var(--text-muted);border:1px solid transparent}
+.btn-ghost:hover{color:var(--text);border-color:var(--border)}
+.btn-danger{background:var(--danger-dim);color:var(--danger);border:1px solid rgba(217,108,108,.3)}
+.btn-danger:hover{background:var(--danger);color:#fff}
+.btn-success{background:var(--success);color:#0a1a0c}
+.btn-success:hover{filter:brightness(1.1)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+.btn-sm{padding:.4rem .9rem;font-size:.78rem}
+.btn-lg{padding:.85rem 2rem;font-size:.95rem}
+.btn-full{width:100%}
+
+/* ===== FORM ===== */
+.form-group{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1.25rem}
+.form-label{font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted)}
+.form-input,.form-textarea,.form-select{background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font-body);font-size:.9rem;padding:.7rem 1rem;width:100%;transition:border-color .2s;outline:none}
+.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--accent)}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--text-dim)}
+.form-textarea{resize:vertical;min-height:100px}
+.form-select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;padding-right:2.5rem}
+
+/* ===== ALERTS ===== */
+.alert{padding:.85rem 1.1rem;border-radius:var(--radius);font-size:.85rem;margin-bottom:1rem;border:1px solid transparent}
+.alert-info{background:var(--accent-dim);border-color:rgba(34,197,94,.3);color:var(--accent)}
+.alert-success{background:var(--success-dim);border-color:rgba(108,196,122,.3);color:var(--success)}
+.alert-error{background:var(--danger-dim);border-color:rgba(217,108,108,.3);color:var(--danger)}
+.alert-warning{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.35);color:#f59e0b}
+
+/* ===== UTIL ===== */
+.divider{border:none;border-top:1px solid var(--border);margin:1.5rem 0}
+.text-muted{color:var(--text-muted)}.text-accent{color:var(--accent)}.text-center{text-align:center}
+.flex{display:flex}.flex-between{display:flex;justify-content:space-between;align-items:center}.flex-center{display:flex;align-items:center;justify-content:center}
+.gap-1{gap:.5rem}.gap-2{gap:1rem}
+.mt-1{margin-top:.5rem}.mt-2{margin-top:1rem}.mt-3{margin-top:1.5rem}
+.mb-2{margin-bottom:1rem}.mb-3{margin-bottom:1.5rem}
+.spinner{width:20px;height:20px;border:2px solid rgba(34,197,94,.2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.empty-state{text-align:center;padding:5rem 2rem;color:var(--text-muted)}
+.empty-state-icon{font-size:3.5rem;margin-bottom:1rem;opacity:.4}
+.empty-state-title{font-family:var(--font-heading);font-size:1.6rem;color:var(--text-dim);margin-bottom:.5rem}
+
+/* ===== MINHA CONTA NAVBAR ===== */
+.mc-shell{min-height:100vh;background:var(--bg)}
+.mc-navbar{position:sticky;top:0;z-index:120;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.75rem;min-height:60px;padding:.75rem 1rem;background:rgba(12,12,12,.94);border-bottom:1px solid var(--border);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.mc-back-link{display:inline-flex;align-items:center;gap:.45rem;padding:.45rem .8rem;border-radius:var(--radius);background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-muted);font-size:.82rem;font-weight:500;text-decoration:none;white-space:nowrap;transition:border-color .15s,color .15s,background .15s;cursor:pointer}
+.mc-back-link:hover{color:var(--text);border-color:var(--border-light);background:var(--bg-card)}
+.mc-title-wrap{min-width:0;display:flex;justify-content:center;align-items:center;overflow:hidden}
+.mc-title{font-family:var(--font-heading);font-size:1rem;font-weight:500;letter-spacing:.02em;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mc-menu-wrap{position:relative;flex-shrink:0}
+.mc-menu-button{width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-secondary);color:var(--text);font-size:1rem;cursor:pointer;transition:border-color .15s,background .15s,transform .15s}
+.mc-menu-button:hover,.mc-menu-button.is-open{background:var(--bg-card);border-color:var(--border-light)}
+.mc-menu-overlay{position:fixed;inset:0;z-index:119;border:0;padding:0;background:rgba(0,0,0,.35);cursor:default}
+.mc-menu-panel{position:absolute;right:0;top:calc(100% + .5rem);z-index:120;width:min(320px,calc(100vw - 1rem));padding:.85rem;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--bg-card);box-shadow:0 20px 40px rgba(0,0,0,.45);animation:slideUp .18s ease}
+.mc-menu-header{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;padding-bottom:.8rem;margin-bottom:.75rem;border-bottom:1px solid var(--border)}
+.mc-menu-user{font-size:.92rem;font-weight:600;color:var(--text)}
+.mc-menu-email{margin-top:.15rem;font-size:.72rem;color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mc-menu-pill{flex-shrink:0;padding:.18rem .55rem;border-radius:999px;background:var(--accent-dim);color:var(--accent);font-size:.68rem;font-weight:600;white-space:nowrap}
+.mc-menu-list{display:flex;flex-direction:column;gap:.35rem}
+.mc-menu-item{display:flex;align-items:center;min-height:42px;padding:.65rem .8rem;border-radius:var(--radius);color:var(--text-muted);text-decoration:none;background:transparent;transition:background .15s,color .15s;cursor:pointer;border:none;width:100%;text-align:left;font-family:inherit;font-size:.88rem}
+.mc-menu-item:hover,.mc-menu-item.is-active{background:var(--bg-secondary);color:var(--text)}
+.mc-menu-footer{display:flex;flex-direction:column;gap:.5rem;margin-top:.8rem;padding-top:.8rem;border-top:1px solid var(--border)}
+.mc-menu-admin,.mc-menu-logout{display:flex;align-items:center;justify-content:center;min-height:42px;padding:.6rem .8rem;border-radius:var(--radius);font-size:.84rem;text-decoration:none;cursor:pointer;font-family:inherit}
+.mc-menu-admin{border:1px solid rgba(34,197,94,.25);background:var(--accent-dim);color:var(--accent)}
+.mc-menu-logout{border:1px solid rgba(220,38,38,.32);background:rgba(220,38,38,.12);color:#ef4444}
+.mc-logout-backdrop{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);animation:fadeIn .2s ease}
+.mc-logout-modal{width:min(360px,100%);padding:2rem;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--bg-card);text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.5);animation:slideUp .2s ease}
+.mc-logout-title{font-family:var(--font-heading);font-size:1.2rem;color:var(--text)}
+.mc-logout-text{margin-top:.5rem;font-size:.85rem;color:var(--text-muted);line-height:1.5}
+.mc-logout-actions{display:flex;gap:.75rem;margin-top:1.75rem}
+.mc-logout-cancel,.mc-logout-confirm{flex:1;min-height:42px;border-radius:var(--radius);border:1px solid transparent;cursor:pointer;font-size:.88rem;font-weight:600;font-family:inherit}
+.mc-logout-cancel{background:var(--bg-secondary);border-color:var(--border);color:var(--text-muted)}
+.mc-logout-confirm{background:rgba(220,38,38,.2);border-color:rgba(220,38,38,.45);color:#ef4444}
+.mc-main{max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
+
+/* ===== Mockup label badge ===== */
+.mock-flag{position:fixed;bottom:1rem;left:1rem;z-index:9999;background:rgba(34,197,94,.18);color:var(--accent);border:1px solid rgba(34,197,94,.35);padding:.35rem .8rem;border-radius:999px;font-size:.7rem;letter-spacing:.05em;font-weight:600;backdrop-filter:blur(8px);pointer-events:none}
+
+/* ===== STAT CARDS ===== */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2.5rem}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;cursor:pointer;text-decoration:none;color:inherit;display:block;transition:border-color .2s,transform .2s,box-shadow .2s}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.stat-card[data-color="cyan"]:hover{border-color:#22d3ee}
+.stat-card[data-color="accent"]:hover{border-color:var(--accent)}
+.stat-card[data-color="blue"]:hover{border-color:#60a5fa}
+.stat-card[data-color="amber"]:hover{border-color:#f59e0b}
+.stat-card[data-color="orange"]:hover{border-color:#f97316}
+.stat-card[data-color="pink"]:hover{border-color:#ec4899}
+.stat-label{color:var(--text-muted);font-size:.8rem;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.05em}
+.stat-value{font-family:var(--font-heading);font-size:2rem;font-weight:500}
+.stat-value.cyan{color:#22d3ee}.stat-value.accent{color:var(--accent)}.stat-value.blue{color:#60a5fa}.stat-value.amber{color:#f59e0b}.stat-value.orange{color:#f97316}.stat-value.pink{color:#ec4899}
+
+/* ===== PAGES ===== */
+.page{display:none;animation:fadeIn .25s ease}
+.page.active{display:block}
+
+.section-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:2rem}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;gap:1rem;flex-wrap:wrap}
+.section-title{font-family:var(--font-heading);font-size:1.2rem}
+.welcome-title{font-family:var(--font-heading);font-size:2rem;margin-bottom:.25rem}
+.welcome-sub{color:var(--text-muted);font-size:.9rem}
+
+/* Pedido recente */
+.recent-pedido{display:flex;align-items:center;justify-content:space-between;padding:.95rem 1rem;background:var(--bg-secondary);border-radius:var(--radius);gap:1rem;flex-wrap:wrap;text-decoration:none;border:1px solid transparent;transition:border-color .2s,transform .2s;cursor:pointer;color:inherit}
+.recent-pedido:hover{border-color:var(--border);transform:translateY(-1px)}
+.thumb-grid-2x2{display:grid;grid-template-columns:repeat(2,36px);grid-template-rows:repeat(2,28px);gap:4px;padding:4px;background:var(--bg-input);border-radius:10px;border:1px solid var(--border);flex-shrink:0}
+.thumb-grid-2x2 .thumb{width:36px;height:28px;border-radius:6px;overflow:hidden;background:var(--bg-secondary)}
+.status-badge{font-size:.75rem;padding:.2rem .6rem;border-radius:100px;font-weight:500}
+.status-pago{background:var(--success-dim);color:var(--success)}
+.status-pendente{background:rgba(245,158,11,.15);color:#f59e0b}
+.status-cancelado{background:var(--danger-dim);color:var(--danger)}
+.status-reembolso{background:rgba(168,85,247,.15);color:#a855f7}
+
+/* Compras (acordeão) */
+.order-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;transition:border-color .2s}
+.order-card.open{border-color:var(--accent)}
+.order-head{width:100%;display:flex;align-items:center;padding:1.25rem 1.5rem;background:transparent;border:none;cursor:pointer;flex-wrap:wrap;gap:1rem;font-family:inherit;color:inherit;text-align:left}
+.order-id{font-family:var(--font-heading);font-size:1rem;color:var(--accent)}
+.order-meta{font-size:.82rem;color:var(--text-dim);margin-top:.15rem}
+.order-previews{display:flex;gap:4px}
+.order-preview{width:46px;height:34px;border-radius:6px;overflow:hidden;background:var(--bg-input);border:1px solid var(--border)}
+.order-preview.more{display:flex;align-items:center;justify-content:center;font-size:.72rem;color:var(--text-dim);background:var(--bg-input)}
+.order-total{font-family:var(--font-heading);font-size:1.05rem}
+.chev{font-size:.8rem;color:var(--text-dim);transition:transform .2s}
+.order-card.open .chev{transform:rotate(180deg)}
+.order-body{display:none;border-top:1px solid var(--border);padding:1.25rem 1.5rem;background:var(--bg-secondary)}
+.order-card.open .order-body{display:block;animation:slideUp .2s ease}
+.order-item{display:flex;align-items:center;justify-content:space-between;padding:.75rem;background:var(--bg-card);border-radius:var(--radius);gap:.75rem;flex-wrap:wrap;margin-bottom:.6rem}
+.order-item-thumb{width:56px;height:42px;object-fit:cover;border-radius:4px;background:var(--bg-input);flex-shrink:0}
+.summary-card{margin-bottom:1rem;padding:.9rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-card)}
+.summary-row{display:flex;justify-content:space-between;font-size:.9rem;padding:.15rem 0}
+.summary-row.total{font-size:.95rem;margin-top:.35rem;padding-top:.35rem;border-top:1px dashed var(--border)}
+.summary-row.total strong{color:var(--accent)}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.35rem 1rem;margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--border);font-size:.8rem;color:var(--text-dim)}
+
+/* Comentários */
+.comment-card{padding:.9rem 1rem;background:var(--bg-secondary);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:.75rem}
+.comment-card.hidden{border-color:rgba(239,68,68,.25);opacity:.85}
+.comment-meta-row{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.45rem}
+.badge{font-size:.72rem;padding:.1rem .45rem;border-radius:100px;display:inline-flex;align-items:center}
+.badge-scope{color:var(--accent);background:var(--accent-dim)}
+.badge-reply{color:var(--text-dim);background:var(--bg-input)}
+.badge-visible{color:var(--success);background:var(--success-dim)}
+.badge-hidden{color:var(--danger);background:var(--danger-dim)}
+.badge-edited{color:#93c5fd;background:rgba(59,130,246,.15)}
+.badge-edited-self{color:var(--text-dim);background:var(--bg-input)}
+.comment-context{display:flex;gap:.75rem;align-items:center;margin-bottom:.55rem;flex-wrap:wrap}
+.comment-thumb{width:48px;height:48px;border-radius:12px;border:1px solid var(--border);background:var(--bg-input);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--text-dim)}
+.comment-context-info{flex:1;min-width:220px;font-size:.78rem;color:var(--text-dim)}
+.comment-context-info strong{color:var(--text-muted)}
+.comment-text{color:var(--text);font-size:.86rem;line-height:1.5;white-space:pre-wrap}
+
+/* Filtros */
+.filter-bar{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;margin-bottom:1.2rem}
+.filter-group{display:inline-flex;align-items:center;gap:.4rem}
+.filter-label{font-size:.76rem;color:var(--text-muted)}
+
+/* Carrinho */
+.cart-layout{display:grid;grid-template-columns:1fr 340px;gap:2rem;align-items:start}
+@media(max-width:900px){.cart-layout{grid-template-columns:1fr}}
+.cart-items-list{display:flex;flex-direction:column;gap:1rem}
+.cart-item{display:flex;gap:1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;align-items:center;cursor:pointer;transition:border-color .2s,transform .2s}
+.cart-item:hover{border-color:var(--accent);transform:translateY(-1px)}
+.cart-item-thumb{width:80px;height:60px;border-radius:4px;overflow:hidden;flex-shrink:0;background:var(--bg-secondary)}
+.cart-item-info{flex:1}
+.cart-item-name{font-size:.85rem;color:var(--text);margin-bottom:.25rem}
+.cart-item-event{font-size:.75rem;color:var(--text-muted)}
+.cart-item-price{font-family:var(--font-heading);font-size:1.2rem;color:var(--accent);white-space:nowrap}
+.cart-summary-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.75rem;position:sticky;top:80px}
+.cart-summary-title{font-family:var(--font-heading);font-size:1.3rem;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.cart-summary-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;font-size:.88rem}
+.cart-summary-row.total{font-family:var(--font-heading);font-size:1.4rem;color:var(--accent);margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);margin-bottom:1.5rem}
+
+/* Favoritos / fotos */
+.album-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.85rem;margin-bottom:2rem}
+.album-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:.85rem;transition:border-color .2s,transform .2s}
+.album-card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.album-cover{aspect-ratio:16/10;border-radius:var(--radius);background:var(--bg-input);overflow:hidden;margin-bottom:.5rem}
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-bottom:2rem}
+.photo-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .2s}
+.photo-card:hover{border-color:var(--accent)}
+.photo-img{padding-top:75%;background:var(--bg-input);position:relative;overflow:hidden}
+.photo-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
+.photo-card:hover .photo-img img{transform:scale(1.05)}
+.photo-info{padding:.75rem}
+.photo-info-row{display:flex;justify-content:space-between;margin-bottom:.5rem;font-size:.8rem}
+
+/* Remoções */
+.rem-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.1rem;margin-bottom:1rem}
+.rem-head{display:flex;justify-content:space-between;gap:.75rem;flex-wrap:wrap;align-items:flex-start;margin-bottom:.65rem}
+.rem-body{display:grid;grid-template-columns:auto 1fr;gap:.8rem;align-items:center}
+.rem-thumb{width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid var(--border);background:var(--bg-input)}
+.note-fotografo{margin-top:.65rem;background:rgba(59,130,246,.12);border-radius:var(--radius);padding:.65rem .75rem;color:#3b82f6;font-size:.88rem}
+.note-cliente{margin-top:.65rem;background:rgba(245,158,11,.1);border-radius:var(--radius);padding:.65rem .75rem;color:#f59e0b;font-size:.86rem;white-space:pre-wrap}
+
+/* Configurações */
+.settings-shell{max-width:760px}
+.settings-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;display:flex;flex-direction:column;gap:1rem;margin-bottom:1.75rem}
+.btn-state-clean{background:#404040!important;color:#d2d2d2!important;border:1px solid #525252!important}
+.btn-state-dirty{background:var(--accent)!important;color:#052010!important;border:1px solid rgba(34,197,94,.38)!important}
+.password-wrapper{position:relative}
+.password-wrapper .form-input{padding-right:3rem}
+.password-toggle{position:absolute;right:.6rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.8rem;font-family:inherit}
+.field-grid-2{display:grid;grid-template-columns:minmax(240px,2fr) minmax(120px,.8fr);gap:.5rem}
+.field-grid-3{display:grid;grid-template-columns:minmax(140px,1fr) minmax(140px,1fr) minmax(100px,.65fr);gap:.5rem}
+.helper{font-size:.72rem;color:var(--text-dim);margin-top:.2rem}
+
+/* Placeholder thumbs (gradient) */
+.ph{background:linear-gradient(135deg,#1f2937 0%,#374151 50%,#0f172a 100%);position:relative}
+.ph::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(34,197,94,.08),transparent 60%)}
+.ph-1{background:linear-gradient(135deg,#1e3a8a,#1e40af 60%,#0c4a6e)}
+.ph-2{background:linear-gradient(135deg,#831843,#9d174d 60%,#581c87)}
+.ph-3{background:linear-gradient(135deg,#365314,#3f6212 60%,#14532d)}
+.ph-4{background:linear-gradient(135deg,#7c2d12,#9a3412 60%,#4a044e)}
+.ph-5{background:linear-gradient(135deg,#0f766e,#155e75 60%,#1e3a8a)}
+.ph-6{background:linear-gradient(135deg,#a16207,#ca8a04 60%,#7c2d12)}
+.ph-7{background:linear-gradient(135deg,#475569,#334155 60%,#1e293b)}
+.ph-8{background:linear-gradient(135deg,#86198f,#7e22ce 60%,#4338ca)}
+
+@media(max-width:768px){
+  .mc-navbar{grid-template-columns:auto 1fr auto;min-height:56px;padding:.65rem .85rem;gap:.5rem}
+  .mc-back-link{padding:.4rem .65rem;font-size:.78rem}
+  .mc-title{font-size:.95rem}
+  .mc-menu-panel{width:calc(100vw - 1rem)}
+  .mc-main{padding:1.5rem 1rem}
+  .field-grid-2,.field-grid-3{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="mc-shell">
+  <nav class="mc-navbar" aria-label="Navegação principal">
+    <a href="painel-fotografo.html" class="mc-back-link" title="Abre o mockup do painel do fotógrafo">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Voltar ao site</span>
+    </a>
+    <div class="mc-title-wrap"><span class="mc-title">Área do cliente</span></div>
+    <div class="mc-menu-wrap">
+      <button type="button" class="mc-menu-button" id="menuBtn" aria-label="Abrir menu" aria-expanded="false">☰</button>
+    </div>
+  </nav>
+
+  <main class="mc-main">
+
+    <!-- =========== INÍCIO =========== -->
+    <section class="page active" data-page="inicio">
+      <div style="margin-bottom:2rem">
+        <h1 class="welcome-title">Olá, Marina!</h1>
+        <p class="welcome-sub">Veja um resumo da sua conta</p>
+      </div>
+
+      <div class="stat-grid">
+        <a class="stat-card" data-color="cyan" data-goto="carrinho"><p class="stat-label">Itens no Carrinho</p><p class="stat-value cyan">3</p></a>
+        <a class="stat-card" data-color="accent" data-goto="compras"><p class="stat-label">Total de Compras</p><p class="stat-value accent">7</p></a>
+        <a class="stat-card" data-color="blue" data-goto="compras"><p class="stat-label">Fotos Compradas</p><p class="stat-value blue">42</p></a>
+        <a class="stat-card" data-color="amber" data-goto="favoritos"><p class="stat-label">Fotos Salvas</p><p class="stat-value amber">18</p></a>
+        <a class="stat-card" data-color="orange" data-goto="favoritos"><p class="stat-label">Álbuns Salvos</p><p class="stat-value orange">2</p></a>
+        <a class="stat-card" data-color="pink" data-goto="favoritos"><p class="stat-label">Fotos Curtidas</p><p class="stat-value pink">63</p></a>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head">
+          <h2 class="section-title">Compras Recentes</h2>
+          <a class="text-accent" data-goto="compras" style="cursor:pointer;font-size:.85rem">Ver todas</a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.85rem">
+          <a class="recent-pedido" data-goto="compras">
+            <div style="display:flex;align-items:center;gap:.85rem;flex:1 1 360px">
+              <div class="thumb-grid-2x2">
+                <div class="thumb ph ph-1"></div><div class="thumb ph ph-2"></div>
+                <div class="thumb ph ph-3"></div><div class="thumb ph ph-4"></div>
+              </div>
+              <div>
+                <p style="font-size:.9rem;color:var(--text)">Pedido <span style="color:var(--accent)">#A47C2D</span></p>
+                <p style="font-size:.75rem;color:var(--text-dim)">14/04/2026 19:32 — 6 fotos</p>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:1rem">
+              <span class="status-badge status-pago">Pago</span>
+              <span style="font-family:var(--font-heading);font-size:.95rem;color:var(--text)">R$ 240,00</span>
+            </div>
+          </a>
+          <a class="recent-pedido" data-goto="compras">
+            <div style="display:flex;align-items:center;gap:.85rem;flex:1 1 360px">
+              <div class="thumb-grid-2x2">
+                <div class="thumb ph ph-5"></div><div class="thumb ph ph-6"></div>
+                <div class="thumb ph ph-7"></div><div class="thumb ph ph-8"></div>
+              </div>
+              <div>
+                <p style="font-size:.9rem;color:var(--text)">Pedido <span style="color:var(--accent)">#9F1B33</span></p>
+                <p style="font-size:.75rem;color:var(--text-dim)">02/04/2026 11:08 — 4 fotos</p>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:1rem">
+              <span class="status-badge status-pendente">Pagamento pendente</span>
+              <span style="font-family:var(--font-heading);font-size:.95rem;color:var(--text)">R$ 160,00</span>
+            </div>
+          </a>
+          <a class="recent-pedido" data-goto="compras">
+            <div style="display:flex;align-items:center;gap:.85rem;flex:1 1 360px">
+              <div class="thumb-grid-2x2">
+                <div class="thumb ph ph-2"></div><div class="thumb ph ph-3"></div>
+                <div class="thumb ph ph-1"></div><div class="thumb ph ph-5"></div>
+              </div>
+              <div>
+                <p style="font-size:.9rem;color:var(--text)">Pedido <span style="color:var(--accent)">#7E0049</span></p>
+                <p style="font-size:.75rem;color:var(--text-dim)">25/03/2026 16:51 — 12 fotos</p>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:1rem">
+              <span class="status-badge status-pago">Pago</span>
+              <span style="font-family:var(--font-heading);font-size:.95rem;color:var(--text)">R$ 480,00</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head">
+          <div style="display:flex;align-items:baseline;gap:.75rem">
+            <h2 class="section-title">Seus Comentários</h2>
+            <span style="color:var(--text-dim);font-size:.82rem">3 registros</span>
+          </div>
+          <a class="btn btn-ghost btn-sm" data-goto="comentarios">Ver todos</a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.75rem">
+          <div class="comment-card">
+            <div class="comment-meta-row">
+              <span class="badge badge-scope">Foto</span>
+              <span class="badge badge-visible">Visível no site</span>
+              <span style="font-size:.72rem;color:var(--text-dim);margin-left:auto">11/04/2026</span>
+            </div>
+            <div class="comment-context">
+              <div class="comment-thumb ph ph-3"></div>
+              <div class="comment-context-info">
+                <strong>Álbum:</strong> Casamento Marina &amp; Léo &nbsp;
+                <strong>Pasta:</strong> Cerimônia &nbsp;
+                <strong>Curtidas:</strong> 4
+              </div>
+            </div>
+            <p class="comment-text">Essa foto ficou maravilhosa! Capturou exatamente o momento do "sim". Obrigada Vinícius!</p>
+          </div>
+          <div class="comment-card hidden">
+            <div class="comment-meta-row">
+              <span class="badge badge-scope">Pasta</span>
+              <span class="badge badge-hidden">Omitido por você</span>
+              <span class="badge badge-edited-self">Editado</span>
+              <span style="font-size:.72rem;color:var(--text-dim);margin-left:auto">28/03/2026</span>
+            </div>
+            <div class="comment-context">
+              <div class="comment-thumb ph ph-7"></div>
+              <div class="comment-context-info">
+                <strong>Álbum:</strong> Aniversário 30 anos &nbsp;
+                <strong>Pasta:</strong> Festa &nbsp;
+                <strong>Curtidas:</strong> 1
+              </div>
+            </div>
+            <p class="comment-text">As fotos da festa ficaram incríveis, mas faltou cobertura da chegada dos convidados.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========== COMPRAS =========== -->
+    <section class="page" data-page="compras">
+      <div style="margin-bottom:1.5rem">
+        <h1 style="font-family:var(--font-heading);font-size:1.8rem;margin-bottom:.25rem">Minhas Compras</h1>
+        <p style="color:var(--text-muted);font-size:.9rem">7 pedidos encontrados</p>
+      </div>
+
+      <div class="order-card open">
+        <button class="order-head">
+          <div style="flex:1 1 280px">
+            <div class="order-id">#A47C2D</div>
+            <div class="order-meta">14/04/2026 19:32 · 6 fotos</div>
+          </div>
+          <div class="order-previews">
+            <div class="order-preview ph ph-1"></div>
+            <div class="order-preview ph ph-2"></div>
+            <div class="order-preview ph ph-3"></div>
+            <div class="order-preview more">+3</div>
+          </div>
+          <span class="status-badge status-pago" style="text-transform:uppercase;letter-spacing:.05em">Pago</span>
+          <span class="order-total">R$ 240,00</span>
+          <span class="chev">▼</span>
+        </button>
+        <div class="order-body">
+          <div style="margin-bottom:1rem">
+            <div class="order-item">
+              <div style="display:flex;align-items:center;gap:.75rem">
+                <div class="order-item-thumb ph ph-1"></div>
+                <div>
+                  <div style="font-size:.85rem;color:var(--text)">Casamento Marina &amp; Léo<span style="color:var(--accent);font-size:.75rem;margin-left:.4rem">#F0021A</span></div>
+                  <div style="font-size:.72rem;color:var(--accent);margin-top:.1rem">R$ 40,00</div>
+                </div>
+              </div>
+              <button class="btn btn-sm" style="background:var(--accent-dim);color:var(--accent);font-size:.78rem">⬇ Baixar Original</button>
+            </div>
+            <div class="order-item">
+              <div style="display:flex;align-items:center;gap:.75rem">
+                <div class="order-item-thumb ph ph-2"></div>
+                <div>
+                  <div style="font-size:.85rem;color:var(--text)">Casamento Marina &amp; Léo<span style="color:var(--accent);font-size:.75rem;margin-left:.4rem">#F0021B</span></div>
+                  <div style="font-size:.72rem;color:var(--accent);margin-top:.1rem">R$ 40,00</div>
+                </div>
+              </div>
+              <button class="btn btn-sm" style="background:var(--accent-dim);color:var(--accent);font-size:.78rem">⬇ Baixar Original</button>
+            </div>
+            <div class="order-item">
+              <div style="display:flex;align-items:center;gap:.75rem">
+                <div class="order-item-thumb ph ph-3"></div>
+                <div>
+                  <div style="font-size:.85rem;color:var(--text)">Casamento Marina &amp; Léo<span style="color:var(--accent);font-size:.75rem;margin-left:.4rem">#F0021C</span></div>
+                  <div style="font-size:.72rem;color:var(--accent);margin-top:.1rem">R$ 40,00</div>
+                </div>
+              </div>
+              <button class="btn btn-sm" style="background:var(--accent-dim);color:var(--accent);font-size:.78rem">⬇ Baixar Original</button>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.4rem">Resumo do pedido</div>
+            <div class="summary-row"><span>Subtotal (6 fotos)</span><span>R$ 240,00</span></div>
+            <div class="summary-row" style="color:var(--accent);font-size:.85rem"><span>Desconto progressivo (6+ fotos)</span><span>− R$ 24,00</span></div>
+            <div class="summary-row" style="color:#f59e0b;font-size:.85rem"><span>Juros parcelamento (3x)</span><span>+ R$ 12,00</span></div>
+            <div class="summary-row total"><span>Total pago</span><strong>R$ 240,00</strong></div>
+            <div class="summary-grid">
+              <div><strong style="color:var(--text-muted)">Método:</strong> Cartão (Asaas)</div>
+              <div><strong style="color:var(--text-muted)">Parcelas:</strong> 3x</div>
+              <div><strong style="color:var(--text-muted)">Taxa parcelam.:</strong> R$ 12,00</div>
+              <div><strong style="color:var(--text-muted)">Taxa gateway:</strong> R$ 8,40</div>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.35rem">Sua mensagem para o fotógrafo:</div>
+            <div style="font-size:.84rem;color:var(--text)">"Ficaram lindas, Vinícius! Vou indicar para a família toda."</div>
+          </div>
+
+          <div class="summary-card">
+            <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.45rem">Notas do fotógrafo:</div>
+            <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:.65rem .75rem">
+              <div style="font-size:.82rem;color:var(--text)">Originais já estão liberados para download. Qualquer ajuste de cor, é só me chamar.</div>
+              <div style="font-size:.7rem;color:var(--text-dim);margin-top:.2rem">15/04/2026 09:14</div>
+            </div>
+          </div>
+
+          <div style="padding:1rem;background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border)">
+            <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.45rem">Feedback pós-compra</div>
+            <div style="display:flex;gap:.25rem;margin-bottom:.65rem;font-size:1.45rem">
+              <span style="color:#f59e0b">★</span><span style="color:#f59e0b">★</span>
+              <span style="color:#f59e0b">★</span><span style="color:#f59e0b">★</span>
+              <span style="color:#f59e0b">★</span>
+            </div>
+            <textarea class="form-input" rows="3" placeholder="Comentário opcional...">Fotografia impecável. Recomendo!</textarea>
+            <div class="alert alert-success" style="margin-top:.6rem">Avaliação enviada! Obrigado.</div>
+            <button class="btn btn-primary btn-sm">Salvar alterações</button>
+          </div>
+
+          <div style="margin-top:1rem;padding:1rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-card);display:flex;flex-direction:column;gap:.6rem">
+            <div style="font-size:.82rem;color:var(--text-muted)">Solicitar reembolso</div>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap">
+              <label style="font-size:.85rem;display:flex;gap:.4rem;align-items:center"><input type="radio" name="ref-type" checked> Reembolso total</label>
+              <label style="font-size:.85rem;display:flex;gap:.4rem;align-items:center"><input type="radio" name="ref-type"> Reembolso parcial</label>
+            </div>
+            <input class="form-input" placeholder="Chave Pix (CPF, email ou aleatória)" />
+            <textarea class="form-textarea" rows="3" placeholder="Motivo do reembolso"></textarea>
+            <button class="btn btn-sm btn-primary" style="align-self:flex-start">Enviar pedido de reembolso</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-card">
+        <button class="order-head">
+          <div style="flex:1 1 280px">
+            <div class="order-id">#9F1B33</div>
+            <div class="order-meta">02/04/2026 11:08 · 4 fotos</div>
+          </div>
+          <div class="order-previews">
+            <div class="order-preview ph ph-5"></div>
+            <div class="order-preview ph ph-6"></div>
+            <div class="order-preview ph ph-7"></div>
+            <div class="order-preview ph ph-8"></div>
+          </div>
+          <span class="status-badge status-pendente" style="text-transform:uppercase;letter-spacing:.05em">Pagamento pendente</span>
+          <span class="order-total">R$ 160,00</span>
+          <span class="chev">▼</span>
+        </button>
+        <div class="order-body">
+          <div style="text-align:center;color:var(--text-dim);padding:1rem">Aguardando confirmação do pagamento.</div>
+        </div>
+      </div>
+
+      <div class="order-card">
+        <button class="order-head">
+          <div style="flex:1 1 280px">
+            <div class="order-id">#7E0049</div>
+            <div class="order-meta">25/03/2026 16:51 · 12 fotos</div>
+          </div>
+          <div class="order-previews">
+            <div class="order-preview ph ph-2"></div>
+            <div class="order-preview ph ph-3"></div>
+            <div class="order-preview ph ph-1"></div>
+            <div class="order-preview more">+9</div>
+          </div>
+          <span class="status-badge status-pago" style="text-transform:uppercase;letter-spacing:.05em">Pago</span>
+          <span class="order-total">R$ 480,00</span>
+          <span class="chev">▼</span>
+        </button>
+        <div class="order-body">
+          <div style="color:var(--text-dim);padding:.5rem">Pedido concluído. Originais disponíveis em "Baixar Original" em cada item.</div>
+        </div>
+      </div>
+
+      <div class="order-card">
+        <button class="order-head">
+          <div style="flex:1 1 280px">
+            <div class="order-id">#6C7A11</div>
+            <div class="order-meta">14/02/2026 21:15 · 1 foto</div>
+          </div>
+          <div class="order-previews"><div class="order-preview ph ph-4"></div></div>
+          <span class="status-badge status-cancelado" style="text-transform:uppercase;letter-spacing:.05em">Cancelado</span>
+          <span class="order-total">R$ 40,00</span>
+          <span class="chev">▼</span>
+        </button>
+        <div class="order-body"><div style="color:var(--text-dim);padding:.5rem">Cancelado por expiração do PIX.</div></div>
+      </div>
+    </section>
+
+    <!-- =========== CARRINHO =========== -->
+    <section class="page" data-page="carrinho">
+      <div style="margin-bottom:1.5rem">
+        <h1 style="font-family:var(--font-heading);font-size:1.8rem;margin-bottom:.25rem">Meu Carrinho</h1>
+        <p style="color:var(--text-muted);font-size:.9rem">3 itens · R$ 120,00</p>
+      </div>
+
+      <div class="cart-layout">
+        <div class="cart-items-list">
+          <div class="cart-item">
+            <div class="cart-item-thumb ph ph-1"></div>
+            <div class="cart-item-info">
+              <div class="cart-item-name">F0021A.jpg</div>
+              <div class="cart-item-event">Casamento Marina &amp; Léo · Cerimônia</div>
+            </div>
+            <div class="cart-item-price">R$ 40,00</div>
+            <button class="btn btn-ghost btn-sm" title="Remover">✕</button>
+          </div>
+          <div class="cart-item">
+            <div class="cart-item-thumb ph ph-2"></div>
+            <div class="cart-item-info">
+              <div class="cart-item-name">F0021B.jpg</div>
+              <div class="cart-item-event">Casamento Marina &amp; Léo · Festa</div>
+            </div>
+            <div class="cart-item-price">R$ 40,00</div>
+            <button class="btn btn-ghost btn-sm">✕</button>
+          </div>
+          <div class="cart-item">
+            <div class="cart-item-thumb ph ph-5"></div>
+            <div class="cart-item-info">
+              <div class="cart-item-name">F0033Z.jpg</div>
+              <div class="cart-item-event">Aniversário 30 anos · Festa</div>
+            </div>
+            <div class="cart-item-price">R$ 40,00</div>
+            <button class="btn btn-ghost btn-sm">✕</button>
+          </div>
+        </div>
+
+        <div class="cart-summary-card">
+          <div class="cart-summary-title">Resumo</div>
+          <div class="cart-summary-row"><span>Subtotal (3 fotos)</span><span>R$ 120,00</span></div>
+          <div class="cart-summary-row" style="color:var(--accent)"><span>Desconto progressivo</span><span>− R$ 0,00</span></div>
+          <div class="cart-summary-row" style="color:var(--text-muted);font-size:.78rem"><span>Compre +3 fotos e ganhe 10% off</span><span></span></div>
+          <div class="cart-summary-row total"><span>Total</span><span>R$ 120,00</span></div>
+          <button class="btn btn-primary btn-full btn-lg">Ir para o checkout</button>
+          <p style="font-size:.72rem;color:var(--text-dim);margin-top:.75rem;text-align:center">Pagamento via Pix ou cartão de crédito.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========== COMENTÁRIOS =========== -->
+    <section class="page" data-page="comentarios">
+      <div class="section-head" style="margin-bottom:1rem">
+        <div>
+          <h1 style="font-family:var(--font-heading);font-size:1.6rem;margin-bottom:.25rem">Comentários</h1>
+          <p style="color:var(--text-muted);font-size:.85rem">8 registros</p>
+        </div>
+        <button class="btn btn-ghost btn-sm">↻ Atualizar</button>
+      </div>
+
+      <div class="filter-bar" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:1.5rem">
+        <input class="form-input" placeholder="Buscar por texto, álbum, pasta ou foto..." style="max-width:320px" />
+        <div class="filter-group"><span class="filter-label">Ordenar:</span>
+          <button class="btn btn-primary btn-sm">Mais curtidos</button>
+          <button class="btn btn-ghost btn-sm">Mais recentes</button>
+        </div>
+        <div class="filter-group"><span class="filter-label">Status:</span>
+          <button class="btn btn-primary btn-sm">Todos</button>
+          <button class="btn btn-ghost btn-sm">Visíveis</button>
+          <button class="btn btn-ghost btn-sm">Omitidos</button>
+        </div>
+        <div class="filter-group"><span class="filter-label">Contexto:</span>
+          <button class="btn btn-primary btn-sm">Todos</button>
+          <button class="btn btn-ghost btn-sm">Álbum</button>
+          <button class="btn btn-ghost btn-sm">Pasta</button>
+          <button class="btn btn-ghost btn-sm">Foto</button>
+        </div>
+      </div>
+
+      <div class="comment-card">
+        <div class="comment-meta-row">
+          <span class="badge badge-scope">Foto</span>
+          <span class="badge badge-visible">Visível</span>
+          <span style="font-size:.72rem;color:var(--text-dim);margin-left:auto">11/04/2026</span>
+        </div>
+        <div class="comment-context">
+          <div class="comment-thumb ph ph-3"></div>
+          <div class="comment-context-info">
+            <strong>Álbum:</strong> Casamento Marina &amp; Léo · <strong>Pasta:</strong> Cerimônia · <strong>Foto:</strong> F0021C9... · <strong>Curtidas:</strong> 4
+            <div style="margin-top:.25rem"><a class="text-accent" style="cursor:pointer">Abrir no local do comentário</a></div>
+          </div>
+        </div>
+        <p class="comment-text">Essa foto ficou maravilhosa! Capturou exatamente o momento do "sim". Obrigada Vinícius!</p>
+        <div style="display:flex;gap:.5rem;margin-top:.65rem">
+          <button class="btn btn-ghost btn-sm">Editar</button>
+          <button class="btn btn-ghost btn-sm" style="color:var(--danger)">Omitir</button>
+        </div>
+      </div>
+
+      <div class="comment-card">
+        <div class="comment-meta-row">
+          <span class="badge badge-scope">Álbum</span>
+          <span class="badge badge-visible">Visível</span>
+          <span class="badge badge-edited">Editado por admin</span>
+          <span style="font-size:.72rem;color:var(--text-dim);margin-left:auto">06/04/2026</span>
+        </div>
+        <div class="comment-context">
+          <div class="comment-thumb ph ph-1"></div>
+          <div class="comment-context-info"><strong>Álbum:</strong> Casamento Marina &amp; Léo · <strong>Curtidas:</strong> 12</div>
+        </div>
+        <p class="comment-text">Trabalho de outro nível. Dia inesquecível bem registrado!</p>
+        <div style="display:flex;gap:.5rem;margin-top:.65rem">
+          <button class="btn btn-ghost btn-sm">Editar</button>
+          <button class="btn btn-ghost btn-sm" id="histToggle">Ver histórico</button>
+        </div>
+        <div id="histPanel" style="display:none;margin-top:.7rem;border-top:1px dashed var(--border);padding-top:.7rem;flex-direction:column;gap:.45rem">
+          <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);padding:.55rem .7rem">
+            <div style="font-size:.74rem;color:var(--text-dim);margin-bottom:.25rem">Editado por admin · 07/04/2026 10:01</div>
+            <div style="font-size:.78rem;color:var(--text-dim)">Antes: "Trabalho top demais. Dia inesquecível!"</div>
+            <div style="font-size:.82rem;color:var(--text);margin-top:.2rem">Depois: "Trabalho de outro nível. Dia inesquecível bem registrado!"</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="comment-card hidden">
+        <div class="comment-meta-row">
+          <span class="badge badge-scope">Pasta</span>
+          <span class="badge badge-hidden">Omitido por você</span>
+          <span class="badge badge-edited-self">Editado</span>
+          <span style="font-size:.72rem;color:var(--text-dim);margin-left:auto">28/03/2026</span>
+        </div>
+        <div class="comment-context">
+          <div class="comment-thumb ph ph-7"></div>
+          <div class="comment-context-info"><strong>Álbum:</strong> Aniversário 30 anos · <strong>Pasta:</strong> Festa · <strong>Curtidas:</strong> 1</div>
+        </div>
+        <p class="comment-text">As fotos da festa ficaram incríveis, mas faltou cobertura da chegada dos convidados.</p>
+        <div style="display:flex;gap:.5rem;margin-top:.65rem">
+          <button class="btn btn-ghost btn-sm">Editar</button>
+          <button class="btn btn-ghost btn-sm" style="color:var(--success)">Restaurar</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========== REMOÇÕES =========== -->
+    <section class="page" data-page="remocoes">
+      <div style="margin-bottom:1.5rem">
+        <h1 style="font-family:var(--font-heading);font-size:1.6rem;margin-bottom:.2rem">Minhas solicitações de remoção</h1>
+        <p style="color:var(--text-muted);font-size:.9rem">Acompanhe o status, notas do fotógrafo e deixe seus comentários.</p>
+      </div>
+
+      <div class="rem-card">
+        <div class="rem-head">
+          <span class="status-badge status-pendente" style="text-transform:uppercase;letter-spacing:.05em">Pendente</span>
+          <div>
+            <div style="font-size:.78rem;color:var(--text-dim)">Solicitada em 09/04/2026 14:22</div>
+            <div style="font-size:.78rem;color:var(--text-muted);font-family:monospace">Foto #F0021A · Casamento Marina &amp; Léo</div>
+          </div>
+        </div>
+        <div class="rem-body">
+          <div class="rem-thumb ph ph-1"></div>
+          <div>
+            <p style="color:var(--text)">Aparece de olho fechado em pose ruim. Gostaria que fosse removida da galeria pública.</p>
+          </div>
+        </div>
+        <div class="note-fotografo">💬 Nota do fotógrafo: Já analisei. Vou trocar pela foto seguinte da sequência. Aguarde 24h.</div>
+        <div style="margin-top:.65rem">
+          <label style="display:block;font-size:.8rem;color:var(--text-dim);margin-bottom:.25rem">🗒️ Sua nota (visível para o fotógrafo)</label>
+          <textarea class="form-textarea" rows="2" placeholder="Inclua detalhes adicionais ou atualizações.">Obrigada Vinícius. Pode tomar o tempo que precisar.</textarea>
+          <div style="display:flex;gap:.5rem;margin-top:.45rem">
+            <button class="btn btn-sm btn-primary">💾 Salvar nota</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="rem-card">
+        <div class="rem-head">
+          <span class="status-badge" style="background:var(--success-dim);color:var(--success);text-transform:uppercase;letter-spacing:.05em">Aceita</span>
+          <div>
+            <div style="font-size:.78rem;color:var(--text-dim)">Resolvida em 03/04/2026 09:11</div>
+            <div style="font-size:.78rem;color:var(--text-muted);font-family:monospace">Foto #F1119Z · Aniversário 30 anos</div>
+          </div>
+        </div>
+        <div class="rem-body">
+          <div class="rem-thumb ph ph-7"></div>
+          <div>
+            <p style="color:var(--text)">Apareci com taça na mão e não me senti confortável com a foto pública.</p>
+            <p style="font-size:.8rem;color:var(--danger);margin-top:.3rem">🚫 Foto indisponível para curtidas, favoritos e compras.</p>
+          </div>
+        </div>
+        <div class="note-fotografo">💬 Nota do fotógrafo: Removida do site público. Mantida apenas no backup pessoal do estúdio (não acessível a clientes).</div>
+        <div class="note-cliente">Suas notas: Obrigada pela rapidez. Combinou direitinho.</div>
+      </div>
+
+      <div class="rem-card">
+        <div class="rem-head">
+          <span class="status-badge status-cancelado" style="text-transform:uppercase;letter-spacing:.05em">Negada</span>
+          <div>
+            <div style="font-size:.78rem;color:var(--text-dim)">Resolvida em 18/02/2026 18:45</div>
+            <div style="font-size:.78rem;color:var(--text-muted);font-family:monospace">Foto #B2210C · Ensaio Família</div>
+          </div>
+        </div>
+        <div class="rem-body">
+          <div class="rem-thumb ph ph-4"></div>
+          <div>
+            <p style="color:var(--text)">Não gostei do ângulo, peço para tirar do ar.</p>
+          </div>
+        </div>
+        <div class="note-fotografo">💬 Nota do fotógrafo: A foto integra a entrega contratada do ensaio e teve uso autorizado pela cliente principal. Pedido fora do escopo de remoção.</div>
+      </div>
+    </section>
+
+    <!-- =========== FAVORITOS =========== -->
+    <section class="page" data-page="favoritos">
+      <div style="margin-bottom:.5rem">
+        <h2 style="font-family:var(--font-heading);font-size:1.4rem;margin-bottom:.25rem">Álbuns Salvos</h2>
+        <p style="color:var(--text-muted);font-size:.9rem">2 álbuns salvos</p>
+      </div>
+      <div class="album-grid">
+        <div class="album-card">
+          <div class="album-cover ph ph-1"></div>
+          <div style="font-size:.8rem;color:var(--text-dim)">14/04/2026</div>
+          <div style="font-family:var(--font-heading);margin:.2rem 0 .6rem">Casamento Marina &amp; Léo</div>
+          <div style="display:flex;gap:.45rem">
+            <a class="btn btn-primary btn-sm" style="flex:1;text-align:center">Abrir álbum</a>
+            <button class="btn btn-ghost btn-sm" style="color:var(--danger)">Remover</button>
+          </div>
+        </div>
+        <div class="album-card">
+          <div class="album-cover ph ph-7"></div>
+          <div style="font-size:.8rem;color:var(--text-dim)">28/03/2026</div>
+          <div style="font-family:var(--font-heading);margin:.2rem 0 .6rem">Aniversário 30 anos</div>
+          <div style="display:flex;gap:.45rem">
+            <a class="btn btn-primary btn-sm" style="flex:1;text-align:center">Abrir álbum</a>
+            <button class="btn btn-ghost btn-sm" style="color:var(--danger)">Remover</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:.5rem">
+        <h2 style="font-family:var(--font-heading);font-size:1.8rem;margin-bottom:.25rem">Minhas Fotos Salvas</h2>
+        <p style="color:var(--text-muted);font-size:.9rem">18 fotos salvas</p>
+      </div>
+      <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.05em">Casamento Marina &amp; Léo</div>
+      <div class="photo-grid">
+        <div class="photo-card"><div class="photo-img ph ph-1"></div>
+          <div class="photo-info">
+            <div class="photo-info-row"><span class="text-accent">#F0021A</span><span style="font-family:var(--font-heading)">R$ 40,00</span></div>
+            <button class="btn btn-danger btn-sm btn-full" style="font-size:.75rem;margin-bottom:.4rem">Remover dos salvos</button>
+            <button class="btn btn-primary btn-sm btn-full" style="font-size:.75rem">Adicionar ao carrinho</button>
+          </div>
+        </div>
+        <div class="photo-card"><div class="photo-img ph ph-2"></div>
+          <div class="photo-info">
+            <div class="photo-info-row"><span class="text-accent">#F0021B</span><span style="font-family:var(--font-heading)">R$ 40,00</span></div>
+            <button class="btn btn-danger btn-sm btn-full" style="font-size:.75rem;margin-bottom:.4rem">Remover dos salvos</button>
+            <div style="font-size:.72rem;color:var(--text-dim);text-align:center">Já no carrinho</div>
+          </div>
+        </div>
+        <div class="photo-card"><div class="photo-img ph ph-3"></div>
+          <div class="photo-info">
+            <div class="photo-info-row"><span class="text-accent">#F0021C</span><span style="font-family:var(--font-heading)">R$ 40,00</span></div>
+            <button class="btn btn-danger btn-sm btn-full" style="font-size:.75rem;margin-bottom:.4rem">Remover dos salvos</button>
+            <button class="btn btn-primary btn-sm btn-full" style="font-size:.75rem">Adicionar ao carrinho</button>
+          </div>
+        </div>
+        <div class="photo-card"><div class="photo-img ph ph-4"></div>
+          <div class="photo-info">
+            <div class="photo-info-row"><span class="text-accent">#F0021D</span><span style="font-family:var(--font-heading)">R$ 40,00</span></div>
+            <button class="btn btn-danger btn-sm btn-full" style="font-size:.75rem;margin-bottom:.4rem">Remover dos salvos</button>
+            <button class="btn btn-primary btn-sm btn-full" style="font-size:.75rem">Adicionar ao carrinho</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:.5rem">
+        <h2 style="font-family:var(--font-heading);font-size:1.5rem;margin-bottom:.25rem">Fotos Curtidas</h2>
+        <p style="color:var(--text-muted);font-size:.9rem">63 fotos curtidas</p>
+      </div>
+      <div class="photo-grid">
+        <div class="photo-card"><div class="photo-img ph ph-5"></div>
+          <div class="photo-info">
+            <div class="photo-info-row"><span class="text-accent">#F0033A</span><span style="font-family:var(--font-heading)">R$ 40,00</span></div>
+            <button class="btn btn-danger btn-sm btn-full" style="font-size:.75rem;margin-bottom:.4rem">Remover das curtidas</button>
+            <button class="btn btn-primary btn-sm btn-full" style="font-size:.75rem">Adicionar ao carrinho</button>
+          </div>
+        </div>
+        <div class="photo-card"><div class="photo-img ph ph-6"></div>
+          <div class="photo-info">
+            <div class="photo-info-row"><span class="text-accent">#F0033B</span><span style="font-family:var(--font-heading)">R$ 40,00</span></div>
+            <button class="btn btn-danger btn-sm btn-full" style="font-size:.75rem;margin-bottom:.4rem">Remover das curtidas</button>
+            <button class="btn btn-primary btn-sm btn-full" style="font-size:.75rem">Adicionar ao carrinho</button>
+          </div>
+        </div>
+        <div class="photo-card"><div class="photo-img ph ph-8"></div>
+          <div class="photo-info">
+            <div class="photo-info-row"><span class="text-accent">#F0033C</span><span style="font-family:var(--font-heading)">R$ 40,00</span></div>
+            <button class="btn btn-danger btn-sm btn-full" style="font-size:.75rem;margin-bottom:.4rem">Remover das curtidas</button>
+            <button class="btn btn-primary btn-sm btn-full" style="font-size:.75rem">Adicionar ao carrinho</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========== CONFIGURAÇÕES =========== -->
+    <section class="page" data-page="configuracoes">
+      <div class="settings-shell">
+        <h1 style="font-family:var(--font-heading);font-size:1.8rem;margin-bottom:1.2rem">Meus Dados</h1>
+        <div class="alert alert-success" id="saveAlert" style="display:none">Dados atualizados com sucesso.</div>
+
+        <h2 style="font-family:var(--font-heading);font-size:1.2rem;margin-bottom:.75rem">Dados Pessoais</h2>
+        <form class="settings-card" id="profileForm" onsubmit="event.preventDefault();showSaved()">
+          <div class="form-group">
+            <label class="form-label">Nome completo</label>
+            <input class="form-input" value="Marina Carvalho" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-input" type="email" value="marina@email.com" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">WhatsApp</label>
+            <input class="form-input" placeholder="(11) 99999-9999" value="(11) 98765-4321" />
+            <div class="helper">Usamos para enviar atualizações dos seus pedidos.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">CPF</label>
+            <input class="form-input" placeholder="000.000.000-00" value="123.456.789-00" disabled style="opacity:.6;cursor:not-allowed;background:var(--bg-secondary)" />
+            <div class="helper">CPF não pode ser alterado.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Data de nascimento</label>
+            <input class="form-input" type="date" value="1995-08-22" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Instagram</label>
+            <div style="position:relative">
+              <span style="position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--text-dim)">@</span>
+              <input class="form-input" placeholder="seuusuario" value="marina.carvalho" style="padding-left:1.7rem" />
+            </div>
+            <a class="text-accent" style="display:inline-flex;gap:.4rem;margin-top:.4rem;font-size:.8rem">📷 Abrir Instagram</a>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Endereço (opcional)</label>
+            <div class="field-grid-2" style="margin-bottom:.5rem">
+              <input class="form-input" placeholder="Rua" value="Rua das Acácias" />
+              <input class="form-input" placeholder="Número" value="421" />
+            </div>
+            <div class="field-grid-3">
+              <input class="form-input" placeholder="Cidade" value="São Paulo" />
+              <select class="form-select"><option>SP</option><option>RJ</option><option>MG</option></select>
+              <input class="form-input" placeholder="CEP" value="01310-100" style="max-width:180px" />
+            </div>
+            <div class="helper">Endereço só é usado para entregas físicas (álbuns impressos).</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Times</label>
+            <div style="display:flex;gap:.5rem;margin-bottom:.45rem"><input class="form-input" value="Palmeiras" /><button class="btn btn-ghost btn-sm" type="button">Remover</button></div>
+            <div style="display:flex;gap:.5rem;margin-bottom:.45rem"><input class="form-input" value="Seleção Brasileira" /><button class="btn btn-ghost btn-sm" type="button">Remover</button></div>
+            <button class="btn btn-secondary btn-sm" type="button">+ Adicionar time</button>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Organizações</label>
+            <div style="display:flex;gap:.5rem;margin-bottom:.45rem"><input class="form-input" value="ONG Lar Feliz" /><button class="btn btn-ghost btn-sm" type="button">Remover</button></div>
+            <button class="btn btn-secondary btn-sm" type="button">+ Adicionar organização</button>
+          </div>
+          <button class="btn btn-full btn-state-clean" id="saveBtn">Salvar dados</button>
+        </form>
+
+        <h2 style="font-family:var(--font-heading);font-size:1.2rem;margin:1rem 0 .75rem">Alterar Senha</h2>
+        <div class="settings-card">
+          <div class="form-group">
+            <label class="form-label">Senha atual</label>
+            <div class="password-wrapper">
+              <input class="form-input" type="password" id="pw1" />
+              <button class="password-toggle" type="button" onclick="togglePw('pw1',this)">Mostrar</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nova senha</label>
+            <div class="password-wrapper">
+              <input class="form-input" type="password" id="pw2" />
+              <button class="password-toggle" type="button" onclick="togglePw('pw2',this)">Mostrar</button>
+            </div>
+            <div class="helper">A senha deve ter no mínimo 6 caracteres.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirmar nova senha</label>
+            <div class="password-wrapper">
+              <input class="form-input" type="password" id="pw3" />
+              <button class="password-toggle" type="button" onclick="togglePw('pw3',this)">Mostrar</button>
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-full">Alterar Senha</button>
+        </div>
+
+        <h2 style="font-family:var(--font-heading);font-size:1.2rem;margin:1rem 0 .75rem">Privacidade e LGPD</h2>
+        <div class="settings-card">
+          <div>
+            <strong style="color:var(--text)">Portabilidade dos dados</strong>
+            <p style="font-size:.86rem;color:var(--text-muted);line-height:1.5;margin-top:.4rem">Gere um arquivo JSON com seus dados de cadastro, pedidos, comentários, solicitações, favoritos, curtidas e carrinho.</p>
+            <button class="btn btn-secondary" style="margin-top:.6rem">Exportar meus dados em JSON</button>
+          </div>
+          <div style="border-top:1px solid var(--border);padding-top:1rem">
+            <strong style="color:var(--text)">Exclusão definitiva da conta</strong>
+            <p style="font-size:.86rem;color:var(--text-muted);line-height:1.5;margin-top:.4rem">A aprovação desidentifica seu cadastro e remove dados editáveis. Pedidos pagos podem continuar guardados para obrigações legais, sem dados pessoais desnecessários.</p>
+            <textarea class="form-input" rows="3" placeholder="Motivo opcional" style="margin-top:.6rem"></textarea>
+            <button class="btn btn-danger" style="margin-top:.6rem">Solicitar exclusão definitiva</button>
+            <p style="font-size:.76rem;color:var(--text-dim);margin-top:.5rem">Contas administrativas precisam de revisão fora do fluxo de cliente.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ===== Drawer overlay & menu (mounted at end so z-index works) ===== -->
+<div id="menuOverlay" class="mc-menu-overlay" style="display:none"></div>
+<div id="menuPanel" class="mc-menu-panel" style="display:none;position:fixed;right:1rem;top:72px">
+  <div class="mc-menu-header">
+    <div>
+      <p class="mc-menu-user">Marina Carvalho</p>
+      <p class="mc-menu-email">marina@email.com</p>
+    </div>
+    <span class="mc-menu-pill" id="activePill">Início</span>
+  </div>
+  <div class="mc-menu-list" id="menuList">
+    <button class="mc-menu-item is-active" data-goto="inicio">Início</button>
+    <button class="mc-menu-item" data-goto="compras">Compras</button>
+    <button class="mc-menu-item" data-goto="carrinho">Carrinho</button>
+    <button class="mc-menu-item" data-goto="comentarios">Comentários</button>
+    <button class="mc-menu-item" data-goto="remocoes">Remoções</button>
+    <button class="mc-menu-item" data-goto="favoritos">Salvos</button>
+    <button class="mc-menu-item" data-goto="configuracoes">Configurações</button>
+  </div>
+  <div class="mc-menu-footer">
+    <a class="mc-menu-admin" href="painel-fotografo.html">Área do fotógrafo</a>
+    <button class="mc-menu-logout" id="openLogout">Desconectar</button>
+  </div>
+</div>
+
+<!-- Logout confirm -->
+<div id="logoutBackdrop" class="mc-logout-backdrop" style="display:none">
+  <div class="mc-logout-modal" onclick="event.stopPropagation()">
+    <div style="font-size:2.5rem;margin-bottom:.75rem">🔌</div>
+    <h2 class="mc-logout-title">Desconectar da conta?</h2>
+    <p class="mc-logout-text">Você precisará fazer login novamente para acessar sua conta.</p>
+    <div class="mc-logout-actions">
+      <button class="mc-logout-cancel" id="cancelLogout">Cancelar</button>
+      <button class="mc-logout-confirm" id="doLogout">Desconectar</button>
+    </div>
+  </div>
+</div>
+
+<div class="mock-flag">MOCKUP — sem backend</div>
+
+<script>
+const $=q=>document.querySelector(q);
+const $$=q=>document.querySelectorAll(q);
+const labels={inicio:'Início',compras:'Compras',carrinho:'Carrinho',comentarios:'Comentários',remocoes:'Remoções',favoritos:'Salvos',configuracoes:'Configurações'};
+
+function goto(name){
+  $$('.page').forEach(p=>p.classList.toggle('active',p.dataset.page===name));
+  $$('#menuList .mc-menu-item').forEach(b=>b.classList.toggle('is-active',b.dataset.goto===name));
+  $('#activePill').textContent=labels[name]||'Conta';
+  closeMenu();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function openMenu(){
+  $('#menuBtn').classList.add('is-open');
+  $('#menuBtn').setAttribute('aria-expanded','true');
+  $('#menuOverlay').style.display='block';
+  $('#menuPanel').style.display='block';
+}
+function closeMenu(){
+  $('#menuBtn').classList.remove('is-open');
+  $('#menuBtn').setAttribute('aria-expanded','false');
+  $('#menuOverlay').style.display='none';
+  $('#menuPanel').style.display='none';
+}
+$('#menuBtn').addEventListener('click',()=>{
+  ($('#menuPanel').style.display==='block')?closeMenu():openMenu();
+});
+$('#menuOverlay').addEventListener('click',closeMenu);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMenu();closeLogout()}});
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-goto]');
+  if(t){e.preventDefault();goto(t.dataset.goto)}
+});
+
+// Order accordion
+$$('.order-head').forEach(h=>h.addEventListener('click',()=>{
+  h.parentElement.classList.toggle('open');
+}));
+
+// Comment history toggle
+const hist=document.getElementById('histToggle');
+if(hist){hist.addEventListener('click',()=>{
+  const p=document.getElementById('histPanel');
+  const open=p.style.display==='flex';
+  p.style.display=open?'none':'flex';
+  hist.textContent=open?'Ver histórico':'Fechar histórico';
+});}
+
+// Password show/hide
+function togglePw(id,btn){
+  const el=document.getElementById(id);
+  if(el.type==='password'){el.type='text';btn.textContent='Ocultar'}
+  else{el.type='password';btn.textContent='Mostrar'}
+}
+
+// Save button state
+const form=document.getElementById('profileForm');
+const saveBtn=document.getElementById('saveBtn');
+form.querySelectorAll('input,select,textarea').forEach(el=>{
+  el.addEventListener('input',()=>{
+    saveBtn.classList.remove('btn-state-clean');
+    saveBtn.classList.add('btn-state-dirty');
+  });
+});
+function showSaved(){
+  saveBtn.classList.remove('btn-state-dirty');
+  saveBtn.classList.add('btn-state-clean');
+  const a=document.getElementById('saveAlert');
+  a.style.display='block';
+  setTimeout(()=>a.style.display='none',2500);
+}
+
+// Logout
+$('#openLogout').addEventListener('click',()=>{closeMenu();$('#logoutBackdrop').style.display='flex';});
+function closeLogout(){$('#logoutBackdrop').style.display='none';}
+$('#logoutBackdrop').addEventListener('click',e=>{if(e.target===$('#logoutBackdrop'))closeLogout();});
+$('#cancelLogout').addEventListener('click',closeLogout);
+$('#doLogout').addEventListener('click',()=>{closeLogout();alert('Mockup: aqui o logout aconteceria de verdade.');});
+</script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+# Dependências do Node
+node_modules/
+
+# Build do Next.js
+.next/
+out/
+
+# Arquivos de ambiente
+.env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+*.log
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# As fotos são locais — não commitar no git
+public/uploads/
+
+# Os dados também são locais
+data/*.json
+!data/*.sample.json
+!data/*.example.json
+
+# Originais e migracoes locais
+storage/
+
+# Backups e dumps locais
+backup/
+backups/
+*.backup
+*.bak
+*.dump
+*.sql
+*.sqlite
+*.sqlite3
+*.tar
+*.tar.gz
+*.zip
+*.7z

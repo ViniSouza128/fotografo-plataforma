@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Avatares · 5 tamanhos · status · group</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; padding: var(--space-6); background: var(--ink-100); color: var(--ink-1000); font-family: var(--font-body); }
+  .row { display: flex; gap: var(--space-4); flex-wrap: wrap; align-items: flex-end; margin-bottom: var(--space-5); }
+  .tag { font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); width: 96px; flex-shrink: 0; align-self: center; }
+  .col { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); }
+  .col .lbl { font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--ink-700); letter-spacing: var(--tracking-wide); }
+
+  .avatar { display: inline-flex; align-items: center; justify-content: center; background: var(--ink-400); color: var(--ink-1000); font-family: var(--font-heading); font-weight: 500; border-radius: 50%; overflow: hidden; flex-shrink: 0; position: relative; border: 1px solid var(--ink-500); }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .avatar.is-square { border-radius: var(--radius); }
+  .avatar.is-xs { width: 20px; height: 20px; font-size: 9px; }
+  .avatar.is-sm { width: 28px; height: 28px; font-size: 11px; }
+  .avatar.is-md { width: 40px; height: 40px; font-size: 14px; }
+  .avatar.is-lg { width: 56px; height: 56px; font-size: 20px; }
+  .avatar.is-xl { width: 88px; height: 88px; font-size: 30px; }
+
+  .avatar-stack { display: inline-flex; }
+  .avatar-stack .avatar { margin-left: -8px; border: 2px solid var(--ink-100); }
+  .avatar-stack .avatar:first-child { margin-left: 0; }
+  .avatar-stack .avatar.is-more { background: var(--ink-500); color: var(--ink-900); font-family: var(--font-mono); }
+
+  .avatar-status { position: relative; display: inline-block; }
+  .avatar-status::after { content: ""; position: absolute; right: -1px; bottom: -1px; width: 10px; height: 10px; border-radius: 50%; background: var(--signal-500); border: 2px solid var(--ink-100); }
+  .avatar-status.is-offline::after { background: var(--ink-700); }
+  .avatar-status.is-away::after    { background: var(--warning-500); }
+  .avatar-status.is-busy::after    { background: var(--danger-500); }
+  .avatar-status.is-xs::after { width: 6px; height: 6px; border-width: 1px; }
+  .avatar-status.is-sm::after { width: 8px; height: 8px; }
+  .avatar-status.is-lg::after { width: 12px; height: 12px; }
+  .avatar-status.is-xl::after { width: 16px; height: 16px; border-width: 3px; }
+</style></head>
+<body>
+  <div class="row"><span class="tag">Iniciais</span>
+    <div class="col"><span class="avatar is-xs">VS</span><span class="lbl">xs · 20</span></div>
+    <div class="col"><span class="avatar is-sm">VS</span><span class="lbl">sm · 28</span></div>
+    <div class="col"><span class="avatar is-md">VS</span><span class="lbl">md · 40</span></div>
+    <div class="col"><span class="avatar is-lg">VS</span><span class="lbl">lg · 56</span></div>
+    <div class="col"><span class="avatar is-xl">VS</span><span class="lbl">xl · 88</span></div>
+  </div>
+  <div class="row"><span class="tag">Status dot</span>
+    <div class="col"><span class="avatar-status is-xs"><span class="avatar is-xs">VS</span></span><span class="lbl">online</span></div>
+    <div class="col"><span class="avatar-status is-sm is-away"><span class="avatar is-sm">JD</span></span><span class="lbl">away</span></div>
+    <div class="col"><span class="avatar-status"><span class="avatar is-md">PL</span></span><span class="lbl">online</span></div>
+    <div class="col"><span class="avatar-status is-lg is-busy"><span class="avatar is-lg">MR</span></span><span class="lbl">busy</span></div>
+    <div class="col"><span class="avatar-status is-xl is-offline"><span class="avatar is-xl">AS</span></span><span class="lbl">offline</span></div>
+  </div>
+  <div class="row"><span class="tag">Group</span>
+    <div class="col">
+      <div class="avatar-stack">
+        <span class="avatar is-md">VS</span>
+        <span class="avatar is-md">JD</span>
+        <span class="avatar is-md">PL</span>
+        <span class="avatar is-md is-more">+12</span>
+      </div>
+      <span class="lbl">colaboradores</span>
+    </div>
+  </div>
+  <div class="row"><span class="tag">Quadrado</span>
+    <div class="col"><span class="avatar is-md is-square">JD</span><span class="lbl">md square</span></div>
+    <div class="col"><span class="avatar is-lg is-square">VR</span><span class="lbl">lg square</span></div>
+  </div>
+</body></html>

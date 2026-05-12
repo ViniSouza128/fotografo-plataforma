@@ -1,0 +1,284 @@
+[
+  {
+    "id": "2b555113-6a7f-4b92-a097-c749985572f4",
+    "name": "Lá na Praça",
+    "date": "2024-12-21",
+    "description": "Mostra Cultural Lá na Praça em Cassilândia",
+    "coverImage": "1775130068262_img-1565.jpg",
+    "createdAt": "2026-04-02T11:40:50.712Z",
+    "precoFotoPadrao": 1.5,
+    "descontosProgressivos": [
+      {
+        "quantidade": 3,
+        "desconto": 12
+      },
+      {
+        "quantidade": 5,
+        "desconto": 24
+      },
+      {
+        "quantidade": 7,
+        "desconto": 32
+      }
+    ],
+    "atualizadoEm": "2026-04-04T14:02:38.193Z",
+    "visitas": 92,
+    "publicId": "300000001",
+    "dataFinal": "2024-12-21",
+    "visibilidade": "publico",
+    "categoria": "Festivais",
+    "horarioInicial": "17:00",
+    "horarioFinal": "23:00",
+    "cidade": "Cassilândia",
+    "estado": "MS",
+    "localEspecifico": "Praça São José",
+    "organizador": "Danila Maia",
+    "capaPersonalizadaUrl": null,
+    "usarCapaPersonalizada": false,
+    "descontosProgressivosAtivos": false,
+    "coverImageFile": "cover_1775130068262_img-1565.jpg",
+    "coverImagePathWm": "covers/wm/cover_1775130068262_img-1565.jpg",
+    "coverImagePathClean": "covers/clean/cover_1775130068262_img-1565.jpg",
+    "coverOriginalPath": "2b555113-6a7f-4b92-a097-c749985572f4/1775130068262_img-1565.jpg"
+  },
+  {
+    "id": "6881977d-a126-4c6a-a1a4-342f2a69d148",
+    "name": "TESTE TESTE TESTE :D",
+    "date": "2026-04-02",
+    "description": "Omg :O",
+    "coverImage": "1775165235280_1000276722.jpg",
+    "createdAt": "2026-04-02T21:27:15.975Z",
+    "visitas": 18,
+    "dataFinal": null,
+    "visibilidade": "privado",
+    "categoria": null,
+    "horarioInicial": null,
+    "horarioFinal": null,
+    "cidade": null,
+    "estado": null,
+    "localEspecifico": null,
+    "organizador": null,
+    "atualizadoEm": "2026-04-04T14:00:42.754Z",
+    "precoFotoPadrao": 1.5,
+    "descontosProgressivos": [
+      {
+        "quantidade": 3,
+        "desconto": 5
+      },
+      {
+        "quantidade": 5,
+        "desconto": 10
+      },
+      {
+        "quantidade": 10,
+        "desconto": 15
+      }
+    ],
+    "descontosProgressivosAtivos": true,
+    "publicId": "300000002",
+    "capaPersonalizadaUrl": null,
+    "usarCapaPersonalizada": false,
+    "coverImageFile": "cover_1775165235280_1000276722.jpg",
+    "coverImagePathClean": "covers/clean/cover_1775165235280_1000276722.jpg",
+    "coverImagePathWm": "covers/wm/cover_1775165235280_1000276722.jpg",
+    "coverOriginalPath": "6881977d-a126-4c6a-a1a4-342f2a69d148/1775165235280_1000276722.jpg",
+    "removido": true,
+    "removidoEm": "2026-04-07T15:00:21.691Z"
+  },
+  {
+    "id": "786135c4-f4f8-4e5b-a054-2dd2d04cf56c",
+    "name": "33333",
+    "date": "275760-06-06",
+    "description": "",
+    "coverImage": "1775190199050_chatgpt-image-1-de-abr--de-2026--18-56-1.jpg",
+    "createdAt": "2026-04-03T04:23:19.376Z",
+    "visitas": 20,
+    "precoFotoPadrao": 1.6,
+    "descontosProgressivos": [
+      {
+        "quantidade": 3,
+        "desconto": 12
+      },
+      {
+        "quantidade": 5,
+        "desconto": 24
+      },
+      {
+        "quantidade": 7,
+        "desconto": 32
+      }
+    ],
+    "descontosProgressivosAtivos": true,
+    "atualizadoEm": "2026-04-04T14:00:58.408Z",
+    "publicId": "300000003",
+    "dataFinal": null,
+    "visibilidade": "privado",
+    "categoria": null,
+    "horarioInicial": null,
+    "horarioFinal": null,
+    "cidade": null,
+    "estado": null,
+    "localEspecifico": null,
+    "organizador": null,
+    "capaPersonalizadaUrl": null,
+    "usarCapaPersonalizada": false,
+    "coverImageFile": "cover_1775190199050_chatgpt-image-1-de-abr--de-2026--18-56-1.jpg",
+    "coverImagePathWm": "covers/wm/cover_1775190199050_chatgpt-image-1-de-abr--de-2026--18-56-1.jpg",
+    "coverImagePathClean": "covers/clean/cover_1775190199050_chatgpt-image-1-de-abr--de-2026--18-56-1.jpg",
+    "coverOriginalPath": "786135c4-f4f8-4e5b-a054-2dd2d04cf56c/1775190199050_chatgpt-image-1-de-abr--de-2026--18-56-1.jpg",
+    "removido": true,
+    "removidoEm": "2026-04-07T15:00:17.851Z"
+  },
+  {
+    "id": "169b9509-3c13-4e17-9b7b-baf829fcbbff",
+    "name": "Fotos de circo",
+    "date": "2024-03-11",
+    "description": "Circo em cassilandia",
+    "coverImage": "1775242126384_whd-img-5099-aprimorado-nr.jpg",
+    "createdAt": "2026-04-03T04:25:55.498Z",
+    "visitas": 128,
+    "precoFotoPadrao": 0,
+    "descontosProgressivos": [
+      {
+        "quantidade": 3,
+        "desconto": 12
+      },
+      {
+        "quantidade": 5,
+        "desconto": 24
+      },
+      {
+        "quantidade": 7,
+        "desconto": 32
+      }
+    ],
+    "atualizadoEm": "2026-04-07T17:41:41.423Z",
+    "descontosProgressivosAtivos": true,
+    "dataFinal": "2024-03-11",
+    "visibilidade": "publico",
+    "categoria": "Teatro e Musicais",
+    "horarioInicial": "19:00",
+    "horarioFinal": "23:00",
+    "cidade": "Cassilândia",
+    "estado": "MS",
+    "localEspecifico": "Circo",
+    "organizador": null,
+    "capaPersonalizadaUrl": null,
+    "usarCapaPersonalizada": false,
+    "publicId": "300000004",
+    "coverImageFile": "cover_1775242126384_whd-img-5099-aprimorado-nr.jpg",
+    "coverImagePathWm": "covers/wm/cover_1775242126384_whd-img-5099-aprimorado-nr.jpg",
+    "coverImagePathClean": "covers/clean/cover_1775242126384_whd-img-5099-aprimorado-nr.jpg",
+    "coverOriginalPath": "169b9509-3c13-4e17-9b7b-baf829fcbbff/1775242126384_whd-img-5099-aprimorado-nr.jpg"
+  },
+  {
+    "id": "944c26b9-2dcd-4485-b71d-8eb362a87b8d",
+    "publicId": "300000005",
+    "name": "Rolê na Pousada das Araras",
+    "date": "2025-07-05",
+    "dataFinal": "2025-07-05",
+    "description": "Viagem fotográfica",
+    "coverImage": "1775326454289_high-img-0526-aprimorado-nr.jpg",
+    "visibilidade": "publico",
+    "categoria": "Acampamento",
+    "horarioInicial": "09:54",
+    "horarioFinal": "17:56",
+    "cidade": "Serranópolis",
+    "estado": "GO",
+    "localEspecifico": "Pousada das Araras",
+    "organizador": null,
+    "precoFotoPadrao": null,
+    "descontosProgressivos": [],
+    "descontosProgressivosAtivos": true,
+    "createdAt": "2026-04-04T18:05:19.673Z",
+    "capaPersonalizadaUrl": null,
+    "usarCapaPersonalizada": false,
+    "atualizadoEm": "2026-04-05T09:21:51.351Z",
+    "visitas": 76,
+    "coverImageThumb": "thumb_1775326454289_high-img-0526-aprimorado-nr.jpg",
+    "wm_miniaturas": false,
+    "coverImageFile": "cover_1775326454289_high-img-0526-aprimorado-nr.jpg",
+    "coverImagePathWm": "covers/wm/cover_1775326454289_high-img-0526-aprimorado-nr.jpg",
+    "coverImagePathClean": "covers/clean/cover_1775326454289_high-img-0526-aprimorado-nr.jpg",
+    "coverOriginalPath": "944c26b9-2dcd-4485-b71d-8eb362a87b8d/1775326454289_high-img-0526-aprimorado-nr.jpg"
+  },
+  {
+    "id": "2e19c963-7ccb-4048-8a25-222debd9b749",
+    "publicId": "300000007",
+    "name": "GLOW RUN",
+    "date": "2026-04-04",
+    "dataFinal": "2026-04-12",
+    "description": "Teste evento",
+    "coverImage": null,
+    "visibilidade": "publico",
+    "categoria": "Corrida",
+    "horarioInicial": "08:00",
+    "horarioFinal": null,
+    "cidade": "Santa Cruz do sul",
+    "estado": "RS",
+    "localEspecifico": "Parque oktober",
+    "organizador": "Glow",
+    "precoFotoPadrao": 16.9,
+    "descontosProgressivos": [
+      {
+        "quantidade": 3,
+        "desconto": 10
+      },
+      {
+        "quantidade": 5,
+        "desconto": 20
+      },
+      {
+        "quantidade": 10,
+        "desconto": 30
+      }
+    ],
+    "descontosProgressivosAtivos": true,
+    "createdAt": "2026-04-04T23:28:47.265Z",
+    "capaPersonalizadaUrl": null,
+    "usarCapaPersonalizada": false,
+    "atualizadoEm": "2026-04-05T03:32:25.127Z",
+    "visitas": 74
+  },
+  {
+    "id": "41fb4582-6565-4943-be07-d98dba4c029a",
+    "publicId": "300000008",
+    "name": "Novo Álbum",
+    "date": "2026-04-05",
+    "dataFinal": null,
+    "description": "",
+    "coverImage": null,
+    "visibilidade": "publico",
+    "categoria": null,
+    "horarioInicial": null,
+    "horarioFinal": null,
+    "cidade": null,
+    "estado": null,
+    "localEspecifico": null,
+    "organizador": null,
+    "precoFotoPadrao": 12.5,
+    "descontosProgressivos": [
+      {
+        "quantidade": 3,
+        "desconto": 12
+      },
+      {
+        "quantidade": 5,
+        "desconto": 24
+      },
+      {
+        "quantidade": 7,
+        "desconto": 32
+      },
+      {
+        "quantidade": 9,
+        "desconto": 36
+      }
+    ],
+    "descontosProgressivosAtivos": true,
+    "createdAt": "2026-04-05T12:59:05.064Z",
+    "visitas": 22,
+    "removido": true,
+    "removidoEm": "2026-04-07T15:00:02.113Z"
+  }
+]

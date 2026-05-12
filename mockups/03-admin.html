@@ -1,0 +1,1579 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>03 · Painel admin — Mockups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0c0c; --bg-secondary:#141414; --bg-card:#1c1c1c; --bg-input:#222; --bg-sidebar:#0f1115;
+    --border:#2e2e2e; --border-light:#3a3a3a;
+    --text:#ede8e0; --text-muted:#888880; --text-dim:#555550;
+    --accent:#22c55e; --accent-hover:#16a34a; --accent-dim:rgba(34,197,94,.15);
+    --danger:#d96c6c; --danger-dim:rgba(217,108,108,.15);
+    --success:#6cc47a; --success-dim:rgba(108,196,122,.15);
+    --warn:#fbbf24; --warn-dim:rgba(251,191,36,.15);
+    --info:#60a5fa; --info-dim:rgba(96,165,250,.15);
+    --pink:#ec4899; --pink-dim:rgba(236,72,153,.15);
+    --radius:6px; --radius-lg:12px;
+    --font-heading:'Space Grotesk',sans-serif;
+    --font-body:'Inter',system-ui,sans-serif;
+    --font-mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#070707;color:var(--text);font-family:var(--font-body);font-weight:300;line-height:1.6}
+  h1,h2,h3,h4{font-family:var(--font-heading);font-weight:500;letter-spacing:.02em;line-height:1.2}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;cursor:pointer}
+  table{width:100%;border-collapse:collapse}
+
+  .mockups-page{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+  @media(max-width:1024px){.mockups-page{grid-template-columns:1fr}}
+  .toc{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;background:#0a0a0a;border-right:1px solid var(--border);padding:1.25rem 1rem;font-size:.82rem}
+  @media(max-width:1024px){.toc{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--border)}}
+  .toc h1{font-size:.95rem;color:var(--accent);margin-bottom:.25rem}
+  .toc .sub{font-size:.7rem;color:var(--text-dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem}
+  .toc a{display:block;padding:.35rem .55rem;border-radius:var(--radius);color:var(--text-muted);font-size:.78rem;border-left:2px solid transparent}
+  .toc a:hover{background:var(--bg-secondary);color:var(--text);border-left-color:var(--accent)}
+  .toc .back{display:inline-block;margin-bottom:1rem;font-size:.75rem;color:var(--text-dim)}
+  .toc .group{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);padding:.65rem .55rem .25rem}
+
+  .stage{padding:2rem 2rem 6rem}
+  @media(max-width:768px){.stage{padding:1rem 1rem 4rem}}
+  .mock{margin-bottom:4rem;scroll-margin-top:1rem}
+  .mock-head{margin-bottom:1rem}
+  .mock-head h2{font-size:1.5rem;color:var(--text)}
+  .mock-head h2 .num{color:var(--accent);font-family:var(--font-mono);font-size:.82rem;margin-right:.5rem}
+  .mock-head .url{margin-top:.4rem;font-family:var(--font-mono);font-size:.78rem;color:var(--text-muted)}
+  .mock-head .desc{margin-top:.5rem;font-size:.85rem;color:var(--text-muted);max-width:780px}
+
+  .frame{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+  .frame-bar{display:flex;align-items:center;gap:.5rem;background:#080808;padding:.5rem .85rem;border-bottom:1px solid var(--border)}
+  .frame-bar .dots{display:flex;gap:.3rem}
+  .frame-bar .dots span{width:10px;height:10px;border-radius:50%}
+  .frame-bar .dots span:nth-child(1){background:#ff5f56}
+  .frame-bar .dots span:nth-child(2){background:#ffbd2e}
+  .frame-bar .dots span:nth-child(3){background:#27c93f}
+  .frame-bar .url-bar{flex:1;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;padding:.25rem .65rem;font-family:var(--font-mono);font-size:.72rem;color:var(--text-muted)}
+
+  /* admin shell */
+  .admin-shell{display:grid;grid-template-columns:240px 1fr;min-height:520px}
+  .admin-side{background:var(--bg-sidebar);border-right:1px solid var(--border);padding:1rem 0;display:flex;flex-direction:column;gap:.15rem;overflow-y:auto;font-size:.82rem}
+  .admin-side .brand{font-family:var(--font-heading);font-size:1.05rem;padding:0 1rem 1rem;border-bottom:1px solid var(--border);margin-bottom:.85rem}
+  .admin-side .brand span{color:var(--accent)}
+  .admin-side .brand .badge{display:inline-block;margin-top:.35rem;font-size:.6rem;font-weight:700;letter-spacing:.08em;padding:.18rem .5rem;border-radius:999px;background:var(--accent-dim);color:var(--accent);border:1px solid rgba(34,197,94,.35)}
+  .admin-side .nav-section{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);padding:.55rem .9rem .15rem}
+  .admin-side .nav-item{display:flex;align-items:center;gap:.55rem;padding:.5rem 1rem;color:var(--text-muted);border-left:2px solid transparent;font-size:.82rem}
+  .admin-side .nav-item:hover{background:var(--bg-secondary);color:var(--text)}
+  .admin-side .nav-item.active{background:var(--bg-secondary);color:var(--accent);border-left-color:var(--accent)}
+  .admin-side .nav-item .ct{margin-left:auto;font-size:.65rem;background:var(--bg-secondary);padding:.1rem .4rem;border-radius:100px;color:var(--text-muted)}
+  .admin-side .nav-item .ct.acc{background:var(--accent-dim);color:var(--accent)}
+  .admin-side .nav-item .ct.dan{background:var(--danger-dim);color:var(--danger)}
+  .admin-side .footer{margin-top:auto;padding:.85rem 1rem;border-top:1px solid var(--border);font-size:.72rem;color:var(--text-dim);display:flex;flex-direction:column;gap:.5rem}
+  .admin-side .footer .site-row{display:flex;gap:.4rem}
+  .admin-side .footer .site-row a{flex:1;text-align:center;padding:.45rem .5rem;border-radius:var(--radius);background:var(--bg-secondary);border:1px solid var(--border);color:var(--text);font-size:.72rem}
+  .admin-side .footer .site-row .copy{width:34px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:var(--radius);background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-muted)}
+
+  .admin-main{padding:2rem;overflow-x:hidden}
+  .admin-main h1{font-family:var(--font-heading);font-size:1.7rem;font-weight:400;margin-bottom:.5rem}
+  .admin-main .sub{color:var(--text-muted);font-size:.85rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+
+  /* generic blocks */
+  .badge{display:inline-block;padding:.18rem .55rem;border-radius:100px;font-size:.66rem;letter-spacing:.06em;font-weight:600}
+  .badge.acc{background:var(--accent-dim);color:var(--accent);border:1px solid rgba(34,197,94,.35)}
+  .badge.gray{background:var(--bg-secondary);color:var(--text-muted);border:1px solid var(--border)}
+  .badge.dan{background:var(--danger-dim);color:var(--danger);border:1px solid rgba(217,108,108,.35)}
+  .badge.ok{background:var(--success-dim);color:var(--success);border:1px solid rgba(108,196,122,.35)}
+  .badge.warn{background:var(--warn-dim);color:var(--warn);border:1px solid rgba(251,191,36,.35)}
+  .badge.info{background:var(--info-dim);color:var(--info);border:1px solid rgba(96,165,250,.35)}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.6rem 1rem;border-radius:var(--radius);font-size:.82rem;font-weight:500;letter-spacing:.04em;border:1px solid var(--border);background:var(--bg-secondary);color:var(--text)}
+  .btn.primary{background:var(--accent);color:#06210e;border-color:var(--accent)}
+  .btn.outline{background:transparent;border-color:var(--accent);color:var(--accent)}
+  .btn.danger{background:var(--danger-dim);border-color:rgba(217,108,108,.4);color:var(--danger)}
+  .btn.warn{background:var(--warn-dim);border-color:rgba(251,191,36,.4);color:var(--warn)}
+  .btn.sm{padding:.35rem .7rem;font-size:.74rem}
+  .btn.xs{padding:.2rem .5rem;font-size:.68rem}
+
+  .input{width:100%;padding:.6rem .85rem;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font:inherit;font-size:.85rem}
+  .label{display:block;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.35rem}
+
+  .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem}
+  .card h3{font-size:1rem;margin-bottom:.85rem}
+
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem}
+  .stat{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem}
+  .stat .lbl{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.3rem}
+  .stat .val{font-family:var(--font-heading);font-size:1.5rem;color:var(--text)}
+  .stat .val.acc{color:var(--accent)}
+  .stat .delta{font-size:.72rem;color:var(--success);margin-top:.2rem}
+  .stat .delta.dan{color:var(--danger)}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+  @media(max-width:760px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+
+  table{font-size:.82rem}
+  thead th{text-align:left;font-weight:500;color:var(--text-dim);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;padding:.65rem .75rem;border-bottom:1px solid var(--border)}
+  tbody td{padding:.7rem .75rem;border-bottom:1px solid var(--border);vertical-align:middle}
+  tbody tr:hover{background:rgba(255,255,255,.02)}
+  tbody tr:last-child td{border-bottom:0}
+  .mono{font-family:var(--font-mono);font-size:.78rem;color:var(--text-muted)}
+  .mono.acc{color:var(--accent)}
+
+  .thumb{width:48px;height:36px;border-radius:4px;background:repeating-linear-gradient(45deg,#1a1a1a 0 3px,#222 3px 6px);flex-shrink:0;border:1px solid var(--border)}
+  .thumb-stack{display:flex;gap:3px;align-items:center}
+  .gphoto{aspect-ratio:1/1;border-radius:var(--radius);background:repeating-linear-gradient(45deg,#1a1a1a 0 3px,#222 3px 6px);position:relative;border:1px solid var(--border)}
+  .gphoto.sel{border:2px solid var(--accent)}
+  .gphoto .id{position:absolute;top:4px;left:4px;background:rgba(0,0,0,.65);color:#fff;font-family:var(--font-mono);font-size:.6rem;padding:.1rem .3rem;border-radius:3px}
+  .gphoto .check{position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:4px;border:2px solid rgba(255,255,255,.3);background:rgba(0,0,0,.5)}
+  .gphoto.sel .check{background:var(--accent);border-color:var(--accent);color:#06210e;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700}
+  .gphoto .price{position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,.7);color:var(--accent);font-size:.62rem;padding:.1rem .3rem;border-radius:3px;font-family:var(--font-heading)}
+
+  .tabs{display:flex;gap:.4rem;margin-bottom:1rem;border-bottom:1px solid var(--border);overflow-x:auto;flex-wrap:wrap}
+  .tab{padding:.55rem .85rem;color:var(--text-muted);font-size:.82rem;border-bottom:2px solid transparent;white-space:nowrap}
+  .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+  .toolbar{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:1rem}
+  .toolbar .filters{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
+
+  .filter-pill{background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-muted);padding:.35rem .75rem;border-radius:100px;font-size:.74rem;cursor:pointer}
+  .filter-pill.active{background:var(--accent-dim);color:var(--accent);border-color:rgba(34,197,94,.4)}
+
+  .row{display:flex;justify-content:space-between;align-items:center;padding:.85rem 0;border-bottom:1px solid var(--border);gap:1rem}
+  .row:last-child{border-bottom:0}
+  .row .l{display:flex;flex-direction:column;gap:.18rem}
+  .row .l .nm{font-size:.9rem}
+  .row .l .ds{font-size:.74rem;color:var(--text-muted)}
+
+  .toggle{display:inline-flex;align-items:center;gap:.6rem;cursor:pointer}
+  .toggle input{display:none}
+  .toggle .sw{width:34px;height:18px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:100px;position:relative;transition:.2s}
+  .toggle .sw::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;background:var(--text-muted);border-radius:50%;transition:.2s}
+  .toggle.on .sw{background:var(--accent-dim);border-color:var(--accent)}
+  .toggle.on .sw::after{transform:translateX(16px);background:var(--accent)}
+
+  .alert{padding:.85rem 1rem;border-radius:var(--radius);font-size:.85rem;display:flex;gap:.6rem;align-items:start;margin-bottom:1rem}
+  .alert.warn{background:var(--warn-dim);border:1px solid rgba(251,191,36,.3);color:var(--warn)}
+  .alert.dan{background:var(--danger-dim);border:1px solid rgba(217,108,108,.3);color:var(--danger)}
+  .alert.ok{background:var(--success-dim);border:1px solid rgba(108,196,122,.3);color:var(--success)}
+  .alert.info{background:var(--info-dim);border:1px solid rgba(96,165,250,.3);color:var(--info)}
+
+  .pill-grid{display:flex;flex-wrap:wrap;gap:.4rem}
+  .empty{text-align:center;padding:3rem 2rem;color:var(--text-muted)}
+  .empty .ic{font-size:3rem;opacity:.4;margin-bottom:.85rem}
+
+  /* timeline */
+  .timeline{position:relative;padding-left:1.5rem}
+  .timeline::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:var(--border)}
+  .ti{position:relative;padding-bottom:.85rem}
+  .ti::before{content:"";position:absolute;left:-1.5rem;top:5px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--border-light)}
+  .ti.done::before{background:var(--accent);border-color:var(--accent)}
+  .ti.dan::before{background:var(--danger);border-color:var(--danger)}
+  .ti.warn::before{background:var(--warn);border-color:var(--warn)}
+  .ti .ts{font-size:.7rem;color:var(--text-dim);font-family:var(--font-mono)}
+  .ti .lb{font-size:.85rem}
+
+  .chip{display:inline-block;padding:.18rem .55rem;border-radius:4px;background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-muted);font-family:var(--font-mono);font-size:.7rem}
+
+  .col-2{column-count:2;column-gap:1rem}
+  @media(max-width:768px){.col-2{column-count:1}}
+
+  .progress{height:6px;background:var(--bg-secondary);border-radius:100px;overflow:hidden}
+  .progress > div{height:100%;background:var(--accent)}
+</style>
+</head>
+<body>
+
+<div class="mockups-page">
+  <aside class="toc">
+    <a class="back" href="index.html">← Voltar ao índice</a>
+    <h1>03 · Painel admin</h1>
+    <div class="sub">22 seções</div>
+    <div class="group">Visão geral</div>
+    <a href="#dash">📊 Dashboard</a>
+    <a href="#estatisticas">📈 Estatísticas</a>
+    <div class="group">Conteúdo</div>
+    <a href="#eventos">🖼 Eventos / Álbuns</a>
+    <a href="#evento-detail">📂 Detalhe de evento</a>
+    <a href="#criar">➕ Criar evento</a>
+    <a href="#upload">⬆ Upload de fotos</a>
+    <a href="#marca">💧 Marca d'água</a>
+    <a href="#personalizar">🎨 Personalizar</a>
+    <div class="group">Vendas</div>
+    <a href="#pedidos">🧾 Pedidos</a>
+    <a href="#carrinhos">🛒 Carrinhos ativos</a>
+    <a href="#cupons">🎟 Cupons</a>
+    <a href="#repasses">💸 Repasses</a>
+    <a href="#propostas">📄 Propostas</a>
+    <div class="group">Pessoas</div>
+    <a href="#clientes">👥 Clientes</a>
+    <a href="#colaboradores">🧑‍💼 Colaboradores</a>
+    <a href="#contatos">✉ Contatos</a>
+    <a href="#chat">💬 Chat</a>
+    <div class="group">Moderação</div>
+    <a href="#comentarios">💬 Comentários</a>
+    <a href="#remocoes">🚫 Remoções (LGPD)</a>
+    <a href="#face">🤳 Reconhecimento</a>
+    <div class="group">Sistema</div>
+    <a href="#notif">🔔 Notificações</a>
+    <a href="#config">⚙ Configurações</a>
+    <a href="#reset">⚠ Reset</a>
+  </aside>
+
+  <main class="stage">
+
+    <!-- ========== DASHBOARD ========== -->
+    <section class="mock" id="dash">
+      <div class="mock-head">
+        <h2><span class="num">3.1</span>Dashboard</h2>
+        <div class="url">/admin — admin/page.js</div>
+        <p class="desc">Visão consolidada com cards de KPI (faturamento, pedidos pagos, mídias vendidas, clientes únicos), gráficos de venda mensal, atividade recente, alertas operacionais e atalhos.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side">
+            <div class="brand">Vinícius<span>.</span> Admin<br><span class="badge">PHOTOVAULT v1</span></div>
+            <div class="nav-section">Visão geral</div>
+            <a class="nav-item active">📊 Dashboard</a>
+            <a class="nav-item">📈 Estatísticas</a>
+            <div class="nav-section">Conteúdo</div>
+            <a class="nav-item">🖼 Eventos<span class="ct">4</span></a>
+            <a class="nav-item">⬆ Upload</a>
+            <a class="nav-item">💧 Marca d'água</a>
+            <a class="nav-item">🎨 Personalizar</a>
+            <div class="nav-section">Vendas</div>
+            <a class="nav-item">🧾 Pedidos<span class="ct acc">2 novos</span></a>
+            <a class="nav-item">🛒 Carrinhos<span class="ct">7</span></a>
+            <a class="nav-item">🎟 Cupons</a>
+            <a class="nav-item">💸 Repasses</a>
+            <a class="nav-item">📄 Propostas<span class="ct">3</span></a>
+            <div class="nav-section">Pessoas</div>
+            <a class="nav-item">👥 Clientes<span class="ct">9</span></a>
+            <a class="nav-item">🧑‍💼 Colaboradores</a>
+            <a class="nav-item">✉ Contatos</a>
+            <a class="nav-item">💬 Chat<span class="ct dan">5</span></a>
+            <div class="nav-section">Moderação</div>
+            <a class="nav-item">💬 Comentários</a>
+            <a class="nav-item">🚫 Remoções<span class="ct dan">1</span></a>
+            <a class="nav-item">🤳 Reconhecimento</a>
+            <div class="nav-section">Sistema</div>
+            <a class="nav-item">🔔 Notificações</a>
+            <a class="nav-item">⚙ Configurações</a>
+            <a class="nav-item" style="color:var(--danger)">⚠ Reset</a>
+            <div class="footer">
+              <div>URL pública</div>
+              <div class="site-row"><a>vinicius.com.br ↗</a><span class="copy">📋</span></div>
+              <button class="btn sm danger" style="width:100%">🚪 Sair</button>
+            </div>
+          </aside>
+          <div class="admin-main">
+            <h1>Olá, Vinícius 👋</h1>
+            <div class="sub"><span>10 de maio de 2026 · domingo · backend SQLite ativo</span><span><a href="#" style="color:var(--accent)">Ver site público ↗</a></span></div>
+
+            <div class="alert ok">✅ Tudo operacional — backup do dia salvo às 03:00, monitor de saúde 100%.</div>
+
+            <div class="stat-grid">
+              <div class="stat"><div class="lbl">Faturamento mês</div><div class="val acc">R$ 1.847,30</div><div class="delta">+ R$ 312 vs. abril</div></div>
+              <div class="stat"><div class="lbl">Pedidos pagos</div><div class="val">19 <small style="color:var(--text-muted);font-size:.7rem">/ 28</small></div><div class="delta">+5 esta semana</div></div>
+              <div class="stat"><div class="lbl">Mídias vendidas</div><div class="val">87</div><div class="delta">média 4,5 por pedido</div></div>
+              <div class="stat"><div class="lbl">Clientes únicos</div><div class="val">9 <small style="color:var(--text-muted);font-size:.7rem">/ 6 ativos</small></div><div class="delta">3 admin · 3 colab.</div></div>
+              <div class="stat"><div class="lbl">Carrinhos ativos</div><div class="val" style="color:var(--warn)">7</div><div class="delta dan">2 abandonados há &gt; 24h</div></div>
+              <div class="stat"><div class="lbl">Fotos no acervo</div><div class="val">1.419</div><div class="delta">218 grátis · 1.201 pagas</div></div>
+            </div>
+
+            <div class="grid-2" style="margin-bottom:1.5rem">
+              <div class="card">
+                <h3>📈 Vendas por mês</h3>
+                <div style="height:180px;display:flex;align-items:flex-end;gap:.5rem;padding:.5rem">
+                  <div style="flex:1;background:var(--bg-secondary);height:30%;border-radius:4px 4px 0 0"></div>
+                  <div style="flex:1;background:var(--bg-secondary);height:45%;border-radius:4px 4px 0 0"></div>
+                  <div style="flex:1;background:var(--bg-secondary);height:38%;border-radius:4px 4px 0 0"></div>
+                  <div style="flex:1;background:var(--bg-secondary);height:55%;border-radius:4px 4px 0 0"></div>
+                  <div style="flex:1;background:var(--bg-secondary);height:62%;border-radius:4px 4px 0 0"></div>
+                  <div style="flex:1;background:var(--bg-secondary);height:48%;border-radius:4px 4px 0 0"></div>
+                  <div style="flex:1;background:var(--accent);height:78%;border-radius:4px 4px 0 0"></div>
+                  <div style="flex:1;background:var(--accent-dim);border:1px dashed var(--accent);height:88%;border-radius:4px 4px 0 0"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--text-muted);margin-top:.5rem"><span>Out</span><span>Nov</span><span>Dez</span><span>Jan</span><span>Fev</span><span>Mar</span><span>Abr</span><span>Mai (parcial)</span></div>
+              </div>
+              <div class="card">
+                <h3>🏃 Top eventos</h3>
+                <div style="display:flex;flex-direction:column;gap:.6rem">
+                  <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.2rem"><span>Maratona de Joinville 2026</span><span style="color:var(--accent)">R$ 891</span></div><div class="progress"><div style="width:88%"></div></div></div>
+                  <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.2rem"><span>Travessia Itapuã</span><span style="color:var(--accent)">R$ 524</span></div><div class="progress"><div style="width:55%"></div></div></div>
+                  <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.2rem"><span>Casamento Marina &amp; Tiago</span><span style="color:var(--accent)">R$ 312</span></div><div class="progress"><div style="width:35%"></div></div></div>
+                  <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.2rem"><span>Rodeio de Bagé</span><span style="color:var(--accent)">R$ 120</span></div><div class="progress"><div style="width:14%"></div></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>⚡ Atividade recente</h3>
+              <div class="timeline">
+                <div class="ti done"><div class="ts">há 2h · 14:32</div><div class="lb">💰 Pedido <a class="mono acc">#200000039</a> pago via PIX (R$ 69,65) · Maria Rodrigues</div></div>
+                <div class="ti done"><div class="ts">há 5h · 11:08</div><div class="lb">📷 Upload concluído · 47 fotos em "Maratona de Joinville" (pasta: km 12)</div></div>
+                <div class="ti warn"><div class="ts">há 8h · 08:15</div><div class="lb">🚫 Nova solicitação de remoção <a class="mono">#REM-2026-014</a> · foto #100001583</div></div>
+                <div class="ti done"><div class="ts">há 1d · 09:02</div><div class="lb">💸 Repasse para Estúdio Lente Aberta · R$ 320,00 transferido</div></div>
+                <div class="ti done"><div class="ts">há 2d · 16:44</div><div class="lb">🎟 Cupom "MARATONA1FREE" criado (1 foto grátis para corredores)</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== EVENTOS ========== -->
+    <section class="mock" id="eventos">
+      <div class="mock-head">
+        <h2><span class="num">3.2</span>Eventos / Álbuns</h2>
+        <div class="url">/admin/eventos</div>
+        <p class="desc">Listagem de álbuns com cover dedicada, edição rápida de visibilidade/preço default, QR code do álbum, atalhos de URL pública, total de vendas, fotos vendidas e clientes únicos por evento.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/eventos</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side">
+            <div class="brand">Vinícius<span>.</span> Admin</div>
+            <a class="nav-item">📊 Dashboard</a>
+            <a class="nav-item active">🖼 Eventos<span class="ct">4</span></a>
+            <a class="nav-item">⬆ Upload</a>
+            <a class="nav-item">🧾 Pedidos<span class="ct acc">2</span></a>
+            <a class="nav-item">👥 Clientes</a>
+            <a class="nav-item">⚙ Configurações</a>
+          </aside>
+          <div class="admin-main">
+            <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem">
+              <div><h1>Eventos</h1><div class="sub" style="margin-bottom:0">4 ativos · 3 removidos · 1.419 fotos publicadas</div></div>
+              <button class="btn primary">➕ Criar evento</button>
+            </div>
+
+            <div class="toolbar">
+              <div class="filters">
+                <span class="filter-pill active">Ativos (4)</span>
+                <span class="filter-pill">Rascunho</span>
+                <span class="filter-pill">Removidos (3)</span>
+                <span class="filter-pill">Vendendo</span>
+              </div>
+              <input class="input" style="width:240px" placeholder="🔎 Buscar evento…">
+            </div>
+
+            <div class="grid-2">
+              <div class="card" style="padding:0;overflow:hidden">
+                <div style="aspect-ratio:16/8;background:linear-gradient(135deg,#1a3a2a,#0f2018);position:relative">
+                  <span class="badge acc" style="position:absolute;top:.7rem;left:.7rem">ATIVO · #300000008</span>
+                  <span class="chip" style="position:absolute;top:.7rem;right:.7rem">412 fotos · 218 grátis</span>
+                </div>
+                <div style="padding:1rem 1.25rem">
+                  <h3 style="font-size:1.1rem;margin-bottom:.25rem">Maratona de Joinville 2026</h3>
+                  <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.85rem">04/05/2026 · Joinville/SC · upload por @vinicius (autor)</div>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;font-size:.78rem;margin-bottom:.85rem">
+                    <div><div class="lbl">Vendas</div><b style="color:var(--accent)">R$ 891</b></div>
+                    <div><div class="lbl">Mídias</div><b>34</b></div>
+                    <div><div class="lbl">Clientes</div><b>5</b></div>
+                  </div>
+                  <div style="display:flex;gap:.4rem"><button class="btn sm primary">Abrir →</button><button class="btn sm">⬆ Upload</button><button class="btn sm">📋 Copiar URL</button><button class="btn sm">📱 QR</button></div>
+                </div>
+              </div>
+              <div class="card" style="padding:0;overflow:hidden">
+                <div style="aspect-ratio:16/8;background:linear-gradient(135deg,#3a2a1a,#201810);position:relative">
+                  <span class="badge acc" style="position:absolute;top:.7rem;left:.7rem">ATIVO · #300000007</span>
+                  <span class="chip" style="position:absolute;top:.7rem;right:.7rem">287 fotos</span>
+                </div>
+                <div style="padding:1rem 1.25rem">
+                  <h3 style="font-size:1.1rem;margin-bottom:.25rem">Travessia Itapuã</h3>
+                  <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.85rem">27/04/2026 · 12 colaboradores</div>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;font-size:.78rem;margin-bottom:.85rem">
+                    <div><div class="lbl">Vendas</div><b style="color:var(--accent)">R$ 524</b></div>
+                    <div><div class="lbl">Mídias</div><b>26</b></div>
+                    <div><div class="lbl">Clientes</div><b>3</b></div>
+                  </div>
+                  <div style="display:flex;gap:.4rem"><button class="btn sm primary">Abrir →</button><button class="btn sm">⬆ Upload</button><button class="btn sm">📋</button><button class="btn sm">📱</button></div>
+                </div>
+              </div>
+              <div class="card" style="padding:0;overflow:hidden">
+                <div style="aspect-ratio:16/8;background:linear-gradient(135deg,#2a1a3a,#181020);position:relative">
+                  <span class="badge acc" style="position:absolute;top:.7rem;left:.7rem">ATIVO · #300000006</span>
+                  <span class="chip" style="position:absolute;top:.7rem;right:.7rem">523 fotos</span>
+                </div>
+                <div style="padding:1rem 1.25rem">
+                  <h3 style="font-size:1.1rem;margin-bottom:.25rem">Casamento Marina &amp; Tiago</h3>
+                  <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.85rem">20/04/2026 · 1 reembolso (–R$ 49,80)</div>
+                  <div style="display:flex;gap:.4rem"><button class="btn sm primary">Abrir →</button><button class="btn sm">⬆ Upload</button><button class="btn sm">📋</button><button class="btn sm">📱</button></div>
+                </div>
+              </div>
+              <div class="card" style="padding:0;overflow:hidden">
+                <div style="aspect-ratio:16/8;background:linear-gradient(135deg,#1a2a3a,#101820);position:relative">
+                  <span class="badge acc" style="position:absolute;top:.7rem;left:.7rem">ATIVO · #300000005</span>
+                </div>
+                <div style="padding:1rem 1.25rem">
+                  <h3 style="font-size:1.1rem">Rodeio de Bagé</h3>
+                  <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.85rem">12/04/2026 · 197 fotos</div>
+                  <div style="display:flex;gap:.4rem"><button class="btn sm primary">Abrir →</button><button class="btn sm">⬆ Upload</button><button class="btn sm">📋</button><button class="btn sm">📱</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== EVENTO DETAIL ========== -->
+    <section class="mock" id="evento-detail">
+      <div class="mock-head">
+        <h2><span class="num">3.3</span>Detalhe de evento</h2>
+        <div class="url">/admin/eventos/[id]</div>
+        <p class="desc">Painel completo do álbum: explorador de fotos com seleção múltipla (Shift+click), pastas, ações em lote (mover, definir preço, marcar grátis, remover), aba de carrinhos ativos, vendas e clientes do evento, configurações de WM e capa.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/eventos/300000008</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side">
+            <div class="brand">Vinícius<span>.</span> Admin</div>
+            <a class="nav-item">📊 Dashboard</a>
+            <a class="nav-item active">🖼 Eventos</a>
+            <a class="nav-item">⬆ Upload</a>
+            <a class="nav-item">🧾 Pedidos</a>
+          </aside>
+          <div class="admin-main">
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1rem">
+              <div>
+                <a href="#" style="font-size:.78rem;color:var(--text-muted)">← Eventos</a>
+                <h1 style="margin-top:.4rem">Maratona de Joinville 2026 <span class="chip">#300000008</span></h1>
+                <div class="sub" style="margin-bottom:0">04/05/2026 · 412 fotos · 218 grátis · 7 pastas · R$ 891 em vendas</div>
+              </div>
+              <div style="display:flex;gap:.5rem;align-items:flex-start"><button class="btn">⚙ Configurações</button><button class="btn primary">⬆ Upload</button></div>
+            </div>
+
+            <div class="tabs">
+              <span class="tab active">📷 Fotos (412)</span>
+              <span class="tab">📁 Pastas (7)</span>
+              <span class="tab">🛒 Carrinhos ativos (3)</span>
+              <span class="tab">🧾 Vendas e clientes</span>
+              <span class="tab">💧 Marca d'água</span>
+              <span class="tab">⚙ Config</span>
+            </div>
+
+            <div class="alert info">ℹ <b>3 selecionadas</b> · <button class="btn xs">📁 Mover</button> <button class="btn xs">💰 Definir preço</button> <button class="btn xs">🆓 Tornar grátis</button> <button class="btn xs danger">🗑 Remover</button> · <a href="#" style="color:var(--info)">selecionar todas as 412</a></div>
+
+            <div class="toolbar">
+              <div class="filters">
+                <span class="filter-pill active">Todas</span>
+                <span class="filter-pill">Em pasta</span>
+                <span class="filter-pill">Avulsas</span>
+                <span class="filter-pill">Grátis</span>
+                <span class="filter-pill">Vendidas</span>
+                <span class="filter-pill">Sem marca d'água</span>
+              </div>
+              <div style="display:flex;gap:.4rem;align-items:center">
+                <input class="input" style="width:180px" placeholder="🔎 Por ID ou nº peito">
+                <select class="input" style="width:auto"><option>Mais recentes</option><option>Mais vendidas</option></select>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(8,1fr);gap:6px">
+              <div class="gphoto sel"><span class="id">#100001583</span><span class="check">✓</span><span class="price">R$ 19,90</span></div>
+              <div class="gphoto"><span class="id">#100001584</span><span class="check"></span><span class="price">R$ 19,90</span></div>
+              <div class="gphoto sel"><span class="id">#100001585</span><span class="check">✓</span><span class="price">R$ 19,90</span></div>
+              <div class="gphoto"><span class="id">#100001586</span><span class="check"></span><span class="price" style="color:var(--text-muted)">GRÁTIS</span></div>
+              <div class="gphoto sel"><span class="id">#100001587</span><span class="check">✓</span><span class="price">R$ 19,90</span></div>
+              <div class="gphoto"><span class="id">#100001588</span><span class="check"></span><span class="price">R$ 19,90</span></div>
+              <div class="gphoto"><span class="id">#100001589</span><span class="check"></span><span class="price">R$ 19,90</span></div>
+              <div class="gphoto"><span class="id">#100001590</span><span class="check"></span><span class="price">R$ 19,90</span></div>
+              <div class="gphoto"><span class="id">#100001591</span><span class="check"></span><span class="price">R$ 19,90</span></div>
+              <div class="gphoto"><span class="id">#100001592</span><span class="check"></span><span class="price">R$ 19,90</span></div>
+              <div class="gphoto"><span class="id">#100001593</span><span class="check"></span><span class="price">R$ 19,90</span></div>
+              <div class="gphoto"><span class="id">#100001594</span><span class="check"></span><span class="price">R$ 19,90</span></div>
+              <div class="gphoto"><span class="id">#100001595</span><span class="check"></span><span class="price">R$ 19,90</span></div>
+              <div class="gphoto"><span class="id">#100001596</span><span class="check"></span><span class="price">R$ 19,90</span></div>
+              <div class="gphoto"><span class="id">#100001597</span><span class="check"></span><span class="price">R$ 19,90</span></div>
+              <div class="gphoto"><span class="id">#100001598</span><span class="check"></span><span class="price">R$ 19,90</span></div>
+            </div>
+            <div style="text-align:center;margin-top:1rem;color:var(--text-muted);font-size:.82rem">… mostrando 16 de 412 · <a href="#" style="color:var(--accent)">carregar mais</a></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CRIAR EVENTO ========== -->
+    <section class="mock" id="criar">
+      <div class="mock-head">
+        <h2><span class="num">3.4</span>Criar evento</h2>
+        <div class="url">/admin/criar-evento</div>
+        <p class="desc">Wizard de criação: nome, data, localização, descrição, preço default, modo de visibilidade (público / link / privado), capa personalizada (upload ou URL externa).</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/criar-evento</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side"><div class="brand">Vinícius<span>.</span> Admin</div><a class="nav-item">📊 Dashboard</a><a class="nav-item active">🖼 Eventos</a><a class="nav-item">⬆ Upload</a></aside>
+          <div class="admin-main">
+            <a href="#" style="font-size:.78rem;color:var(--text-muted)">← Eventos</a>
+            <h1 style="margin-top:.4rem">➕ Novo evento</h1>
+            <div class="sub">Os IDs públicos são gerados automaticamente. Próximo livre: <code class="chip mono acc">#300000009</code></div>
+
+            <div class="grid-2">
+              <div class="card">
+                <h3>Dados básicos</h3>
+                <div style="display:flex;flex-direction:column;gap:.85rem">
+                  <div><label class="label">Nome do evento</label><input class="input" placeholder="Ex.: Meia Maratona Floripa 2026"></div>
+                  <div class="grid-2">
+                    <div><label class="label">Data</label><input class="input" type="date"></div>
+                    <div><label class="label">Hora (opcional)</label><input class="input" type="time"></div>
+                  </div>
+                  <div><label class="label">Localização</label><input class="input" placeholder="Cidade, UF"></div>
+                  <div><label class="label">Descrição (opcional)</label><textarea class="input" rows="3"></textarea></div>
+                  <div><label class="label">Categoria</label><select class="input"><option>Corrida</option><option>Casamento</option><option>Travessia / aquático</option><option>Festival</option><option>Rodeio</option><option>+ Adicionar nova categoria</option></select></div>
+                </div>
+              </div>
+
+              <div class="card">
+                <h3>Visibilidade &amp; preço</h3>
+                <div style="display:flex;flex-direction:column;gap:.85rem">
+                  <div>
+                    <label class="label">Visibilidade</label>
+                    <div style="display:flex;flex-direction:column;gap:.5rem">
+                      <label style="display:flex;gap:.5rem;align-items:start;background:var(--accent-dim);border:1px solid var(--accent);padding:.65rem;border-radius:var(--radius)"><input type="radio" checked><div><b>Público</b><div style="font-size:.74rem;color:var(--text-muted)">Aparece na home e na busca</div></div></label>
+                      <label style="display:flex;gap:.5rem;align-items:start;background:var(--bg-secondary);border:1px solid var(--border);padding:.65rem;border-radius:var(--radius)"><input type="radio"><div><b>Por link</b><div style="font-size:.74rem;color:var(--text-muted)">Só quem tem o link acessa</div></div></label>
+                      <label style="display:flex;gap:.5rem;align-items:start;background:var(--bg-secondary);border:1px solid var(--border);padding:.65rem;border-radius:var(--radius)"><input type="radio"><div><b>Privado</b><div style="font-size:.74rem;color:var(--text-muted)">Apenas você e colaboradores</div></div></label>
+                    </div>
+                  </div>
+                  <div><label class="label">Preço por foto (R$)</label><input class="input" value="19.90"><div style="font-size:.72rem;color:var(--text-muted);margin-top:.3rem">Default global é R$ 29,90. Esse valor sobrescreve só neste evento.</div></div>
+                  <div>
+                    <label class="label">Capa</label>
+                    <div style="aspect-ratio:16/9;background:var(--bg-secondary);border:1px dashed var(--border);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:.85rem">📁 Arraste ou cole URL externa</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex;justify-content:flex-end;gap:.5rem;margin-top:1.5rem"><button class="btn">Cancelar</button><button class="btn primary">✨ Criar evento</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== UPLOAD ========== -->
+    <section class="mock" id="upload">
+      <div class="mock-head">
+        <h2><span class="num">3.5</span>Upload de fotos</h2>
+        <div class="url">/admin/upload-fotos/[eventId]</div>
+        <p class="desc">Drag-and-drop. Upload começa imediatamente após seleção (sem botão "enviar"). Detecta duplicatas por (nome+tamanho), exibe progresso por arquivo, gera derivadas (grid/thumbs/mini/covers + clean/wm) via sharp em paralelo.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/upload-fotos/300000008</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side"><div class="brand">Vinícius<span>.</span> Admin</div><a class="nav-item">📊 Dashboard</a><a class="nav-item">🖼 Eventos</a><a class="nav-item active">⬆ Upload</a></aside>
+          <div class="admin-main">
+            <a href="#" style="font-size:.78rem;color:var(--text-muted)">← Maratona de Joinville 2026</a>
+            <h1 style="margin-top:.4rem">⬆ Upload de fotos</h1>
+            <div class="sub">Pasta destino: <select class="input" style="width:auto;display:inline-block;margin-left:.5rem;font-size:.78rem"><option>(raiz do álbum)</option><option>Largada · 38 fotos</option><option>5km · 42 fotos</option><option>km 12 · 47 fotos</option><option>Chegada · 88 fotos</option><option>+ Nova pasta</option></select></div>
+
+            <div class="card" style="margin-bottom:1rem">
+              <div style="aspect-ratio:5/1.4;background:var(--bg-secondary);border:2px dashed var(--accent);border-radius:var(--radius-lg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem">
+                <div style="font-size:2.5rem">📁</div>
+                <div style="font-size:1rem">Solte os arquivos aqui</div>
+                <div style="font-size:.78rem;color:var(--text-muted)">JPG, PNG ou HEIC · até 200 MB por arquivo · upload começa imediatamente</div>
+                <button class="btn primary" style="margin-top:.5rem">Selecionar arquivos</button>
+              </div>
+            </div>
+
+            <h3 style="font-size:1rem;margin-bottom:.85rem">📦 Lote atual · 47 arquivos</h3>
+            <div class="card" style="padding:0">
+              <div style="padding:.85rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;font-size:.82rem">
+                <span style="color:var(--success)">✓ 41 enviadas · ⏳ 4 processando · <span style="color:var(--warn)">⚠ 2 já existiam (puladas)</span></span>
+                <span style="color:var(--text-muted)">tempo decorrido: 1m 23s · estimado: 2m 10s</span>
+              </div>
+              <div style="padding:.5rem 1.25rem">
+                <table>
+                  <thead><tr><th></th><th>Arquivo</th><th>Tamanho</th><th>Progresso</th><th>Derivadas</th><th>ID público</th></tr></thead>
+                  <tbody>
+                    <tr><td><div class="thumb"></div></td><td class="mono">DSC_4501.jpg</td><td>8.4 MB</td><td><div class="progress"><div style="width:100%"></div></div></td><td><span class="badge ok">grid·thumb·mini·cover · ✓ wm</span></td><td class="mono acc">#100001620</td></tr>
+                    <tr><td><div class="thumb"></div></td><td class="mono">DSC_4502.jpg</td><td>7.9 MB</td><td><div class="progress"><div style="width:100%"></div></div></td><td><span class="badge ok">✓ tudo</span></td><td class="mono acc">#100001621</td></tr>
+                    <tr><td><div class="thumb"></div></td><td class="mono">DSC_4503.jpg</td><td>8.1 MB</td><td><div class="progress"><div style="width:78%"></div></div></td><td><span class="badge warn">gerando wm…</span></td><td class="mono">aguardando</td></tr>
+                    <tr><td><div class="thumb"></div></td><td class="mono">DSC_4504.jpg</td><td>8.6 MB</td><td><div class="progress"><div style="width:42%"></div></div></td><td><span class="badge gray">…</span></td><td class="mono">—</td></tr>
+                    <tr style="opacity:.55"><td><div class="thumb"></div></td><td class="mono">DSC_4505.jpg</td><td>8.0 MB</td><td><span class="badge warn">DUPLICATA</span></td><td>—</td><td>—</td></tr>
+                    <tr style="opacity:.55"><td><div class="thumb"></div></td><td class="mono">DSC_4506.jpg</td><td>7.8 MB</td><td><span class="badge warn">DUPLICATA</span></td><td>—</td><td>—</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PEDIDOS ========== -->
+    <section class="mock" id="pedidos">
+      <div class="mock-head">
+        <h2><span class="num">3.6</span>Pedidos</h2>
+        <div class="url">/admin/pedidos</div>
+        <p class="desc">Listagem completa: status (pendente / pago / liberado_manual / reembolsado), método de pagamento, total, cliente clicável, mini-thumbs das fotos, notas privadas/públicas, gerar novo link de pagamento, fluxo de reembolso.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/pedidos</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side"><div class="brand">Vinícius<span>.</span> Admin</div><a class="nav-item">📊 Dashboard</a><a class="nav-item">🖼 Eventos</a><a class="nav-item active">🧾 Pedidos<span class="ct acc">2</span></a><a class="nav-item">👥 Clientes</a></aside>
+          <div class="admin-main">
+            <h1>Pedidos</h1>
+            <div class="sub">28 pedidos · 19 pagos · 1 reembolsado · faturamento total R$ 4.218</div>
+
+            <div class="toolbar">
+              <div class="filters">
+                <span class="filter-pill active">Todos (28)</span>
+                <span class="filter-pill">Pagos (19)</span>
+                <span class="filter-pill">Pendentes (5)</span>
+                <span class="filter-pill">Liberados manual (3)</span>
+                <span class="filter-pill">Reembolsados (1)</span>
+              </div>
+              <div style="display:flex;gap:.5rem"><input class="input" style="width:200px" placeholder="🔎 ID, cliente, e-mail…"><button class="btn sm">📤 Exportar CSV</button></div>
+            </div>
+
+            <div class="card" style="padding:0">
+              <table>
+                <thead><tr><th>ID</th><th>Cliente</th><th>Evento</th><th>Fotos</th><th>Total</th><th>Pagamento</th><th>Status</th><th>Data</th><th></th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td><span class="mono acc">#200000039</span></td>
+                    <td>Maria Rodrigues<br><span style="font-size:.7rem;color:var(--text-dim)">maria@exemplo.com</span></td>
+                    <td>Maratona Joinville</td>
+                    <td><div class="thumb-stack"><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><span class="chip">+1</span></div></td>
+                    <td><b style="color:var(--accent)">R$ 69,65</b></td>
+                    <td>📱 PIX · Asaas</td>
+                    <td><span class="badge ok">PAGO</span></td>
+                    <td>04/05 14:32</td>
+                    <td><button class="btn xs">Ver</button></td>
+                  </tr>
+                  <tr>
+                    <td><span class="mono acc">#200000038</span></td>
+                    <td>João Silva<br><span style="font-size:.7rem;color:var(--text-dim)">joao@exemplo.com</span></td>
+                    <td>Maratona Joinville</td>
+                    <td><div class="thumb-stack"><div class="thumb"></div><div class="thumb"></div></div></td>
+                    <td><b style="color:var(--accent)">R$ 39,80</b></td>
+                    <td>💳 Cartão · Stripe</td>
+                    <td><span class="badge ok">PAGO</span></td>
+                    <td>04/05 12:18</td>
+                    <td><button class="btn xs">Ver</button></td>
+                  </tr>
+                  <tr>
+                    <td><span class="mono acc">#200000037</span></td>
+                    <td>Carlos Mendes</td>
+                    <td>Travessia Itapuã</td>
+                    <td><div class="thumb-stack"><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div></div></td>
+                    <td>R$ 59,70</td>
+                    <td>📱 PIX</td>
+                    <td><span class="badge warn">PENDENTE · 2 tentativas</span></td>
+                    <td>03/05 19:44</td>
+                    <td><button class="btn xs warn">🔗 Novo link</button></td>
+                  </tr>
+                  <tr>
+                    <td><span class="mono acc">#200000036</span></td>
+                    <td>Ana Beatriz</td>
+                    <td>Casamento M&amp;T</td>
+                    <td><div class="thumb-stack"><div class="thumb"></div></div></td>
+                    <td>R$ 19,90</td>
+                    <td>🏷 Cupom 100%</td>
+                    <td><span class="badge ok">PAGO · cupom</span></td>
+                    <td>02/05 16:22</td>
+                    <td><button class="btn xs">Ver</button></td>
+                  </tr>
+                  <tr>
+                    <td><span class="mono acc">#200000031</span></td>
+                    <td>Bruno Costa</td>
+                    <td>Travessia Itapuã</td>
+                    <td><div class="thumb-stack"><div class="thumb"></div><div class="thumb"></div></div></td>
+                    <td>R$ 39,80</td>
+                    <td>💵 Em espécie</td>
+                    <td><span class="badge gray">LIBERADO MANUAL</span></td>
+                    <td>27/04 09:12</td>
+                    <td><button class="btn xs">Ver</button></td>
+                  </tr>
+                  <tr style="opacity:.65">
+                    <td><span class="mono acc">#200000028</span></td>
+                    <td>Marina Olivetto</td>
+                    <td>Casamento M&amp;T</td>
+                    <td><div class="thumb-stack"><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div></div></td>
+                    <td>R$ 49,80</td>
+                    <td>📱 PIX</td>
+                    <td><span class="badge dan">REEMBOLSADO</span></td>
+                    <td>20/04 → 21/04</td>
+                    <td><button class="btn xs">Ver</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CARRINHOS ========== -->
+    <section class="mock" id="carrinhos">
+      <div class="mock-head">
+        <h2><span class="num">3.7</span>Carrinhos ativos</h2>
+        <div class="url">/admin/carrinhos</div>
+        <p class="desc">Painel de carrinhos abandonados ou em andamento. Permite "liberar manualmente" (admin recebeu pagamento por fora — vira pedido com método "liberado por admin") ou enviar link de pagamento via WhatsApp.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/carrinhos</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side"><div class="brand">Vinícius<span>.</span> Admin</div><a class="nav-item">📊 Dashboard</a><a class="nav-item">🧾 Pedidos</a><a class="nav-item active">🛒 Carrinhos<span class="ct">7</span></a></aside>
+          <div class="admin-main">
+            <h1>Carrinhos ativos</h1>
+            <div class="sub">7 carrinhos · 32 fotos retidas · valor total potencial R$ 612</div>
+
+            <div class="toolbar">
+              <div class="filters">
+                <span class="filter-pill active">Todos (7)</span>
+                <span class="filter-pill">Recentes (&lt; 24h)</span>
+                <span class="filter-pill" style="color:var(--warn);border-color:rgba(251,191,36,.4)">Abandonados (&gt; 24h) · 2</span>
+                <span class="filter-pill">Com cliente logado</span>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="card">
+                <div style="display:flex;justify-content:space-between;margin-bottom:.5rem"><div><b>Maria Rodrigues</b> <span class="chip mono">cliente</span></div><span class="badge acc">2 min atrás</span></div>
+                <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.85rem">📱 (47) 99999-1234 · 📧 maria@exemplo.com</div>
+                <div class="thumb-stack" style="margin-bottom:.85rem"><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><span class="chip">+1</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <span><b style="color:var(--accent);font-family:var(--font-heading);font-size:1.1rem">R$ 69,65</b> · 5 fotos</span>
+                  <div style="display:flex;gap:.4rem"><button class="btn xs">Abrir</button><button class="btn xs primary">✓ Liberar manual</button><button class="btn xs">📱 Enviar link</button></div>
+                </div>
+              </div>
+              <div class="card">
+                <div style="display:flex;justify-content:space-between;margin-bottom:.5rem"><div><b>Visitante</b> <span class="chip mono">guest</span></div><span class="badge warn" style="background:var(--warn-dim);color:var(--warn);border-color:rgba(251,191,36,.4)">2 dias atrás</span></div>
+                <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.85rem">device: Chrome · 187.45.x.x</div>
+                <div class="thumb-stack" style="margin-bottom:.85rem"><div class="thumb"></div><div class="thumb"></div></div>
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <span><b style="color:var(--accent);font-family:var(--font-heading);font-size:1.1rem">R$ 39,80</b> · 2 fotos</span>
+                  <div style="display:flex;gap:.4rem"><button class="btn xs">Abrir</button><button class="btn xs danger">🗑 Limpar</button></div>
+                </div>
+              </div>
+              <div class="card">
+                <div style="display:flex;justify-content:space-between;margin-bottom:.5rem"><div><b>Carlos Mendes</b></div><span class="badge warn" style="background:var(--warn-dim);color:var(--warn)">PIX expirou</span></div>
+                <div class="thumb-stack" style="margin-bottom:.85rem"><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div></div>
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <span><b style="color:var(--accent);font-family:var(--font-heading);font-size:1.1rem">R$ 59,70</b> · 3 fotos</span>
+                  <div style="display:flex;gap:.4rem"><button class="btn xs primary">🔗 Novo link</button></div>
+                </div>
+              </div>
+              <div class="card" style="opacity:.7;border-style:dashed">
+                <div style="display:flex;justify-content:space-between;margin-bottom:.5rem"><div><b>+ 4 carrinhos</b></div><span style="font-size:.74rem;color:var(--text-muted)">menores</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CLIENTES ========== -->
+    <section class="mock" id="clientes">
+      <div class="mock-head">
+        <h2><span class="num">3.8</span>Clientes</h2>
+        <div class="url">/admin/clientes</div>
+        <p class="desc">Cards 2:3 estilo álbum de fotos com avatar, nome, contato clicável (WhatsApp/e-mail/insta) e ações rápidas. Detalhe abre histórico de compras, carrinho atual, comentários, remoções e privilégios (admin/colaborador).</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/clientes</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side"><div class="brand">Vinícius<span>.</span> Admin</div><a class="nav-item">📊 Dashboard</a><a class="nav-item active">👥 Clientes<span class="ct">9</span></a><a class="nav-item">🧑‍💼 Colaboradores</a></aside>
+          <div class="admin-main">
+            <h1>Clientes (contas)</h1>
+            <div class="sub">9 contas · 3 admin · 3 colaboradores · 6 ativos · faturado total R$ 4.218</div>
+
+            <div class="toolbar">
+              <div class="filters">
+                <span class="filter-pill active">Todos</span>
+                <span class="filter-pill">Compradores</span>
+                <span class="filter-pill">Sem compras</span>
+                <span class="filter-pill" style="color:var(--accent);border-color:rgba(34,197,94,.35)">Admin (3)</span>
+                <span class="filter-pill" style="color:var(--info);border-color:rgba(96,165,250,.35)">Colaboradores (3)</span>
+              </div>
+              <div><button class="btn primary sm">➕ Criar conta</button></div>
+            </div>
+
+            <div class="grid-3">
+              <div class="card" style="padding:0;overflow:hidden">
+                <div style="aspect-ratio:3/2;background:linear-gradient(135deg,#3a8a5e,#1a4a30);display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-size:3rem;color:#fff;position:relative">MR
+                  <span class="badge gray" style="position:absolute;top:.6rem;left:.6rem">CLIENTE</span>
+                </div>
+                <div style="padding:1rem 1.25rem">
+                  <div style="font-weight:600">Maria Rodrigues Silva</div>
+                  <div style="font-size:.74rem;color:var(--text-muted)">maria@exemplo.com · cadastrou em 04/2026</div>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;font-size:.75rem;margin:.85rem 0">
+                    <div><div class="lbl">Compras</div><b style="color:var(--accent)">3</b></div>
+                    <div><div class="lbl">Total</div><b>R$ 159</b></div>
+                    <div><div class="lbl">Salvos</div><b>11</b></div>
+                  </div>
+                  <div class="thumb-stack" style="margin-bottom:.85rem"><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><span class="chip">+9</span></div>
+                  <div style="display:flex;gap:.3rem"><a class="btn xs" href="#" style="flex:1">📱</a><a class="btn xs" href="#" style="flex:1">📧</a><a class="btn xs" href="#" style="flex:1">📷</a><button class="btn xs primary" style="flex:2">Detalhes →</button></div>
+                </div>
+              </div>
+              <div class="card" style="padding:0;overflow:hidden">
+                <div style="aspect-ratio:3/2;background:linear-gradient(135deg,#3a3a8a,#1a1a4a);display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-size:3rem;color:#fff;position:relative">JS
+                  <span class="badge gray" style="position:absolute;top:.6rem;left:.6rem">CLIENTE</span>
+                </div>
+                <div style="padding:1rem 1.25rem">
+                  <div style="font-weight:600">João Silva</div>
+                  <div style="font-size:.74rem;color:var(--text-muted)">joao@exemplo.com</div>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;font-size:.75rem;margin:.85rem 0">
+                    <div><div class="lbl">Compras</div><b style="color:var(--accent)">2</b></div>
+                    <div><div class="lbl">Total</div><b>R$ 89</b></div>
+                    <div><div class="lbl">Salvos</div><b>4</b></div>
+                  </div>
+                  <div style="display:flex;gap:.3rem"><a class="btn xs" href="#" style="flex:1">📱</a><a class="btn xs" href="#" style="flex:1">📧</a><button class="btn xs primary" style="flex:2">Detalhes</button></div>
+                </div>
+              </div>
+              <div class="card" style="padding:0;overflow:hidden;border-color:rgba(34,197,94,.35)">
+                <div style="aspect-ratio:3/2;background:linear-gradient(135deg,#1a4a3a,#0f2820);display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-size:3rem;color:var(--accent);position:relative">VR
+                  <span class="badge acc" style="position:absolute;top:.6rem;left:.6rem">SUPER ADMIN</span>
+                </div>
+                <div style="padding:1rem 1.25rem">
+                  <div style="font-weight:600">Vinícius Rodrigues (você)</div>
+                  <div style="font-size:.74rem;color:var(--text-muted)">vinicius@viniciusrodrigues.foto</div>
+                  <div style="font-size:.78rem;color:var(--accent);margin-top:.85rem">Acesso total · gestão da plataforma</div>
+                </div>
+              </div>
+              <div class="card" style="padding:0;overflow:hidden;border-color:rgba(96,165,250,.35)">
+                <div style="aspect-ratio:3/2;background:linear-gradient(135deg,#1a3a5a,#0f1f30);display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-size:3rem;color:var(--info);position:relative">PF
+                  <span class="badge info" style="position:absolute;top:.6rem;left:.6rem">COLABORADOR</span>
+                </div>
+                <div style="padding:1rem 1.25rem">
+                  <div style="font-weight:600">Pedro Fernandes</div>
+                  <div style="font-size:.74rem;color:var(--text-muted)">contratado · Maratona / Travessia</div>
+                  <div style="font-size:.78rem;color:var(--info);margin-top:.85rem">Repasse 30% · 23 fotos vendidas</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== COMENTARIOS ========== -->
+    <section class="mock" id="comentarios">
+      <div class="mock-head">
+        <h2><span class="num">3.9</span>Moderação de comentários</h2>
+        <div class="url">/admin/comentarios</div>
+        <p class="desc">Árvore unificada (álbuns / pastas / fotos). Editar com histórico, omitir/restaurar, banir comentarista, marcar como spam, responder oficialmente. Comentários omitidos continuam visíveis ao admin com selo "OCULTO".</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/comentarios</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side"><div class="brand">Vinícius<span>.</span> Admin</div><a class="nav-item active">💬 Comentários</a><a class="nav-item">🚫 Remoções</a></aside>
+          <div class="admin-main">
+            <h1>Comentários</h1>
+            <div class="sub">14 comentários · 3 ocultos · 1 reportado</div>
+
+            <div class="tabs">
+              <span class="tab active">Todos (14)</span>
+              <span class="tab">📷 Em fotos (8)</span>
+              <span class="tab">📁 Em pastas (3)</span>
+              <span class="tab">🖼 Em álbuns (3)</span>
+              <span class="tab" style="color:var(--warn)">🚩 Reportados (1)</span>
+            </div>
+
+            <div class="card" style="padding:0">
+              <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border)">
+                <div style="display:flex;gap:.85rem">
+                  <div style="width:34px;height:34px;border-radius:50%;background:var(--accent-dim);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0">MR</div>
+                  <div style="flex:1">
+                    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:.4rem"><div><b>Maria Rodrigues</b> em <a class="mono acc">#100001583</a> · há 2 dias · 👍 4 · 💬 1</div><div style="display:flex;gap:.3rem"><button class="btn xs">Editar</button><button class="btn xs">Ocultar</button></div></div>
+                    <div style="font-size:.88rem;margin-top:.3rem">Linda foto, capturou exatamente o momento da chegada!</div>
+                    <div style="margin-left:1.5rem;margin-top:.6rem;padding-left:.85rem;border-left:2px solid var(--accent);font-size:.84rem;color:var(--text-muted)"><b style="color:var(--accent)">Você</b>: Obrigado, Maria! 🙏 <span style="font-size:.7rem;color:var(--text-dim);margin-left:.4rem">há 1d</span></div>
+                  </div>
+                </div>
+              </div>
+              <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border)">
+                <div style="display:flex;gap:.85rem">
+                  <div style="width:34px;height:34px;border-radius:50%;background:var(--info-dim);color:var(--info);display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0">JS</div>
+                  <div style="flex:1">
+                    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:.4rem"><div><b>João Silva</b> em pasta <a class="mono">Largada</a> · há 3 dias · 👍 2</div><div style="display:flex;gap:.3rem"><button class="btn xs">Responder</button><button class="btn xs">Editar</button></div></div>
+                    <div style="font-size:.88rem;margin-top:.3rem">Tem como adicionar mais fotos da largada com o pessoal do agachamento?</div>
+                  </div>
+                </div>
+              </div>
+              <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);background:rgba(217,108,108,.04)">
+                <div style="display:flex;gap:.85rem">
+                  <div style="width:34px;height:34px;border-radius:50%;background:var(--danger-dim);color:var(--danger);display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0">??</div>
+                  <div style="flex:1">
+                    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:.4rem"><div><b>guest_478</b> em <a class="mono">#100000987</a> · 🚩 reportado · há 4 dias</div><div style="display:flex;gap:.3rem"><button class="btn xs danger">Remover &amp; banir</button><button class="btn xs">Manter</button></div></div>
+                    <div style="font-size:.88rem;margin-top:.3rem;color:var(--text-muted)"><span class="chip" style="background:var(--danger-dim);color:var(--danger);border-color:rgba(217,108,108,.3)">CONTEÚDO POSSIVELMENTE OFENSIVO</span> "[…]"</div>
+                  </div>
+                </div>
+              </div>
+              <div style="padding:1rem 1.25rem;opacity:.55">
+                <div style="display:flex;gap:.85rem">
+                  <div style="width:34px;height:34px;border-radius:50%;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0">MO</div>
+                  <div style="flex:1">
+                    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:.4rem"><div><b>Marina Olivetto</b> em álbum Casamento · há 7 dias · <span class="badge gray">OCULTO POR VOCÊ</span></div><div style="display:flex;gap:.3rem"><button class="btn xs">Restaurar</button></div></div>
+                    <div style="font-size:.88rem;margin-top:.3rem;font-style:italic">"…"</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CONTATOS ========== -->
+    <section class="mock" id="contatos">
+      <div class="mock-head">
+        <h2><span class="num">3.10</span>Contatos</h2>
+        <div class="url">/admin/contatos</div>
+        <p class="desc">Mensagens vindas do formulário público <code>/contato</code>. Responde via e-mail/WhatsApp diretamente, marca como respondido, vincula a um cliente cadastrado se houver match.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/contatos</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side"><div class="brand">Vinícius<span>.</span> Admin</div><a class="nav-item active">✉ Contatos<span class="ct">3</span></a></aside>
+          <div class="admin-main">
+            <h1>Mensagens recebidas</h1>
+            <div class="sub">12 mensagens · 3 não respondidas</div>
+            <div class="tabs"><span class="tab active">Pendentes (3)</span><span class="tab">Respondidas (9)</span><span class="tab">Todas</span></div>
+            <div class="card" style="padding:0">
+              <table>
+                <thead><tr><th>De</th><th>Assunto</th><th>Mensagem</th><th>Recebida</th><th>Ações</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Beatriz P.</b><br><span class="mono">bea@x.com</span></td><td>Encomenda de evento</td><td>Olá, faço um pequeno torneio de vôlei mês que vem, queria saber se atende…</td><td>há 6h</td><td><a class="btn xs primary">Responder</a> <a class="btn xs">📱</a></td></tr>
+                  <tr><td><b>Eduardo M.</b><br><span class="mono">+47 9...</span></td><td>Dúvida sobre fotos</td><td>Comprei pelo PIX mas não recebi os links, podem ajudar?</td><td>há 1d</td><td><a class="btn xs primary">Responder</a> <a class="btn xs">🔗 Vincular pedido</a></td></tr>
+                  <tr><td><b>Renata S.</b></td><td>Parceria</td><td>Sou de uma assessoria esportiva, queremos parceria para nosso calendário 2027.</td><td>há 2d</td><td><a class="btn xs primary">Responder</a></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== REMOCOES ========== -->
+    <section class="mock" id="remocoes">
+      <div class="mock-head">
+        <h2><span class="num">3.11</span>Remoções (LGPD)</h2>
+        <div class="url">/admin/remocoes</div>
+        <p class="desc">Aceitar / rejeitar / desfazer pedidos de remoção. Comentário público (cliente vê) ou privado (só você). Contato direto via WhatsApp ou e-mail. Aceite remove a foto de carrinhos, favoritos e curtidas.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/remocoes</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side"><div class="brand">Vinícius<span>.</span> Admin</div><a class="nav-item active">🚫 Remoções<span class="ct dan">1</span></a></aside>
+          <div class="admin-main">
+            <h1>Solicitações de remoção (LGPD)</h1>
+            <div class="sub">8 totais · 1 pendente · 5 aceitas · 2 rejeitadas</div>
+
+            <div class="tabs"><span class="tab active">Pendentes (1)</span><span class="tab">Aceitas (5)</span><span class="tab">Rejeitadas (2)</span></div>
+
+            <div class="card">
+              <div style="display:flex;gap:1.25rem;flex-wrap:wrap">
+                <div style="flex:0 0 200px"><div style="aspect-ratio:1/1;border-radius:var(--radius);background:repeating-linear-gradient(45deg,#1a1a1a 0 3px,#222 3px 6px);position:relative;border:1px solid var(--border)"><span style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,.7);color:#fff;font-family:var(--font-mono);font-size:.7rem;padding:.15rem .4rem;border-radius:3px">#100001583</span></div><div style="font-size:.78rem;color:var(--text-muted);text-align:center;margin-top:.4rem">no carrinho de 2 clientes</div></div>
+                <div style="flex:1;min-width:280px">
+                  <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.85rem"><div><span class="badge warn">PENDENTE</span> <span class="mono" style="margin-left:.5rem">#REM-2026-014</span></div><div style="font-size:.78rem;color:var(--text-muted)">recebido há 8 horas</div></div>
+
+                  <div style="margin-bottom:.85rem"><b>Solicitante:</b> Letícia Souza · CPF 567.890.123-45</div>
+                  <div style="margin-bottom:.85rem"><b>Contato:</b> 📱 (47) 98888-3333 · 📧 leticia@x.com</div>
+
+                  <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:.85rem;margin-bottom:1rem"><b style="font-size:.78rem;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:.4rem">Motivo</b><span style="font-size:.9rem">"Apareço de costas mas dá pra reconhecer pelo número de peito. Prefiro que não seja vendida."</span></div>
+
+                  <div style="margin-bottom:.85rem">
+                    <label class="label">Resposta para o cliente <span style="color:var(--success)">(pública)</span></label>
+                    <textarea class="input" rows="3">Recebido! Vou analisar e dar retorno até sexta. Se for o caso, removo a foto e qualquer cópia que esteja em carrinhos ativos. Obrigado por avisar.</textarea>
+                  </div>
+                  <div style="margin-bottom:1rem">
+                    <label class="label">Nota interna <span style="color:var(--warn)">(privada · só você)</span></label>
+                    <textarea class="input" rows="2" placeholder="Lembrete pra mim mesmo…"></textarea>
+                  </div>
+                  <div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn primary">✓ Aceitar &amp; remover</button><button class="btn warn">⏸ Pedir mais info</button><button class="btn danger">✕ Rejeitar</button> · <button class="btn">📱 WhatsApp</button> <button class="btn">📧 E-mail</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CUPONS ========== -->
+    <section class="mock" id="cupons">
+      <div class="mock-head">
+        <h2><span class="num">3.12</span>Cupons</h2>
+        <div class="url">/admin/cupons</div>
+        <p class="desc">Criar cupons de fotos grátis (N fotos sem custo) ou desconto percentual. Limite de uso, validade, vinculação a evento específico ou global, contador de redenções.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/cupons</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side"><div class="brand">Vinícius<span>.</span> Admin</div><a class="nav-item active">🎟 Cupons</a><a class="nav-item">💸 Repasses</a></aside>
+          <div class="admin-main">
+            <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:1rem"><div><h1>Cupons</h1><div class="sub" style="margin-bottom:0">5 ativos · 12 redenções totais · valor médio R$ 18</div></div><button class="btn primary">➕ Novo cupom</button></div>
+
+            <div class="card" style="padding:0;margin-top:1rem">
+              <table>
+                <thead><tr><th>Código</th><th>Tipo</th><th>Desconto</th><th>Vínculo</th><th>Usos</th><th>Validade</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td><code class="chip mono acc">MARATONA1FREE</code></td><td>🆓 Foto grátis</td><td>1 foto</td><td>Maratona Joinville</td><td>3 / 50</td><td>até 31/05</td><td><span class="badge ok">ATIVO</span></td><td><button class="btn xs">Editar</button></td></tr>
+                  <tr><td><code class="chip mono acc">BEMVINDO10</code></td><td>📉 Percentual</td><td>10%</td><td>Global · 1ª compra</td><td>5 / ∞</td><td>sem validade</td><td><span class="badge ok">ATIVO</span></td><td><button class="btn xs">Editar</button></td></tr>
+                  <tr><td><code class="chip mono">CASAMENTO20</code></td><td>📉 Percentual</td><td>20%</td><td>Casamento M&amp;T</td><td>2 / 30</td><td>até 30/04</td><td><span class="badge gray">EXPIRADO</span></td><td><button class="btn xs">Reativar</button></td></tr>
+                  <tr><td><code class="chip mono acc">TRAVESSIA2FREE</code></td><td>🆓 Fotos grátis</td><td>2 fotos</td><td>Travessia Itapuã</td><td>1 / 100</td><td>até 27/05</td><td><span class="badge ok">ATIVO</span></td><td><button class="btn xs">Editar</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== REPASSES ========== -->
+    <section class="mock" id="repasses">
+      <div class="mock-head">
+        <h2><span class="num">3.13</span>Repasses</h2>
+        <div class="url">/admin/repasses</div>
+        <p class="desc">Cálculo automático do valor a repassar para colaboradores e estúdios parceiros, baseado nas vendas e na regra de comissão configurada por colaborador. Histórico de pagamentos e exportação para conciliação.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/repasses</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side"><div class="brand">Vinícius<span>.</span> Admin</div><a class="nav-item active">💸 Repasses</a><a class="nav-item">🧑‍💼 Colaboradores</a></aside>
+          <div class="admin-main">
+            <h1>Repasses</h1>
+            <div class="sub">Maio/2026 · valor a pagar: <b style="color:var(--warn)">R$ 432,00</b> · próximo fechamento: 31/05</div>
+
+            <div class="grid-3" style="margin-bottom:1.5rem">
+              <div class="stat"><div class="lbl">A pagar este mês</div><div class="val" style="color:var(--warn)">R$ 432</div></div>
+              <div class="stat"><div class="lbl">Pago em 2026</div><div class="val acc">R$ 1.842</div></div>
+              <div class="stat"><div class="lbl">Colaboradores ativos</div><div class="val">3</div></div>
+            </div>
+
+            <div class="card" style="padding:0">
+              <table>
+                <thead><tr><th>Colaborador</th><th>Comissão</th><th>Mídias vendidas</th><th>Faturado para repasse</th><th>A pagar</th><th>Já pago</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td><b>Pedro Fernandes</b><br><span class="mono">PIX 47999998888</span></td><td>30%</td><td>23 · Maratona &amp; Travessia</td><td>R$ 458</td><td><b style="color:var(--warn)">R$ 137</b></td><td>R$ 120 (abr/26)</td><td><span class="badge warn">PENDENTE</span></td><td><button class="btn xs primary">💸 Pagar</button></td></tr>
+                  <tr><td><b>Estúdio Lente Aberta</b><br><span class="mono">CNPJ · PIX chave</span></td><td>25%</td><td>41 · Casamento M&amp;T</td><td>R$ 760</td><td><b style="color:var(--warn)">R$ 190</b></td><td>R$ 320 (abr/26)</td><td><span class="badge warn">PENDENTE</span></td><td><button class="btn xs primary">💸 Pagar</button></td></tr>
+                  <tr><td><b>Aline Costa</b><br><span class="mono">PIX e-mail</span></td><td>40% · co-autora</td><td>11 · Rodeio Bagé</td><td>R$ 215</td><td><b style="color:var(--warn)">R$ 105</b></td><td>—</td><td><span class="badge warn">PENDENTE</span></td><td><button class="btn xs primary">💸 Pagar</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== COLABORADORES ========== -->
+    <section class="mock" id="colaboradores">
+      <div class="mock-head">
+        <h2><span class="num">3.14</span>Colaboradores</h2>
+        <div class="url">/admin/colaboradores</div>
+        <p class="desc">Concede acesso parcial a outros fotógrafos: podem subir fotos, editar suas próprias, ver suas vendas. Não veem dados financeiros globais nem outros eventos. Configura comissão e dados PIX para repasse.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/colaboradores</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side"><div class="brand">Vinícius<span>.</span> Admin</div><a class="nav-item active">🧑‍💼 Colaboradores<span class="ct">3</span></a></aside>
+          <div class="admin-main">
+            <div style="display:flex;justify-content:space-between;align-items:start"><div><h1>Colaboradores</h1><div class="sub" style="margin-bottom:0">3 ativos · 1 inativo</div></div><button class="btn primary">➕ Convidar</button></div>
+
+            <div class="card" style="padding:0;margin-top:1rem">
+              <table>
+                <thead><tr><th>Nome</th><th>E-mail</th><th>Eventos atribuídos</th><th>Comissão</th><th>Mídias vendidas</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td><b>Pedro Fernandes</b></td><td class="mono">pedro@x.com</td><td>Maratona, Travessia</td><td>30%</td><td>23</td><td><span class="badge ok">ATIVO</span></td><td><button class="btn xs">Editar</button></td></tr>
+                  <tr><td><b>Aline Costa</b></td><td class="mono">aline@x.com</td><td>Rodeio (co-autora)</td><td>40%</td><td>11</td><td><span class="badge ok">ATIVO</span></td><td><button class="btn xs">Editar</button></td></tr>
+                  <tr><td><b>Estúdio Lente Aberta</b></td><td class="mono">contato@lente.com</td><td>Casamento M&amp;T</td><td>25%</td><td>41</td><td><span class="badge ok">ATIVO</span></td><td><button class="btn xs">Editar</button></td></tr>
+                  <tr style="opacity:.55"><td><b>Marcelo Ramos</b></td><td class="mono">marcelo@x.com</td><td>—</td><td>20%</td><td>0</td><td><span class="badge gray">INATIVO</span></td><td><button class="btn xs">Reativar</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CHAT ========== -->
+    <section class="mock" id="chat">
+      <div class="mock-head">
+        <h2><span class="num">3.15</span>Chat</h2>
+        <div class="url">/admin/chat</div>
+        <p class="desc">Caixa de entrada agregada de todas as conversas com clientes. Indicadores de não-lida, busca por nome, atalho para abrir o pedido referenciado e respostas rápidas (templates).</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/chat</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side"><div class="brand">Vinícius<span>.</span> Admin</div><a class="nav-item active">💬 Chat<span class="ct dan">5</span></a></aside>
+          <div class="admin-main">
+            <h1>Conversas</h1>
+            <div class="sub">14 conversas · 5 não lidas</div>
+
+            <div style="display:grid;grid-template-columns:280px 1fr;gap:1rem;margin-top:1rem">
+              <aside class="card" style="padding:0;max-height:500px;overflow-y:auto">
+                <div style="padding:.85rem 1rem;border-bottom:1px solid var(--border)"><input class="input" placeholder="🔎 Buscar"></div>
+                <div style="padding:.85rem 1rem;border-bottom:1px solid var(--border);background:var(--accent-dim);border-left:2px solid var(--accent)">
+                  <div style="display:flex;justify-content:space-between"><b>Maria Rodrigues</b><span class="badge acc" style="font-size:.6rem">2 NEW</span></div>
+                  <div style="font-size:.78rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Tem foto da curva do km 12?</div>
+                </div>
+                <div style="padding:.85rem 1rem;border-bottom:1px solid var(--border)">
+                  <div style="display:flex;justify-content:space-between"><b>João Silva</b><span style="font-size:.7rem;color:var(--text-dim)">1d</span></div>
+                  <div style="font-size:.78rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Obrigado, deu certo!</div>
+                </div>
+                <div style="padding:.85rem 1rem;border-bottom:1px solid var(--border);background:var(--accent-dim)">
+                  <div style="display:flex;justify-content:space-between"><b>Eduardo M.</b><span class="badge acc" style="font-size:.6rem">1 NEW</span></div>
+                  <div style="font-size:.78rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Ainda não recebi os links do PIX</div>
+                </div>
+                <div style="padding:.85rem 1rem">
+                  <div style="display:flex;justify-content:space-between"><b>Carlos Mendes</b><span style="font-size:.7rem;color:var(--text-dim)">3d</span></div>
+                  <div style="font-size:.78rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">PIX tá expirado, pode gerar novo?</div>
+                </div>
+              </aside>
+              <div class="card" style="padding:0;display:flex;flex-direction:column;max-height:500px">
+                <div style="padding:.85rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+                  <div style="display:flex;align-items:center;gap:.6rem"><div style="width:32px;height:32px;border-radius:50%;background:var(--accent-dim);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:600">MR</div><div><b>Maria Rodrigues</b><div style="font-size:.7rem;color:var(--success)">● Online</div></div></div>
+                  <div style="display:flex;gap:.4rem"><button class="btn xs">🧾 Ver pedido #200000039</button><button class="btn xs">📞</button></div>
+                </div>
+                <div style="flex:1;padding:1rem;overflow-y:auto;display:flex;flex-direction:column;gap:.5rem">
+                  <div style="background:var(--accent-dim);border:1px solid rgba(34,197,94,.3);padding:.6rem .85rem;border-radius:14px 14px 14px 4px;max-width:80%;font-size:.85rem;align-self:flex-start">Pelo seu carrinho hoje você já tem 10% de desconto. Se chegar a 10 fotos vai pra 20%.</div>
+                  <div style="background:var(--bg-secondary);border:1px solid var(--border);padding:.6rem .85rem;border-radius:14px 14px 4px 14px;max-width:80%;font-size:.85rem;align-self:flex-end">Show! Tem foto na curva do km 12?</div>
+                  <div style="background:var(--accent-dim);border:1px solid rgba(34,197,94,.3);padding:.6rem .85rem;border-radius:14px 14px 14px 4px;max-width:80%;font-size:.85rem;align-self:flex-start">Tem sim, são as fotos #100001620 a #100001628. Pesquisa pelo seu nº de peito (482).</div>
+                </div>
+                <div style="padding:.85rem;border-top:1px solid var(--border);display:flex;gap:.5rem;align-items:center">
+                  <select class="input" style="width:auto;font-size:.74rem"><option>Templates…</option><option>Pedido confirmado</option><option>PIX expirou</option><option>Obrigado pela compra</option></select>
+                  <input class="input" placeholder="Resposta…" style="flex:1">
+                  <button class="btn primary">📤</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PROPOSTAS ========== -->
+    <section class="mock" id="propostas">
+      <div class="mock-head">
+        <h2><span class="num">3.16</span>Propostas / Orçamentos</h2>
+        <div class="url">/admin/propostas</div>
+        <p class="desc">Orçamentos para encomendas (casamentos, eventos privados). Status (rascunho / enviada / aceita / fechada / perdida), itens com pacotes, prazo de validade, link público compartilhável.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/propostas</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side"><div class="brand">Vinícius<span>.</span> Admin</div><a class="nav-item active">📄 Propostas<span class="ct">3</span></a></aside>
+          <div class="admin-main">
+            <div style="display:flex;justify-content:space-between"><div><h1>Propostas</h1><div class="sub" style="margin-bottom:0">7 totais · 3 abertas · taxa de conversão 57%</div></div><button class="btn primary">➕ Nova proposta</button></div>
+
+            <div class="card" style="padding:0;margin-top:1rem">
+              <table>
+                <thead><tr><th>Cliente</th><th>Evento</th><th>Pacote</th><th>Valor</th><th>Validade</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td><b>Renata Moraes</b><br><span class="mono">renata@x.com</span></td><td>Casamento (out/26)</td><td>Premium · 8h + 800 fotos</td><td><b>R$ 4.800</b></td><td>até 20/05</td><td><span class="badge warn">ENVIADA · aguarda</span></td><td><button class="btn xs">Abrir</button></td></tr>
+                  <tr><td><b>Acad. Esportiva</b></td><td>Calendário 2027 · 6 corridas</td><td>Pacote anual</td><td><b>R$ 12.000</b></td><td>até 30/06</td><td><span class="badge info">EM NEGOCIAÇÃO</span></td><td><button class="btn xs">Abrir</button></td></tr>
+                  <tr><td><b>Família Toledo</b></td><td>Aniversário 50 anos</td><td>Básico · 3h</td><td><b>R$ 1.200</b></td><td>até 12/05</td><td><span class="badge gray">RASCUNHO</span></td><td><button class="btn xs">Continuar</button></td></tr>
+                  <tr style="opacity:.7"><td>Bia Resende</td><td>Sessão newborn</td><td>—</td><td>R$ 600</td><td>10/04</td><td><span class="badge ok">ACEITA · fechada</span></td><td><button class="btn xs">Ver</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== MARCA D'ÁGUA ========== -->
+    <section class="mock" id="marca">
+      <div class="mock-head">
+        <h2><span class="num">3.17</span>Marca d'água</h2>
+        <div class="url">/admin/marca-dagua</div>
+        <p class="desc">Upload de múltiplos PNG/SVG por variante (grid / thumbs / mini / covers), com anchor (9 pontos), opacity, scale e offset. Preview ao vivo. Botão "regenerar tudo" ou "regenerar em álbuns específicos". Sobrescrita por evento (toggles wm_capa, wm_miniaturas).</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/marca-dagua</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side"><div class="brand">Vinícius<span>.</span> Admin</div><a class="nav-item active">💧 Marca d'água</a></aside>
+          <div class="admin-main">
+            <h1>Marca d'água</h1>
+            <div class="sub">4 variantes configuradas · gravadas no pixel via sharp</div>
+
+            <div class="alert info">ℹ A marca é gravada na imagem (não overlay CSS). Mudanças requerem regenerar derivadas.</div>
+
+            <div class="grid-2">
+              <div class="card">
+                <h3>🎚 Variantes</h3>
+                <div class="tabs"><span class="tab active">Grid 1600px</span><span class="tab">Thumbs 400px</span><span class="tab">Mini 90px</span><span class="tab">Covers</span></div>
+                <div style="aspect-ratio:16/10;background:repeating-linear-gradient(45deg,#1a1a1a 0 4px,#222 4px 8px);border-radius:var(--radius);position:relative;border:1px solid var(--border);margin-bottom:.85rem">
+                  <div style="position:absolute;bottom:1rem;right:1rem;padding:.4rem .85rem;background:rgba(0,0,0,.5);color:rgba(255,255,255,.85);font-family:var(--font-heading);font-size:1rem;backdrop-filter:blur(4px)">Vinícius<span style="color:var(--accent)">.</span></div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;font-size:.82rem">
+                  <div><label class="label">Anchor</label><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:3px;background:var(--bg-secondary);padding:6px;border-radius:var(--radius)"><div style="aspect-ratio:1;background:var(--bg-input);border-radius:3px"></div><div style="aspect-ratio:1;background:var(--bg-input);border-radius:3px"></div><div style="aspect-ratio:1;background:var(--bg-input);border-radius:3px"></div><div style="aspect-ratio:1;background:var(--bg-input);border-radius:3px"></div><div style="aspect-ratio:1;background:var(--bg-input);border-radius:3px"></div><div style="aspect-ratio:1;background:var(--bg-input);border-radius:3px"></div><div style="aspect-ratio:1;background:var(--bg-input);border-radius:3px"></div><div style="aspect-ratio:1;background:var(--bg-input);border-radius:3px"></div><div style="aspect-ratio:1;background:var(--accent);border-radius:3px"></div></div></div>
+                  <div><label class="label">Asset</label><select class="input"><option>logo-horizontal-principal.svg</option><option>logo-horizontal-mono.svg</option><option>+ Upload novo</option></select></div>
+                  <div><label class="label">Opacidade</label><input class="input" type="range" min="0" max="100" value="65"></div>
+                  <div><label class="label">Escala</label><input class="input" type="range" min="0" max="100" value="35"></div>
+                  <div><label class="label">Offset X</label><input class="input" value="-24"></div>
+                  <div><label class="label">Offset Y</label><input class="input" value="-24"></div>
+                </div>
+              </div>
+
+              <div class="card">
+                <h3>♻ Regenerar derivadas</h3>
+                <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:.85rem">Aplique as mudanças regenerando as imagens. Pode rodar tudo ou apenas álbuns específicos.</p>
+                <div class="row"><div class="l"><div class="nm">Maratona de Joinville · 412 fotos</div><div class="ds">última regeneração há 2 dias</div></div><label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label></div>
+                <div class="row"><div class="l"><div class="nm">Travessia Itapuã · 287 fotos</div><div class="ds">última regeneração há 5 dias</div></div><label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label></div>
+                <div class="row"><div class="l"><div class="nm">Casamento Marina &amp; Tiago · 523 fotos</div><div class="ds">sem WM · sobrescrita ativa</div></div><label class="toggle"><input type="checkbox"><span class="sw"></span></label></div>
+                <div class="row"><div class="l"><div class="nm">Rodeio de Bagé · 197 fotos</div><div class="ds">última regeneração há 2 sem.</div></div><label class="toggle"><input type="checkbox"><span class="sw"></span></label></div>
+                <button class="btn primary" style="width:100%;margin-top:.85rem">♻ Regenerar 699 fotos selecionadas</button>
+                <p style="font-size:.74rem;color:var(--text-muted);margin-top:.5rem;text-align:center">Estimado: 4–6 minutos · job em background</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PERSONALIZAR ========== -->
+    <section class="mock" id="personalizar">
+      <div class="mock-head">
+        <h2><span class="num">3.18</span>Personalizar visual</h2>
+        <div class="url">/admin/personalizar</div>
+        <p class="desc">Editor de aparência da home: cores accent, hero, tipografia, ordenação dos blocos, links de redes sociais e dados de rodapé. Aplica via CSS variables sem rebuild.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/personalizar</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side"><div class="brand">Vinícius<span>.</span> Admin</div><a class="nav-item active">🎨 Personalizar</a></aside>
+          <div class="admin-main">
+            <h1>Personalizar aparência</h1>
+            <div class="sub">As mudanças aparecem no site público em segundos · sem rebuild</div>
+
+            <div class="grid-2">
+              <div class="card">
+                <h3>🎨 Cores &amp; tema</h3>
+                <div style="display:flex;flex-direction:column;gap:.85rem">
+                  <div><label class="label">Accent (verde atual)</label><div style="display:flex;gap:.4rem;align-items:center"><input type="color" value="#22c55e" style="width:42px;height:32px;border:0;border-radius:var(--radius)"><input class="input" value="#22c55e" style="flex:1"></div></div>
+                  <div><label class="label">Tema padrão</label><select class="input"><option>Auto (segue sistema)</option><option selected>Escuro</option><option>Claro</option></select></div>
+                  <div class="row"><div class="l"><div class="nm">Permitir cliente trocar tema</div><div class="ds">Mostra seletor no menu</div></div><label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label></div>
+                </div>
+              </div>
+
+              <div class="card">
+                <h3>🏷 Identidade</h3>
+                <div style="display:flex;flex-direction:column;gap:.85rem">
+                  <div><label class="label">Marca</label><input class="input" value="Vinícius."></div>
+                  <div><label class="label">Subtítulo do hero</label><input class="input" value="Suas memórias em alta resolução"></div>
+                  <div><label class="label">Bio</label><textarea class="input" rows="3">Fotografia esportiva, casamentos, festas e cobertura completa de eventos.</textarea></div>
+                </div>
+              </div>
+
+              <div class="card">
+                <h3>🌐 Redes</h3>
+                <div style="display:flex;flex-direction:column;gap:.6rem">
+                  <div style="display:flex;gap:.4rem"><span style="font-size:1.1rem;align-self:center">📷</span><input class="input" value="@viniciusrodrigues.foto"></div>
+                  <div style="display:flex;gap:.4rem"><span style="font-size:1.1rem;align-self:center">📱</span><input class="input" value="(47) 99000-0000"></div>
+                  <div style="display:flex;gap:.4rem"><span style="font-size:1.1rem;align-self:center">📧</span><input class="input" value="contato@viniciusrodrigues.foto"></div>
+                </div>
+              </div>
+
+              <div class="card">
+                <h3>📐 Blocos da home</h3>
+                <p style="font-size:.78rem;color:var(--text-muted);margin-bottom:.6rem">Arraste para reordenar</p>
+                <div style="display:flex;flex-direction:column;gap:.4rem">
+                  <div class="row" style="padding:.5rem;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius)"><span>≡ Hero + busca</span><label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label></div>
+                  <div class="row" style="padding:.5rem;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius)"><span>≡ Grade de eventos</span><label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label></div>
+                  <div class="row" style="padding:.5rem;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius)"><span>≡ Sobre o estúdio</span><label class="toggle"><input type="checkbox"><span class="sw"></span></label></div>
+                  <div class="row" style="padding:.5rem;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius)"><span>≡ Patrocinadores</span><label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== NOTIFICACOES ========== -->
+    <section class="mock" id="notif">
+      <div class="mock-head">
+        <h2><span class="num">3.19</span>Notificações (admin)</h2>
+        <div class="url">/admin/notificacoes</div>
+        <p class="desc">Templates de e-mail (pedido pago, comentário recebido, nova mensagem, álbum publicado), gatilhos do monitor de saúde, webhook Slack/Discord/Telegram para alertas críticos.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/notificacoes</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side"><div class="brand">Vinícius<span>.</span> Admin</div><a class="nav-item active">🔔 Notificações</a></aside>
+          <div class="admin-main">
+            <h1>Notificações &amp; alertas</h1>
+            <div class="sub">Configurações de e-mail, push e webhooks externos</div>
+
+            <div class="grid-2">
+              <div class="card">
+                <h3>📧 Templates de e-mail</h3>
+                <div class="row"><div class="l"><div class="nm">Pedido confirmado</div><div class="ds">Enviado ao cliente após pagamento</div></div><label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label></div>
+                <div class="row"><div class="l"><div class="nm">PIX expirou</div><div class="ds">Lembrete + novo link</div></div><label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label></div>
+                <div class="row"><div class="l"><div class="nm">Comentário recebido</div><div class="ds">Quando admin responde cliente</div></div><label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label></div>
+                <div class="row"><div class="l"><div class="nm">Solicitação de remoção</div><div class="ds">Confirmação de recebimento</div></div><label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label></div>
+                <div class="row"><div class="l"><div class="nm">Recompensa desbloqueada</div><div class="ds">Cupom liberado por meta</div></div><label class="toggle"><input type="checkbox"><span class="sw"></span></label></div>
+                <div class="row"><div class="l"><div class="nm">Resumo semanal</div><div class="ds">Sextas · novos álbuns</div></div><label class="toggle"><input type="checkbox"><span class="sw"></span></label></div>
+                <div class="alert info" style="margin-top:.85rem">SMTP atual: <code>smtp.brevo.com</code> · porta 587 · usuário <code>noreply@viniciusrodrigues.foto</code></div>
+              </div>
+
+              <div class="card">
+                <h3>⚠ Webhook de alertas</h3>
+                <div><label class="label">Webhook (Slack / Discord / Telegram)</label><input class="input" value="https://hooks.slack.com/services/T0…/B0…/xyz"></div>
+                <div style="margin-top:.85rem"><label class="label">Disco mínimo livre (GB)</label><input class="input" value="10"></div>
+                <h4 style="margin-top:1rem;font-size:.92rem">Disparos ativos</h4>
+                <div class="row"><div class="l"><div class="nm">Disco abaixo do mínimo</div></div><label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label></div>
+                <div class="row"><div class="l"><div class="nm">Falha de pagamento (gateway down)</div></div><label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label></div>
+                <div class="row"><div class="l"><div class="nm">Backup falhou</div></div><label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label></div>
+                <button class="btn outline" style="margin-top:.85rem">📤 Testar webhook</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== ESTATISTICAS ========== -->
+    <section class="mock" id="estatisticas">
+      <div class="mock-head">
+        <h2><span class="num">3.20</span>Estatísticas</h2>
+        <div class="url">/admin/estatisticas</div>
+        <p class="desc">Dashboards detalhados: vendas por evento, conversão visitante → comprador, top fotos curtidas, métodos de pagamento mais usados, tempo médio de checkout, mapa de visitantes.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/estatisticas</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side"><div class="brand">Vinícius<span>.</span> Admin</div><a class="nav-item active">📈 Estatísticas</a></aside>
+          <div class="admin-main">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap"><div><h1>Estatísticas</h1><div class="sub" style="margin-bottom:0">Período: maio/2026 (parcial)</div></div><select class="input" style="width:auto"><option>Este mês</option><option>Últimos 30 dias</option><option>Este ano</option><option>Personalizado</option></select></div>
+
+            <div class="stat-grid" style="margin-top:1rem">
+              <div class="stat"><div class="lbl">Visitantes únicos</div><div class="val">1.247</div><div class="delta">+ 23% vs. mês anterior</div></div>
+              <div class="stat"><div class="lbl">Conversão</div><div class="val acc">5.4%</div><div class="delta">+0.8 pp</div></div>
+              <div class="stat"><div class="lbl">Ticket médio</div><div class="val">R$ 87</div><div class="delta">3.9 fotos por pedido</div></div>
+              <div class="stat"><div class="lbl">Tempo até pagar</div><div class="val">14 min</div><div class="delta">PIX médio: 4 min</div></div>
+            </div>
+
+            <div class="grid-2" style="margin-bottom:1.5rem">
+              <div class="card">
+                <h3>💳 Por método de pagamento</h3>
+                <div style="display:flex;flex-direction:column;gap:.55rem">
+                  <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.2rem"><span>📱 PIX (Asaas)</span><span style="color:var(--accent)">14 · 73%</span></div><div class="progress"><div style="width:73%"></div></div></div>
+                  <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.2rem"><span>💳 Cartão (Stripe)</span><span style="color:var(--accent)">3 · 16%</span></div><div class="progress"><div style="width:16%"></div></div></div>
+                  <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.2rem"><span>🏷 Cupom 100%</span><span style="color:var(--accent)">1 · 5%</span></div><div class="progress"><div style="width:5%"></div></div></div>
+                  <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.2rem"><span>💵 Liberado manual</span><span style="color:var(--accent)">1 · 5%</span></div><div class="progress"><div style="width:5%"></div></div></div>
+                </div>
+              </div>
+              <div class="card">
+                <h3>🌟 Top 5 fotos curtidas</h3>
+                <table>
+                  <tbody>
+                    <tr><td><span class="mono acc">#100001583</span></td><td>Maratona</td><td style="text-align:right">❤ 47 · 🛒 12 · ★ 9</td></tr>
+                    <tr><td><span class="mono acc">#100001620</span></td><td>Maratona</td><td style="text-align:right">❤ 38 · 🛒 8 · ★ 6</td></tr>
+                    <tr><td><span class="mono acc">#100001245</span></td><td>Travessia</td><td style="text-align:right">❤ 32 · 🛒 11 · ★ 4</td></tr>
+                    <tr><td><span class="mono acc">#100000987</span></td><td>Casamento</td><td style="text-align:right">❤ 28 · 🛒 5 · ★ 7</td></tr>
+                    <tr><td><span class="mono acc">#100001587</span></td><td>Maratona</td><td style="text-align:right">❤ 24 · 🛒 9 · ★ 3</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>🎯 Funil de conversão (mês)</h3>
+              <div style="display:flex;align-items:end;gap:.5rem;height:150px;margin-top:1rem">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:.4rem"><div style="background:var(--accent);width:80%;height:100%;border-radius:6px 6px 0 0"></div><span style="font-size:.78rem">Visitas<br><b>1.247</b></span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:.4rem"><div style="background:var(--accent);width:80%;height:65%;border-radius:6px 6px 0 0;opacity:.85"></div><span style="font-size:.78rem">Galeria<br><b>812</b></span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:.4rem"><div style="background:var(--accent);width:80%;height:25%;border-radius:6px 6px 0 0;opacity:.7"></div><span style="font-size:.78rem">Carrinho<br><b>312</b></span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:.4rem"><div style="background:var(--accent);width:80%;height:9%;border-radius:6px 6px 0 0;opacity:.55"></div><span style="font-size:.78rem">Checkout<br><b>112</b></span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:.4rem"><div style="background:var(--accent);width:80%;height:5.4%;border-radius:6px 6px 0 0"></div><span style="font-size:.78rem;color:var(--accent)">Pagas<br><b>67</b></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== RECONHECIMENTO ========== -->
+    <section class="mock" id="face">
+      <div class="mock-head">
+        <h2><span class="num">3.21</span>Reconhecimento facial (admin)</h2>
+        <div class="url">/admin/reconhecimento</div>
+        <p class="desc">Painel de processamento batch: status do modelo carregado, jobs em fila, estatísticas de matches por álbum, gerenciamento de embeddings (limpar, recalcular, exportar).</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/reconhecimento</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side"><div class="brand">Vinícius<span>.</span> Admin</div><a class="nav-item active">🤳 Reconhecimento</a></aside>
+          <div class="admin-main">
+            <div style="display:flex;justify-content:space-between"><div><h1>Reconhecimento facial</h1><div class="sub" style="margin-bottom:0">Beta · TensorFlow.js · 100% local</div></div><span class="badge ok">MODELO CARREGADO · 6.2 MB</span></div>
+
+            <div class="alert info" style="margin-top:1rem">ℹ Modelos em <code>data/vision/models</code> · embeddings em <code>storage/vision</code> · sem chamada externa.</div>
+
+            <div class="stat-grid">
+              <div class="stat"><div class="lbl">Fotos indexadas</div><div class="val acc">1.214</div><div class="delta">85% do acervo</div></div>
+              <div class="stat"><div class="lbl">Faces detectadas</div><div class="val">3.847</div></div>
+              <div class="stat"><div class="lbl">Clientes opt-in</div><div class="val">4 / 9</div></div>
+              <div class="stat"><div class="lbl">Matches este mês</div><div class="val">87</div></div>
+            </div>
+
+            <div class="card">
+              <h3>📋 Jobs de processamento</h3>
+              <div class="row"><div class="l"><div class="nm">Maratona de Joinville · 412 fotos</div><div class="ds">Processado · 1.892 faces</div></div><span class="badge ok">CONCLUÍDO</span></div>
+              <div class="row"><div class="l"><div class="nm">Travessia Itapuã · 287 fotos</div><div class="ds">Em processamento · 142 / 287 (49%)</div></div><div style="display:flex;align-items:center;gap:.5rem"><div class="progress" style="width:80px"><div style="width:49%"></div></div><span class="badge warn">EM CURSO</span></div></div>
+              <div class="row"><div class="l"><div class="nm">Casamento Marina &amp; Tiago · 523 fotos</div><div class="ds">Aguardando job</div></div><div style="display:flex;gap:.4rem"><button class="btn xs primary">▶ Iniciar</button></div></div>
+              <div class="row"><div class="l"><div class="nm">Rodeio de Bagé · 197 fotos</div><div class="ds">Pulado · privacidade desativada</div></div><span class="badge gray">PULADO</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CONFIG ========== -->
+    <section class="mock" id="config">
+      <div class="mock-head">
+        <h2><span class="num">3.22</span>Configurações</h2>
+        <div class="url">/admin/configuracoes</div>
+        <p class="desc">Hub de configurações: estúdio (nome, CNPJ, endereço), pagamento (gateways e chaves Asaas/Stripe/MP/PagSeguro), preço default, descontos progressivos, derivadas (qualidade/tamanho), backup, storage externo (S3/R2/B2) e backend (JSON/SQLite).</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/configuracoes</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side"><div class="brand">Vinícius<span>.</span> Admin</div><a class="nav-item active">⚙ Configurações</a></aside>
+          <div class="admin-main">
+            <h1>Configurações</h1>
+            <div class="sub">12 grupos · alterações são salvas no momento</div>
+
+            <div class="tabs"><span class="tab active">🏢 Estúdio</span><span class="tab">💳 Pagamento</span><span class="tab">💰 Preço &amp; descontos</span><span class="tab">🖼 Derivadas</span><span class="tab">💾 Backup</span><span class="tab">☁ Storage</span><span class="tab">🗃 Backend</span><span class="tab">🎨 Tema</span><span class="tab">📐 Vídeos</span><span class="tab">🤳 Privacidade</span><span class="tab">📜 Páginas legais</span><span class="tab">🏆 Patrocinadores</span></div>
+
+            <div class="grid-2">
+              <div class="card">
+                <h3>🏢 Estúdio</h3>
+                <div style="display:flex;flex-direction:column;gap:.85rem">
+                  <div><label class="label">Nome</label><input class="input" value="Vinícius Rodrigues de Souza"></div>
+                  <div class="grid-2">
+                    <div><label class="label">CPF</label><input class="input" value="000.000.000-00"></div>
+                    <div><label class="label">CNPJ</label><input class="input" placeholder="opcional"></div>
+                  </div>
+                  <div><label class="label">Razão social</label><input class="input"></div>
+                  <div><label class="label">Localização</label><input class="input" value="Joinville/SC"></div>
+                  <div class="grid-2">
+                    <div><label class="label">WhatsApp</label><input class="input" value="(47) 99000-0000"></div>
+                    <div><label class="label">Instagram</label><input class="input" value="@viniciusrodrigues.foto"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <h3>💳 Pagamento</h3>
+                <div class="row"><div class="l"><div class="nm">📱 PIX</div><div class="ds">Gateway: Asaas (produção)</div></div><label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label></div>
+                <div class="row"><div class="l"><div class="nm">💳 Cartão</div><div class="ds">Gateway: Stripe</div></div><label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label></div>
+                <div class="row"><div class="l"><div class="nm">💚 Mercado Pago</div><div class="ds">Não configurado</div></div><label class="toggle"><input type="checkbox"><span class="sw"></span></label></div>
+                <div class="row"><div class="l"><div class="nm">🟦 PagSeguro</div><div class="ds">Não configurado</div></div><label class="toggle"><input type="checkbox"><span class="sw"></span></label></div>
+                <div class="row"><div class="l"><div class="nm">💵 Liberação manual</div><div class="ds">Permite admin marcar como pago</div></div><label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label></div>
+                <p style="font-size:.74rem;color:var(--text-muted);margin-top:.85rem">⚠ Chaves sensíveis (api_key, webhook secret) ficam em <code>.env</code> · veja <code>.env.example</code>.</p>
+              </div>
+
+              <div class="card">
+                <h3>💰 Preço &amp; descontos</h3>
+                <div><label class="label">Preço default por foto</label><input class="input" value="29.90"></div>
+                <h4 style="font-size:.92rem;margin:1rem 0 .6rem">Descontos progressivos</h4>
+                <div class="row"><span>3+ fotos</span><div style="display:flex;gap:.4rem;align-items:center"><input class="input" value="5" style="width:60px"><span>%</span><label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label></div></div>
+                <div class="row"><span>5+ fotos</span><div style="display:flex;gap:.4rem;align-items:center"><input class="input" value="10" style="width:60px"><span>%</span><label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label></div></div>
+                <div class="row"><span>10+ fotos</span><div style="display:flex;gap:.4rem;align-items:center"><input class="input" value="20" style="width:60px"><span>%</span><label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label></div></div>
+                <button class="btn outline sm" style="margin-top:.85rem">+ Adicionar faixa</button>
+              </div>
+
+              <div class="card">
+                <h3>💾 Backup &amp; sistema</h3>
+                <div class="row"><div class="l"><div class="nm">Backend</div><div class="ds"><code>data/db.sqlite</code> · WAL ativo</div></div><span class="badge ok">SQLITE</span></div>
+                <div class="row"><div class="l"><div class="nm">Storage de mídia</div><div class="ds">Local · <code>storage/originals/</code></div></div><span class="badge gray">LOCAL</span></div>
+                <div class="row"><div class="l"><div class="nm">Backup automático</div><div class="ds">Diário às 03:00 · retenção 30 dias</div></div><label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label></div>
+                <div class="row"><div class="l"><div class="nm">Último backup</div><div class="ds">Hoje 03:00 · 2.4 GB · <a href="#" style="color:var(--accent)">restaurar →</a></div></div><span class="badge ok">OK</span></div>
+                <div class="row"><div class="l"><div class="nm">Saúde do servidor</div><div class="ds">CPU 12% · Disco 38 GB livres</div></div><span class="badge ok">OK</span></div>
+                <div style="display:flex;gap:.4rem;margin-top:.85rem"><button class="btn">💾 Backup agora</button><button class="btn outline">📋 Histórico</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== RESET ========== -->
+    <section class="mock" id="reset">
+      <div class="mock-head">
+        <h2><span class="num">3.23</span>Reset (zona perigosa)</h2>
+        <div class="url">/admin/reset</div>
+        <p class="desc">Operações destrutivas com dupla confirmação + frase digitada. Resetar finanças, eventos (preserva fotos já compradas), clientes (mantém apenas admins), carrinhos, configurações para default ou tudo de uma vez. Sempre cria backup automático antes.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/admin/reset</div></div>
+        <div class="admin-shell">
+          <aside class="admin-side"><div class="brand">Vinícius<span>.</span> Admin</div><a class="nav-item">⚙ Configurações</a><a class="nav-item active" style="color:var(--danger);border-left-color:var(--danger);background:var(--danger-dim)">⚠ Reset</a></aside>
+          <div class="admin-main">
+            <h1 style="color:var(--danger)">⚠ Zona perigosa</h1>
+            <div class="sub">Todas as operações desta tela criam backup automático antes de executar</div>
+
+            <div class="alert dan">⚠ <b>Pare e leia.</b> As ações abaixo apagam dados de forma definitiva. Cada uma exige <b>dupla confirmação</b> + digitação de frase de segurança. Em caso de dúvida, <a href="#" style="color:var(--danger);text-decoration:underline">faça um backup manual</a> antes.</div>
+
+            <div class="grid-2">
+              <div class="card" style="border-color:rgba(217,108,108,.3)">
+                <h3 style="color:var(--danger)">💰 Resetar finanças</h3>
+                <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:.85rem">Apaga: pedidos, payment_log, repasses, cupons usados, audit_log financeiro. Mantém: fotos, álbuns, clientes.</p>
+                <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.85rem">Impacto: 28 pedidos · 19 pagamentos · histórico de R$ 4.218 em vendas</div>
+                <button class="btn danger" style="width:100%">🗑 Resetar finanças</button>
+              </div>
+
+              <div class="card" style="border-color:rgba(217,108,108,.3)">
+                <h3 style="color:var(--danger)">🖼 Resetar eventos &amp; fotos</h3>
+                <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:.85rem">Apaga: álbuns, fotos não compradas (incluindo do disco), pastas, comentários em fotos. <b>Mantém</b>: fotos já vendidas (clientes continuam baixando).</p>
+                <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.85rem">Impacto: 4 álbuns · 1.298 fotos a apagar (3.6 GB) · 87 fotos preservadas para clientes</div>
+                <button class="btn danger" style="width:100%">🗑 Resetar eventos</button>
+              </div>
+
+              <div class="card" style="border-color:rgba(217,108,108,.3)">
+                <h3 style="color:var(--danger)">👥 Resetar clientes</h3>
+                <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:.85rem">Apaga: contas de cliente, compras, favoritos, comentários, reclamações. <b>Mantém</b>: contas admin/super-admin.</p>
+                <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.85rem">Impacto: 6 contas · todos vínculos sociais</div>
+                <button class="btn danger" style="width:100%">🗑 Resetar clientes</button>
+              </div>
+
+              <div class="card" style="border-color:rgba(217,108,108,.3)">
+                <h3 style="color:var(--danger)">🛒 Resetar carrinhos</h3>
+                <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:.85rem">Limpa todos os carrinhos ativos (não afeta pedidos pagos).</p>
+                <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.85rem">Impacto: 7 carrinhos · 32 fotos retidas</div>
+                <button class="btn warn" style="width:100%">🗑 Limpar carrinhos</button>
+              </div>
+
+              <div class="card" style="border-color:rgba(217,108,108,.3)">
+                <h3 style="color:var(--danger)">⚙ Configurações default</h3>
+                <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:.85rem">Volta tudo (preço, descontos, derivadas, marca d'água, gateways) ao default de fábrica.</p>
+                <button class="btn warn" style="width:100%">↻ Restaurar default</button>
+              </div>
+
+              <div class="card" style="border-color:var(--danger);background:rgba(217,108,108,.04)">
+                <h3 style="color:var(--danger)">☢ Resetar TUDO</h3>
+                <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:.85rem">Volta o site ao estado pós-instalação. Apaga absolutamente tudo, exceto a conta super-admin atual.</p>
+                <p style="font-size:.78rem;color:var(--danger);margin-bottom:.85rem"><b>Esta ação é IRREVERSÍVEL após confirmação tripla.</b></p>
+                <button class="btn danger" style="width:100%;font-weight:600">☢ INICIAR RESET TOTAL</button>
+              </div>
+            </div>
+
+            <div class="card" style="margin-top:1.5rem">
+              <h3>📋 Histórico de backups</h3>
+              <table>
+                <tbody>
+                  <tr><td>Hoje · 03:00</td><td>Automático · diário</td><td>2.41 GB</td><td>SQLite + JSON + storage</td><td><button class="btn xs">⤓ Baixar</button> <button class="btn xs primary">↻ Restaurar</button></td></tr>
+                  <tr><td>Ontem · 03:00</td><td>Automático · diário</td><td>2.39 GB</td><td>SQLite + JSON + storage</td><td><button class="btn xs">⤓ Baixar</button> <button class="btn xs primary">↻ Restaurar</button></td></tr>
+                  <tr><td>09/05 · 14:37</td><td>Manual · pré-migração</td><td>1.95 GB</td><td>JSON snapshot</td><td><button class="btn xs">⤓ Baixar</button> <button class="btn xs primary">↻ Restaurar</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+</body>
+</html>

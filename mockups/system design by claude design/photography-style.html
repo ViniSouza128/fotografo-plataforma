@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Vinícius Souza — Estilo fotográfico</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { padding-bottom: var(--space-24); }
+  .wrap { max-width: var(--content-max); margin: 0 auto; padding: var(--space-20) var(--space-12) var(--space-24); }
+  @media (max-width: 800px) { .wrap { padding: var(--space-12) var(--space-5); } }
+
+  /* HERO ─────────────────────────────────── */
+  .hero { position: relative; padding-bottom: var(--space-16); border-bottom: 1px solid var(--ink-500); margin-bottom: var(--space-16); overflow: hidden; }
+  .hero::before { content: ""; position: absolute; inset: -10% -10% auto -10%; height: 70%; background: var(--glow-radial); pointer-events: none; }
+  .hero > * { position: relative; }
+  .hero .crumbs { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); margin-bottom: var(--space-4); display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; }
+  .hero .crumbs a { color: var(--ink-700); }
+  .hero .crumbs a:hover { color: var(--ink-1000); }
+  .hero .crumbs b { color: var(--ink-1000); font-weight: 500; }
+  .hero h1 { font-family: var(--font-display); font-style: italic; font-size: var(--text-5xl); line-height: var(--leading-flat); letter-spacing: var(--tracking-tight); margin: 0 0 var(--space-5); max-width: 22ch; color: var(--ink-1000); }
+  .hero .lede { max-width: 64ch; font-size: var(--text-md); line-height: var(--leading-relaxed); color: var(--ink-900); margin: 0; }
+  .hero .lede em { font-family: var(--font-display); font-style: italic; color: var(--ink-1000); }
+
+  /* SECTION ───────────────────────────── */
+  .section { margin-top: var(--space-20); }
+  .section-head { padding-bottom: var(--space-4); border-bottom: 1px solid var(--ink-500); margin-bottom: var(--space-8); display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-5); flex-wrap: wrap; }
+  .section-head .num { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); }
+  .section-head h2 { font-family: var(--font-heading); font-weight: 400; font-size: var(--text-2xl); margin: var(--space-1) 0 0; color: var(--ink-1000); letter-spacing: var(--tracking-snug); }
+  .section-head p { margin: var(--space-2) 0 0; color: var(--ink-800); font-size: var(--text-sm); max-width: 60ch; line-height: var(--leading-relaxed); }
+
+  /* COMPOSITION GRID ─────────────────── */
+  .compositions { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: var(--space-4); }
+  @media (max-width: 980px) { .compositions { grid-template-columns: 1fr; } }
+  .photo-frame {
+    background: var(--ink-200);
+    border: 1px solid var(--ink-500);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+  }
+  .photo-frame img { width: 100%; height: auto; display: block; }
+  .photo-frame .caption {
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--ink-500);
+    font-size: var(--text-xs);
+    color: var(--ink-800);
+    line-height: var(--leading-relaxed);
+    font-family: var(--font-mono);
+    letter-spacing: var(--tracking-wide);
+    background: var(--ink-300);
+  }
+  .photo-frame .caption b { color: var(--ink-1000); font-weight: 500; }
+
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .grid-overlay svg { width: 100%; height: 100%; display: block; }
+  .grid-overlay line { stroke: var(--brand-400); stroke-width: 1; stroke-dasharray: 6 4; opacity: 0.75; }
+  .grid-overlay circle { fill: var(--brand-500); }
+
+  .rules-stack { display: flex; flex-direction: column; gap: var(--space-4); }
+  .rule-card { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-5); }
+  .rule-card .num { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--brand-400); margin-bottom: var(--space-2); }
+  .rule-card h3 { font-family: var(--font-heading); font-weight: 500; font-size: var(--text-lg); margin: 0 0 var(--space-2); color: var(--ink-1000); }
+  .rule-card p { margin: 0; font-size: var(--text-sm); line-height: var(--leading-relaxed); color: var(--ink-900); }
+
+  /* TONAL PALETTE ─────────────────── */
+  .tonal { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  @media (max-width: 900px) { .tonal { grid-template-columns: 1fr; } }
+  .tonal-card { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; }
+  .tonal-card .photo-strip { display: grid; grid-template-columns: 1fr; }
+  .tonal-card .photo-strip img { width: 100%; height: 220px; object-fit: cover; display: block; }
+  .tonal-card .ramp { display: grid; grid-template-columns: repeat(8, 1fr); height: 32px; }
+  .tonal-card .ramp .swatch { display: block; }
+  .tonal-card .body { padding: var(--space-5); }
+  .tonal-card h4 { font-family: var(--font-heading); font-weight: 500; font-size: var(--text-md); margin: 0 0 var(--space-2); color: var(--ink-1000); }
+  .tonal-card p { margin: 0; font-size: var(--text-sm); line-height: var(--leading-relaxed); color: var(--ink-900); }
+  .tonal-card .ramp-labels { display: grid; grid-template-columns: repeat(8, 1fr); font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-wider); color: var(--ink-800); text-align: center; padding-top: var(--space-2); }
+
+  /* POST-PROCESS ─────────────────── */
+  .post-list {
+    background: var(--ink-300);
+    border: 1px solid var(--ink-500);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .post-list table { width: 100%; border-collapse: collapse; }
+  .post-list th, .post-list td { padding: var(--space-3) var(--space-4); font-size: var(--text-sm); border-bottom: 1px solid var(--ink-500); text-align: left; line-height: var(--leading-relaxed); vertical-align: top; }
+  .post-list thead th { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-800); background: var(--ink-200); }
+  .post-list tbody tr:last-child td { border-bottom: none; }
+  .post-list tbody td:first-child { font-weight: 500; color: var(--ink-1000); width: 22%; }
+  .post-list .ok { color: var(--signal-500); }
+  .post-list .no { color: var(--danger-500); }
+
+  /* BEFORE/AFTER ─────────────────── */
+  .ba {
+    background: var(--ink-300);
+    border: 1px solid var(--ink-500);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--ink-500); }
+  .ba-cell { background: var(--ink-200); position: relative; }
+  .ba-cell img { width: 100%; height: auto; display: block; }
+  .ba-cell.before img { filter: saturate(1.45) contrast(0.95) hue-rotate(-8deg) brightness(1.1); }
+  .ba-cell .tag {
+    position: absolute; top: var(--space-3); left: var(--space-3);
+    font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase;
+    color: var(--ink-1000); background: rgba(0,0,0,0.55);
+    padding: 4px var(--space-2); border-radius: var(--radius-pill);
+  }
+  .ba-cell.before .tag { color: var(--danger-500); border: 1px solid var(--danger-500); }
+  .ba-cell.after .tag  { color: var(--signal-500); border: 1px solid var(--signal-500); }
+  .ba-foot { padding: var(--space-4) var(--space-5); font-size: var(--text-sm); color: var(--ink-900); line-height: var(--leading-relaxed); }
+  .ba-foot b { color: var(--ink-1000); font-weight: 500; }
+
+  /* WATERMARK ─────────────────── */
+  .wm-stack { display: grid; grid-template-columns: 1.4fr 0.6fr; gap: var(--space-4); align-items: stretch; }
+  @media (max-width: 900px) { .wm-stack { grid-template-columns: 1fr; } }
+  .wm-photo { position: relative; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--ink-500); background: var(--ink-200); }
+  .wm-photo img { width: 100%; height: auto; display: block; }
+  .wm-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+  }
+  .wm-overlay .wm-text {
+    transform: rotate(-22deg);
+    font-family: var(--font-brand), Montserrat, sans-serif;
+    font-weight: 700;
+    font-size: clamp(20px, 4vw, 42px);
+    letter-spacing: 0.18em;
+    color: var(--ink-1000);
+    opacity: 0.18;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .wm-overlay .wm-text small {
+    display: block;
+    font-size: 0.45em;
+    letter-spacing: 0.32em;
+    margin-top: 0.4em;
+    font-weight: 700;
+  }
+  .wm-rules { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); }
+  .wm-rules h4 { font-family: var(--font-heading); font-weight: 500; font-size: var(--text-md); margin: 0; color: var(--ink-1000); }
+  .wm-rules .row { display: grid; grid-template-columns: max-content 1fr; gap: var(--space-3); font-size: var(--text-sm); align-items: baseline; }
+  .wm-rules .row dt { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide); color: var(--ink-800); }
+  .wm-rules .row dd { margin: 0; color: var(--ink-1000); }
+
+  /* COVER HERO RULES ─────────────────── */
+  .cover-hero { position: relative; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--ink-500); }
+  .cover-hero img { width: 100%; height: 360px; object-fit: cover; display: block; }
+  .cover-hero .scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(7,7,8,0.65) 0%, rgba(7,7,8,0.1) 35%, rgba(7,7,8,0) 60%, rgba(7,7,8,0.85) 100%);
+    pointer-events: none;
+  }
+  .cover-hero .text {
+    position: absolute; left: var(--space-8); right: var(--space-8); bottom: var(--space-8);
+    color: var(--ink-1000);
+  }
+  .cover-hero .eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--brand-400); margin-bottom: var(--space-2); }
+  .cover-hero h3 { font-family: var(--font-display); font-style: italic; font-size: var(--text-4xl); line-height: var(--leading-tight); margin: 0; max-width: 24ch; }
+  .cover-hero .safe {
+    position: absolute; inset: 12% 8%;
+    border: 1px dashed var(--brand-500);
+    pointer-events: none;
+    opacity: 0.6;
+  }
+  .cover-hero .safe::before {
+    content: "ZONA SEGURA · sujeito + texto";
+    position: absolute; top: calc(var(--space-5) * -1); left: 0;
+    font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase;
+    color: var(--brand-400);
+  }
+  .cover-rules { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); margin-top: var(--space-4); }
+  @media (max-width: 980px) { .cover-rules { grid-template-columns: 1fr 1fr; } }
+  .cover-rule { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius); padding: var(--space-4); }
+  .cover-rule h5 { margin: 0 0 var(--space-1); font-family: var(--font-heading); font-weight: 500; font-size: var(--text-sm); color: var(--ink-1000); }
+  .cover-rule p { margin: 0; font-size: var(--text-xs); color: var(--ink-800); line-height: var(--leading-relaxed); }
+
+  /* CROP table ──────────────────── */
+  .crop-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); }
+  @media (max-width: 900px) { .crop-row { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 500px) { .crop-row { grid-template-columns: 1fr; } }
+  .crop-card { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; }
+  .crop-card .preview { background: var(--ink-200); position: relative; overflow: hidden; }
+  .crop-card .preview.r-1x1 { aspect-ratio: 1 / 1; }
+  .crop-card .preview.r-3x2 { aspect-ratio: 3 / 2; }
+  .crop-card .preview.r-16x9 { aspect-ratio: 16 / 9; }
+  .crop-card .preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .crop-card .body { padding: var(--space-4); }
+  .crop-card .body h5 { margin: 0 0 var(--space-1); font-family: var(--font-heading); font-weight: 500; font-size: var(--text-sm); color: var(--ink-1000); }
+  .crop-card .body .ratio { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); color: var(--brand-400); margin-bottom: var(--space-2); display: block; }
+  .crop-card .body p { margin: 0; font-size: var(--text-xs); color: var(--ink-800); line-height: var(--leading-relaxed); }
+
+  /* FOOTER */
+  footer { margin-top: var(--space-24); padding-top: var(--space-6); border-top: 1px solid var(--ink-500); display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-wider); }
+  footer a { color: var(--ink-700); }
+  footer a:hover { color: var(--ink-1000); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO ────────────────────────────────── -->
+  <header class="hero" data-screen-label="Photo · Header">
+    <p class="crumbs">
+      <a href="index.html">DS</a> · <a href="index.html#brand">Brand</a> · <b>02.4 · Estilo fotográfico</b>
+      <span style="color: var(--brand-400);">v1.0 · 2026-05-10</span>
+    </p>
+    <h1>A foto é<br>o sistema.</h1>
+    <p class="lede">
+      O sistema de design só existe para emoldurar fotografia. Composição com ar, paleta tonal obsidian, pós-produção que <em>não anuncia</em>,
+      marca-d'água que protege sem feiar. Este documento é o contrato entre captura e entrega.
+    </p>
+  </header>
+
+  <!-- 1 · COMPOSITION ────────────────────── -->
+  <section class="section" data-screen-label="Photo · Composition">
+    <div class="section-head">
+      <div>
+        <span class="num">01 · Composição</span>
+        <h2>Regra dos terços e o respiro.</h2>
+        <p>Sujeito num cruzamento da grade; espaço negativo no terço oposto. Quebra-se a regra só quando a tensão simétrica <em>é</em> a foto — palco, batismo, finalista em pose central.</p>
+      </div>
+    </div>
+
+    <div class="compositions">
+      <div class="photo-frame">
+        <div style="position: relative;">
+          <img src="assets/imagery/sample-event-01.jpg" alt="Grupo de bailarinas em palco circense, sujeito central no eixo vertical da grade dos terços.">
+          <div class="grid-overlay">
+            <svg viewBox="0 0 3 2" preserveAspectRatio="none">
+              <line x1="1" y1="0" x2="1" y2="2"/>
+              <line x1="2" y1="0" x2="2" y2="2"/>
+              <line x1="0" y1="0.667" x2="3" y2="0.667"/>
+              <line x1="0" y1="1.333" x2="3" y2="1.333"/>
+              <circle cx="1.5" cy="0.667" r="0.03"/>
+              <circle cx="1" cy="1.333" r="0.03"/>
+              <circle cx="2" cy="1.333" r="0.03"/>
+            </svg>
+          </div>
+        </div>
+        <p class="caption"><b>Espetáculo · maio 2026.</b> Sujeito principal na linha vertical central; ombros das figuras laterais alinhados na linha horizontal inferior. O espaço escuro acima respira.</p>
+      </div>
+
+      <div class="rules-stack">
+        <div class="rule-card">
+          <p class="num">C1</p>
+          <h3>Espaço negativo &gt; preenchimento.</h3>
+          <p>Pelo menos um terço da composição é escuridão ou bokeh. A foto precisa de ar para o título da galeria, o badge de preço, o ícone de carrinho.</p>
+        </div>
+        <div class="rule-card">
+          <p class="num">C2</p>
+          <h3>Olhar do sujeito guia o crop.</h3>
+          <p>Sujeito olhando para a esquerda, espaço à esquerda. Olhando reto, sujeito no centro. Nunca deixe o sujeito sair do quadro pela linha do olhar.</p>
+        </div>
+        <div class="rule-card">
+          <p class="num">C3</p>
+          <h3>Quando quebrar a regra.</h3>
+          <p>Simetria total (palco, retrato cerimonial, vencedor central) — então centraliza. Mas avise no crop alternativo: o cliente pode querer cortar em 1:1.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · TONAL PALETTE ─────────────────── -->
+  <section class="section" data-screen-label="Photo · Tonal palette">
+    <div class="section-head">
+      <div>
+        <span class="num">02 · Paleta tonal</span>
+        <h2>Obsidian high-contrast, highlight controlado.</h2>
+        <p>O preto é cheio (sem clipping), mas presente. O highlight é controlado — nunca branco puro queimado. As sombras carregam azul-tinta; os realces, bone-warm.</p>
+      </div>
+    </div>
+
+    <div class="tonal">
+
+      <div class="tonal-card">
+        <div class="photo-strip"><img src="assets/imagery/sample-event-01.jpg" alt="Evento circense iluminado em vermelho — paleta tonal de referência."></div>
+        <div style="padding: 0 var(--space-5);">
+          <div class="ramp">
+            <span class="swatch" style="background: var(--ink-0);"></span>
+            <span class="swatch" style="background: var(--ink-50);"></span>
+            <span class="swatch" style="background: var(--ink-100);"></span>
+            <span class="swatch" style="background: var(--ink-300);"></span>
+            <span class="swatch" style="background: var(--ink-500);"></span>
+            <span class="swatch" style="background: var(--ink-700);"></span>
+            <span class="swatch" style="background: var(--ink-900);"></span>
+            <span class="swatch" style="background: var(--ink-1000);"></span>
+          </div>
+          <div class="ramp-labels">
+            <span>0</span><span>50</span><span>100</span><span>300</span><span>500</span><span>700</span><span>900</span><span>1000</span>
+          </div>
+        </div>
+        <div class="body">
+          <h4>A foto deve caber na rampa.</h4>
+          <p>Olhe o histograma: 12&nbsp;% dos pixels embaixo de <code class="type-mono">ink-100</code>, mas <strong>nada</strong> a 0 absoluto. O preto carrega detalhe; é grão, não vazio.</p>
+        </div>
+      </div>
+
+      <div class="tonal-card">
+        <div class="photo-strip"><img src="assets/imagery/sample-event-02.jpg" alt="Mesmo evento em ângulo diferente — referência de variação tonal."></div>
+        <div class="body" style="padding-top: var(--space-5);">
+          <h4>Cor de iluminação, não pós-produção.</h4>
+          <p>O vermelho da cena vem da iluminação cênica do palco — não de um filtro. Foi assim que a foto foi feita. A pós só ajusta exposição e contraste.</p>
+          <h4 style="margin-top: var(--space-4);">White-balance editorial.</h4>
+          <p>Temperatura: 3400–4200&nbsp;K em ambientes mistos. Tint levemente magenta (+4 a +8) para preservar o tom bone das peles claras sem deixar amarelado.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 3 · POST-PROCESS ─────────────────── -->
+  <section class="section" data-screen-label="Photo · Post-processing">
+    <div class="section-head">
+      <div>
+        <span class="num">03 · Pós-produção</span>
+        <h2>O que sim · o que não.</h2>
+        <p>Se um cliente perceber que a foto foi tratada, foi tratada demais. A regra: a pós deve passar despercebida.</p>
+      </div>
+    </div>
+    <div class="post-list">
+      <table>
+        <thead><tr><th>Operação</th><th>Faixa</th><th>Padrão</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td>Exposição</td><td><code class="type-mono">±0.6 EV</code></td><td class="ok">Sim</td><td>Ajustar para histograma caber na rampa. Nada além disso.</td></tr>
+          <tr><td>Contraste</td><td><code class="type-mono">+5 a +18</code></td><td class="ok">Sim</td><td>Sempre por curva, nunca slider linear. Preserve o meio-tom.</td></tr>
+          <tr><td>Sombras</td><td><code class="type-mono">+10 a +30</code></td><td class="ok">Sim</td><td>Recuperar detalhe sem virar HDR. Pretos descem 2–4 pontos.</td></tr>
+          <tr><td>Realces</td><td><code class="type-mono">-15 a -35</code></td><td class="ok">Sim</td><td>Controlar branco queimado. Realce queimado é descarte.</td></tr>
+          <tr><td>Saturação</td><td><code class="type-mono">-5 a +5</code></td><td class="no">Quase nunca</td><td>Vibrância pode subir até +12. Saturação global é proibida.</td></tr>
+          <tr><td>HDR halo</td><td>—</td><td class="no">Nunca</td><td>Sombras + realces no extremo geram halo no contorno. Recusar.</td></tr>
+          <tr><td>Skin smoothing</td><td>—</td><td class="no">Nunca</td><td>É fotografia de evento, não retrato comercial. Pele com poro vive.</td></tr>
+          <tr><td>Filtro de cor (LUT)</td><td>—</td><td class="no">Nunca</td><td>Sem teal-and-orange, sem matrix-green. A iluminação da cena é a cor.</td></tr>
+          <tr><td>Sharpening</td><td><code class="type-mono">+25 amount · 1.0 radius</code></td><td class="ok">Sim</td><td>Sutil. Mais radius é melhor que mais amount.</td></tr>
+          <tr><td>Crop &amp; rotate</td><td>—</td><td class="ok">Sim</td><td>Endireitar horizonte; recortar para conjugar com a regra dos terços.</td></tr>
+          <tr><td>Spot heal</td><td>—</td><td class="ok">Sim</td><td>Remover sensor dust, cabo no chão, marca de placar. Não remover pessoas.</td></tr>
+          <tr><td>Liquify / warp</td><td>—</td><td class="no">Nunca</td><td>Não distorce corpo nem rosto. A foto é jornalismo, não moda.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 4 · BEFORE/AFTER ─────────────────── -->
+  <section class="section" data-screen-label="Photo · Before / after">
+    <div class="section-head">
+      <div>
+        <span class="num">04 · Antes / depois</span>
+        <h2>O excesso à esquerda · o canônico à direita.</h2>
+        <p>O "antes" simula o erro frequente — saturação inflada, white-balance neutro, brilho. O "depois" é a foto que entra na galeria.</p>
+      </div>
+    </div>
+
+    <div class="ba">
+      <div class="ba-grid">
+        <div class="ba-cell before">
+          <img src="assets/imagery/sample-event-01.jpg" alt="Mesma foto com saturação elevada e contraste reduzido (rejeitada).">
+          <span class="tag">antes · rejeitado</span>
+        </div>
+        <div class="ba-cell after">
+          <img src="assets/imagery/sample-event-01.jpg" alt="Mesma foto com tratamento canônico — exposição contida, sombras presentes, realces controlados.">
+          <span class="tag">depois · canônico</span>
+        </div>
+      </div>
+      <div class="ba-foot">
+        <b>O que mudou</b> · saturação −18; contraste por curva +12; realces −24; sombras +18; pretos −4; sharpening 25/1.0; sem LUT.
+        <br>A esquerda parece "mais bonita" no thumbnail, mas perde detalhe na alta luz e satura a pele. A direita é a entregue.
+      </div>
+    </div>
+
+    <div class="ba" style="margin-top: var(--space-4);">
+      <div class="ba-grid">
+        <div class="ba-cell before">
+          <img src="assets/imagery/sample-event-02.jpg" alt="Mesma cena com saturação inflada (rejeitada).">
+          <span class="tag">antes · rejeitado</span>
+        </div>
+        <div class="ba-cell after">
+          <img src="assets/imagery/sample-event-02.jpg" alt="Mesma cena com tratamento canônico.">
+          <span class="tag">depois · canônico</span>
+        </div>
+      </div>
+      <div class="ba-foot">
+        <b>Por que a esquerda falha</b> · o vermelho cênico vira laranja-magenta artificial; os ombros perdem volume; a sombra estoura no preto sem detalhe.
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · WATERMARK ─────────────────── -->
+  <section class="section" data-screen-label="Photo · Watermark">
+    <div class="section-head">
+      <div>
+        <span class="num">05 · Marca-d'água</span>
+        <h2>Proteger sem feiar a foto.</h2>
+        <p>Marca-d'água é dissuasão, não policiamento. Diagonal, opacidade 18&nbsp;%, no centro óptico — o suficiente para inviabilizar o screenshot, transparente o bastante para o cliente <em>imaginar</em> a foto final.</p>
+      </div>
+    </div>
+    <p style="margin: 0 0 var(--space-5); padding: var(--space-3) var(--space-4); border-left: 2px solid var(--brand-500); background: var(--ink-200); color: var(--ink-900); font-size: var(--text-sm); line-height: var(--leading-relaxed); border-radius: var(--radius);"><b style="color: var(--ink-1000);">Exceção tipográfica documentada.</b> Marca d'água é a única extensão permitida de <code class="type-mono">var(--font-brand)</code> (Montserrat) fora do logo — a assinatura fotográfica é parte da identidade brand, não UI. SKILL.md mantém a regra "Montserrat LOGO ONLY"; este é o único renderizador permitido a herdá-la.</p>
+    <div class="wm-stack">
+      <div class="wm-photo">
+        <img src="assets/imagery/sample-event-02.jpg" alt="Aplicação canônica de marca-d'água — diagonal central, opacidade 18 por cento.">
+        <div class="wm-overlay">
+          <div class="wm-text">VINÍCIUS SOUZA<small>imagem não adquirida</small></div>
+        </div>
+      </div>
+      <div class="wm-rules">
+        <h4>Especificação canônica</h4>
+        <dl class="row"><dt>Texto</dt><dd>VINÍCIUS SOUZA · imagem não adquirida</dd></dl>
+        <dl class="row"><dt>Família</dt><dd>Montserrat ExtraBold 800 (logo only)</dd></dl>
+        <dl class="row"><dt>Tracking</dt><dd>0.18em (wide)</dd></dl>
+        <dl class="row"><dt>Opacidade</dt><dd>18&nbsp;% — &lt; 12&nbsp;% é fácil demais de remover</dd></dl>
+        <dl class="row"><dt>Ângulo</dt><dd>-22° diagonal · pé canto inferior-esquerdo</dd></dl>
+        <dl class="row"><dt>Posição</dt><dd>Centro óptico · âncora configurável em <code>imagem-watermark.config.json</code></dd></dl>
+        <dl class="row"><dt>Cor</dt><dd>bone-white sobre foto escura · ink-50 sobre foto clara</dd></dl>
+        <dl class="row"><dt>Desligar</dt><dd>Após confirmação de pagamento · em previews de capa do evento (cover hero)</dd></dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · COVER HERO ─────────────────── -->
+  <section class="section" data-screen-label="Photo · Cover hero">
+    <div class="section-head">
+      <div>
+        <span class="num">06 · Capa hero</span>
+        <h2>O primeiro frame de um evento.</h2>
+        <p>16:9 mínimo, foco subjetivo na zona segura, scrim para o título. A capa é a única foto do evento que vai <em>sem</em> marca-d'água — porque ela é o anúncio.</p>
+      </div>
+    </div>
+
+    <div class="cover-hero">
+      <img src="assets/imagery/sample-event-01.jpg" alt="Capa hero exemplificada com zona segura e scrim canônico.">
+      <div class="scrim"></div>
+      <div class="safe" aria-hidden="true"></div>
+      <div class="text">
+        <p class="eyebrow">Espetáculo · maio 2026</p>
+        <h3>Uma noite só, sob a luz vermelha.</h3>
+      </div>
+    </div>
+
+    <div class="cover-rules">
+      <div class="cover-rule"><h5>Proporção</h5><p>Mínimo 16:9, ideal 21:9. Nunca quadrado.</p></div>
+      <div class="cover-rule"><h5>Largura mínima</h5><p>1920 px · 320 dpi · sRGB.</p></div>
+      <div class="cover-rule"><h5>Texto sobre rosto</h5><p>Nunca. O título vai abaixo da zona segura.</p></div>
+      <div class="cover-rule"><h5>Marca-d'água</h5><p>Sempre desligada. A capa anuncia o evento.</p></div>
+    </div>
+  </section>
+
+  <!-- 7 · CROPPING ─────────────────── -->
+  <section class="section" data-screen-label="Photo · Cropping per surface">
+    <div class="section-head">
+      <div>
+        <span class="num">07 · Cropping por superfície</span>
+        <h2>Mesma foto, três frames.</h2>
+        <p>Cada superfície tem uma proporção canônica. O <em>focal subject</em> deve sobreviver ao crop mais agressivo (1:1) sem perder ação ou rosto.</p>
+      </div>
+    </div>
+    <div class="crop-row">
+      <div class="crop-card">
+        <div class="preview r-1x1"><img src="assets/imagery/sample-event-01.jpg" alt="Crop 1:1 — célula de grade pública."></div>
+        <div class="body">
+          <h5>Grid público</h5>
+          <span class="ratio">1 : 1</span>
+          <p>Galeria, busca, favoritos. Sujeito centralizado horizontal e vertical, com 8 % de margem de segurança.</p>
+        </div>
+      </div>
+      <div class="crop-card">
+        <div class="preview r-3x2"><img src="assets/imagery/sample-event-01.jpg" alt="Crop 3:2 — modal de lightbox."></div>
+        <div class="body">
+          <h5>Lightbox / modal</h5>
+          <span class="ratio">3 : 2 · ou original</span>
+          <p>Sempre que possível, manter a proporção original do sensor. Apenas reduzir; nunca reenquadrar pela esquerda.</p>
+        </div>
+      </div>
+      <div class="crop-card">
+        <div class="preview r-16x9"><img src="assets/imagery/sample-event-01.jpg" alt="Crop 16:9 — cover hero do evento."></div>
+        <div class="body">
+          <h5>Cover hero</h5>
+          <span class="ratio">16 : 9 mín.</span>
+          <p>A capa do evento. Foco na zona segura central; texto no terço inferior; sem marca-d'água.</p>
+        </div>
+      </div>
+      <div class="crop-card">
+        <div class="preview r-1x1"><img src="assets/imagery/sample-event-01.jpg" alt="Crop 1:1 — célula de carrinho."></div>
+        <div class="body">
+          <h5>Carrinho / checkout</h5>
+          <span class="ratio">1 : 1</span>
+          <p>Recriado a partir do crop 1:1 do grid público — mesma imagem, mesma posição. Não cropar por segundo motor.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer data-screen-label="Photo · Footer">
+    <span>VINÍCIUS SOUZA · ESTILO FOTOGRÁFICO v1.0 · 2026-05-10</span>
+    <span><a href="index.html">Index</a> · <a href="brand-logo.html">Marca</a> · <a href="voice-tone.html">Voz</a> · <a href="business-cards.html">Cartões</a></span>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>02 · Área do cliente — Mockups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0c0c; --bg-secondary:#141414; --bg-card:#1c1c1c; --bg-input:#222;
+    --border:#2e2e2e; --border-light:#3a3a3a;
+    --text:#ede8e0; --text-muted:#888880; --text-dim:#555550;
+    --accent:#22c55e; --accent-hover:#16a34a; --accent-dim:rgba(34,197,94,.15);
+    --danger:#d96c6c; --danger-dim:rgba(217,108,108,.15);
+    --success:#6cc47a; --success-dim:rgba(108,196,122,.15);
+    --warn:#fbbf24; --warn-dim:rgba(251,191,36,.15);
+    --pink:#ec4899; --pink-dim:rgba(236,72,153,.15);
+    --radius:6px; --radius-lg:12px;
+    --font-heading:'Space Grotesk',sans-serif;
+    --font-body:'Inter',system-ui,sans-serif;
+    --font-mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#070707;color:var(--text);font-family:var(--font-body);font-weight:300;line-height:1.6}
+  h1,h2,h3,h4{font-family:var(--font-heading);font-weight:500;letter-spacing:.02em;line-height:1.2}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;cursor:pointer}
+
+  .mockups-page{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+  @media(max-width:1024px){.mockups-page{grid-template-columns:1fr}}
+  .toc{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;background:#0a0a0a;border-right:1px solid var(--border);padding:1.25rem 1rem;font-size:.82rem}
+  @media(max-width:1024px){.toc{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--border)}}
+  .toc h1{font-size:.95rem;color:var(--accent);margin-bottom:.25rem}
+  .toc .sub{font-size:.7rem;color:var(--text-dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.25rem}
+  .toc a{display:block;padding:.4rem .6rem;border-radius:var(--radius);color:var(--text-muted);font-size:.82rem;border-left:2px solid transparent}
+  .toc a:hover{background:var(--bg-secondary);color:var(--text);border-left-color:var(--accent)}
+  .toc .back{display:inline-block;margin-bottom:1rem;font-size:.75rem;color:var(--text-dim)}
+
+  .stage{padding:2rem 2rem 6rem}
+  @media(max-width:768px){.stage{padding:1rem 1rem 4rem}}
+  .mock{margin-bottom:4rem;scroll-margin-top:1rem}
+  .mock-head{margin-bottom:1rem}
+  .mock-head h2{font-size:1.6rem;color:var(--text)}
+  .mock-head h2 .num{color:var(--accent);font-family:var(--font-mono);font-size:.85rem;margin-right:.5rem}
+  .mock-head .url{margin-top:.4rem;font-family:var(--font-mono);font-size:.78rem;color:var(--text-muted)}
+  .mock-head .desc{margin-top:.5rem;font-size:.85rem;color:var(--text-muted);max-width:780px}
+
+  .frame{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+  .frame-bar{display:flex;align-items:center;gap:.5rem;background:#080808;padding:.5rem .85rem;border-bottom:1px solid var(--border)}
+  .frame-bar .dots{display:flex;gap:.3rem}
+  .frame-bar .dots span{width:10px;height:10px;border-radius:50%}
+  .frame-bar .dots span:nth-child(1){background:#ff5f56}
+  .frame-bar .dots span:nth-child(2){background:#ffbd2e}
+  .frame-bar .dots span:nth-child(3){background:#27c93f}
+  .frame-bar .url-bar{flex:1;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;padding:.25rem .65rem;font-family:var(--font-mono);font-size:.72rem;color:var(--text-muted)}
+
+  /* mc topbar */
+  .mc-navbar{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:.75rem;min-height:60px;padding:.75rem 1rem;background:rgba(12,12,12,.94);border-bottom:1px solid var(--border)}
+  .mc-back{display:inline-flex;align-items:center;gap:.45rem;padding:.45rem .8rem;border-radius:var(--radius);background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-muted);font-size:.82rem}
+  .mc-title{font-family:var(--font-heading);font-size:1rem;text-align:center;color:var(--text)}
+  .mc-menu{width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-secondary);color:var(--text)}
+  .mc-main{max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
+
+  /* generic */
+  .badge{display:inline-block;padding:.18rem .55rem;border-radius:100px;font-size:.68rem;letter-spacing:.08em;font-weight:600}
+  .badge.acc{background:var(--accent-dim);color:var(--accent);border:1px solid rgba(34,197,94,.35)}
+  .badge.gray{background:var(--bg-secondary);color:var(--text-muted);border:1px solid var(--border)}
+  .badge.dan{background:var(--danger-dim);color:var(--danger);border:1px solid rgba(217,108,108,.35)}
+  .badge.ok{background:var(--success-dim);color:var(--success);border:1px solid rgba(108,196,122,.35)}
+  .badge.warn{background:var(--warn-dim);color:var(--warn);border:1px solid rgba(251,191,36,.35)}
+  .badge.pink{background:var(--pink-dim);color:var(--pink);border:1px solid rgba(236,72,153,.35)}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.7rem 1.2rem;border-radius:var(--radius);font-size:.85rem;font-weight:500;letter-spacing:.05em;border:1px solid var(--border);background:var(--bg-secondary);color:var(--text)}
+  .btn.primary{background:var(--accent);color:#06210e;border-color:var(--accent)}
+  .btn.outline{background:transparent;border-color:var(--accent);color:var(--accent)}
+  .btn.danger{background:var(--danger-dim);border-color:rgba(217,108,108,.4);color:var(--danger)}
+  .btn.sm{padding:.42rem .85rem;font-size:.78rem}
+
+  .input{width:100%;padding:.7rem .9rem;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font:inherit;font-size:.9rem}
+  .label{display:block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.4rem}
+
+  .page-title{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:300;letter-spacing:.03em}
+  .page-sub{color:var(--text-muted);font-size:.85rem;letter-spacing:.05em;margin-top:.4rem;margin-bottom:1.5rem}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  @media(max-width:760px){.grid-2{grid-template-columns:1fr}}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+  @media(max-width:760px){.grid-3{grid-template-columns:1fr}}
+  .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem}
+  .stat{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem}
+  .stat .lbl{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.4rem}
+  .stat .val{font-family:var(--font-heading);font-size:1.7rem;color:var(--text)}
+  .stat .val .accent{color:var(--accent)}
+  .stat .delta{font-size:.78rem;color:var(--success);margin-top:.25rem}
+
+  /* dashboard tiles */
+  .quick-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-top:1.5rem}
+  .quick{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;transition:border-color .2s,transform .2s;cursor:pointer;display:flex;flex-direction:column;gap:.5rem}
+  .quick:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .quick .ico{font-size:1.6rem}
+  .quick .nm{font-family:var(--font-heading);font-size:1rem;color:var(--text)}
+  .quick .desc{font-size:.78rem;color:var(--text-muted)}
+  .quick .ct{font-size:.72rem;color:var(--accent);margin-top:.25rem;letter-spacing:.04em}
+
+  /* photo thumb */
+  .thumb{aspect-ratio:1/1;border-radius:var(--radius);background:repeating-linear-gradient(45deg,#1a1a1a 0 3px,#222 3px 6px);position:relative;overflow:hidden;border:1px solid var(--border)}
+  .thumb .id{position:absolute;top:4px;left:4px;background:rgba(0,0,0,.65);color:var(--text-muted);font-family:var(--font-mono);font-size:.6rem;padding:.1rem .3rem;border-radius:3px}
+  .thumb .price{position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,.7);color:var(--accent);font-size:.65rem;padding:.1rem .3rem;border-radius:3px;font-family:var(--font-heading)}
+  .thumb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+
+  .order-row{display:flex;justify-content:space-between;align-items:center;padding:.85rem 0;border-bottom:1px solid var(--border)}
+  .order-row:last-child{border-bottom:0}
+  .order-meta{display:flex;align-items:center;gap:1rem}
+  .order-thumbs{display:flex;gap:4px}
+  .order-thumbs .thumb{width:46px;height:46px;flex-shrink:0;aspect-ratio:initial}
+
+  .photo-tile{position:relative;aspect-ratio:1/1;border-radius:var(--radius);background:repeating-linear-gradient(45deg,#1a1a1a 0 3px,#222 3px 6px);border:1px solid var(--border)}
+  .photo-tile .id{position:absolute;top:4px;left:4px;background:rgba(0,0,0,.65);color:#fff;font-family:var(--font-mono);font-size:.6rem;padding:.1rem .3rem;border-radius:3px}
+  .photo-tile .heart{position:absolute;top:6px;right:6px;color:var(--pink);background:rgba(0,0,0,.6);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+  .photo-tile .save{position:absolute;top:6px;right:6px;color:var(--warn);background:rgba(0,0,0,.6);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+  .photo-tile .ev{position:absolute;left:0;right:0;bottom:0;padding:.4rem;background:rgba(0,0,0,.7);font-size:.62rem;color:#fff;backdrop-filter:blur(4px)}
+
+  .empty{text-align:center;padding:3rem 2rem;color:var(--text-muted)}
+  .empty .ic{font-size:3rem;opacity:.4;margin-bottom:.85rem}
+
+  /* tabs */
+  .tabs{display:flex;gap:.4rem;margin-bottom:1.5rem;border-bottom:1px solid var(--border);overflow-x:auto}
+  .tab{padding:.7rem 1rem;color:var(--text-muted);font-size:.85rem;border-bottom:2px solid transparent;white-space:nowrap}
+  .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+  .order-detail{display:grid;grid-template-columns:1.5fr 1fr;gap:1.5rem}
+  @media(max-width:900px){.order-detail{grid-template-columns:1fr}}
+
+  .timeline{position:relative;padding-left:1.5rem}
+  .timeline::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:var(--border)}
+  .ti{position:relative;padding-bottom:1rem}
+  .ti::before{content:"";position:absolute;left:-1.5rem;top:6px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--border-light)}
+  .ti.done::before{background:var(--accent);border-color:var(--accent)}
+  .ti.now::before{background:var(--warn);border-color:var(--warn);animation:pulse 1.5s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(251,191,36,.5)}50%{box-shadow:0 0 0 6px rgba(251,191,36,0)}}
+  .ti .ts{font-size:.72rem;color:var(--text-dim);font-family:var(--font-mono);margin-bottom:.15rem}
+  .ti .lb{font-size:.85rem;color:var(--text)}
+  .ti .nt{font-size:.78rem;color:var(--text-muted);margin-top:.25rem}
+
+  .chat-grid{display:grid;grid-template-columns:1fr;gap:1rem}
+  .chat-bubble{padding:.7rem 1rem;border-radius:14px;max-width:80%;font-size:.88rem;line-height:1.4}
+  .chat-bubble.in{background:var(--bg-secondary);border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:4px}
+  .chat-bubble.out{background:var(--accent-dim);border:1px solid rgba(34,197,94,.3);color:var(--text);align-self:flex-end;border-bottom-right-radius:4px;margin-left:auto}
+  .chat-bubble .meta{font-size:.65rem;color:var(--text-dim);margin-top:.3rem}
+  .chat-msgs{display:flex;flex-direction:column;gap:.5rem;padding:1rem;background:var(--bg);border-radius:var(--radius);border:1px solid var(--border);min-height:280px}
+
+  .notif-item{display:flex;gap:.85rem;padding:.85rem 1rem;border-bottom:1px solid var(--border);align-items:start}
+  .notif-item:last-child{border-bottom:0}
+  .notif-item.unread{background:rgba(34,197,94,.04)}
+  .notif-item .nico{width:36px;height:36px;border-radius:50%;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem}
+  .notif-item .ntext{flex:1}
+  .notif-item .nbody{font-size:.85rem}
+  .notif-item .ntime{font-size:.7rem;color:var(--text-dim);margin-top:.2rem}
+  .notif-item .ndot{width:8px;height:8px;background:var(--accent);border-radius:50%;margin-top:.35rem;flex-shrink:0}
+
+  .face-banner{background:linear-gradient(135deg,rgba(34,197,94,.18),rgba(34,197,94,.02));border:1px solid rgba(34,197,94,.3);border-radius:var(--radius-lg);padding:2rem;text-align:center;margin-bottom:1.5rem}
+  .face-cam{width:160px;height:160px;border-radius:50%;background:repeating-conic-gradient(from 0deg,#1a1a1a 0deg 30deg,#222 30deg 60deg);border:3px solid var(--accent);margin:1rem auto;display:flex;align-items:center;justify-content:center;font-size:3rem;color:rgba(255,255,255,.4)}
+
+  .toggle{display:inline-flex;align-items:center;gap:.6rem;cursor:pointer}
+  .toggle input{display:none}
+  .toggle .sw{width:36px;height:20px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:100px;position:relative;transition:.2s}
+  .toggle .sw::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;background:var(--text-muted);border-radius:50%;transition:.2s}
+  .toggle.on .sw{background:var(--accent-dim);border-color:var(--accent)}
+  .toggle.on .sw::after{transform:translateX(16px);background:var(--accent)}
+
+  .row{display:flex;justify-content:space-between;align-items:center;padding:.85rem 0;border-bottom:1px solid var(--border);gap:1rem}
+  .row:last-child{border-bottom:0}
+  .row .l{display:flex;flex-direction:column;gap:.2rem}
+  .row .l .nm{font-size:.92rem}
+  .row .l .ds{font-size:.78rem;color:var(--text-muted)}
+
+  /* avatar */
+  .avatar-set{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
+  .avatar{width:84px;height:84px;border-radius:50%;background:linear-gradient(135deg,#3a8a5e,#1a4a30);display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-size:2rem;color:#fff}
+
+  .menu-overlay{position:absolute;right:1rem;top:60px;width:300px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:0 20px 40px rgba(0,0,0,.45);padding:.85rem;z-index:5}
+  .menu-overlay .head{display:flex;justify-content:space-between;align-items:start;padding-bottom:.85rem;border-bottom:1px solid var(--border);margin-bottom:.85rem}
+  .menu-overlay .nm{font-size:.92rem;font-weight:600}
+  .menu-overlay .em{font-size:.72rem;color:var(--text-dim)}
+  .menu-overlay .item{display:flex;align-items:center;gap:.6rem;padding:.55rem .7rem;border-radius:var(--radius);font-size:.85rem;color:var(--text-muted)}
+  .menu-overlay .item:hover{background:var(--bg-secondary);color:var(--text)}
+  .menu-overlay .item.active{color:var(--accent);background:var(--accent-dim)}
+</style>
+</head>
+<body>
+
+<div class="mockups-page">
+  <aside class="toc">
+    <a class="back" href="index.html">← Voltar ao índice</a>
+    <h1>02 · Área do cliente</h1>
+    <div class="sub">10 telas</div>
+    <a href="#dash">🏠 Dashboard</a>
+    <a href="#menu">📋 Menu lateral</a>
+    <a href="#compras">📦 Minhas compras</a>
+    <a href="#detalhe">🧾 Detalhe da compra</a>
+    <a href="#carrinho">🛒 Meu carrinho</a>
+    <a href="#favoritos">★ Salvos & curtidas</a>
+    <a href="#comentarios">💬 Comentários</a>
+    <a href="#remocoes">🚫 Remoções LGPD</a>
+    <a href="#notif">🔔 Notificações</a>
+    <a href="#chat">💬 Chat com fotógrafo</a>
+    <a href="#face">🤳 Reconhecimento</a>
+    <a href="#config">⚙ Configurações</a>
+  </aside>
+
+  <main class="stage">
+
+    <!-- DASHBOARD -->
+    <section class="mock" id="dash">
+      <div class="mock-head">
+        <h2><span class="num">2.1</span>Dashboard do cliente</h2>
+        <div class="url">/minha-conta — minha-conta/page.js</div>
+        <p class="desc">Hub central com saudação, contadores rápidos (compras, fotos, salvos, comentários) e cards-atalho para todas as áreas. Layout reaproveita classes <code>.mc-*</code>.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/minha-conta</div></div>
+        <div class="mc-navbar">
+          <a class="mc-back">← Voltar ao site</a>
+          <div class="mc-title">Minha Conta</div>
+          <button class="mc-menu">☰</button>
+        </div>
+        <div class="mc-main">
+          <div class="avatar-set">
+            <div class="avatar">MR</div>
+            <div>
+              <h1 class="page-title">Olá, Maria 👋</h1>
+              <div class="page-sub">maria@exemplo.com · cliente desde abril/2026</div>
+            </div>
+          </div>
+          <div class="grid-3">
+            <div class="stat"><div class="lbl">Compras</div><div class="val"><span class="accent">3</span> pedidos</div><div class="delta">2 entregues · 1 em análise</div></div>
+            <div class="stat"><div class="lbl">Fotos compradas</div><div class="val"><span class="accent">12</span></div><div class="delta">+5 nesta semana</div></div>
+            <div class="stat"><div class="lbl">Salvos &amp; curtidos</div><div class="val"><span class="accent">23</span></div><div class="delta">★ 11 salvos · ❤ 12 curtidas</div></div>
+          </div>
+          <div class="quick-grid">
+            <div class="quick"><div class="ico">📦</div><div class="nm">Minhas compras</div><div class="desc">Histórico, downloads e reembolsos</div><div class="ct">3 pedidos</div></div>
+            <div class="quick"><div class="ico">🛒</div><div class="nm">Meu carrinho</div><div class="desc">5 fotos · pendente de finalização</div><div class="ct" style="color:var(--warn)">⚠ R$ 99,50</div></div>
+            <div class="quick"><div class="ico">★</div><div class="nm">Salvos</div><div class="desc">Fotos que você marcou para depois</div><div class="ct">11 fotos</div></div>
+            <div class="quick"><div class="ico">❤</div><div class="nm">Curtidas</div><div class="desc">Fotos que você curtiu publicamente</div><div class="ct">12 fotos</div></div>
+            <div class="quick"><div class="ico">💬</div><div class="nm">Meus comentários</div><div class="desc">Em álbuns, pastas e fotos</div><div class="ct">7 comentários</div></div>
+            <div class="quick"><div class="ico">🚫</div><div class="nm">Remoções</div><div class="desc">Solicitações LGPD enviadas</div><div class="ct">1 em análise</div></div>
+            <div class="quick"><div class="ico">🔔</div><div class="nm">Notificações</div><div class="desc">Pedidos, comentários e novidades</div><div class="ct" style="color:var(--accent)">3 não lidas</div></div>
+            <div class="quick"><div class="ico">💬</div><div class="nm">Chat com fotógrafo</div><div class="desc">Tire dúvidas direto pelo painel</div><div class="ct">2 mensagens</div></div>
+            <div class="quick"><div class="ico">🤳</div><div class="nm">Reconhecimento facial</div><div class="desc">Encontre fotos suas em todos os eventos</div><div class="ct" style="color:var(--accent)">Beta</div></div>
+            <div class="quick"><div class="ico">⚙</div><div class="nm">Configurações</div><div class="desc">Dados, senha, preferências</div><div class="ct">Atualizado há 5 dias</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MENU LATERAL -->
+    <section class="mock" id="menu">
+      <div class="mock-head">
+        <h2><span class="num">2.2</span>Menu lateral expandido</h2>
+        <div class="url">overlay aberto pelo botão ☰ da navbar</div>
+        <p class="desc">Drawer responsivo (mobile ≤ 768px) ou painel flutuante (desktop) com avatar, e-mail, link para área admin (se aplicável) e logout com confirmação.</p>
+      </div>
+      <div class="frame" style="position:relative">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/minha-conta · menu aberto</div></div>
+        <div class="mc-navbar">
+          <a class="mc-back">← Voltar ao site</a>
+          <div class="mc-title">Minha Conta</div>
+          <button class="mc-menu" style="background:var(--bg-card);border-color:var(--border-light)">✕</button>
+        </div>
+        <div class="mc-main" style="opacity:.4">
+          <div class="avatar-set">
+            <div class="avatar">MR</div>
+            <div><h1 class="page-title">Olá, Maria 👋</h1></div>
+          </div>
+        </div>
+        <div class="menu-overlay">
+          <div class="head">
+            <div><div class="nm">Maria Rodrigues Silva</div><div class="em">maria@exemplo.com</div></div>
+            <span class="badge acc">CLIENTE</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:.2rem">
+            <a class="item active">🏠 Dashboard</a>
+            <a class="item">📦 Compras (3)</a>
+            <a class="item">🛒 Carrinho (5)</a>
+            <a class="item">★ Salvos (11)</a>
+            <a class="item">❤ Curtidas (12)</a>
+            <a class="item">💬 Comentários (7)</a>
+            <a class="item">🚫 Remoções (1)</a>
+            <a class="item">🔔 Notificações (3)</a>
+            <a class="item">💬 Chat (2)</a>
+            <a class="item">🤳 Reconhecimento</a>
+            <a class="item">⚙ Configurações</a>
+          </div>
+          <div style="margin-top:.85rem;padding-top:.85rem;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:.4rem">
+            <a class="item" style="background:var(--accent-dim);color:var(--accent);justify-content:center">⚙ Área do fotógrafo</a>
+            <button class="btn danger">🚪 Sair da conta</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPRAS -->
+    <section class="mock" id="compras">
+      <div class="mock-head">
+        <h2><span class="num">2.3</span>Minhas compras</h2>
+        <div class="url">/minha-conta/compras</div>
+        <p class="desc">Lista paginada de pedidos com mini-thumbs (sem WM), status, total, links para detalhes, download direto, pedir reembolso, refazer pagamento. Mostra também histórico de tentativas de pagamento (quando houve mais de uma).</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/minha-conta/compras</div></div>
+        <div class="mc-navbar"><a class="mc-back">← Voltar</a><div class="mc-title">Minhas Compras</div><button class="mc-menu">☰</button></div>
+        <div class="mc-main">
+          <h1 class="page-title">Histórico de compras</h1>
+          <div class="page-sub">3 pedidos · R$ 159,40 em fotos</div>
+          <div class="tabs">
+            <span class="tab active">Todos (3)</span>
+            <span class="tab">Pagos (2)</span>
+            <span class="tab">Pendentes (0)</span>
+            <span class="tab">Reembolsados (1)</span>
+          </div>
+          <div class="card" style="padding:0">
+            <div style="padding:1rem 1.25rem">
+              <div class="order-row">
+                <div class="order-meta">
+                  <div class="order-thumbs"><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb" style="display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--text-muted)">+1</div></div>
+                  <div>
+                    <div style="font-family:var(--font-mono);font-size:.85rem"><b style="color:var(--accent)">#200000039</b></div>
+                    <div style="font-size:.78rem;color:var(--text-muted)">Maratona de Joinville · 04/05/2026 · 5 fotos</div>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:1rem">
+                  <span class="badge ok">PAGO</span>
+                  <span style="font-family:var(--font-heading);color:var(--accent)">R$ 69,65</span>
+                  <button class="btn sm primary">⬇ Baixar</button>
+                  <button class="btn sm">Detalhes →</button>
+                </div>
+              </div>
+              <div class="order-row">
+                <div class="order-meta">
+                  <div class="order-thumbs"><div class="thumb"></div><div class="thumb"></div></div>
+                  <div>
+                    <div style="font-family:var(--font-mono);font-size:.85rem"><b style="color:var(--accent)">#200000031</b></div>
+                    <div style="font-size:.78rem;color:var(--text-muted)">Travessia Itapuã · 27/04/2026 · 2 fotos</div>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:1rem">
+                  <span class="badge gray">LIBERADO MANUAL</span>
+                  <span style="font-family:var(--font-heading);color:var(--accent)">R$ 39,80</span>
+                  <button class="btn sm primary">⬇ Baixar</button>
+                  <button class="btn sm">Detalhes →</button>
+                </div>
+              </div>
+              <div class="order-row" style="opacity:.7">
+                <div class="order-meta">
+                  <div class="order-thumbs"><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div></div>
+                  <div>
+                    <div style="font-family:var(--font-mono);font-size:.85rem"><b style="color:var(--accent)">#200000028</b></div>
+                    <div style="font-size:.78rem;color:var(--text-muted)">Casamento Marina &amp; Tiago · 20/04/2026 · 3 fotos · estornado em 21/04</div>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:1rem">
+                  <span class="badge dan">REEMBOLSADO</span>
+                  <span style="text-decoration:line-through;color:var(--text-dim)">R$ 49,80</span>
+                  <button class="btn sm" disabled>Indisponível</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DETALHE -->
+    <section class="mock" id="detalhe">
+      <div class="mock-head">
+        <h2><span class="num">2.4</span>Detalhe da compra</h2>
+        <div class="url">/minha-conta/compras/[id]</div>
+        <p class="desc">Linha do tempo de pagamento (quando houve várias tentativas), notas privadas/públicas adicionadas pelo admin, opção de pedir reembolso por foto específica ou pelo pedido inteiro, e download do conjunto.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/minha-conta/compras/200000039</div></div>
+        <div class="mc-navbar"><a class="mc-back">← Compras</a><div class="mc-title">Pedido #200000039</div><button class="mc-menu">☰</button></div>
+        <div class="mc-main">
+          <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:1rem">
+            <div>
+              <h1 class="page-title">Pedido #200000039</h1>
+              <div class="page-sub">Maratona de Joinville 2026 · concluído em 04/05/2026 às 14:32</div>
+            </div>
+            <div style="display:flex;gap:.5rem"><button class="btn primary">⬇ Baixar tudo (.zip)</button><button class="btn outline">↩ Pedir reembolso</button></div>
+          </div>
+
+          <div class="order-detail" style="margin-top:1rem">
+            <div class="card">
+              <h3 style="font-size:1.05rem;margin-bottom:1rem">📷 Fotos compradas (5)</h3>
+              <div class="thumb-grid">
+                <div><div class="thumb"><span class="id">#100001583</span></div><button class="btn sm" style="margin-top:.4rem;width:100%">⬇ 8.4 MB</button></div>
+                <div><div class="thumb"><span class="id">#100001587</span></div><button class="btn sm" style="margin-top:.4rem;width:100%">⬇ 7.8 MB</button></div>
+                <div><div class="thumb"><span class="id">#100001591</span></div><button class="btn sm" style="margin-top:.4rem;width:100%">⬇ 8.1 MB</button></div>
+                <div><div class="thumb"><span class="id">#100001245</span></div><button class="btn sm" style="margin-top:.4rem;width:100%">⬇ 9.0 MB</button></div>
+                <div><div class="thumb" style="border:1px dashed var(--accent)"><span class="id">#100001602</span><span style="position:absolute;bottom:4px;right:4px;background:var(--accent);color:#06210e;font-size:.6rem;padding:.1rem .3rem;border-radius:3px;font-weight:600">CUPOM</span></div><button class="btn sm" style="margin-top:.4rem;width:100%">⬇ 7.5 MB</button></div>
+              </div>
+
+              <h3 style="font-size:1.05rem;margin:1.5rem 0 .85rem">📝 Notas do fotógrafo</h3>
+              <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:.85rem;font-size:.85rem;color:var(--text-muted)"><b style="color:var(--accent)">Vinícius · 04/05</b> — Obrigado pela compra! Suas fotos da chegada ficaram lindas. 🏃‍♀</div>
+            </div>
+
+            <div class="card">
+              <h3 style="font-size:1.05rem;margin-bottom:1rem">⏱ Linha do tempo</h3>
+              <div class="timeline">
+                <div class="ti done"><div class="ts">04/05 · 14:30</div><div class="lb">Pedido criado</div><div class="nt">5 fotos · R$ 99,50</div></div>
+                <div class="ti done"><div class="ts">04/05 · 14:30</div><div class="lb">Cupom aplicado</div><div class="nt">MARATONA1FREE · –R$ 19,90</div></div>
+                <div class="ti done"><div class="ts">04/05 · 14:31</div><div class="lb">PIX gerado · Asaas</div><div class="nt">QR Code enviado</div></div>
+                <div class="ti done"><div class="ts">04/05 · 14:32</div><div class="lb">Pagamento confirmado</div><div class="nt">PIX aprovado · R$ 69,65</div></div>
+                <div class="ti done"><div class="ts">04/05 · 14:32</div><div class="lb">Downloads liberados</div></div>
+              </div>
+
+              <h3 style="font-size:1.05rem;margin:1.5rem 0 .85rem">💵 Resumo financeiro</h3>
+              <div style="font-size:.88rem;display:flex;flex-direction:column;gap:.4rem">
+                <div style="display:flex;justify-content:space-between"><span style="color:var(--text-muted)">Subtotal</span><span>R$ 99,50</span></div>
+                <div style="display:flex;justify-content:space-between;color:var(--success)"><span>Desconto progressivo</span><span>– R$ 9,95</span></div>
+                <div style="display:flex;justify-content:space-between;color:var(--success)"><span>Cupom 1 foto grátis</span><span>– R$ 19,90</span></div>
+                <div style="display:flex;justify-content:space-between;font-family:var(--font-heading);color:var(--accent);font-size:1.1rem;border-top:1px solid var(--border);padding-top:.5rem;margin-top:.4rem"><span>Total pago</span><span>R$ 69,65</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARRINHO -->
+    <section class="mock" id="carrinho">
+      <div class="mock-head">
+        <h2><span class="num">2.5</span>Meu carrinho</h2>
+        <div class="url">/minha-conta/carrinho</div>
+        <p class="desc">Mesma estrutura do carrinho público, mas dentro da casca <code>.mc-*</code>. Salva automaticamente no servidor (não só localStorage) para sincronizar entre dispositivos do mesmo cliente logado.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/minha-conta/carrinho</div></div>
+        <div class="mc-navbar"><a class="mc-back">← Voltar</a><div class="mc-title">Meu carrinho</div><button class="mc-menu">☰</button></div>
+        <div class="mc-main">
+          <h1 class="page-title">Carrinho ativo</h1>
+          <div class="page-sub">5 fotos · sincronizado em todos seus dispositivos</div>
+          <div class="card" style="padding:0">
+            <div style="padding:1rem 1.25rem">
+              <div class="order-row">
+                <div class="order-meta">
+                  <div class="thumb" style="width:72px;aspect-ratio:initial;height:54px;border-radius:4px"></div>
+                  <div>
+                    <div style="font-size:.88rem">Maratona de Joinville</div>
+                    <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--text-dim)">#100001583</div>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:1rem"><span style="font-family:var(--font-heading);color:var(--accent)">R$ 17,90</span><span style="text-decoration:line-through;color:var(--text-dim);font-size:.78rem">R$ 19,90</span><button class="btn sm danger">✕</button></div>
+              </div>
+              <div class="order-row">
+                <div class="order-meta">
+                  <div class="thumb" style="width:72px;aspect-ratio:initial;height:54px;border-radius:4px"></div>
+                  <div><div style="font-size:.88rem">Maratona de Joinville</div><div style="font-family:var(--font-mono);font-size:.7rem;color:var(--text-dim)">#100001587</div></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:1rem"><span style="font-family:var(--font-heading);color:var(--accent)">R$ 17,90</span><button class="btn sm danger">✕</button></div>
+              </div>
+              <div class="order-row">
+                <div class="order-meta">
+                  <div class="thumb" style="width:72px;aspect-ratio:initial;height:54px;border-radius:4px"></div>
+                  <div><div style="font-size:.88rem">Travessia Itapuã</div><div style="font-family:var(--font-mono);font-size:.7rem;color:var(--text-dim)">#100001245</div></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:1rem"><span style="font-family:var(--font-heading);color:var(--accent)">R$ 19,90</span><button class="btn sm danger">✕</button></div>
+              </div>
+            </div>
+            <div style="border-top:1px solid var(--border);padding:1.25rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+              <div>
+                <div style="font-size:.78rem;color:var(--text-muted)">Total (5 fotos)</div>
+                <div style="font-family:var(--font-heading);font-size:1.6rem;color:var(--accent)">R$ 69,65</div>
+              </div>
+              <div style="display:flex;gap:.5rem"><button class="btn">Limpar</button><button class="btn primary">💳 Finalizar →</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAVORITOS -->
+    <section class="mock" id="favoritos">
+      <div class="mock-head">
+        <h2><span class="num">2.6</span>Salvos &amp; curtidas</h2>
+        <div class="url">/minha-conta/favoritos</div>
+        <p class="desc">Duas abas: ★ <b>Salvos</b> (privado, "lista de desejos") e ❤ <b>Curtidas</b> (público, conta no contador da foto). Permite enviar todos para o carrinho de uma vez.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/minha-conta/favoritos</div></div>
+        <div class="mc-navbar"><a class="mc-back">← Voltar</a><div class="mc-title">Salvos &amp; Curtidas</div><button class="mc-menu">☰</button></div>
+        <div class="mc-main">
+          <h1 class="page-title">Sua coleção</h1>
+          <div class="page-sub">23 fotos no total · de 4 álbuns</div>
+          <div class="tabs">
+            <span class="tab">★ Salvos (11)</span>
+            <span class="tab active">❤ Curtidas (12)</span>
+            <span class="tab">📁 Por álbum</span>
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-bottom:1rem;gap:.5rem">
+            <button class="btn sm">Selecionar tudo</button>
+            <button class="btn sm primary">🛒 Adicionar 12 ao carrinho</button>
+          </div>
+          <div class="thumb-grid">
+            <div class="photo-tile"><span class="id">#100001583</span><span class="heart">❤</span><div class="ev">Maratona de Joinville</div></div>
+            <div class="photo-tile"><span class="id">#100001587</span><span class="heart">❤</span><div class="ev">Maratona de Joinville</div></div>
+            <div class="photo-tile"><span class="id">#100001591</span><span class="heart">❤</span><div class="ev">Maratona de Joinville</div></div>
+            <div class="photo-tile"><span class="id">#100001245</span><span class="heart">❤</span><div class="ev">Travessia Itapuã</div></div>
+            <div class="photo-tile"><span class="id">#100001312</span><span class="heart">❤</span><div class="ev">Travessia Itapuã</div></div>
+            <div class="photo-tile"><span class="id">#100000987</span><span class="heart">❤</span><div class="ev">Casamento M &amp; T</div></div>
+            <div class="photo-tile"><span class="id">#100001032</span><span class="heart">❤</span><div class="ev">Casamento M &amp; T</div></div>
+            <div class="photo-tile"><span class="id">#100000845</span><span class="heart">❤</span><div class="ev">Rodeio de Bagé</div></div>
+            <div class="photo-tile"><span class="id">#100001601</span><span class="heart">❤</span><div class="ev">Maratona de Joinville</div></div>
+            <div class="photo-tile"><span class="id">#100001620</span><span class="heart">❤</span><div class="ev">Maratona de Joinville</div></div>
+            <div class="photo-tile"><span class="id">#100001218</span><span class="heart">❤</span><div class="ev">Travessia Itapuã</div></div>
+            <div class="photo-tile"><span class="id">#100000792</span><span class="heart">❤</span><div class="ev">Rodeio de Bagé</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMENTARIOS -->
+    <section class="mock" id="comentarios">
+      <div class="mock-head">
+        <h2><span class="num">2.7</span>Meus comentários</h2>
+        <div class="url">/minha-conta/comentarios</div>
+        <p class="desc">Histórico organizado por escopo: comentários em álbuns, em pastas e em fotos. Mostra também replies recebidas e likes. Itens omitidos pelo admin aparecem rotulados.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/minha-conta/comentarios</div></div>
+        <div class="mc-navbar"><a class="mc-back">← Voltar</a><div class="mc-title">Meus comentários</div><button class="mc-menu">☰</button></div>
+        <div class="mc-main">
+          <h1 class="page-title">Conversas que você iniciou</h1>
+          <div class="page-sub">7 comentários em 3 álbuns</div>
+          <div class="tabs">
+            <span class="tab active">Todos (7)</span>
+            <span class="tab">📁 Em álbuns (2)</span>
+            <span class="tab">📁 Em pastas (1)</span>
+            <span class="tab">📷 Em fotos (4)</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:.85rem">
+            <div class="card" style="padding:1.1rem">
+              <div style="display:flex;justify-content:space-between;font-size:.78rem;color:var(--text-dim);margin-bottom:.4rem"><span>📷 Foto <b>#100001583</b> · Maratona de Joinville</span><span>há 2 dias · 👍 4 · 💬 1 resposta</span></div>
+              <div style="font-size:.92rem">"Linda foto, capturou exatamente o momento da chegada!"</div>
+              <div style="margin-top:.6rem;padding-left:1rem;border-left:2px solid var(--accent);font-size:.82rem;color:var(--text-muted)">↳ <b style="color:var(--accent)">Vinícius (admin)</b>: Obrigado, Maria! 🙏</div>
+              <div style="margin-top:.5rem;display:flex;gap:.4rem"><button class="btn sm">Editar</button><button class="btn sm danger">Remover</button></div>
+            </div>
+            <div class="card" style="padding:1.1rem">
+              <div style="display:flex;justify-content:space-between;font-size:.78rem;color:var(--text-dim);margin-bottom:.4rem"><span>📁 Pasta "Largada" · Maratona de Joinville</span><span>há 3 dias · 👍 2</span></div>
+              <div style="font-size:.92rem">"Tem como adicionar mais fotos da largada com o pessoal do agachamento?"</div>
+            </div>
+            <div class="card" style="padding:1.1rem;opacity:.6;border-style:dashed">
+              <div style="display:flex;justify-content:space-between;font-size:.78rem;color:var(--text-dim);margin-bottom:.4rem"><span>📁 Álbum "Travessia Itapuã"</span><span>há 7 dias · <span class="badge gray">OMITIDO PELO ADMIN</span></span></div>
+              <div style="font-size:.92rem;color:var(--text-muted)">"<i>Esse comentário foi ocultado pelo administrador. O conteúdo original continua no histórico do admin.</i>"</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REMOCOES -->
+    <section class="mock" id="remocoes">
+      <div class="mock-head">
+        <h2><span class="num">2.8</span>Solicitações de remoção (LGPD)</h2>
+        <div class="url">/minha-conta/remocoes</div>
+        <p class="desc">Cliente acompanha status (pendente / aceita / rejeitada / desfeita), lê notas <b>públicas</b> do admin (privadas ficam ocultas) e adiciona suas próprias notas. CPF é auto-preenchido para clientes logados.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/minha-conta/remocoes</div></div>
+        <div class="mc-navbar"><a class="mc-back">← Voltar</a><div class="mc-title">Minhas solicitações</div><button class="mc-menu">☰</button></div>
+        <div class="mc-main">
+          <h1 class="page-title">Pedidos de remoção</h1>
+          <div class="page-sub">Você pode pedir remoção de qualquer foto onde apareça. Análise em até 7 dias.</div>
+          <div style="display:flex;flex-direction:column;gap:1rem">
+            <div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:.5rem;margin-bottom:.85rem">
+                <div>
+                  <div style="display:flex;gap:.6rem;align-items:center;margin-bottom:.4rem"><span class="badge warn">EM ANÁLISE</span><span style="font-family:var(--font-mono);color:var(--text-dim);font-size:.78rem">#REM-2026-014</span></div>
+                  <div style="font-size:.95rem">Foto <b style="font-family:var(--font-mono);color:var(--accent)">#100001583</b> · Maratona de Joinville · enviada há 1 dia</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:1rem;align-items:center;margin-bottom:.85rem">
+                <div class="thumb" style="width:72px;height:72px;aspect-ratio:initial"></div>
+                <div style="flex:1;font-size:.85rem;color:var(--text-muted)"><b style="color:var(--text)">Motivo:</b> "Apareço de costas mas dá pra reconhecer pelo número de peito. Prefiro que não seja vendida."</div>
+              </div>
+              <div style="background:var(--accent-dim);border:1px solid rgba(34,197,94,.3);border-radius:var(--radius);padding:.75rem;font-size:.82rem;color:var(--text)"><b style="color:var(--accent)">Vinícius respondeu:</b> "Recebido! Vou analisar e dar retorno até sexta. Se for o caso, removo a foto e qualquer cópia que esteja em carrinhos ativos. Obrigado por avisar."</div>
+              <textarea class="input" rows="2" placeholder="Adicionar nota…" style="margin-top:.6rem"></textarea>
+            </div>
+            <div class="card" style="opacity:.7">
+              <div style="display:flex;gap:.6rem;align-items:center;margin-bottom:.4rem"><span class="badge ok">ACEITA</span><span style="font-family:var(--font-mono);color:var(--text-dim);font-size:.78rem">#REM-2026-008</span></div>
+              <div style="font-size:.92rem;color:var(--text-muted)">Foto <b>#100000987</b> · Casamento Marina &amp; Tiago · removida em 22/04/2026</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOTIFICACOES -->
+    <section class="mock" id="notif">
+      <div class="mock-head">
+        <h2><span class="num">2.9</span>Notificações</h2>
+        <div class="url">/minha-conta/notificacoes</div>
+        <p class="desc">Feed agregado: pagamento aprovado, comentário respondido, foto curtida, álbum disponível, recompensa desbloqueada, mensagem do admin no chat. Persistido em <code>data/notificacoes</code> via API.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/minha-conta/notificacoes</div></div>
+        <div class="mc-navbar"><a class="mc-back">← Voltar</a><div class="mc-title">Notificações</div><button class="mc-menu">☰</button></div>
+        <div class="mc-main">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem">
+            <div><h1 class="page-title">Suas notificações</h1><div class="page-sub">3 não lidas · histórico dos últimos 30 dias</div></div>
+            <button class="btn sm">✓ Marcar todas como lidas</button>
+          </div>
+          <div class="card" style="padding:0;margin-top:1rem">
+            <div class="notif-item unread"><div class="nico" style="color:var(--success)">💰</div><div class="ntext"><div class="nbody"><b>Pagamento confirmado</b> · pedido <b style="color:var(--accent);font-family:var(--font-mono)">#200000039</b> liberado para download.</div><div class="ntime">há 2 horas</div></div><span class="ndot"></span></div>
+            <div class="notif-item unread"><div class="nico" style="color:var(--accent)">💬</div><div class="ntext"><div class="nbody"><b>Vinícius</b> respondeu seu comentário em <b>foto #100001583</b>: "Obrigado, Maria! 🙏"</div><div class="ntime">há 1 dia</div></div><span class="ndot"></span></div>
+            <div class="notif-item unread"><div class="nico" style="color:var(--warn)">🎁</div><div class="ntext"><div class="nbody"><b>Você desbloqueou recompensa!</b> Cupom <code>MARATONA1FREE</code> — 1 foto grátis na próxima compra.</div><div class="ntime">há 1 dia</div></div><span class="ndot"></span></div>
+            <div class="notif-item"><div class="nico" style="color:var(--pink)">❤</div><div class="ntext"><div class="nbody">Outras 14 pessoas curtiram a foto que você curtiu (#100001583).</div><div class="ntime">há 3 dias</div></div></div>
+            <div class="notif-item"><div class="nico" style="color:var(--accent)">📷</div><div class="ntext"><div class="nbody"><b>Novo álbum disponível</b>: Maratona de Joinville 2026 (412 fotos).</div><div class="ntime">há 5 dias</div></div></div>
+            <div class="notif-item"><div class="nico" style="color:var(--text-muted)">🤳</div><div class="ntext"><div class="nbody">Reconhecimento facial encontrou <b>3 fotos novas</b> em "Travessia Itapuã" que parecem ser suas.</div><div class="ntime">há 1 semana</div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAT -->
+    <section class="mock" id="chat">
+      <div class="mock-head">
+        <h2><span class="num">2.10</span>Chat com fotógrafo</h2>
+        <div class="url">/minha-conta/chat</div>
+        <p class="desc">Mensageria 1-a-1 entre cliente e fotógrafo, persistida em <code>data/chat</code>. Marcadores de "lida" e indicador de digitação. O admin acessa o mesmo histórico em /admin/chat.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/minha-conta/chat</div></div>
+        <div class="mc-navbar"><a class="mc-back">← Voltar</a><div class="mc-title">Chat com Vinícius</div><button class="mc-menu">☰</button></div>
+        <div class="mc-main">
+          <div class="card" style="padding:1.25rem">
+            <div style="display:flex;align-items:center;gap:.85rem;padding-bottom:.85rem;border-bottom:1px solid var(--border);margin-bottom:1rem">
+              <div class="avatar" style="width:42px;height:42px;font-size:1rem">VR</div>
+              <div><div style="font-weight:600">Vinícius Rodrigues</div><div style="font-size:.72rem;color:var(--success)">● Online · Responde em ~10 min</div></div>
+            </div>
+            <div class="chat-msgs">
+              <div class="chat-bubble in">Oi Maria! Vi que você curtiu várias fotos da maratona. Tem alguma dúvida sobre os pacotes?<div class="meta">há 2 dias · 14:18</div></div>
+              <div class="chat-bubble out">Oi Vinícius! Tô em dúvida se compro só 5 fotos avulsas ou se vale o pacote.<div class="meta">há 2 dias · 14:21</div></div>
+              <div class="chat-bubble in">Pelo seu carrinho hoje você já está ganhando o desconto progressivo de 10% (5 fotos ou mais). Se chegar a 10 vai pra 20%.<div class="meta">há 2 dias · 14:22</div></div>
+              <div class="chat-bubble out">Show! Vou completar então. Aproveitando: tem foto de quando passei na curva do km 12?<div class="meta">há 2 dias · 14:30</div></div>
+              <div class="chat-bubble in">Tem sim, são as fotos #100001620 a #100001628. Pesquisa pelo seu nº de peito (482) na busca do álbum.<div class="meta">ontem · 09:14</div></div>
+              <div style="text-align:center;font-size:.7rem;color:var(--text-dim);margin:.5rem 0">VOCÊ FINALIZOU UM PEDIDO 🎉</div>
+              <div class="chat-bubble in">Maravilha, vi seu pedido #200000039 confirmado. Já tá tudo liberado pra download! Qualquer coisa, tô por aqui.<div class="meta">há 2 horas · 14:33</div></div>
+            </div>
+            <div style="display:flex;gap:.5rem;margin-top:.85rem"><input class="input" placeholder="Digite uma mensagem…"><button class="btn primary">📤</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RECONHECIMENTO -->
+    <section class="mock" id="face">
+      <div class="mock-head">
+        <h2><span class="num">2.11</span>Reconhecimento facial</h2>
+        <div class="url">/minha-conta/reconhecimento</div>
+        <p class="desc">Beta. Cliente cadastra uma foto sua (selfie ou avatar) e o sistema usa <code>@vladmandic/face-api</code> para encontrar fotos parecidas em todos os eventos. Modelos ficam em <code>data/vision/models</code> e os embeddings em <code>storage/vision</code>.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/minha-conta/reconhecimento</div></div>
+        <div class="mc-navbar"><a class="mc-back">← Voltar</a><div class="mc-title">Reconhecimento facial</div><button class="mc-menu">☰</button></div>
+        <div class="mc-main">
+          <div class="face-banner">
+            <span class="badge acc">BETA · OPT-IN</span>
+            <h2 style="font-size:1.5rem;margin-top:.85rem">Encontre todas as suas fotos automaticamente</h2>
+            <p style="color:var(--text-muted);margin:.5rem auto 0;max-width:560px;font-size:.9rem">Cadastre uma referência facial e nosso sistema vasculha todos os álbuns. 100% local, sem enviar suas imagens a serviços externos. Pode desativar a qualquer momento.</p>
+            <div class="face-cam">📷</div>
+            <div style="display:flex;gap:.5rem;justify-content:center"><button class="btn">📁 Enviar foto</button><button class="btn primary">📸 Tirar selfie</button></div>
+            <p style="font-size:.72rem;color:var(--text-dim);margin-top:.85rem">⚙ Modelo TensorFlow.js · processamento client-side. Saiba mais em <a href="#" style="color:var(--accent)">/politica-de-privacidade#facial</a>.</p>
+          </div>
+
+          <h3 style="font-size:1.05rem;margin-bottom:.85rem">📊 Resultados encontrados (32 prováveis)</h3>
+          <div class="thumb-grid">
+            <div class="photo-tile"><span class="id">#100001583</span><span style="position:absolute;top:6px;right:6px;background:var(--accent);color:#06210e;font-size:.6rem;padding:.1rem .35rem;border-radius:3px;font-weight:600">98%</span><div class="ev">Maratona de Joinville</div></div>
+            <div class="photo-tile"><span class="id">#100001587</span><span style="position:absolute;top:6px;right:6px;background:var(--accent);color:#06210e;font-size:.6rem;padding:.1rem .35rem;border-radius:3px;font-weight:600">96%</span><div class="ev">Maratona de Joinville</div></div>
+            <div class="photo-tile"><span class="id">#100001591</span><span style="position:absolute;top:6px;right:6px;background:var(--warn);color:#3a2a00;font-size:.6rem;padding:.1rem .35rem;border-radius:3px;font-weight:600">87%</span><div class="ev">Maratona de Joinville</div></div>
+            <div class="photo-tile"><span class="id">#100001620</span><span style="position:absolute;top:6px;right:6px;background:var(--warn);color:#3a2a00;font-size:.6rem;padding:.1rem .35rem;border-radius:3px;font-weight:600">82%</span><div class="ev">Maratona de Joinville</div></div>
+            <div class="photo-tile"><span class="id">#100001245</span><span style="position:absolute;top:6px;right:6px;background:var(--accent);color:#06210e;font-size:.6rem;padding:.1rem .35rem;border-radius:3px;font-weight:600">94%</span><div class="ev">Travessia Itapuã</div></div>
+            <div class="photo-tile"><span class="id">#100001312</span><span style="position:absolute;top:6px;right:6px;background:var(--text-dim);color:#fff;font-size:.6rem;padding:.1rem .35rem;border-radius:3px;font-weight:600">73%</span><div class="ev">Travessia Itapuã</div></div>
+            <div class="photo-tile"><span class="id">#100000987</span><span style="position:absolute;top:6px;right:6px;background:var(--accent);color:#06210e;font-size:.6rem;padding:.1rem .35rem;border-radius:3px;font-weight:600">91%</span><div class="ev">Casamento</div></div>
+            <div class="photo-tile"><span class="id">#100001601</span><span style="position:absolute;top:6px;right:6px;background:var(--warn);color:#3a2a00;font-size:.6rem;padding:.1rem .35rem;border-radius:3px;font-weight:600">85%</span><div class="ev">Maratona de Joinville</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONFIG -->
+    <section class="mock" id="config">
+      <div class="mock-head">
+        <h2><span class="num">2.12</span>Configurações da conta</h2>
+        <div class="url">/minha-conta/configuracoes</div>
+        <p class="desc">Dados pessoais (compartilhados com o painel admin se for o mesmo usuário admin), troca de senha, preferências de notificação e tema, exclusão da conta e exportação LGPD dos próprios dados.</p>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url-bar">https://vinicius.com.br/minha-conta/configuracoes</div></div>
+        <div class="mc-navbar"><a class="mc-back">← Voltar</a><div class="mc-title">Configurações</div><button class="mc-menu">☰</button></div>
+        <div class="mc-main">
+          <h1 class="page-title">Configurações</h1>
+          <div class="page-sub">Última alteração há 5 dias</div>
+          <div class="grid-2">
+            <div class="card">
+              <h3 style="font-size:1.05rem;margin-bottom:1rem">👤 Dados pessoais</h3>
+              <div style="display:flex;flex-direction:column;gap:.85rem">
+                <div><label class="label">Nome completo</label><input class="input" value="Maria Rodrigues Silva"></div>
+                <div><label class="label">E-mail</label><input class="input" value="maria@exemplo.com"></div>
+                <div><label class="label">WhatsApp</label><input class="input" value="(47) 99999-1234"></div>
+                <div><label class="label">CPF</label><input class="input" value="123.456.789-00"></div>
+                <div><label class="label">Data de nascimento</label><input class="input" type="date" value="1992-08-14"></div>
+                <div><label class="label">Instagram</label><input class="input" placeholder="@seuinsta"></div>
+              </div>
+              <button class="btn primary" style="margin-top:1rem">💾 Salvar</button>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:1rem">
+              <div class="card">
+                <h3 style="font-size:1.05rem;margin-bottom:1rem">🔒 Segurança</h3>
+                <div style="display:flex;flex-direction:column;gap:.85rem">
+                  <div><label class="label">Senha atual</label><input class="input" type="password" value="••••••••"></div>
+                  <div><label class="label">Nova senha</label><input class="input" type="password"></div>
+                  <div><label class="label">Confirmar nova senha</label><input class="input" type="password"></div>
+                </div>
+                <button class="btn outline" style="margin-top:1rem">Alterar senha</button>
+              </div>
+
+              <div class="card">
+                <h3 style="font-size:1.05rem;margin-bottom:1rem">🎨 Preferências</h3>
+                <div class="row">
+                  <div class="l"><div class="nm">Tema</div><div class="ds">Claro · Escuro · Auto (sistema)</div></div>
+                  <select class="input" style="width:auto"><option>Auto</option><option selected>Escuro</option><option>Claro</option></select>
+                </div>
+                <div class="row">
+                  <div class="l"><div class="nm">Notificações por e-mail</div><div class="ds">Pedidos e comentários</div></div>
+                  <label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label>
+                </div>
+                <div class="row">
+                  <div class="l"><div class="nm">Resumo semanal</div><div class="ds">Sextas-feiras · novos álbuns</div></div>
+                  <label class="toggle"><input type="checkbox"><span class="sw"></span></label>
+                </div>
+                <div class="row">
+                  <div class="l"><div class="nm">Reconhecimento facial</div><div class="ds">Permitir que o sistema busque fotos suas</div></div>
+                  <label class="toggle on"><input type="checkbox" checked><span class="sw"></span></label>
+                </div>
+              </div>
+
+              <div class="card" style="border-color:rgba(217,108,108,.3)">
+                <h3 style="font-size:1.05rem;color:var(--danger);margin-bottom:.85rem">⚠ Zona perigosa</h3>
+                <div style="display:flex;flex-direction:column;gap:.6rem">
+                  <button class="btn" style="justify-content:flex-start">📥 Exportar todos os meus dados (LGPD)</button>
+                  <button class="btn danger" style="justify-content:flex-start">🗑 Apagar minha conta permanentemente</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+</body>
+</html>

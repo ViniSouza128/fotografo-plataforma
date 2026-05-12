@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Vinícius Souza — Acessibilidade</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { padding-bottom: var(--space-24); }
+
+  .wrap { max-width: var(--content-max); margin: 0 auto; padding: var(--space-20) var(--space-12) var(--space-24); }
+  @media (max-width: 800px) { .wrap { padding: var(--space-12) var(--space-5); } }
+
+  /* HERO ─────────────────────────────────────────────── */
+  .hero { position: relative; padding-bottom: var(--space-16); border-bottom: 1px solid var(--ink-500); margin-bottom: var(--space-16); overflow: hidden; }
+  .hero::before { content: ""; position: absolute; inset: -10% -10% auto -10%; height: 70%; background: var(--glow-radial); pointer-events: none; }
+  .hero > * { position: relative; }
+  .hero .crumbs { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); margin-bottom: var(--space-4); display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; }
+  .hero .crumbs a { color: var(--ink-700); }
+  .hero .crumbs a:hover { color: var(--ink-1000); }
+  .hero .crumbs b { color: var(--ink-1000); font-weight: 500; }
+  .hero h1 { font-family: var(--font-display); font-style: italic; font-size: var(--text-5xl); line-height: var(--leading-flat); letter-spacing: var(--tracking-tight); margin: 0 0 var(--space-5); max-width: 24ch; color: var(--ink-1000); }
+  .hero .lede { max-width: 64ch; font-size: var(--text-md); line-height: var(--leading-relaxed); color: var(--ink-900); margin: 0; }
+  .hero .lede em { font-family: var(--font-display); font-style: italic; color: var(--ink-1000); }
+
+  /* SECTION ──────────────────────────────────────────── */
+  .section { margin-top: var(--space-20); }
+  .section-head { padding-bottom: var(--space-4); border-bottom: 1px solid var(--ink-500); margin-bottom: var(--space-8); }
+  .section-head .num { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); }
+  .section-head h2 { font-family: var(--font-heading); font-weight: 400; font-size: var(--text-2xl); margin: var(--space-1) 0 0; color: var(--ink-1000); letter-spacing: var(--tracking-snug); }
+  .section-head p { margin: var(--space-2) 0 0; color: var(--ink-800); font-size: var(--text-sm); max-width: 60ch; line-height: var(--leading-relaxed); }
+
+  /* CARDS ──────────────────────────────────────────── */
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  @media (max-width: 800px) { .cards { grid-template-columns: 1fr; } }
+  .card { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-6); }
+  .card h3 { font-family: var(--font-heading); font-weight: 500; font-size: var(--text-lg); margin: 0 0 var(--space-2); color: var(--ink-1000); letter-spacing: var(--tracking-snug); }
+  .card .num { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--brand-400); margin-bottom: var(--space-2); }
+  .card p { margin: 0 0 var(--space-3); font-size: var(--text-sm); line-height: var(--leading-relaxed); color: var(--ink-900); }
+  .card p:last-child { margin-bottom: 0; }
+  .card code { font-family: var(--font-mono); background: var(--ink-200); color: var(--ink-1000); padding: 1px var(--space-1); border-radius: 2px; font-size: 0.9em; }
+
+  /* FOCUS DEMO ──────────────────────────────────── */
+  .focus-stage { background: var(--ink-100); border: 1px dashed var(--ink-500); border-radius: var(--radius); padding: var(--space-5); display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-3); }
+  .focus-stage > * {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+    padding: var(--space-2) var(--space-4); border-radius: var(--radius);
+    font-family: var(--font-body); font-size: var(--text-sm); font-weight: 500;
+    border: 1px solid transparent; cursor: pointer;
+  }
+  .focus-stage .b-primary { background: var(--brand-500); color: var(--ink-1000); }
+  .focus-stage .b-sec { background: transparent; color: var(--ink-1000); border-color: var(--ink-500); }
+  .focus-stage .b-input {
+    background: var(--ink-400); border-color: var(--ink-500); color: var(--ink-900);
+    padding: var(--space-3) var(--space-4); font-weight: 300;
+  }
+  .focus-stage .b-link { background: transparent; color: var(--brand-400); padding: var(--space-2) 0; border-radius: 0; border-bottom: 1px solid transparent; }
+  .focus-stage > .force-focus { box-shadow: var(--focus-ring); outline: none; }
+
+  /* TABLE ──────────────────────────────────────────── */
+  .tbl { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; }
+  .tbl table { width: 100%; border-collapse: collapse; }
+  .tbl th, .tbl td { padding: var(--space-3) var(--space-4); font-size: var(--text-sm); border-bottom: 1px solid var(--ink-500); text-align: left; vertical-align: top; line-height: var(--leading-relaxed); }
+  .tbl thead th { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-800); background: var(--ink-200); font-weight: 500; }
+  .tbl tbody tr:last-child td { border-bottom: none; }
+  .tbl tbody td:first-child { white-space: nowrap; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-1000); }
+  .tbl tbody td.copy { color: var(--ink-1000); font-weight: 400; }
+  .tbl tbody td.where { color: var(--ink-800); font-family: var(--font-mono); font-size: var(--text-xs); }
+  .tbl .group-bar { background: var(--ink-200); padding: var(--space-3) var(--space-4); font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-800); border-bottom: 1px solid var(--ink-500); }
+  .kbd { display: inline-flex; align-items: center; gap: 1px; padding: 1px var(--space-1); font-family: var(--font-mono); font-size: var(--text-xxs); background: var(--ink-50); border: 1px solid var(--ink-600); border-bottom-width: 2px; border-radius: 4px; color: var(--ink-1000); margin: 0 1px; min-width: 18px; justify-content: center; }
+  .kbd-sep { color: var(--ink-700); margin: 0 var(--space-1); }
+
+  /* CONTRAST GRID ──────────────────────────────── */
+  .contrast-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-3); }
+  .contrast-card { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); }
+  .contrast-sample { padding: var(--space-3); border-radius: var(--radius-sm); font-size: var(--text-base); line-height: var(--leading-normal); }
+  .contrast-card .meta { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-wide); color: var(--ink-800); text-transform: uppercase; }
+  .contrast-card .ratio { color: var(--ink-1000); font-weight: 500; }
+  .contrast-card .pass { color: var(--signal-400); }
+  .contrast-card .fail { color: var(--danger-500); }
+
+  /* CHECKLIST ───────────────────────────────────── */
+  .checklist { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-6); }
+  .checklist ul { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-3); }
+  .checklist li { display: grid; grid-template-columns: 26px 1fr; gap: var(--space-3); font-size: var(--text-sm); color: var(--ink-900); line-height: var(--leading-relaxed); }
+  .checklist li .mark { width: 18px; height: 18px; border: 1.5px solid var(--signal-500); border-radius: 4px; display: inline-grid; place-items: center; flex-shrink: 0; margin-top: 2px; }
+  .checklist li .mark::after { content: ""; width: 9px; height: 5px; border-left: 2px solid var(--signal-500); border-bottom: 2px solid var(--signal-500); transform: rotate(-45deg) translate(1px,-1px); }
+  .checklist li b { color: var(--ink-1000); font-weight: 500; }
+  .checklist li code { font-family: var(--font-mono); background: var(--ink-200); color: var(--ink-1000); padding: 1px var(--space-1); border-radius: 2px; }
+
+  /* CALLOUT ──────────────────────────────────────── */
+  .doc-note { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); line-height: var(--leading-relaxed); padding: var(--space-3) var(--space-4); border-left: 2px solid var(--brand-500); background: var(--brand-dim); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: var(--space-4) 0; }
+  .doc-note b { color: var(--ink-1000); font-weight: 500; }
+
+  /* MOTION SAMPLE ───────────────────────────────── */
+  .motion-sample { display: flex; gap: var(--space-4); align-items: center; padding: var(--space-4); background: var(--ink-100); border: 1px solid var(--ink-500); border-radius: var(--radius); margin-top: var(--space-3); }
+  .motion-sample .ball { width: 28px; height: 28px; border-radius: var(--radius-pill); background: var(--brand-500); animation: drift var(--duration-deliberate) var(--ease-spring) infinite alternate; }
+  @keyframes drift { from { transform: translateX(0); } to { transform: translateX(120px); } }
+  .motion-sample .label { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); }
+  @media (prefers-reduced-motion: reduce) {
+    .motion-sample .ball { animation: none; }
+    .motion-sample::after { content: " · animação suspensa"; font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--signal-400); letter-spacing: var(--tracking-wider); text-transform: uppercase; }
+  }
+
+  /* SKIPLINK ────────────────────────────────────── */
+  .skiplink-demo {
+    background: var(--ink-100); border: 1px dashed var(--ink-500); border-radius: var(--radius); padding: var(--space-5);
+    margin-top: var(--space-3); position: relative;
+    font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-snug);
+  }
+  .skiplink-demo .skip {
+    position: absolute; top: 8px; left: 8px;
+    background: var(--brand-500); color: var(--ink-1000); padding: var(--space-2) var(--space-3); border-radius: var(--radius);
+    font-family: var(--font-body); font-weight: 500; font-size: var(--text-sm);
+    box-shadow: var(--focus-ring);
+  }
+  .skiplink-demo .skip + .ph { display: block; height: var(--nav-height); border-radius: var(--radius); background: var(--ink-300); margin-top: 48px; padding: var(--space-3) var(--space-5); color: var(--ink-800); }
+
+  footer { margin-top: var(--space-24); padding-top: var(--space-6); border-top: 1px solid var(--ink-500); display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-wider); }
+  footer a { color: var(--ink-700); }
+  footer a:hover { color: var(--ink-1000); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO ─────────────────────────────────────── -->
+  <header class="hero" data-screen-label="A11y · Header">
+    <p class="crumbs">
+      <a href="index.html">DS</a> · <a href="index.html#surfaces">Surfaces &amp; cross-cutting</a> · <b>05.4 · Acessibilidade</b>
+      <span style="color: var(--brand-400);">v1.0 · WCAG AA · pt-BR</span>
+    </p>
+    <h1>Foco visível.<br>Teclado primeiro.</h1>
+    <p class="lede">
+      Acessibilidade aqui é <em>contrato</em>, não cortesia. Um <code class="type-mono">--focus-ring</code> único, ordem de tab previsível,
+      atalhos catalogados, contraste AA garantido sobre <em>obsidian</em>, motion que respeita <code class="type-mono">prefers-reduced-motion</code>.
+      Esta página fixa as regras e enumera os atalhos que <em>já estão ligados</em> em <code class="type-mono">src/</code> hoje.
+    </p>
+  </header>
+
+  <!-- 01 · FOCUS RING ─────────────────────────── -->
+  <section class="section" data-screen-label="A11y · Focus ring">
+    <div class="section-head">
+      <span class="num">01 · Anel de foco</span>
+      <h2>Um token. Vale em tudo.</h2>
+      <p>Todo elemento focável herda <code class="type-mono">--focus-ring</code> de <a href="colors_and_type.css">colors_and_type.css</a>. Nunca remova <code class="type-mono">outline</code> sem trocar por este box-shadow, sob nenhuma hipótese.</p>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <p class="num">01.A</p>
+        <h3>Receita canônica</h3>
+        <p>O anel é um halo duplo: 2 px do tom do fundo (preserva o contraste contra qualquer superfície) + 2 px Anchor Blue (a cor de interação primária). Aplique via <code>box-shadow</code>, nunca por <code>outline</code> — o anel precisa respeitar <code>border-radius</code>.</p>
+        <p><code>:focus-visible { outline: none; box-shadow: var(--focus-ring); }</code></p>
+      </div>
+
+      <div class="card">
+        <p class="num">01.B</p>
+        <h3>Variantes por intenção</h3>
+        <p>Em campos com erro, o segundo anel troca para <code>--danger-500</code>. Em ações destrutivas dentro de modal de confirmação, idem. Nunca abandone o primeiro anel <code>--ink-100</code> — ele garante contraste sobre superfícies coloridas (chips ativos, badges).</p>
+        <p><code>:focus-visible { box-shadow: 0 0 0 2px var(--ink-100), 0 0 0 4px var(--danger-500); }</code></p>
+      </div>
+    </div>
+
+    <h3 style="margin-top: var(--space-8); font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-800); font-weight: 500;">Demonstração — atoms focados simultaneamente</h3>
+    <div class="focus-stage">
+      <button class="b-primary force-focus">Adicionar ao carrinho</button>
+      <button class="b-sec force-focus">Cancelar</button>
+      <input class="b-input force-focus" value="seu@email.com" readonly>
+      <a class="b-link force-focus" href="#">Esqueci a senha</a>
+    </div>
+    <p class="doc-note">Cada peça acima está <b>permanentemente focada</b> via classe <code>.force-focus</code> para QA. Em uso real, o anel só aparece sob <code>:focus-visible</code> — ou seja, no teclado, nunca no clique de mouse.</p>
+  </section>
+
+  <!-- 02 · TAB ORDER + SKIP LINK ─────────────── -->
+  <section class="section" data-screen-label="A11y · Tab order">
+    <div class="section-head">
+      <span class="num">02 · Ordem de tab · skip link</span>
+      <h2>O leitor entra direto no conteúdo.</h2>
+      <p>Toda página deve ter um <code class="type-mono">.skiplink</code> oculto até o foco, que pula a navegação e leva direto a <code class="type-mono">#main</code>. Pegue isso de graça — três linhas de CSS, uma linha de markup.</p>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <p class="num">02.A</p>
+        <h3>Estrutura semântica obrigatória</h3>
+        <p>Toda página real precisa, nesta ordem: <code>&lt;a class="skiplink"&gt;</code> · <code>&lt;header&gt;</code> com nav · <code>&lt;main id="main"&gt;</code> · <code>&lt;footer&gt;</code>. <b>Não</b> abra a página com um <code>&lt;div&gt;</code> genérico — o leitor de tela perde a estrutura.</p>
+        <p>Headings: <code>h1</code> aparece <b>uma vez</b> por página (o título da página). Subseções usam <code>h2</code>, <code>h3</code> em cascata sem pular nível.</p>
+      </div>
+
+      <div class="card">
+        <p class="num">02.B</p>
+        <h3>Ordem de tab visível</h3>
+        <p>A ordem natural do DOM é a ordem de tab. Nunca use <code>tabindex="2"</code> ou maior — gera labirinto. Use <code>tabindex="0"</code> só para tornar focável um elemento <em>não-nativo</em> (ex.: <code>&lt;div role="link"&gt;</code> no SponsorCard).</p>
+        <p>Em modais, a primeira coisa focada é o <b>botão de fechar</b> (canto sup. dir.) — não um campo do formulário. O <code>esc</code> sempre fecha.</p>
+      </div>
+    </div>
+
+    <h3 style="margin-top: var(--space-8); font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-800); font-weight: 500;">Demonstração — skip link revelado por foco</h3>
+    <div class="skiplink-demo">
+      <a href="#main" class="skip">Pular para o conteúdo principal</a>
+      <span class="ph">↑ <code>.skiplink</code> aparece quando recebe foco · navbar fica abaixo · <code>#main</code> é o destino</span>
+    </div>
+    <p class="doc-note"><b>Receita:</b> <code>.skiplink { position: absolute; left: -9999px; } .skiplink:focus { position: absolute; top: 8px; left: 8px; padding: 8px 12px; background: var(--brand-500); color: var(--ink-1000); border-radius: var(--radius); box-shadow: var(--focus-ring); }</code></p>
+  </section>
+
+  <!-- 03 · KEYBOARD SHORTCUTS ─────────────── -->
+  <section class="section" data-screen-label="A11y · Keyboard catalogue">
+    <div class="section-head">
+      <span class="num">03 · Atalhos de teclado</span>
+      <h2>Catálogo do que já está ligado em <code class="type-mono">src/</code>.</h2>
+      <p>Verificado por grep em <code class="type-mono">src/</code>. Estas são as teclas que de fato disparam ação hoje — qualquer atalho ausente desta tabela <em>não existe na live</em>.</p>
+    </div>
+
+    <h3 style="margin-top: var(--space-6); margin-bottom: var(--space-4); font-family: var(--font-heading); font-size: var(--text-lg); font-weight: 500; color: var(--ink-1000); letter-spacing: var(--tracking-snug);">§ 03.a · Implementados — <strong>12</strong> atalhos byte-equal com <code class="type-mono">src/</code></h3>
+
+    <div class="tbl">
+      <p class="group-bar">Público · evento + lightbox</p>
+      <table>
+        <thead><tr><th style="width: 22%;">Tecla</th><th style="width: 38%;">Ação</th><th>Onde</th></tr></thead>
+        <tbody>
+          <tr><td><span class="kbd">Esc</span></td><td class="copy">Fecha o lightbox de foto / vídeo</td><td class="where">src/components/PhotoModal.js:246–252</td></tr>
+          <tr><td><span class="kbd">←</span></td><td class="copy">Foto anterior</td><td class="where">PhotoModal.js</td></tr>
+          <tr><td><span class="kbd">→</span></td><td class="copy">Próxima foto</td><td class="where">PhotoModal.js</td></tr>
+          <tr><td><span class="kbd">Enter</span><span class="kbd-sep">/</span><span class="kbd">Space</span></td><td class="copy">Abrir cartão de patrocinador em nova aba (<code>role=link</code>)</td><td class="where">src/app/evento/[id]/page.js:1092</td></tr>
+          <tr><td><span class="kbd">Enter</span></td><td class="copy">Aplicar cupom no checkout</td><td class="where">src/app/checkout/page.js:1068</td></tr>
+        </tbody>
+      </table>
+
+      <p class="group-bar">Cliente · drawer + navegação</p>
+      <table>
+        <thead><tr><th style="width: 22%;">Tecla</th><th style="width: 38%;">Ação</th><th>Onde</th></tr></thead>
+        <tbody>
+          <tr><td><span class="kbd">Esc</span></td><td class="copy">Fecha o drawer mobile da área do cliente</td><td class="where">src/app/minha-conta/layout.js:95</td></tr>
+          <tr><td><span class="kbd">Enter</span><span class="kbd-sep">/</span><span class="kbd">Space</span></td><td class="copy">Toggle de item no carrinho (checkbox)</td><td class="where">src/components/CartView.js:595</td></tr>
+        </tbody>
+      </table>
+
+      <p class="group-bar">Admin · modais + seleção em massa</p>
+      <table>
+        <thead><tr><th style="width: 22%;">Tecla</th><th style="width: 38%;">Ação</th><th>Onde</th></tr></thead>
+        <tbody>
+          <tr><td><span class="kbd">Esc</span></td><td class="copy">Fecha modal de pedido manual</td><td class="where">src/app/admin/page.js:17–24</td></tr>
+          <tr><td><span class="kbd">Esc</span></td><td class="copy">Fecha drawer/modal em álbum admin</td><td class="where">src/app/admin/eventos/[id]/page.js:1856</td></tr>
+          <tr><td><span class="kbd">Enter</span><span class="kbd-sep">/</span><span class="kbd">Space</span></td><td class="copy">Toggle de linha em bulk-action (clientes)</td><td class="where">src/app/admin/clientes/page.js:1207</td></tr>
+          <tr><td><span class="kbd">Enter</span></td><td class="copy">Adicionar categoria nova ao salvar (input de configuração de imagens)</td><td class="where">src/app/admin/configuracoes/ConfiguracoesImagens.js:498</td></tr>
+          <tr><td><span class="kbd">Enter</span><span class="kbd-sep">/</span><span class="kbd">Esc</span></td><td class="copy">Salvar / cancelar edição de preço inline na fila de upload</td><td class="where">src/app/admin/upload-fotos/[eventId]/page.js:1519</td></tr>
+        </tbody>
+      </table>
+
+      <p class="group-bar">Admin · padrões ARIA · <code class="type-mono">role="button"</code> em div clicável</p>
+      <table>
+        <thead><tr><th style="width: 22%;">Tecla</th><th style="width: 38%;">Ação</th><th>Onde</th></tr></thead>
+        <tbody>
+          <tr><td><span class="kbd">Enter</span><span class="kbd-sep">/</span><span class="kbd">Space</span></td><td class="copy">Abrir modal do cliente (card na grade) — padrão ARIA, não-shortcut</td><td class="where">src/app/admin/clientes/page.js:1314</td></tr>
+          <tr><td><span class="kbd">Enter</span><span class="kbd-sep">/</span><span class="kbd">Space</span></td><td class="copy">Ampliar preview da foto removida — padrão ARIA, não-shortcut</td><td class="where">src/app/admin/remocoes/page.js:401</td></tr>
+          <tr><td><span class="kbd">Enter</span><span class="kbd-sep">/</span><span class="kbd">Space</span></td><td class="copy">Abrir cadastro do cliente solicitante em nova aba — padrão ARIA, não-shortcut</td><td class="where">src/app/admin/remocoes/page.js:450</td></tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <h3 style="margin-top: var(--space-8); margin-bottom: var(--space-4); font-family: var(--font-heading); font-size: var(--text-lg); font-weight: 500; color: var(--ink-1000); letter-spacing: var(--tracking-snug);">§ 03.b · Propostos — atalhos não wired em <code class="type-mono">src/</code></h3>
+
+    <div class="tbl">
+      <p class="group-bar">Atalhos planejados · ainda não ligados</p>
+      <table>
+        <thead><tr><th style="width: 22%;">Tecla</th><th style="width: 38%;">Intenção</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr><td><span class="kbd">Esc</span></td><td class="copy">Fechar o drawer da navbar pública (com retorno de foco para o hambúrguer)</td><td class="where">não implementado · <code class="type-mono">src/components/Navbar.js</code> hoje fecha só por clique-fora ou troca de rota</td></tr>
+          <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">K</span></td><td class="copy">Abrir busca global (admin + público)</td><td class="where">não implementado · proposta</td></tr>
+          <tr><td><span class="kbd">G</span> <span class="kbd">E</span></td><td class="copy">Admin: ir para Eventos</td><td class="where">não implementado · proposta</td></tr>
+          <tr><td><span class="kbd">G</span> <span class="kbd">P</span></td><td class="copy">Admin: ir para Pedidos</td><td class="where">não implementado · proposta</td></tr>
+          <tr><td><span class="kbd">?</span></td><td class="copy">Mostrar overlay de atalhos disponíveis</td><td class="where">não implementado · proposta</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="doc-note"><b>Política:</b> qualquer atalho novo precisa ser adicionado a esta tabela <em>antes</em> do PR ser aceito. Atalhos "secretos" criam dívida de descoberta. Quando o overlay <span class="kbd">?</span> existir, ele deve ler desta mesma fonte.</p>
+  </section>
+
+  <!-- 04 · CONTRAST ───────────────────────── -->
+  <section class="section" data-screen-label="A11y · Contrast">
+    <div class="section-head">
+      <span class="num">04 · Contraste</span>
+      <h2>AA no corpo, AAA quando der.</h2>
+      <p>O sistema é escuro. <code class="type-mono">--ink-1000</code> sobre <code class="type-mono">--ink-100</code> dá <b>14.8 : 1</b> — AAA com folga. As bordas dos pares abaixo são a fronteira mínima: pares fora desta tabela são banidos para texto de corpo.</p>
+    </div>
+
+    <div class="contrast-grid">
+      <article class="contrast-card">
+        <div class="contrast-sample" style="background: var(--ink-100); color: var(--ink-1000);">Encontre-se nas fotos</div>
+        <div class="meta"><span>ink-1000 / ink-100</span><span class="ratio">14.8 : 1</span></div>
+        <div class="meta"><span>corpo · headline</span><span class="pass">AAA</span></div>
+      </article>
+      <article class="contrast-card">
+        <div class="contrast-sample" style="background: var(--ink-100); color: var(--ink-900);">Pague pelo PIX e baixe agora.</div>
+        <div class="meta"><span>ink-900 / ink-100</span><span class="ratio">9.6 : 1</span></div>
+        <div class="meta"><span>corpo padrão</span><span class="pass">AAA</span></div>
+      </article>
+      <article class="contrast-card">
+        <div class="contrast-sample" style="background: var(--ink-100); color: var(--ink-800);">22 mai 2026 · 18:42</div>
+        <div class="meta"><span>ink-800 / ink-100</span><span class="ratio">5.4 : 1</span></div>
+        <div class="meta"><span>meta · caption</span><span class="pass">AA</span></div>
+      </article>
+      <article class="contrast-card">
+        <div class="contrast-sample" style="background: var(--ink-100); color: var(--ink-700);">timestamp · dim</div>
+        <div class="meta"><span>ink-700 / ink-100</span><span class="ratio">3.1 : 1</span></div>
+        <div class="meta"><span>large text only</span><span class="pass">AA-LG</span></div>
+      </article>
+      <article class="contrast-card">
+        <div class="contrast-sample" style="background: var(--brand-500); color: var(--ink-1000); font-weight: 500;">Adicionar ao carrinho</div>
+        <div class="meta"><span>ink-1000 / brand-500</span><span class="ratio">5.9 : 1</span></div>
+        <div class="meta"><span>botão primário</span><span class="pass">AA</span></div>
+      </article>
+      <article class="contrast-card">
+        <div class="contrast-sample" style="background: var(--signal-500); color: var(--ink-on-signal); font-weight: 500;">Baixar todas</div>
+        <div class="meta"><span>ink-on-signal / signal-500</span><span class="ratio">7.8 : 1</span></div>
+        <div class="meta"><span>botão sucesso</span><span class="pass">AAA</span></div>
+      </article>
+      <article class="contrast-card">
+        <div class="contrast-sample" style="background: var(--danger-dim); color: var(--danger-500); font-weight: 500;">Excluir álbum</div>
+        <div class="meta"><span>danger-500 / dim</span><span class="ratio">4.6 : 1</span></div>
+        <div class="meta"><span>botão destrutivo</span><span class="pass">AA</span></div>
+      </article>
+      <article class="contrast-card">
+        <div class="contrast-sample" style="background: var(--ink-100); color: var(--brand-400);">Esqueci a senha</div>
+        <div class="meta"><span>brand-400 / ink-100</span><span class="ratio">5.2 : 1</span></div>
+        <div class="meta"><span>link em texto</span><span class="pass">AA</span></div>
+      </article>
+    </div>
+    <p class="doc-note"><b>Banidos para texto de corpo:</b> <code>--ink-600</code>, <code>--ink-500</code>, <code>--ink-700</code> em corpo &lt; 18 px. Use-os exclusivamente para <em>border</em>, <em>icone decorativo</em> ou <em>timestamp em mono</em> que o leitor pode ignorar.</p>
+  </section>
+
+  <!-- 05 · ARIA PATTERNS ─────────────────── -->
+  <section class="section" data-screen-label="A11y · ARIA patterns">
+    <div class="section-head">
+      <span class="num">05 · Padrões ARIA</span>
+      <h2>Leitor de tela acompanha o que muda.</h2>
+      <p>Estado dinâmico (carrinho, loading, toast) precisa anunciar mudança. Use <code class="type-mono">aria-live</code> para regiões que atualizam, <code class="type-mono">aria-busy</code> para "carregando", <code class="type-mono">role="link"</code> para <code class="type-mono">&lt;div&gt;</code> clicável (e nunca o contrário).</p>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <p class="num">05.A · aria-live</p>
+        <h3>Mudança numérica do carrinho</h3>
+        <p>O <em>pill</em> de contagem do carrinho na navbar é uma <code>aria-live="polite"</code>: cada adição é anunciada como "<em>2 fotos no carrinho · R$ 57,60</em>" sem interromper o que o leitor está dizendo. Use <code>aria-live="assertive"</code> apenas para erros bloqueantes (PIX expirou).</p>
+        <p><code>&lt;div aria-live="polite" aria-atomic="true"&gt;</code></p>
+      </div>
+
+      <div class="card">
+        <p class="num">05.B · aria-busy</p>
+        <h3>Grade de fotos carregando</h3>
+        <p>Enquanto o album carrega, o container da grade recebe <code>aria-busy="true"</code> e mostra skeleton. Quando os dados chegam, vira <code>false</code> e o leitor anuncia o conteúdo novo. <b>Não</b> remova o nó — anime o estado.</p>
+        <p><code>&lt;section aria-busy="true" aria-label="Grade de fotos"&gt;</code></p>
+      </div>
+
+      <div class="card">
+        <p class="num">05.C · role="link"</p>
+        <h3>SponsorCard como div-clicável</h3>
+        <p>O <code>SponsorCard</code> é semanticamente um link, mas tecnicamente um <code>&lt;div&gt;</code> (porque carrega um lockup completo). Recebe <code>role="link"</code>, <code>tabIndex={0}</code> e handler de <code>Enter</code>/<code>Space</code>. Já está em <code class="type-mono">src/app/evento/[id]/page.js:1092</code> — siga o padrão para qualquer "cartão clicável".</p>
+        <p><code>&lt;div role="link" tabIndex={0} onKeyDown={…}&gt;</code></p>
+      </div>
+
+      <div class="card">
+        <p class="num">05.D · aria-modal + role="dialog"</p>
+        <h3>Foco preso dentro do modal</h3>
+        <p>Modais e drawers precisam de <code>role="dialog"</code> + <code>aria-modal="true"</code> + <code>aria-labelledby</code> apontando para o título. O foco entra na primeira ação destrutiva-segura (cancelar / fechar), <code>Tab</code> cicla dentro do modal, <code>Esc</code> fecha e devolve o foco ao gatilho.</p>
+        <p>Já está em <code class="type-mono">Navbar.js:172</code> e <code class="type-mono">useConfirmDialog.js:23</code>. <b>Gap:</b> nem todo modal tem focus-trap formal hoje (ver <a href="contribution.html">contribution.html · deprecação</a>).</p>
+      </div>
+
+      <div class="card">
+        <p class="num">05.E · alt-text de foto</p>
+        <h3>Descreve sujeito + ação + local</h3>
+        <p>Toda <code>&lt;img&gt;</code> em galeria deve ter alt-text de uma frase. Não use a numeração do arquivo. Exemplo: <em>"Cavaleiro segurando a alça do touro durante o salto, arena central, Rodeio de Barretos 2026."</em></p>
+        <p>Para fotos sem descrição cadastrada, o sistema gera "Foto <code>{n}</code> · {evento} · {data}" como fallback — melhor que nada.</p>
+      </div>
+
+      <div class="card">
+        <p class="num">05.F · aria-label vs label</p>
+        <h3>Quando usar cada um</h3>
+        <p>Input com label visível: use <code>&lt;label for=…&gt;</code>. Botão-ícone (lixeira, fechar): use <code>aria-label</code> com a ação ("Excluir foto", "Fechar modal"). Nunca <code>aria-label</code> em um botão que já tem texto — duplicação confunde leitor.</p>
+        <p>Hoje há ~30 <code>aria-label</code> espalhados em <code>src/</code>. Auditoria de duplicação é dívida (ver deprecação).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 · REDUCED MOTION ──────────────── -->
+  <section class="section" data-screen-label="A11y · Reduced motion">
+    <div class="section-head">
+      <span class="num">06 · Motion sensível</span>
+      <h2>Respeita <code class="type-mono">prefers-reduced-motion</code>.</h2>
+      <p>O bloco já está em <a href="colors_and_type.css">colors_and_type.css</a> (linha 281): todas as durações caem para 1 ms. Você não precisa replicar — só nunca <em>contornar</em> com <code class="type-mono">!important</code>.</p>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <p class="num">06.A</p>
+        <h3>Token-driven</h3>
+        <p>Use <code>var(--duration-base)</code>, <code>var(--ease-out)</code> e parentes. O bloco <code>@media (prefers-reduced-motion: reduce)</code> reescreve todas as variáveis para 1 ms — uma fonte, uma vez. Suas animações herdam.</p>
+        <p><code>transition: transform var(--duration-base) var(--ease-out);</code></p>
+      </div>
+
+      <div class="card">
+        <p class="num">06.B</p>
+        <h3>Animações longas → still</h3>
+        <p>Para animações narrativas (loop do hero, badge pulsando, sheen em CTA), <em>desligue o keyframe</em> sob reduced-motion — não basta acelerar, o movimento incomoda. Use <code>animation: none;</code> dentro do bloco <code>@media</code>.</p>
+      </div>
+    </div>
+
+    <div class="motion-sample">
+      <div class="ball"></div>
+      <span class="label">Esta bola anima com <code>--duration-deliberate</code>; com <code>prefers-reduced-motion</code> ela para.</span>
+    </div>
+  </section>
+
+  <!-- 07 · REDUCED DATA + IMAGES ─────── -->
+  <section class="section" data-screen-label="A11y · Images + data">
+    <div class="section-head">
+      <span class="num">07 · Imagem &amp; dados reduzidos</span>
+      <h2>Lazy por padrão. Prioridade para o hero.</h2>
+      <p>O cliente baixou as fotos com plano de 3G — toda imagem fora da dobra é <code>loading="lazy"</code>. A capa do evento e a primeira fileira da galeria são <code>loading="eager"</code> + <code>fetchpriority="high"</code> para não atrasar o LCP.</p>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <p class="num">07.A</p>
+        <h3>Galeria · lazy-by-default</h3>
+        <p>Fotos da grade pública usam <code>loading="lazy"</code> + <code>decoding="async"</code>. A primeira fila (até 8 fotos) usa <code>eager</code> para que a tela pareça pronta antes da ponte WebSocket.</p>
+        <p>Tamanhos derivados (<code>thumb / web / hero</code>) já existem em <code>storage/uploads/&lt;eventId&gt;/&lt;kind&gt;/&lt;wm&gt;/</code> — escolha o menor que cabe no slot.</p>
+      </div>
+
+      <div class="card">
+        <p class="num">07.B</p>
+        <h3>Decoração nunca em <code>&lt;img&gt;</code></h3>
+        <p>Ícones de UI são SVG inline (sprite via <code>&lt;use href="#i-..."&gt;</code>) — não <code>&lt;img&gt;</code>. SVG escala, herda cor por <code>currentColor</code>, não pede HTTP extra e não polui o cache de imagens reais.</p>
+        <p>Imagem decorativa (banner, padrão de fundo) que não carrega significado: <code>alt=""</code> e <code>role="presentation"</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 · CHECKLIST ────────────────── -->
+  <section class="section" data-screen-label="A11y · PR checklist">
+    <div class="section-head">
+      <span class="num">08 · Checklist de PR</span>
+      <h2>Cole no <em>description</em> de toda PR de UI.</h2>
+      <p>Auto-revisão antes de pedir review. Se alguma linha falha, o PR volta antes de chegar ao reviewer.</p>
+    </div>
+
+    <div class="checklist">
+      <ul>
+        <li><span class="mark"></span><span><b>Foco visível</b> em todo elemento interativo — botão, link, input, chip, tab, row clicável.</span></li>
+        <li><span class="mark"></span><span><b>Tab order</b> segue o DOM. Sem <code>tabindex</code> &gt; 0. Skiplink presente em página nova.</span></li>
+        <li><span class="mark"></span><span><b>Esc fecha</b> qualquer modal, drawer ou lightbox novo — testado com o teclado, sem mouse.</span></li>
+        <li><span class="mark"></span><span><b>Sem cor sozinha</b> sinalizando estado — toda badge tem rótulo textual além da cor.</span></li>
+        <li><span class="mark"></span><span><b>Contraste</b> de texto novo conferido em <a href="colors.html">colors.html</a>. Texto &lt; 18 px só sobre pares AA+ da tabela.</span></li>
+        <li><span class="mark"></span><span><b>alt-text</b> em toda <code>&lt;img&gt;</code> de conteúdo; <code>alt=""</code> em decoração.</span></li>
+        <li><span class="mark"></span><span><b>Botão-ícone</b> tem <code>aria-label</code> com a ação real (ex.: <em>Excluir foto</em>, não <em>Lixeira</em>).</span></li>
+        <li><span class="mark"></span><span><b>aria-live</b> em região que muda sem refresh (carrinho, toast, contagem de upload).</span></li>
+        <li><span class="mark"></span><span><b>aria-busy</b> em container de skeleton — vira <code>false</code> só quando o conteúdo está utilizável.</span></li>
+        <li><span class="mark"></span><span><b>Reduced-motion</b> respeitado em qualquer <code>@keyframes</code> novo.</span></li>
+        <li><span class="mark"></span><span><b>Atalho novo</b> documentado em <a href="#atalhos">§ 03</a> antes do merge — sem teclas secretas.</span></li>
+        <li><span class="mark"></span><span><b>Mobile</b> testado com VoiceOver/TalkBack (ou pelo menos rotor de leitura). Drawer recebe foco ao abrir.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer data-screen-label="A11y · Footer">
+    <span>VINÍCIUS SOUZA · ACESSIBILIDADE v1.0 · 2026-05-10</span>
+    <span><a href="index.html">Index</a> · <a href="motion.html">Motion</a> · <a href="content-style-guide.html">Conteúdo</a> · <a href="contribution.html">Contribuição</a></span>
+  </footer>
+
+</div>
+</body>
+</html>

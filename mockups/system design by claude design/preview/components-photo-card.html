@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Photo card · preview</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; padding: var(--space-5); background: var(--ink-100); color: var(--ink-1000); font-family: var(--font-body); }
+
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-2); }
+
+  /* Canonical .photo-card contract — mirrors components-composite.html § 01. */
+  .photo-card {
+    position: relative; aspect-ratio: 1;
+    border-radius: var(--radius); overflow: hidden;
+    background: var(--ink-200); border: 1px solid var(--ink-500);
+    cursor: pointer; display: block;
+    transition: border-color var(--duration-quick) var(--ease-out), transform var(--duration-quick) var(--ease-out), box-shadow var(--duration-quick) var(--ease-out);
+  }
+  .photo-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-card:hover { border-color: var(--brand-500); transform: translateY(-2px); }
+  .photo-card.is-incart { border-color: var(--brand-500); }
+  .photo-card.is-sold img { opacity: 0.55; filter: grayscale(0.4); }
+
+  .pc-price {
+    position: absolute; top: var(--space-2); left: var(--space-2);
+    background: rgba(0,0,0,0.65); color: var(--ink-1000);
+    font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+    font-size: var(--text-xs); font-weight: 500; letter-spacing: var(--tracking-snug);
+    padding: 2px var(--space-2); border-radius: var(--radius-sm);
+    backdrop-filter: blur(6px);
+  }
+
+  .pc-cart {
+    position: absolute; bottom: var(--space-2); right: var(--space-2);
+    width: 34px; height: 34px; border-radius: var(--radius-pill);
+    background: rgba(0,0,0,0.7); color: var(--ink-1000);
+    border: 1px solid rgba(237,232,224,0.20);
+    display: grid; place-items: center; cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition: background var(--duration-quick) var(--ease-out), border-color var(--duration-quick) var(--ease-out);
+  }
+  .pc-cart:hover { background: var(--brand-500); border-color: transparent; }
+  .photo-card.is-incart .pc-cart { background: var(--brand-500); border-color: transparent; }
+
+  .pc-incart-pill {
+    position: absolute; top: var(--space-2); right: var(--space-2);
+    background: var(--brand-500); color: var(--ink-1000);
+    font-family: var(--font-mono); font-size: var(--text-xxs); font-weight: 600;
+    letter-spacing: var(--tracking-wider); text-transform: uppercase;
+    padding: 3px var(--space-2); border-radius: var(--radius-sm);
+  }
+
+  .pc-free-pill {
+    position: absolute; top: var(--space-2); right: var(--space-2);
+    background: var(--signal-500); color: var(--ink-50);
+    font-family: var(--font-mono); font-size: var(--text-xxs); font-weight: 600;
+    letter-spacing: var(--tracking-wider); text-transform: uppercase;
+    padding: 3px var(--space-2); border-radius: var(--radius-sm);
+  }
+</style>
+</head>
+<body>
+  <div class="grid">
+    <a class="photo-card" aria-label="Foto · R$ 12,00">
+      <img src="../assets/imagery/sample-event-01.jpg" alt="">
+      <span class="pc-price">R$ 12,00</span>
+      <button type="button" class="pc-cart" aria-label="Adicionar ao carrinho">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </a>
+
+    <a class="photo-card is-incart" aria-label="Foto · no carrinho">
+      <img src="../assets/imagery/sample-event-02.jpg" alt="">
+      <span class="pc-incart-pill">No carrinho</span>
+      <button type="button" class="pc-cart" aria-label="Remover do carrinho">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
+    </a>
+
+    <a class="photo-card" aria-label="Foto · grátis">
+      <img src="../assets/imagery/sample-event-01.jpg" alt="">
+      <span class="pc-free-pill">Grátis</span>
+      <button type="button" class="pc-cart" aria-label="Baixar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
+    </a>
+
+    <a class="photo-card" aria-label="Foto · R$ 25,00">
+      <img src="../assets/imagery/sample-event-02.jpg" alt="">
+      <span class="pc-price">R$ 25,00</span>
+    </a>
+  </div>
+</body>
+</html>

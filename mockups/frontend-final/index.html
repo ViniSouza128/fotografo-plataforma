@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Frontend Final · Vinícius Souza Fotografia</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="shared.css">
+<style>
+  body { padding: 0; background: var(--ink-50); }
+
+  .topbar {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(7,7,8,.92); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--ink-500);
+    padding: 14px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .topbar .left { display: flex; align-items: center; gap: 18px; }
+  .topbar .nav-logo { height: 38px; width: 150px; }
+  .topbar .meta {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--ink-700); letter-spacing: .08em;
+  }
+  .topbar .meta strong { color: var(--brand-400); font-weight: 500; }
+
+  .hero {
+    max-width: 1180px; margin: 0 auto;
+    padding: 84px 32px 48px;
+  }
+  .hero .eyebrow {
+    color: var(--brand-400);
+    font-size: 11.5px; letter-spacing: .22em; text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(2.4rem, 5.5vw, 4rem);
+    font-weight: 300; line-height: 1.04;
+    letter-spacing: -.025em;
+    margin: 0 0 18px;
+    max-width: 880px;
+  }
+  .hero h1 em {
+    font-family: var(--font-display); font-style: italic;
+    color: var(--ink-900); font-weight: 400;
+  }
+  .hero .lede {
+    color: var(--ink-900); font-size: 14.5px; line-height: 1.6;
+    max-width: 700px; margin: 0;
+  }
+
+  .meta-grid {
+    max-width: 1180px; margin: 0 auto 48px; padding: 0 32px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px;
+  }
+  .meta-card {
+    background: var(--ink-200); border: 1px solid var(--ink-500);
+    border-radius: var(--radius-lg);
+    padding: 16px 18px;
+  }
+  .meta-card .k {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--ink-700); letter-spacing: .14em; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .meta-card .v {
+    font-family: var(--font-heading); font-size: 24px;
+    font-weight: 400; color: var(--ink-1000);
+    line-height: 1.1;
+  }
+  .meta-card .v small {
+    font-family: var(--font-body); font-size: 12px;
+    color: var(--ink-800); font-weight: 300; margin-left: 2px;
+  }
+
+  .surfaces {
+    max-width: 1180px; margin: 0 auto 64px; padding: 0 32px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 18px;
+  }
+  .surface {
+    display: block;
+    background: var(--ink-200); border: 1px solid var(--ink-500);
+    border-radius: var(--radius-lg);
+    padding: 22px 24px 26px;
+    transition: border-color .25s var(--ease-out), transform .25s var(--ease-out), box-shadow .25s var(--ease-out);
+  }
+  .surface:hover {
+    border-color: var(--brand-500);
+    transform: translateY(-2px);
+    box-shadow: 0 0 0 1px var(--brand-500), 0 0 30px -8px rgba(31,122,224,.4);
+  }
+  .surface .num {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--brand-400); letter-spacing: .14em; margin-bottom: 14px;
+  }
+  .surface h2 {
+    font-family: var(--font-heading); font-size: 22px;
+    font-weight: 500; color: var(--ink-1000);
+    margin: 0 0 8px; letter-spacing: -.005em;
+  }
+  .surface .desc {
+    color: var(--ink-900); font-size: 13.5px; line-height: 1.55;
+    margin-bottom: 18px;
+  }
+  .surface .pages {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--ink-700); letter-spacing: .04em;
+    line-height: 1.7;
+    padding-top: 14px;
+    border-top: 1px solid var(--ink-500);
+  }
+  .surface .pages b { color: var(--ink-900); font-weight: 500; }
+  .surface .open {
+    margin-top: 16px;
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--brand-400); font-size: 12.5px;
+    letter-spacing: .04em;
+  }
+
+  .stack {
+    max-width: 1180px; margin: 0 auto 64px; padding: 0 32px;
+  }
+  .stack h3 {
+    font-family: var(--font-heading); font-size: 14px; font-weight: 500;
+    color: var(--ink-800); letter-spacing: .04em;
+    margin: 0 0 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--ink-500);
+  }
+  .pill-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 5px 11px;
+    background: var(--ink-200); border: 1px solid var(--ink-500);
+    color: var(--ink-800); font-family: var(--font-mono);
+    font-size: 11px; letter-spacing: .03em;
+    border-radius: var(--radius-pill);
+  }
+  .pill.accent {
+    background: var(--brand-dim); color: var(--brand-400);
+    border-color: rgba(31,122,224,.35);
+  }
+  .pill.signal {
+    background: var(--signal-dim); color: var(--signal-500);
+    border-color: rgba(34,197,94,.35);
+  }
+  .pill.warn {
+    background: var(--warning-dim); color: var(--warning-500);
+    border-color: rgba(232,163,58,.35);
+  }
+
+  .ref-block {
+    max-width: 1180px; margin: 0 auto 64px; padding: 0 32px;
+  }
+  .ref-block .head {
+    display: flex; align-items: end; justify-content: space-between;
+    padding-bottom: 14px; border-bottom: 1px solid var(--ink-500);
+    margin-bottom: 22px;
+  }
+  .ref-block .head h3 {
+    font-family: var(--font-heading); font-size: 17px; font-weight: 500;
+    color: var(--ink-1000); margin: 0;
+  }
+  .ref-block .head span {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--ink-700); letter-spacing: .08em;
+  }
+  .ref-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .ref {
+    background: var(--ink-200); border: 1px solid var(--ink-500);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    display: flex; flex-direction: column; gap: 4px;
+    transition: border-color .15s, background .15s;
+  }
+  .ref:hover { border-color: var(--ink-700); background: var(--ink-300); }
+  .ref .name {
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--ink-1000); letter-spacing: .02em;
+  }
+  .ref .desc { color: var(--ink-800); font-size: 11.5px; }
+
+  .footer-note {
+    max-width: 1180px; margin: 0 auto;
+    padding: 32px; border-top: 1px solid var(--ink-500);
+    color: var(--ink-700); font-family: var(--font-mono);
+    font-size: 11px; letter-spacing: .04em;
+    text-align: center;
+  }
+  .footer-note span { color: var(--brand-400); }
+
+  /* status caption */
+  .status-row {
+    max-width: 1180px; margin: 0 auto 32px; padding: 0 32px;
+    display: flex; gap: 14px; flex-wrap: wrap;
+  }
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px;
+    background: var(--ink-200); border: 1px solid var(--ink-500);
+    border-radius: var(--radius);
+    font-family: var(--font-mono); font-size: 11.5px;
+    color: var(--ink-800); letter-spacing: .04em;
+  }
+  .status-pill .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--ink-700);
+  }
+  .status-pill.ok .dot { background: var(--signal-500); box-shadow: 0 0 0 4px rgba(34,197,94,.15); }
+  .status-pill.wip .dot { background: var(--warning-500); box-shadow: 0 0 0 4px rgba(232,163,58,.15); }
+</style>
+</head>
+<body>
+
+<!-- logo defs -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <path id="vs-symbol-path" fill-rule="evenodd" d="M 445.00 596.00 C 440.01 599.06, 428.00 601.00, 428.00 601.00 C 428.00 601.00, 394.93 601.91, 387.00 601.00 C 379.07 600.09, 370.77 595.95, 367.00 594.00 C 363.23 592.05, 358.00 586.00, 358.00 586.00 C 358.00 586.00, 47.40 65.97, 45.00 61.80 C 37.92 53.03, 37.92 36.70, 53.72 34.90 C 56.40 34.80, 138.06 33.36, 150.00 35.00 C 166.13 36.88, 171.67 42.47, 182.00 52.61 C 185.09 57.81, 408.07 444.73, 408.07 444.73 C 408.07 444.73, 457.48 355.64, 459.00 353.00 C 463.18 345.91, 465.66 341.75, 469.81 341.20 C 474.85 340.93, 486.38 354.43, 491.00 358.00 C 495.62 361.57, 505.35 368.68, 513.00 373.00 C 520.65 377.32, 547.48 388.10, 549.38 389.23 C 551.27 390.37, 555.11 394.62, 554.34 400.23 C 553.48 404.70, 550.54 409.12, 548.27 414.51 C 546.00 419.90, 540.68 428.18, 537.00 435.00 C 533.32 441.82, 530.14 447.91, 520.00 467.00 C 509.86 486.09, 462.30 576.16, 459.00 581.84 C 455.70 587.52, 449.99 592.94, 445.00 596.00 Z M 872.22 91.62 C 872.68 125.01, 843.18 147.44, 819.11 147.49 C 809.41 147.93, 701.44 148.17, 615.18 149.00 C 563.14 157.43, 561.99 199.04, 561.63 208.41 C 563.14 229.70, 577.76 255.04, 611.62 262.47 C 650.19 262.52, 781.54 261.79, 798.00 263.00 C 814.46 264.21, 832.43 271.01, 846.00 277.00 C 859.57 282.99, 873.01 291.05, 884.00 301.00 C 894.99 310.95, 910.82 327.93, 920.00 344.00 C 929.18 360.07, 937.00 379.92, 940.00 399.00 C 943.00 418.08, 944.46 460.35, 932.77 491.21 C 910.20 540.45, 871.48 572.49, 850.46 583.12 C 825.64 599.19, 781.95 601.90, 772.00 602.00 C 762.05 602.10, 519.08 602.05, 515.00 602.00 C 510.92 601.95, 505.05 601.48, 502.08 599.50 C 499.11 597.52, 496.82 594.03, 496.31 590.50 C 495.81 586.97, 498.17 581.65, 500.00 578.00 C 501.83 574.35, 529.18 523.73, 533.00 517.68 C 536.82 511.62, 542.75 505.61, 548.00 502.00 C 553.25 498.39, 559.56 496.33, 565.93 496.09 C 572.29 495.85, 777.60 494.40, 785.35 494.00 C 793.11 493.60, 800.80 487.12, 807.00 482.68 C 813.20 478.24, 819.11 471.95, 823.00 466.00 C 826.89 460.05, 829.61 452.97, 831.00 446.00 C 832.39 439.03, 833.65 429.09, 832.00 421.00 C 830.35 412.91, 826.85 399.77, 820.00 392.00 C 813.15 384.23, 805.62 374.86, 787.00 370.00 C 773.99 368.55, 625.16 371.25, 595.00 367.00 C 519.94 352.27, 499.24 323.23, 477.10 293.20 C 453.35 258.78, 452.08 212.30, 455.58 182.20 C 459.09 152.10, 472.00 119.54, 496.15 95.51 C 515.61 74.26, 562.68 41.53, 607.00 40.54 C 615.03 40.41, 813.94 39.62, 819.16 39.73 C 840.03 39.83, 871.79 58.94, 872.22 91.62 Z"/>
+  </defs>
+  <symbol id="nav-logo-h" viewBox="0 0 1100 280" preserveAspectRatio="xMinYMid meet">
+    <g transform="translate(30 50) scale(0.2898550724637681)"><use href="#vs-symbol-path" fill="#ffffff"/></g>
+    <text fill="#ffffff" x="717.03" y="155" text-anchor="middle" font-family="Montserrat, 'Helvetica Neue', Arial, sans-serif" font-weight="800" font-size="72" letter-spacing="3">VINÍCIUS SOUZA</text>
+    <g>
+      <line x1="524" y1="198" x2="552" y2="198" stroke="#ede8e0" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="882" y1="198" x2="910" y2="198" stroke="#ede8e0" stroke-width="2.2" stroke-linecap="round"/>
+    </g>
+    <text fill="#ede8e0" x="717.03" y="206" text-anchor="middle" font-family="Montserrat, 'Helvetica Neue', Arial, sans-serif" font-weight="700" font-size="36" letter-spacing="6">FOTOGRAFIA</text>
+  </symbol>
+</svg>
+
+<div class="topbar">
+  <div class="left">
+    <a class="nav-logo-link" href="index.html">
+      <svg class="nav-logo" aria-label="Vinícius Souza Fotografia"><use href="#nav-logo-h"/></svg>
+    </a>
+    <span class="meta">Frontend Final · <strong>v0.2</strong> · 2026-05-10</span>
+  </div>
+  <div class="meta">
+    <a class="lnk" href="../index.html">← Voltar aos mockups antigos</a>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="eyebrow">— Frontend final · proposta unificada —</div>
+  <h1>Mockup final do projeto <em>convergindo</em> tudo: cobertura completa do produto atual, acabamento do system design.</h1>
+  <p class="lede">Cobre 100 % do que o produto faz hoje — vendas, vídeos, patrocinadores, recompensas, propostas, repasses, colaboradores, chat, reconhecimento, backup — escrito em cima dos tokens e padrões do <em>ui-kit-public</em>. <strong style="color: var(--ink-1000);">v0.2:</strong> modais funcionais (foto · vídeo · compartilhar · remoção LGPD · cupom · colaborador · patrocinador · vídeo admin), tiers de resolução, drawer mobile que abre, cart side colapsável, animações ctaSheen / discShimmer / addPop / bobble, QR Pix realista (SVG), inputs unificados, autenticidade refeita como página de texto, imagens reais via picsum.</p>
+</section>
+
+<div class="status-row">
+  <div class="status-pill ok"><span class="dot"></span>Tokens · obsidian + bone</div>
+  <div class="status-pill ok"><span class="dot"></span>Brand · 4 verticais</div>
+  <div class="status-pill ok"><span class="dot"></span>Modais &amp; drawer funcionais</div>
+  <div class="status-pill ok"><span class="dot"></span>Imagens picsum + QR SVG</div>
+  <div class="status-pill wip"><span class="dot"></span>Iteração por página</div>
+</div>
+
+<div class="meta-grid">
+  <div class="meta-card"><div class="k">Surfaces</div><div class="v">3 <small>público · cliente · admin</small></div></div>
+  <div class="meta-card"><div class="k">Telas mapeadas</div><div class="v">~48 <small>· 14 + 11 + 23</small></div></div>
+  <div class="meta-card"><div class="k">Rotas reais cobertas</div><div class="v">44 <small>· src/app/**</small></div></div>
+  <div class="meta-card"><div class="k">Tipografia</div><div class="v">3 <small>display · ui · mono</small></div></div>
+</div>
+
+<div class="surfaces">
+  <a class="surface" href="publico.html">
+    <div class="num">01 · PÚBLICO</div>
+    <h2>Site público</h2>
+    <p class="desc">Home com hero técnico + descoberta de eventos, galeria com carrinho retrátil e lightbox, vídeos do evento, patrocinadores, carrinho, checkout PIX/cartão, autenticação, contato, páginas legais.</p>
+    <div class="pages">
+      <b>Inclui:</b> /, /evento/[id] (fotos · vídeos · patrocinadores), /carrinho, /checkout, /compras, /login, /cadastro, /trocar-senha, /contato, /autenticidade, /termos, /privacidade, /cookies, 404
+    </div>
+    <div class="open">Abrir mockup público →</div>
+  </a>
+
+  <a class="surface" href="cliente.html">
+    <div class="num">02 · CLIENTE</div>
+    <h2>Área do cliente</h2>
+    <p class="desc">Hub do cliente logado: dashboard com estatísticas, histórico de compras com timeline e download, carrinho persistido, favoritos &amp; curtidas, comentários, remoções LGPD, notificações, chat com o fotógrafo, reconhecimento facial e configurações.</p>
+    <div class="pages">
+      <b>Inclui:</b> /minha-conta, /compras, /compras/[id], /carrinho, /favoritos, /comentarios, /remocoes, /notificacoes, /chat, /reconhecimento, /configuracoes
+    </div>
+    <div class="open">Abrir mockup cliente →</div>
+  </a>
+
+  <a class="surface" href="admin.html">
+    <div class="num">03 · ADMIN</div>
+    <h2>Painel do fotógrafo</h2>
+    <p class="desc">Backoffice completo: dashboard, eventos com tabs (detalhes · fotos · vídeos · patrocinadores), upload, pedidos, carrinhos abertos, cupons, propostas, repasses, clientes, colaboradores, chat, comentários, contatos, remoções, marca d'água, personalizar, configurações, notificações, estatísticas, reconhecimento, reset.</p>
+    <div class="pages">
+      <b>23+ telas:</b> /admin, /eventos, /eventos/[id], /criar-evento, /upload-fotos, /pedidos, /carrinhos, /cupons, /propostas, /repasses, /clientes, /colaboradores, /chat, /comentarios, /contatos, /remocoes, /marca-dagua, /personalizar, /configuracoes, /notificacoes, /estatisticas, /reconhecimento, /reset
+    </div>
+    <div class="open">Abrir mockup admin →</div>
+  </a>
+</div>
+
+<div class="stack">
+  <h3>Funcionalidades cobertas</h3>
+  <div class="pill-grid">
+    <span class="pill signal">PIX (Asaas)</span>
+    <span class="pill signal">Cartão (Stripe)</span>
+    <span class="pill">Mercado Pago</span>
+    <span class="pill">PagSeguro</span>
+    <span class="pill signal">Liberação manual</span>
+    <span class="pill">Cupom de fotos grátis</span>
+    <span class="pill">Desconto progressivo</span>
+    <span class="pill">Reembolso por foto/pedido</span>
+    <span class="pill">Comentários em árvore</span>
+    <span class="pill">Avaliações por estrelas</span>
+    <span class="pill">Favoritos &amp; curtidas</span>
+    <span class="pill">Solicitação de remoção (LGPD)</span>
+    <span class="pill">Marca d'água por variante</span>
+    <span class="pill">Mini-thumb 90px sem WM</span>
+    <span class="pill">Capa dedicada por álbum</span>
+    <span class="pill">Original protegido</span>
+    <span class="pill accent">Reconhecimento facial</span>
+    <span class="pill accent">Vídeos</span>
+    <span class="pill accent">Patrocinadores</span>
+    <span class="pill">Recompensas</span>
+    <span class="pill">Propostas</span>
+    <span class="pill">Repasses</span>
+    <span class="pill">Colaboradores</span>
+    <span class="pill">Chat</span>
+    <span class="pill">SQLite + WAL</span>
+    <span class="pill">S3 / R2 / Backblaze</span>
+    <span class="pill">Backup automático</span>
+    <span class="pill">Monitoração de saúde</span>
+    <span class="pill">Auditoria server-side</span>
+    <span class="pill warn">Tema dark default</span>
+  </div>
+</div>
+
+<div class="ref-block">
+  <div class="head">
+    <h3>Referências usadas</h3>
+    <span>Material de origem do design</span>
+  </div>
+  <div class="ref-grid">
+    <a class="ref" href="../system design by claude design/ui-kit-public.html">
+      <span class="name">ui-kit-public.html</span>
+      <span class="desc">Referência principal · padrões visuais, nav-logo, layout</span>
+    </a>
+    <a class="ref" href="../system design by claude design/ui-kit-account.html">
+      <span class="name">ui-kit-account.html</span>
+      <span class="desc">Sidebar do cliente · cards de pedido (revisar)</span>
+    </a>
+    <a class="ref" href="../system design by claude design/ui-kit-admin.html">
+      <span class="name">ui-kit-admin.html</span>
+      <span class="desc">Topbar densa · sidebar · tabelas (revisar)</span>
+    </a>
+    <a class="ref" href="../system design by claude design/colors_and_type.css">
+      <span class="name">colors_and_type.css</span>
+      <span class="desc">Tokens originais · obsidian + brand</span>
+    </a>
+    <a class="ref" href="../manual_v1.html">
+      <span class="name">manual_v1.html</span>
+      <span class="desc">Logo SVG · 4 verticais × 4 lockups × 4 versões</span>
+    </a>
+    <a class="ref" href="../01-publico.html">
+      <span class="name">01-publico.html</span>
+      <span class="desc">Mockup atual · invent. de funcionalidades públicas</span>
+    </a>
+    <a class="ref" href="../02-cliente.html">
+      <span class="name">02-cliente.html</span>
+      <span class="desc">Mockup atual · invent. da área do cliente</span>
+    </a>
+    <a class="ref" href="../03-admin.html">
+      <span class="name">03-admin.html</span>
+      <span class="desc">Mockup atual · invent. do painel admin (23 seções)</span>
+    </a>
+  </div>
+</div>
+
+<div class="footer-note">
+  © 2026 <span>Vinícius Rodrigues de Souza</span> · proposta de frontend final · construído sobre o <em>system design by claude design</em> + estado atual do código.
+</div>
+
+</body>
+</html>

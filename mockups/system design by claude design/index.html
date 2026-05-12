@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Vinícius Souza — Sistema · v1.0</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { padding-bottom: var(--space-24); }
+
+  .wrap { max-width: var(--content-max); margin: 0 auto; padding: var(--space-20) var(--space-12) var(--space-24); }
+  @media (max-width: 800px) { .wrap { padding: var(--space-12) var(--space-5); } }
+
+  /* HERO ───────────────────────────────────── */
+  .hero { position: relative; padding-bottom: var(--space-16); border-bottom: 1px solid var(--ink-500); margin-bottom: var(--space-16); overflow: hidden; }
+  .hero::before { content: ""; position: absolute; inset: -10% -10% auto -10%; height: 70%; background: var(--glow-radial); pointer-events: none; }
+  .hero > * { position: relative; }
+  .hero .meta { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); margin-bottom: var(--space-4); display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-5); align-items: center; }
+  .hero .meta .v { color: var(--brand-400); }
+  .hero .meta b { color: var(--ink-1000); font-weight: 500; }
+  .hero h1 { font-family: var(--font-display); font-style: italic; font-size: var(--text-6xl); line-height: var(--leading-flat); letter-spacing: var(--tracking-tight); margin: 0 0 var(--space-6); max-width: 22ch; color: var(--ink-1000); }
+  .hero .lede { max-width: 65ch; font-size: var(--text-md); line-height: var(--leading-relaxed); color: var(--ink-900); margin: 0 0 var(--space-8); }
+  .hero .lede em { font-family: var(--font-display); font-style: italic; color: var(--ink-1000); }
+  .hero .start { display: flex; gap: var(--space-3); flex-wrap: wrap; }
+  .hero .start a { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-5); border-radius: var(--radius); font-size: var(--text-sm); font-weight: 500; transition: background var(--duration-quick) var(--ease-out), border-color var(--duration-quick) var(--ease-out); }
+  .hero .start .primary { background: var(--brand-500); color: var(--ink-1000); }
+  .hero .start .primary:hover { background: var(--brand-400); }
+  .hero .start .secondary { border: 1px solid var(--ink-500); color: var(--ink-1000); }
+  .hero .start .secondary:hover { border-color: var(--ink-1000); }
+
+  /* READ-FIRST + WHATS NEW row ─────────────── */
+  .top-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: var(--space-4); margin-bottom: var(--space-16); }
+  @media (max-width: 900px) { .top-grid { grid-template-columns: 1fr; } }
+
+  .callout { background: var(--ink-200); border: 1px solid var(--brand-500); border-radius: var(--radius-lg); padding: var(--space-6) var(--space-8); display: grid; grid-template-columns: max-content 1fr; gap: var(--space-6); align-items: center; }
+  .callout .label { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--brand-400); }
+  .callout p { margin: 0; font-size: var(--text-base); color: var(--ink-900); line-height: var(--leading-relaxed); }
+  .callout p b { color: var(--ink-1000); font-weight: 500; }
+  .callout p a { color: var(--brand-400); }
+  .callout p a:hover { color: var(--brand-300); }
+  @media (max-width: 700px) { .callout { grid-template-columns: 1fr; padding: var(--space-5); } }
+
+  .news { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-5) var(--space-6); display: flex; flex-direction: column; gap: var(--space-2); }
+  .news .label { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--signal-400); display: inline-flex; align-items: center; gap: var(--space-2); }
+  .news .label::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--signal-500); box-shadow: 0 0 0 3px rgba(34,197,94,0.18); }
+  .news h3 { font-family: var(--font-heading); font-weight: 500; font-size: var(--text-base); color: var(--ink-1000); margin: 0; letter-spacing: var(--tracking-snug); }
+  .news p { font-size: var(--text-sm); color: var(--ink-900); line-height: var(--leading-relaxed); margin: 0; }
+  .news a { color: var(--brand-400); font-family: var(--font-mono); font-size: var(--text-xs); }
+
+  /* GROUP HEAD ────────────────────────────────── */
+  .group { margin-top: var(--space-20); scroll-margin-top: var(--space-6); }
+  .group-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-5); flex-wrap: wrap; padding-bottom: var(--space-4); border-bottom: 1px solid var(--ink-500); margin-bottom: var(--space-8); }
+  .group-head .num { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); }
+  .group-head h2 { font-family: var(--font-heading); font-weight: 400; font-size: var(--text-2xl); margin: 0; color: var(--ink-1000); letter-spacing: var(--tracking-snug); }
+  .group-head .status { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; padding: var(--space-1) var(--space-3); border-radius: var(--radius-pill); }
+  .group-head .status[data-state="ready"]   { color: var(--signal-500); background: var(--signal-dim); border: 1px solid var(--signal-500); }
+  .group-head .status[data-state="next"]    { color: var(--warning-500); background: var(--warning-dim); border: 1px solid var(--warning-500); }
+  .group-head .status[data-state="planned"] { color: var(--ink-700); background: var(--ink-200); border: 1px solid var(--ink-500); }
+
+  /* CARD GRID ─────────────────────────────────── */
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
+  @media (max-width: 980px) { .grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+
+  .card { display: block; background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-6); transition: border-color var(--duration-base) var(--ease-out), transform var(--duration-base) var(--ease-out); position: relative; box-shadow: var(--shadow-1); }
+  .card:hover { border-color: var(--brand-500); transform: translateY(-2px); box-shadow: var(--shadow-2); }
+  .card[data-state="planned"] { opacity: 0.55; cursor: not-allowed; }
+  .card[data-state="planned"]:hover { border-color: var(--ink-500); transform: none; box-shadow: var(--shadow-1); }
+
+  .card .ix { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-wider); margin-bottom: var(--space-3); display: flex; justify-content: space-between; align-items: center; }
+  .card .ix .pill-mini { font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-wide); text-transform: uppercase; padding: 2px var(--space-2); border-radius: var(--radius-pill); border: 1px solid var(--ink-600); color: var(--ink-700); }
+  .card .ix .pill-mini.ready { color: var(--signal-500); border-color: var(--signal-500); background: var(--signal-dim); }
+  .card .ix .pill-mini.next  { color: var(--warning-500); border-color: var(--warning-500); background: var(--warning-dim); }
+  .card .ix .pill-mini.planned { color: var(--ink-700); }
+
+  .card h3 { font-family: var(--font-heading); font-weight: 500; font-size: var(--text-xl); margin: 0 0 var(--space-2); color: var(--ink-1000); letter-spacing: var(--tracking-snug); }
+  .card .desc { font-size: var(--text-sm); color: var(--ink-800); line-height: var(--leading-relaxed); margin: 0 0 var(--space-4); }
+  .card .meta { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-wide); }
+  .card .meta b { color: var(--ink-1000); font-weight: 500; }
+  .card .open { display: inline-flex; align-items: center; gap: var(--space-2); margin-top: var(--space-4); color: var(--brand-400); font-size: var(--text-sm); font-weight: 500; letter-spacing: var(--tracking-snug); transition: color var(--duration-quick) var(--ease-out); }
+  .card:hover .open { color: var(--brand-300); }
+
+  /* Stretched-link pattern · article.card wraps the body, .card-link
+     covers the click area as an absolute overlay so sub-anchors inside
+     .meta stay tabbable without violating HTML5's no-nested-<a> rule. */
+  .card-link { position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
+  .card-link:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  .card .meta { position: relative; z-index: 2; }
+  .card .meta a { position: relative; z-index: 2; }
+
+  /* CHANGELOG ────────────────────────────────── */
+  .changelog { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-8); }
+  .changelog .note { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-700); margin-bottom: var(--space-5); }
+  .changelog ul { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-3); }
+  .changelog li { display: grid; grid-template-columns: 110px 1fr; gap: var(--space-4); align-items: baseline; }
+  .changelog li .when { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--brand-400); letter-spacing: var(--tracking-snug); font-weight: 500; }
+  .changelog li .desc { color: var(--ink-900); font-size: var(--text-sm); line-height: var(--leading-relaxed); }
+  .changelog li .desc b { color: var(--ink-1000); font-weight: 500; }
+  @media (max-width: 700px) { .changelog li { grid-template-columns: 1fr; gap: var(--space-1); } }
+
+  /* FOOTER ──────────────────────────────────── */
+  footer { margin-top: var(--space-24); padding-top: var(--space-6); border-top: 1px solid var(--ink-500); display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-wider); }
+  footer a { color: var(--ink-700); }
+  footer a:hover { color: var(--ink-1000); }
+
+  /* Top nav (skip-around) */
+  .top-nav { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-top: var(--space-5); }
+  .top-nav a { font-family: var(--font-mono); font-size: var(--text-xs); padding: var(--space-2) var(--space-3); background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius); color: var(--ink-900); letter-spacing: var(--tracking-snug); }
+  .top-nav a:hover { background: var(--ink-300); color: var(--ink-1000); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO ──────────────────────────────────────── -->
+  <header class="hero" data-screen-label="DS · Index">
+    <div class="meta">
+      <span><b>Vinícius Souza</b> · Design System</span>
+      <span class="v">v1.0 · Foundations · Brand · Atomic · Composite · Layout · Surfaces — locked · 2026-05-10 (patch v1.0.7 · 2026-05-11)</span>
+      <span>3 superfícies · pt-BR</span>
+    </div>
+    <h1>O sistema é<br>escuro. Por escolha.</h1>
+    <p class="lede">
+      Uma plataforma fotográfica brasileira com três superfícies — público, cliente, admin — compartilhando uma única
+      paleta obsidian, três tipografias trabalhando juntas e um único acento âncora. Fotografia <em>narra</em>;
+      a tipografia <em>organiza</em>; a interface <em>desaparece</em>.
+    </p>
+    <nav class="top-nav" aria-label="Pular para seção">
+      <a href="#foundations">01 · Foundations</a>
+      <a href="#brand">02 · Brand</a>
+      <a href="#components-atomic">03 · Atomic</a>
+      <a href="#components-composite">04 · Composite + Layout</a>
+      <a href="#surfaces">05 · Surfaces &amp; cross-cutting</a>
+      <a href="#changelog">06 · Changelog</a>
+    </nav>
+  </header>
+
+  <!-- READ-FIRST + WHATS-NEW ───────────────────── -->
+  <div class="top-grid">
+    <div class="callout">
+      <span class="label">Read first</span>
+      <p>
+        Antes de criar qualquer coisa neste sistema, leia <a href="README.md"><b>README.md</b></a> (voz, idioma,
+        arquitetura de marca) e <a href="SKILL.md"><b>SKILL.md</b></a> (regras do agente: o que fazer, o que nunca
+        fazer, cheat-sheet de tokens). Tudo nesta página resolve para tokens em <code class="type-mono">colors_and_type.css</code>;
+        nunca declare hex inline.
+      </p>
+    </div>
+    <aside class="news" aria-label="Novidades v1.0">
+      <span class="label">What's new · v1.0 · 2026-05-10</span>
+      <h3>Prompt 05 trancado · Surfaces &amp; cross-cutting completos.</h3>
+      <p>Os três UI kits foram reescritos sobre os átomos do Prompt 03 e os compostos do Prompt 04. Quatro páginas novas:
+      <a href="accessibility.html">acessibilidade</a>, <a href="motion.html">motion</a>,
+      <a href="content-style-guide.html">conteúdo</a>, <a href="contribution.html">contribuição</a>.
+      Veja o <a href="#changelog">§ 06 · Changelog</a> ↓.</p>
+    </aside>
+  </div>
+
+  <!-- ═════ 01 · FOUNDATIONS ═════ -->
+  <section class="group" id="foundations">
+    <div class="group-head">
+      <div><span class="num">01 · Foundations</span><h2>Tokens, cor, tipo, espaço.</h2></div>
+      <span class="status" data-state="ready">Pronto · v1.0</span>
+    </div>
+    <div class="grid">
+      <a class="card" href="colors.html">
+        <div class="ix"><span>01.1</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>Sistema de cores</h3>
+        <p class="desc">Rampa obsidian de 12 passos, Anchor Blue como único acento, Signal Green reservado para dinheiro,
+          quatro sub-marcas e uma tabela de pareamento WCAG calculada ao vivo.</p>
+        <p class="meta"><b>12</b> ink · <b>1</b> brand · <b>4</b> sub-marca · <b>21</b> pareamentos</p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card" href="typography.html">
+        <div class="ix"><span>01.2</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>Sistema tipográfico</h3>
+        <p class="desc">Instrument Serif <em style="font-family: var(--font-display); font-style: italic;">narra</em>,
+          General Sans organiza, JetBrains Mono mede. Escala de 13 corpos, três medidas de superfície, regras de inline e numerais.</p>
+        <p class="meta"><b>3</b> famílias + <b>1</b> brand · <b>13</b> corpos · <b>1</b> escala fotográfica</p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card" href="spacing-elevation-motion.html">
+        <div class="ix"><span>01.3</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>Espaço · Elevação · Motion</h3>
+        <p class="desc">Grade de 4 px com 16 paradas, sete raios (do 0 ao pill), sete sombras de câmara escura, quatro
+          durações × três easings, constantes de layout e cinco breakpoints.</p>
+        <p class="meta"><b>16</b> spaces · <b>7</b> raios · <b>7</b> sombras · <b>4</b> dur · <b>3</b> easings</p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </a>
+    </div>
+
+    <div class="grid" style="margin-top: var(--space-4);">
+      <a class="card" href="preview/colors-neutrals.html"><div class="ix"><span>preview</span><span class="pill-mini">Cartão</span></div><h3>Neutrals · 12 passos</h3><p class="desc">Rampa obsidian completa <code class="type-mono">--ink-50</code> → <code class="type-mono">--ink-1000</code> em uma faixa contínua de 12 swatches.</p><p class="meta">preview/colors-neutrals.html</p><span class="open">Abrir <span aria-hidden="true">→</span></span></a>
+      <a class="card" href="preview/type-body.html"><div class="ix"><span>preview</span><span class="pill-mini">Cartão</span></div><h3>Tipografia · corpo &amp; UI</h3><p class="desc">General Sans + JetBrains Mono nos sete corpos de UI/leitura — <code class="type-mono">--text-xxs</code> → <code class="type-mono">--text-2xl</code>. Sem display.</p><p class="meta">preview/type-body.html</p><span class="open">Abrir <span aria-hidden="true">→</span></span></a>
+      <a class="card" href="preview/type-display.html"><div class="ix"><span>preview</span><span class="pill-mini">Cartão</span></div><h3>Tipografia · display</h3><p class="desc">Instrument Serif italic nos seis corpos editoriais — <code class="type-mono">--text-3xl</code> → <code class="type-mono">--text-7xl</code> billboard.</p><p class="meta">preview/type-display.html</p><span class="open">Abrir <span aria-hidden="true">→</span></span></a>
+    </div>
+  </section>
+
+  <!-- ═════ 02 · BRAND ═════ -->
+  <section class="group" id="brand">
+    <div class="group-head">
+      <div><span class="num">02 · Brand</span><h2>Marca, sub-marcas, voz, fotografia.</h2></div>
+      <span class="status" data-state="ready">Pronto · v2.0</span>
+    </div>
+    <div class="grid">
+      <a class="card" href="brand-logo.html">
+        <div class="ix"><span>02.1</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>Marca · logotipo</h3>
+        <p class="desc">A mãe (Vinícius Souza · Fotografia) e as três verticais (Esportes, Natureza, Editorial). Construção em <b>1 X</b>,
+          clear-space, mínimos digital/impresso, quatro lockups, política de fundo claro × escuro, seis não-faça e snippets SVG copia-e-cola.</p>
+        <p class="meta"><b>1</b> mãe + <b>3</b> verticais · SVG inline via <code class="type-mono">&lt;use&gt;</code></p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card" href="business-cards.html">
+        <div class="ix"><span>02.2</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>Cartões &amp; superfícies</h3>
+        <p class="desc">Frente e verso da mãe + um cartão por vertical, em escala 1:1 sobre a malha de impressão. Specs em mm, sangria 3 mm,
+          zona segura 5 %, QR versão 3 com correção H, assinatura HTML, avatares e capas para Instagram, WhatsApp e Maps.</p>
+        <p class="meta">85 × 50 mm · CMYK · matte + spot UV</p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card" href="voice-tone.html">
+        <div class="ix"><span>02.3</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>Voz &amp; tom</h3>
+        <p class="desc">Seis princípios com pares faça/evite; tom por superfície (público editorial confiante, cliente arquival, admin denso);
+          formatos pt-BR de moeda, data, hora, telefone, CNPJ; dicionário canônico com <b>34 strings</b> recorrentes; palavras proibidas; cópia para foto.</p>
+        <p class="meta">voice-tone.html · 34 strings · 9 frases proibidas</p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card" href="photography-style.html">
+        <div class="ix"><span>02.4</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>Estilo fotográfico</h3>
+        <p class="desc">Composição com regra dos terços (e quando quebrar), paleta tonal obsidian sobre a rampa de ink, doze regras de pós-produção (sim × nunca),
+          duas comparações antes/depois, política de marca-d'água, capa hero com scrim, e cropping por superfície (1:1 · 3:2 · 16:9).</p>
+        <p class="meta">photography-style.html · 16:9 hero · 1:1 grid · scrim canônico</p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ═════ 03 · ATOMIC ═════ -->
+  <section class="group" id="components-atomic">
+    <div class="group-head">
+      <div><span class="num">03 · Components · Atomic</span><h2>Botões, inputs, badges, chips, ícones.</h2></div>
+      <span class="status" data-state="ready">Pronto · v1.0</span>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <a class="card-link" href="components-atomic.html" aria-label="03.1 · Botões · inputs · seleção"></a>
+        <div class="ix"><span>03.1</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>Botões · inputs · seleção</h3>
+        <p class="desc">Seis intenções (primary · success · secondary · ghost · destructive · link-button) em três tamanhos × seis estados. Oito tipos de input com afixo, prefixo, helper e erro. Checkbox, radio, toggle.</p>
+        <p class="meta">âncoras <a href="components-atomic.html#buttons">#buttons</a> · <a href="components-atomic.html#inputs">#inputs</a> · <a href="components-atomic.html#selection">#selection</a></p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </article>
+      <article class="card">
+        <a class="card-link" href="components-atomic.html#badges" aria-label="03.2 · Badges · chips · tags"></a>
+        <div class="ix"><span>03.2</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>Badges · chips · tags</h3>
+        <p class="desc">Badges semânticos + sub-marca em três tamanhos. Três famílias de chips: status pt-BR canônico (Pago, Pendente, Reembolso…), filter chips, eyebrow chip. Tags de pasta removíveis.</p>
+        <p class="meta">âncoras <a href="components-atomic.html#badges">#badges</a> · <a href="components-atomic.html#chips">#chips</a> · <a href="components-atomic.html#tags">#tags</a></p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </article>
+      <article class="card">
+        <a class="card-link" href="components-atomic.html#icons" aria-label="03.3 · Ícones · avatares · loading · divisores · links · tooltips"></a>
+        <div class="ix"><span>03.3</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>Ícones · avatares · loading · divisores · links · tooltips</h3>
+        <p class="desc">Sessenta e seis ícones line-svg via <code class="type-mono">&lt;use&gt;</code>, em 16/20/24/32. Avatares xs–xl com fallback de iniciais, status-dot, group-of-three. Spinner, skeleton, progress. Links, breadcrumb, back-link. Tooltips 4 posições.</p>
+        <p class="meta">âncoras <a href="components-atomic.html#avatars">#avatars</a> · <a href="components-atomic.html#icons">#icons</a> · <a href="components-atomic.html#loading">#loading</a></p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </article>
+    </div>
+
+    <div class="grid" style="margin-top: var(--space-4);">
+      <a class="card" href="preview/components-buttons.html"><div class="ix"><span>preview</span><span class="pill-mini">Cartão</span></div><h3>Buttons</h3><p class="desc">Cartão isolado · primary · success · secondary · ghost · destructive em três tamanhos.</p><p class="meta">preview/components-buttons.html</p><span class="open">Abrir <span aria-hidden="true">→</span></span></a>
+      <a class="card" href="preview/components-inputs.html"><div class="ix"><span>preview</span><span class="pill-mini">Cartão</span></div><h3>Inputs</h3><p class="desc">Default · com ícone · focus · error com mensagem real.</p><p class="meta">preview/components-inputs.html</p><span class="open">Abrir <span aria-hidden="true">→</span></span></a>
+      <a class="card" href="preview/components-toggles.html"><div class="ix"><span>preview</span><span class="pill-mini">Cartão</span></div><h3>Seleção</h3><p class="desc">Checkbox · radio · toggle em todos os estados.</p><p class="meta">preview/components-toggles.html</p><span class="open">Abrir <span aria-hidden="true">→</span></span></a>
+      <a class="card" href="preview/components-badges.html"><div class="ix"><span>preview</span><span class="pill-mini">Cartão</span></div><h3>Badges</h3><p class="desc">Semânticos com ponto, filter chips e eyebrow lado a lado.</p><p class="meta">preview/components-badges.html</p><span class="open">Abrir <span aria-hidden="true">→</span></span></a>
+      <a class="card" href="preview/components-chips.html"><div class="ix"><span>preview</span><span class="pill-mini">Cartão</span></div><h3>Chips de status (pt-BR)</h3><p class="desc">Status pedido · proposta · evento · async UI · filter · eyebrow. Strings byte-a-byte do live.</p><p class="meta">preview/components-chips.html</p><span class="open">Abrir <span aria-hidden="true">→</span></span></a>
+      <a class="card" href="preview/components-avatars.html"><div class="ix"><span>preview</span><span class="pill-mini">Cartão</span></div><h3>Avatares</h3><p class="desc">xs · sm · md · lg · xl com fallback de iniciais, status-dot, group-of-three e variante quadrada.</p><p class="meta">preview/components-avatars.html</p><span class="open">Abrir <span aria-hidden="true">→</span></span></a>
+      <a class="card" href="preview/components-icons.html"><div class="ix"><span>preview</span><span class="pill-mini">Cartão</span></div><h3>Ícones · catálogo de 66</h3><p class="desc">Line-svg via <code class="type-mono">&lt;symbol&gt;</code> + <code class="type-mono">&lt;use&gt;</code>. Tamanhos 16/20/24/32.</p><p class="meta">preview/components-icons.html</p><span class="open">Abrir <span aria-hidden="true">→</span></span></a>
+      <a class="card" href="preview/components-loading.html"><div class="ix"><span>preview</span><span class="pill-mini">Cartão</span></div><h3>Loading</h3><p class="desc">Spinner sm/md/lg · skeleton · progress det./indet./semântica · upload-progress.</p><p class="meta">preview/components-loading.html</p><span class="open">Abrir <span aria-hidden="true">→</span></span></a>
+      <a class="card" href="preview/components-links-dividers.html"><div class="ix"><span>preview</span><span class="pill-mini">Cartão</span></div><h3>Links &amp; divisores</h3><p class="desc">Inline · standalone · com-ícone · quiet. Breadcrumb · back-link. Hairline · tracejado · grosso · etiquetado · vertical.</p><p class="meta">preview/components-links-dividers.html</p><span class="open">Abrir <span aria-hidden="true">→</span></span></a>
+      <a class="card" href="preview/components-tooltips.html"><div class="ix"><span>preview</span><span class="pill-mini">Cartão</span></div><h3>Tooltips</h3><p class="desc">Quatro posições (top · bottom · left · right), com seta, permanentemente visíveis para QA.</p><p class="meta">preview/components-tooltips.html</p><span class="open">Abrir <span aria-hidden="true">→</span></span></a>
+      <a class="card" href="preview/components-event-card.html"><div class="ix"><span>preview</span><span class="pill-mini">Cartão</span></div><h3>Event card</h3><p class="desc">Variantes público (faixa sub-marca) e admin (row com KPI).</p><p class="meta">preview/components-event-card.html</p><span class="open">Abrir <span aria-hidden="true">→</span></span></a>
+      <a class="card" href="preview/components-photo-card.html"><div class="ix"><span>preview</span><span class="pill-mini">Cartão</span></div><h3>Photo card</h3><p class="desc">8 variantes do photo-card sobre as duas grades canônicas.</p><p class="meta">preview/components-photo-card.html</p><span class="open">Abrir <span aria-hidden="true">→</span></span></a>
+      <a class="card" href="preview/components-stat-and-cart.html"><div class="ix"><span>preview</span><span class="pill-mini">Cartão</span></div><h3>KPI + cart summary</h3><p class="desc">KPI tiles e o cart summary com tier message canônico.</p><p class="meta">preview/components-stat-and-cart.html</p><span class="open">Abrir <span aria-hidden="true">→</span></span></a>
+    </div>
+  </section>
+
+  <!-- ═════ 04 · COMPOSITE + LAYOUT ═════ -->
+  <section class="group" id="components-composite">
+    <div class="group-head">
+      <div><span class="num">04 · Components · Composite + Layout</span><h2>Cards, sumários, modais, shells, grids.</h2></div>
+      <span class="status" data-state="ready">Pronto · v1.0</span>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <a class="card-link" href="components-composite.html#photo-card" aria-label="04.1 · Cards · foto · vídeo · pasta · evento"></a>
+        <div class="ix"><span>04.1</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>Cards · foto · vídeo · pasta · evento</h3>
+        <p class="desc">Photo card em <b>8 variantes</b> sobre as duas grades canônicas (180 público · 130 admin). Video card com posterClean × posterWm, duração, badge "Vídeo", estado "WM pendente". Folder card. Event card público + admin.</p>
+        <p class="meta"><a href="components-composite.html#photo-card">#photo-card</a> · <a href="components-composite.html#video-card">#video-card</a> · <a href="components-composite.html#folder-card">#folder-card</a> · <a href="components-composite.html#event-card">#event-card</a></p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </article>
+      <article class="card">
+        <a class="card-link" href="components-composite.html#cart-summary" aria-label="04.2 · Sumários · KPI · listas · tabelas"></a>
+        <div class="ix"><span>04.2</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>Sumários · KPI · listas · tabelas</h3>
+        <p class="desc">Cart summary com tier message canônico, cupom inline, total em italic + tabular-nums, estado vazio. KPI tile em <b>4 variantes</b>. List rows em <b>5 famílias</b>. Tabelas admin com header sticky, sortable, paginação, empty + loading skeleton.</p>
+        <p class="meta"><a href="components-composite.html#cart-summary">#cart-summary</a> · <a href="components-composite.html#kpi">#kpi</a> · <a href="components-composite.html#tables">#tables</a></p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </article>
+      <article class="card">
+        <a class="card-link" href="components-composite.html#modals" aria-label="04.3 · Modais · toasts · estados"></a>
+        <div class="ix"><span>04.3</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>Modais · toasts · estados</h3>
+        <p class="desc">Confirm-modal destrutivo (Cancelar à esquerda · primária à direita, ordem canônica). Form-modal sm/md/lg. Side-sheet 380 px e full-screen drawer. Toasts em 4 intenções, alerts inline em 4 intenções. <b>11 estados</b> canônicos de empty/loading/error com cópia direta de voice-tone.</p>
+        <p class="meta"><a href="components-composite.html#modals">#modals</a> · <a href="components-composite.html#toasts">#toasts</a> · <a href="components-composite.html#states">#states</a></p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </article>
+      <article class="card">
+        <a class="card-link" href="layout-primitives.html#container" aria-label="04.4 · Containers · ritmo · page header"></a>
+        <div class="ix"><span>04.4</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>Containers · ritmo · page header</h3>
+        <p class="desc">Três larguras canônicas (1280 público · 1280 cliente · 1440 admin) com gutters 48/32/20. Ritmo vertical (hero 80 / content 64 / cta 64 / footer 96). Page header com breadcrumb, kicker e ações.</p>
+        <p class="meta"><a href="layout-primitives.html#container">#container</a> · <a href="layout-primitives.html#section">#section</a> · <a href="layout-primitives.html#page-header">#page-header</a></p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </article>
+      <article class="card">
+        <a class="card-link" href="layout-primitives.html#admin-sidebar" aria-label="04.5 · Admin sidebar · toolbar"></a>
+        <div class="ix"><span>04.5</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>Admin sidebar · toolbar</h3>
+        <p class="desc">Sidebar 240 px expandida × 64 px colapsada com três seções rotuladas e item ativo em <code class="type-mono">brand-dim</code> + borda 2 px. Toolbar de bulk actions que aparece quando há seleção.</p>
+        <p class="meta"><a href="layout-primitives.html#admin-sidebar">#admin-sidebar</a> · <a href="layout-primitives.html#admin-toolbar">#admin-toolbar</a></p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </article>
+      <article class="card">
+        <a class="card-link" href="layout-primitives.html#public-navbar" aria-label="04.6 · Public navbar · footer · forms · grids"></a>
+        <div class="ix"><span>04.6</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>Public navbar · footer · forms · grids</h3>
+        <p class="desc">Navbar 58 px em três estados (rest · scrolled · mobile). Footer com newsletter, três colunas e sub-brand stripe. Form layouts (single/two-col, label-inline, fieldset+legend). Grid recipes (gallery 130/180/220, event-list 3/4-col, checkout 2-col com sticky aside).</p>
+        <p class="meta"><a href="layout-primitives.html#public-navbar">#public-navbar</a> · <a href="layout-primitives.html#public-footer">#public-footer</a> · <a href="layout-primitives.html#grid">#grid</a></p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </article>
+    </div>
+  </section>
+
+  <!-- ═════ 05 · SURFACES + CROSS-CUTTING ═════ -->
+  <section class="group" id="surfaces">
+    <div class="group-head">
+      <div><span class="num">05 · Surfaces &amp; cross-cutting</span><h2>Os três kits + acessibilidade, motion, conteúdo, contribuição.</h2></div>
+      <span class="status" data-state="ready">Pronto · v1.0</span>
+    </div>
+    <div class="grid">
+      <a class="card" href="ui-kit-public.html">
+        <div class="ix"><span>05.1</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>UI kit · Público</h3>
+        <p class="desc">Hero, descoberta, evento + galeria + cart aside + sponsors + vídeos, lightbox, carrinho, checkout PIX/cartão/MP/PagSeguro, recibo, autenticação, páginas estáticas, 404 / 403 / 500, footer com sub-brand stripe. Três breakpoints: 1280 · 768 · 390.</p>
+        <p class="meta">12 famílias de tela · 3 breakpoints · pt-BR</p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card" href="ui-kit-account.html">
+        <div class="ix"><span>05.2</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>UI kit · Cliente</h3>
+        <p class="desc">Dashboard com KPIs e atalhos, histórico de compras, pedido detalhe com timeline e file-list, salvos &amp; curtidas, comentários, notificações, perfil com bloco LGPD e zona de perigo, avatar uploader com crop. Dois breakpoints: 1280 · 390.</p>
+        <p class="meta">8 famílias de tela · sidebar + canvas · bottom-tab mobile</p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card" href="ui-kit-admin.html">
+        <div class="ix"><span>05.3</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>UI kit · Admin</h3>
+        <p class="desc">Dashboard com sparklines, eventos (grade + detail com 7 tabs), upload com queue/retry, pedidos com 6 status canônicos, pedido manual modal, carrinhos abertos, cupons, repasses, contas, moderação LGPD, configurações com gateway cards, marca-d'água editor, lixeira com SafeDeleteModal. 1440 desktop.</p>
+        <p class="meta">14 famílias de tela · 1440 wide · sidebar fixa</p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card" href="accessibility.html">
+        <div class="ix"><span>05.4</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>Acessibilidade</h3>
+        <p class="desc">Anel de foco único, ordem de tab + skip-link, atalhos de teclado catalogados (cada um auditado em <code class="type-mono">src/</code>), padrões aria-live para carrinho, aria-busy para loading, role=link para div clicável, alt-text, contraste AA/AAA, checklist de PR.</p>
+        <p class="meta">accessibility.html · WCAG AA · 12 atalhos · checklist com 12 itens</p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card" href="motion.html">
+        <div class="ix"><span>05.5</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>Motion em contexto</h3>
+        <p class="desc">Hover/focus em átomos, transição de página, modal &amp; toast entrando, drag-drop, upload progress, skeleton shimmer, pulse de carrinho. Lista de <em>"não anime"</em>. Honra <code class="type-mono">prefers-reduced-motion</code> na própria página.</p>
+        <p class="meta">motion.html · 8 demos em contexto · 10 don'ts</p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card" href="content-style-guide.html">
+        <div class="ix"><span>05.6</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>Guia de conteúdo</h3>
+        <p class="desc">Voz por superfície (público editorial, cliente arquival, admin denso), dicionário de CTAs indexado por localização, regras de microcopy (botão, modal, vazio, erro), rótulos canônicos pt-BR, fórmulas de empty/loading/error, plano de i18n.</p>
+        <p class="meta">content-style-guide.html · ~70 strings indexadas · 18 estados canônicos</p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card" href="contribution.html">
+        <div class="ix"><span>05.7</span><span class="pill-mini ready">Pronto</span></div>
+        <h3>Contribuição</h3>
+        <p class="desc">Como adicionar um componente novo (5 passos), regra "token first" (proibido × permitido), convenções de nome (CSS, classe, arquivo, preview, screen label), log de deprecação com 12 itens, política de versão SemVer, defaults canônicos.</p>
+        <p class="meta">contribution.html · 12 deprecações · v1.x roadmap</p>
+        <span class="open">Abrir <span aria-hidden="true">→</span></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ═════ 06 · CHANGELOG ═════ -->
+  <section class="group" id="changelog">
+    <div class="group-head">
+      <div><span class="num">06 · Changelog</span><h2>O que entrou nesta versão.</h2></div>
+      <span class="status" data-state="ready">v1.0</span>
+    </div>
+
+    <div class="changelog">
+      <p class="note">2026-05-10 · Surfaces &amp; cross-cutting locked · Composite + Layout locked · Atomic locked · Brand locked · Foundations locked</p>
+      <ul>
+        <li><span class="when">surfaces</span><span class="desc"><a href="ui-kit-public.html"><b>ui-kit-public.html</b></a> reescrito sobre os átomos e compostos dos Prompts 03–04: <b>12 famílias de tela</b> em <b>3 breakpoints</b> (1280 · 768 · 390) — navbar, hero, descoberta, evento + lightbox + carrinho aside + vídeos + patrocinadores, cart, checkout PIX (com QR SVG inline), recibo, auth, estáticas, 404 / 403 / 500, footer com sub-brand stripe. Cada tela com pelo menos um estado de empty/loading/error visível.</span></li>
+        <li><span class="when">surfaces</span><span class="desc"><a href="ui-kit-account.html"><b>ui-kit-account.html</b></a> reescrito em 2 breakpoints (1280 · 390): <b>8 famílias de tela</b> — dashboard com KPIs e atalhos, compras (lista + empty), pedido detalhe com timeline + file-list, salvos &amp; curtidas, comentários (com modo de edição mobile), notificações com tipos, perfil com bloco LGPD + zona de perigo, avatar uploader com crop 1:1. Bottom-tab nav no mobile.</span></li>
+        <li><span class="when">surfaces</span><span class="desc"><a href="ui-kit-admin.html"><b>ui-kit-admin.html</b></a> reescrito desktop-first em 1440: <b>14 famílias de tela</b> — dashboard com sparklines + atividade 24h, eventos grade, evento detalhe com <b>7 tabs</b> + bulk toolbar, upload com queue (enviando/processando/pronto/falhou) e botão "retry the 3 failed", pedidos com <b>6 status canônicos</b> da live (<em>Simulacao/liberacao</em> como rótulo único agregado, sem acento), pedido manual modal, carrinhos abertos, cupons, repasses (KPIs + CTA mensal), contas com bulk-action, moderação LGPD, configurações com gateway cards (Asaas · Stripe · MP · PagSeguro), marca-d'água editor com preview em 3 fotos, lixeira com SafeDeleteModal.</span></li>
+        <li><span class="when">a11y</span><span class="desc">Nova <a href="accessibility.html"><b>accessibility.html</b></a>: anel de foco único (token + variante de erro), skip-link, <b>12 atalhos de teclado</b> catalogados — cada um com referência <code class="type-mono">file:line</code> em <code class="type-mono">src/</code> (PhotoModal.js:246, minha-conta/layout.js:95, admin/eventos/[id]/page.js:1856, etc.). Contraste AA/AAA em 8 pares canônicos. Padrões aria-live, aria-busy, role=link, role=dialog. Política de motion sensível. Checklist de PR com 12 itens.</span></li>
+        <li><span class="when">motion</span><span class="desc">Nova <a href="motion.html"><b>motion.html</b></a>: 8 demos em contexto — hover de átomo, troca de página, modal entrando com peso, toast com mola, drop-zone, upload progress (determinada + indeterminada + done), skeleton shimmer, pulse de carrinho. <b>Lista de "não anime"</b> com 10 itens. A própria página honra <code class="type-mono">prefers-reduced-motion</code>.</span></li>
+        <li><span class="when">content</span><span class="desc">Nova <a href="content-style-guide.html"><b>content-style-guide.html</b></a>: voz prescritiva por superfície (frase, modo verbal, saudação, verbos), dicionário de <b>~70 CTAs</b> indexado por <code class="type-mono">&lt;surface&gt;.&lt;area&gt;.&lt;action&gt;</code>, regras de microcopy (botão, modal, vazio, erro) com pares faça/evite, rótulos canônicos (status pt-BR, eyebrow, cabeçalho de tabela), fórmula de <b>18 estados</b> de empty/loading/error, plano de i18n para EN.</span></li>
+        <li><span class="when">contrib</span><span class="desc">Nova <a href="contribution.html"><b>contribution.html</b></a>: 5 passos para adicionar componente, regra "token first" com listas proibido × permitido, convenções de nome (CSS / arquivo / preview / screen label / ID de cópia), <b>log de deprecação com 12 itens</b> (<code class="type-mono">--accent</code>, <code class="type-mono">--dur-*</code> aliases, modais sem focus-trap, etc.), política de versão SemVer (major / minor / patch), defaults canônicos.</span></li>
+        <li><span class="when">index</span><span class="desc"><b>index.html</b> reestruturada em <b>5 seções nomeadas</b> (Foundations · Brand · Atomic · Composite+Layout · Surfaces) + Read-first callout + <b>What's new</b> + nav top para pular para qualquer seção. Toda HTML criada até hoje está linkada a um clique de distância.</span></li>
+        <li><span class="when">docs</span><span class="desc"><b>README.md</b> sincronizado: diagrama de superfícies, voz definitiva, fontes corrigidas (Instrument Serif + General Sans + JetBrains Mono — não mais Space Grotesk/Inter), índice de arquivos atualizado. <b>SKILL.md</b> reescrito com a do/never list canônica refletindo decisões trancadas dos cinco prompts.</span></li>
+        <li><span class="when">root</span><span class="desc"><a href="../../DESIGN-SYSTEM.md"><b>DESIGN-SYSTEM.md</b></a> (repo root) reescrita como <em>sumário executivo de uma tela</em> apontando para esta pasta. Sem duplicação de tokens, sem cópia de regra. Quem entra no repo é apontado para <em>mockups/system design by claude design/</em>.</span></li>
+        <li><span class="when">composite</span><span class="desc"><a href="components-composite.html"><b>components-composite.html</b></a>: <b>11 famílias</b> de composto — photo card em 8 variantes, video card com posterClean × posterWm e estado processing, folder card, event card (faixa sub-marca) + event row, cart-summary com tier message, KPI tile em 4 variantes, list-rows em 5 famílias, tabelas com sticky/sortable/empty/loading, modais (confirm · form · drawer · side-sheet) com ordem de botão canônica, toasts em 4 intenções, 11 estados de empty/loading/error.</span></li>
+        <li><span class="when">layout</span><span class="desc"><a href="layout-primitives.html"><b>layout-primitives.html</b></a>: containers nas três larguras canônicas, ritmo vertical, page header, admin sidebar expanded × collapsed, admin toolbar de bulk actions, public navbar em 3 estados, public footer com sub-brand stripe, form layouts, grid recipes.</span></li>
+        <li><span class="when">atomic</span><span class="desc"><a href="components-atomic.html"><b>components-atomic.html</b></a>: referência definitiva — botões (6 × 3 × 6), inputs (8 tipos), checkbox/radio/toggle, badges, chips pt-BR canônicos, filter, eyebrow, tags, avatares xs–xl com status-dot, <b>68</b> ícones line-svg, divisores, links, tooltips, loading.</span></li>
+        <li><span class="when">canonical</span><span class="desc">Status pt-BR de pedidos/propostas/eventos fixados <em>byte-a-byte</em> a partir de <code class="type-mono">src/lib/commerceUtils.js · getFinancialStatus()</code> e <code class="type-mono">src/app/admin/propostas/page.js · STATUS_META</code>. "Simulacao/liberacao" sem acento documentada como replicação fiel do live.</span></li>
+        <li><span class="when">brand</span><span class="desc"><a href="brand-logo.html"><b>brand-logo.html</b></a> reescrita com construção em <b>1 X</b>, três tamanhos canônicos, seis don'ts, snippets SVG via <code class="type-mono">&lt;use href="#vs-glyph"&gt;</code>. Quatro arquivos canônicos em <code class="type-mono">assets/logos/</code>.</span></li>
+        <li><span class="when">page</span><span class="desc">Nova <a href="voice-tone.html"><b>voice-tone.html</b></a>, nova <a href="photography-style.html"><b>photography-style.html</b></a>, <a href="business-cards.html"><b>business-cards.html</b></a> reescrita.</span></li>
+        <li><span class="when">page</span><span class="desc">Nova <a href="colors.html"><b>colors.html</b></a> com tabela de pareamento WCAG ao vivo. Nova <a href="spacing-elevation-motion.html"><b>spacing-elevation-motion.html</b></a>. <a href="typography.html"><b>typography.html</b></a> reescrita.</span></li>
+        <li><span class="when">added</span><span class="desc">Sub-brand triad como rampas completas. Tokens de motion canônicos com aliases retrocompat. Aliases semânticos de elevação. <code class="type-mono">--text-7xl</code> billboard. Paleta semântica completa (warning, danger, info). <code class="type-mono">--focus-ring</code> compartilhado. <code class="type-mono">prefers-reduced-motion</code> reduzindo todas as durações para 1 ms.</span></li>
+        <li><span class="when">deferred</span><span class="desc">Live <code class="type-mono">src/app/base.css</code> ainda usa accent verde e Inter/Space Grotesk. A migração para os tokens v1.0 é tarefa de produção, não do DS — está no log de deprecação de <a href="contribution.html#log">contribution.html § 04</a>.</span></li>
+        <li><span class="when">deferred</span><span class="desc">Modais hoje fecham com <em>Esc</em> mas o foco pode escapar com <em>Tab</em>. Implementar focus-trap genérico é tarefa de <code class="type-mono">src/</code> — listada como gap em <a href="accessibility.html#aria">accessibility.html § 05.D</a>.</span></li>
+      </ul>
+
+      <p class="note" style="margin-top: var(--space-8);">v1.0.2 patch · landed · 2026-05-10</p>
+      <ul>
+        <li><span class="when">v1.0.2</span><span class="desc"><b>Email-signature preview tokenizada</b> · <a href="business-cards.html">business-cards.html</a>:676,681 · preview renderizada agora consome <code class="type-mono">var(--paper-brand)</code> + <code class="type-mono">var(--paper-ink)</code>; o <code class="type-mono">&lt;pre&gt;</code> de copy-paste mantém o hex literal (Outlook).</span></li>
+        <li><span class="when">v1.0.2</span><span class="desc"><b>Catálogo de keydowns admin completo</b> · <a href="accessibility.html#atalhos">accessibility.html § 03</a> · 5 handlers adicionados — 2 atalhos explícitos (Enter para adicionar categoria · Enter/Esc para edição de preço inline) + 3 padrões ARIA <code class="type-mono">role="button"</code> documentados como "não-shortcut".</span></li>
+        <li><span class="when">v1.0.2</span><span class="desc"><b>Account-kit loading + error states</b> · <a href="ui-kit-account.html#orders-states">ui-kit-account.html § 02.2</a> · skeleton shimmer (4 linhas reusando <code class="type-mono">@keyframes skel</code>) + frame de erro <code class="type-mono">err.account.load</code> ("Não foi possível carregar suas compras. Tente de novo.") agora estão visíveis ao lado do empty state.</span></li>
+        <li><span class="when">v1.0.2</span><span class="desc"><b>Contagem de ícones reconciliada · 66</b> · número canônico em <a href="README.md">README.md</a>, <a href="SKILL.md">SKILL.md</a>, <a href="#components-atomic">index</a> (2×) e <a href="components-atomic.html#icons">components-atomic.html</a> (TOC + título).</span></li>
+        <li><span class="when">v1.0.2</span><span class="desc"><b>Glyph ✓ removido</b> · <a href="contribution.html">contribution.html</a>:58,272 · CSS mask SVG substitui o marker do <code class="type-mono">.rules.do</code>; texto da tabela passa a usar "OK · resolvido em v1.0".</span></li>
+        <li><span class="when">v1.0.2</span><span class="desc"><b>Token <code class="type-mono">--focus-ring-error</code></b> · <a href="colors_and_type.css">colors_and_type.css § 6</a> · declarado como alias semântico (<code class="type-mono">0 0 0 2px var(--ink-100), 0 0 0 4px var(--danger-500)</code>); consumido em <a href="components-atomic.html">components-atomic.html</a> <code class="type-mono">.field.is-error</code> no lugar do inline.</span></li>
+        <li><span class="when">v1.0.2</span><span class="desc"><b>UI-kits ganham <code class="type-mono">.input:focus-visible</code></b> · <a href="ui-kit-public.html">ui-kit-public</a> + <a href="ui-kit-account.html">ui-kit-account</a> + <a href="ui-kit-admin.html">ui-kit-admin</a> agora declaram <code class="type-mono">box-shadow: var(--focus-ring)</code> sob foco real — sem isso o <code class="type-mono">outline: none</code> deixava input sem indicação no teclado.</span></li>
+      </ul>
+
+      <p class="note" style="margin-top: var(--space-8);">v1.0.3 patch · landed · 2026-05-10</p>
+      <ul>
+        <li><span class="when">v1.0.3</span><span class="desc"><b><code class="type-mono">&lt;a&gt;</code> aninhado em <code class="type-mono">&lt;a class="card"&gt;</code> resolvido</b> · <a href="index.html">index.html</a>:242-263, :289-330 · 9 cards de Atomic e Composite+Layout convertidos para <code class="type-mono">&lt;article class="card"&gt;</code> + <code class="type-mono">&lt;a class="card-link"&gt;</code> com sobreposição absoluta (padrão "stretched link"). Sub-âncoras na <code class="type-mono">.meta</code> permanecem tabuláveis (<code class="type-mono">z-index: 2</code>) sem violar HTML5. 27 nested <code class="type-mono">&lt;a&gt;</code> opens zerados.</span></li>
+        <li><span class="when">v1.0.3</span><span class="desc"><b>Swatch demonstrativo tokenizado</b> · <a href="brand-logo.html">brand-logo.html</a>:529 · <code class="type-mono">background:#fff</code> migrado para <code class="type-mono">var(--paper-bg)</code> (que <em>é</em> <code class="type-mono">#ffffff</code>); a demonstração da regra "branco puro a evitar" agora também passa pela camada de token sem mudar pixel.</span></li>
+        <li><span class="when">v1.0.3</span><span class="desc"><b>Token órfão <code class="type-mono">--paper-card</code> removido</b> · <a href="colors_and_type.css">colors_and_type.css</a>:301 · sem consumidores em nenhum HTML; cards do business-cards.html são tematicamente escuros e a assinatura de email já consome <code class="type-mono">--paper-bg</code> + <code class="type-mono">--paper-ink</code> + <code class="type-mono">--paper-brand</code>. Bloco de comentário v1.0.1 atualizado.</span></li>
+        <li><span class="when">v1.0.3</span><span class="desc"><b>Contagem de ícones reconciliada no preview</b> · <a href="preview/components-icons.html">preview/components-icons.html</a>:3,101 · <code class="type-mono">60</code> corrigido para <code class="type-mono">67</code> (já alinhado com README, SKILL, index e components-atomic). <em>(later re-reconciled to 66 in v1.0.5; promoted to 68 in v1.0.7.)</em></span></li>
+      </ul>
+
+      <p class="note" style="margin-top: var(--space-8);">v1.0.5 patch · landed · 2026-05-10</p>
+      <ul>
+        <li><span class="when">v1.0.5</span><span class="desc"><b>contagens (icons 66, strings 34, shortcuts 13) reconciliadas, stripe admin event-tile, skeleton motion</b> — fonte da verdade do sprite (<a href="components-atomic.html#icons">components-atomic.html</a>) é <code class="type-mono">66</code>; voice-tone passa a declarar <code class="type-mono">34 strings</code>; accessibility/index sincronizam <code class="type-mono">12 atalhos</code>; <a href="ui-kit-admin.html">ui-kit-admin.html</a> ganha <code class="type-mono">&lt;span class="stripe stripe-*"&gt;</code> no topo dos 4 event-tiles (resolve v1.0.1 deferred); <a href="ui-kit-account.html">ui-kit-account.html</a> ganha <code class="type-mono">@media (prefers-reduced-motion: reduce)</code> matando o keyframe <code class="type-mono">skel</code>.</span></li>
+      </ul>
+
+      <p class="note" style="margin-top: var(--space-8);">v1.0.6 patch · landed · 2026-05-10</p>
+      <ul>
+        <li><span class="when">v1.0.7</span><span class="desc"><b>minors finais zerados (icon promotion, sprite naming, button states, count drift)</b> — i-wifi-off + i-image-off promovidos ao sprite canônico (68 ícones); aliases locais dos UI-kits renomeados pro canônico (i-arrow-l/r, i-cal, i-up); disclaimer de button states reescrito como decisão de escopo; narrativa v1.0.3 anotada; atalhos reconciliados para 12.</span></li>
+        <li><span class="when">v1.0.6</span><span class="desc"><b>propagação de versão entre README/SKILL/index + prefers-reduced-motion wraps</b> — versão canônica <code class="type-mono">v1.0.6</code> propagada em <a href="README.md">README.md</a>, <a href="SKILL.md">SKILL.md</a>, <a href="index.html">index.html</a> hero e <a href="colors_and_type.css">colors_and_type.css</a> header; wraps locais de <code class="type-mono">@media (prefers-reduced-motion: reduce)</code> adicionados em <a href="components-atomic.html">components-atomic.html</a> (spin · skel · indet), <a href="components-composite.html">components-composite.html</a> (skel) e <a href="preview/components-loading.html">preview/components-loading.html</a> (spin · skel · indet).</span></li>
+      </ul>
+
+      <p class="note" style="margin-top: var(--space-8);">v1.0.1 polish · deferred · queued for next patch</p>
+      <ul>
+        <li><span class="when">v1.0.1</span><span class="desc"><b>Admin event-tile sub-brand stripe</b> · <a href="ui-kit-admin.html">ui-kit-admin.html</a>:438, 446, 454, 458 · event-tile category chip carrega cor de sub-marca mas não tem o <code class="type-mono">&lt;span class="stripe"&gt;</code> que public usa. Adicionar a faixa 4 px para coerência cross-surface, ou documentar a assimetria em <a href="components-composite.html">components-composite.html § event-card</a>.</span></li>
+        <li><span class="when">v1.0.1</span><span class="desc"><b>Don'ts grid · "pure-white surface"</b> · <a href="brand-logo.html">brand-logo.html</a>:535-595 · grid canônico de não-faça tem seis cards (distort, recolour, drop-shadow, rotate, gradient, pattern) mas falta o sétimo: "no pure-white surface", regra hoje só presente em prosa na tabela on-light/on-dark.</span></li>
+        <li><span class="when">v1.0.1</span><span class="desc"><b>xref · <code class="type-mono">cartPricePolicy.js</code> → <code class="type-mono">pricing.js</code></b> · <a href="components-composite.html">components-composite.html § cart-summary</a> · a fonte real da tier-copy é <code class="type-mono">src/lib/pricing.js:87-94</code> (constant <code class="type-mono">faixa</code>); <code class="type-mono">cartPricePolicy.js</code> trata do price-change impact, outro domínio.</span></li>
+        <li><span class="when">v1.0.1</span><span class="desc"><b>Separar propostas em § 03.b</b> · <a href="accessibility.html#atalhos">accessibility.html § 03</a> · mover os 5 atalhos "não implementado · proposta" para uma sub-seção <em>§ 03.b · Atalhos futuros</em>, deixando § 03.a byte-igual aos handlers ligados em <code class="type-mono">src/</code>.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer data-screen-label="DS · Index footer">
+    <span>VINÍCIUS SOUZA · DESIGN SYSTEM · v1.0 · 2026-05-10</span>
+    <span><a href="README.md">README</a> · <a href="SKILL.md">SKILL</a> · <a href="colors_and_type.css">tokens</a> · <a href="../../DESIGN-SYSTEM.md">root</a></span>
+  </footer>
+
+</div>
+</body>
+</html>

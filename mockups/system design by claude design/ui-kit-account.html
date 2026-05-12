@@ -1,0 +1,978 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Vinícius Souza — UI Kit · Cliente</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { padding-bottom: var(--space-24); background: var(--ink-50); }
+  img { display: block; max-width: 100%; }
+
+  .wrap { max-width: 1480px; margin: 0 auto; padding: var(--space-12) var(--space-8) var(--space-24); }
+  @media (max-width: 800px) { .wrap { padding: var(--space-8) var(--space-4); } }
+
+  /* PAGE CHROME */
+  .kit-head { padding-bottom: var(--space-8); border-bottom: 1px solid var(--ink-500); margin-bottom: var(--space-12); }
+  .kit-head .crumbs { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); margin-bottom: var(--space-4); display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; }
+  .kit-head .crumbs a { color: var(--ink-700); }
+  .kit-head .crumbs b { color: var(--ink-1000); font-weight: 500; }
+  .kit-head h1 { font-family: var(--font-display); font-style: italic; font-size: var(--text-5xl); line-height: var(--leading-flat); letter-spacing: var(--tracking-tight); margin: 0 0 var(--space-3); max-width: 24ch; color: var(--ink-1000); }
+  .kit-head .lede { max-width: 64ch; font-size: var(--text-md); line-height: var(--leading-relaxed); color: var(--ink-900); margin: 0 0 var(--space-6); }
+  .kit-head .lede em { font-family: var(--font-display); font-style: italic; color: var(--ink-1000); }
+  .kit-head .toc { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .kit-head .toc a { font-family: var(--font-mono); font-size: var(--text-xs); padding: var(--space-2) var(--space-3); background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius); color: var(--ink-900); letter-spacing: var(--tracking-snug); }
+  .kit-head .toc a:hover { background: var(--ink-300); color: var(--ink-1000); }
+
+  /* SCREEN ROW (account: 2 breakpoints) */
+  .screen { margin-top: var(--space-16); }
+  .screen-head { display: flex; gap: var(--space-3); align-items: baseline; padding-bottom: var(--space-3); border-bottom: 1px solid var(--ink-500); margin-bottom: var(--space-6); flex-wrap: wrap; }
+  .screen-head .num { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-widest); text-transform: uppercase; }
+  .screen-head h2 { font-family: var(--font-heading); font-size: var(--text-xl); font-weight: 500; color: var(--ink-1000); margin: 0; letter-spacing: var(--tracking-snug); }
+  .screen-head .copy { color: var(--ink-800); font-size: var(--text-sm); margin: 0; line-height: var(--leading-relaxed); max-width: 50ch; flex: 1; }
+  .screen-head .tag { font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-wider); text-transform: uppercase; padding: 2px var(--space-2); border-radius: var(--radius-pill); background: var(--ink-200); border: 1px solid var(--ink-500); color: var(--ink-800); }
+
+  .frames { display: grid; grid-template-columns: 1fr 390px; gap: var(--space-4); align-items: start; }
+  @media (max-width: 1080px) { .frames { grid-template-columns: 1fr; } .frames .vp-mobile { display: none; } }
+  .vp { background: var(--ink-100); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; position: relative; }
+  .vp .vp-ruler { padding: 4px var(--space-3); background: var(--ink-200); border-bottom: 1px solid var(--ink-500); font-family: var(--font-mono); font-size: 9.5px; color: var(--ink-700); letter-spacing: var(--tracking-wider); text-transform: uppercase; display: flex; justify-content: space-between; }
+  .vp.vp-desktop .vp-stage { min-height: 560px; }
+  .vp.vp-mobile .vp-stage { min-height: 560px; }
+
+  /* atoms subset */
+  .ico { display: inline-block; width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vertical-align: middle; flex-shrink: 0; }
+  .ico.is-12 { width: 12px; height: 12px; }
+  .ico.is-14 { width: 14px; height: 14px; }
+  .ico.is-16 { width: 16px; height: 16px; }
+  .ico.is-20 { width: 20px; height: 20px; }
+  .ico.is-24 { width: 24px; height: 24px; }
+  .ico.is-32 { width: 32px; height: 32px; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); font-family: var(--font-body); font-size: var(--text-sm); font-weight: 500; padding: var(--space-3) var(--space-5); background: transparent; color: var(--ink-1000); border: 1px solid transparent; border-radius: var(--radius); cursor: pointer; white-space: nowrap; transition: background var(--duration-quick) var(--ease-out); }
+  .btn-primary { background: var(--brand-500); }
+  .btn-primary:hover { background: var(--brand-400); }
+  .btn-success { background: var(--signal-500); color: var(--ink-50); }
+  .btn-secondary { border-color: var(--ink-500); }
+  .btn-secondary:hover { border-color: var(--ink-700); background: var(--ink-200); }
+  .btn-ghost { color: var(--ink-800); }
+  .btn-ghost:hover { color: var(--ink-1000); background: var(--ink-300); }
+  .btn-danger { background: var(--danger-dim); color: var(--danger-500); border-color: rgba(224,85,79,0.35); }
+  .btn-sm { padding: var(--space-2) var(--space-3); font-size: var(--text-xs); }
+  .btn-lg { padding: var(--space-3) var(--space-6); font-size: var(--text-base); }
+  .btn-icon { padding: var(--space-2); width: 36px; height: 36px; }
+
+  .badge { display: inline-flex; align-items: center; gap: var(--space-1); padding: 3px var(--space-3); border-radius: var(--radius-pill); font-family: var(--font-mono); font-size: var(--text-xxs); font-weight: 500; letter-spacing: var(--tracking-wide); text-transform: uppercase; border: 1px solid transparent; }
+  .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .badge.b-success { background: var(--signal-dim); color: var(--signal-400); border-color: rgba(34,197,94,0.30); }
+  .badge.b-warning { background: var(--warning-dim); color: var(--warning-500); border-color: rgba(232,163,58,0.30); }
+  .badge.b-danger  { background: var(--danger-dim); color: var(--danger-500); border-color: rgba(224,85,79,0.30); }
+  .badge.b-info    { background: var(--brand-dim); color: var(--brand-400); border-color: rgba(31,122,224,0.30); }
+  .badge.b-neutral { background: var(--ink-200); color: var(--ink-900); border-color: var(--ink-500); }
+
+  .input { background: var(--ink-400); color: var(--ink-1000); font-family: var(--font-body); font-size: var(--text-sm); padding: var(--space-3) var(--space-4); border: 1px solid var(--ink-500); border-radius: var(--radius); outline: none; width: 100%; }
+  .input:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  .input::placeholder { color: var(--ink-700); }
+
+  /* CLIENTE SHELL */
+  .shell { display: grid; grid-template-columns: 240px 1fr; min-height: 600px; }
+  @media (max-width: 900px) { .shell { grid-template-columns: 1fr; } .shell .side { display: none; } }
+  .side { background: var(--ink-200); border-right: 1px solid var(--ink-500); padding: var(--space-5) 0; display: flex; flex-direction: column; }
+  .side .profile { padding: 0 var(--space-5) var(--space-5); border-bottom: 1px solid var(--ink-500); display: flex; flex-direction: column; gap: var(--space-2); }
+  .side .profile .av { width: 48px; height: 48px; border-radius: var(--radius-pill); background: var(--ink-400); display: grid; place-items: center; font-family: var(--font-heading); font-weight: 500; color: var(--ink-1000); font-size: 16px; border: 1px solid var(--ink-500); }
+  .side .profile .name { font-family: var(--font-heading); font-size: var(--text-base); font-weight: 500; color: var(--ink-1000); }
+  .side .profile .since { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-700); letter-spacing: var(--tracking-wider); text-transform: uppercase; }
+  .side .nav-section { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); padding: var(--space-4) var(--space-5) var(--space-1); }
+  .side .nav-item { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-5); color: var(--ink-900); font-size: var(--text-sm); border-left: 2px solid transparent; padding-left: calc(var(--space-5) - 2px); cursor: pointer; }
+  .side .nav-item:hover { background: var(--ink-300); color: var(--ink-1000); }
+  .side .nav-item.is-active { background: var(--brand-dim); color: var(--brand-300); border-left-color: var(--brand-500); }
+  .side .nav-item .lbl { flex: 1; }
+  .side .nav-item .count { font-family: var(--font-mono); font-size: 10px; color: var(--ink-700); padding: 1px 6px; background: var(--ink-300); border-radius: var(--radius-pill); }
+
+  .canvas { padding: var(--space-6) var(--space-8); display: flex; flex-direction: column; gap: var(--space-6); }
+  @media (max-width: 900px) { .canvas { padding: var(--space-5); } }
+  .canvas .page-head { display: flex; justify-content: space-between; align-items: end; gap: var(--space-3); flex-wrap: wrap; padding-bottom: var(--space-4); border-bottom: 1px solid var(--ink-500); }
+  .canvas .page-head .crumb { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-wider); text-transform: uppercase; margin-bottom: var(--space-2); }
+  .canvas .page-head h1 { font-family: var(--font-display); font-style: italic; font-size: var(--text-3xl); color: var(--ink-1000); margin: 0; letter-spacing: var(--tracking-tight); }
+  .canvas .page-head .actions { display: inline-flex; gap: var(--space-2); }
+
+  /* KPI */
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); }
+  @media (max-width: 800px) { .kpis { grid-template-columns: 1fr 1fr; } }
+  .kpi { background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-1); }
+  .kpi .k { font-family: var(--font-mono); font-size: 10px; letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); }
+  .kpi .v { font-family: var(--font-display); font-style: italic; font-size: var(--text-3xl); color: var(--ink-1000); font-variant-numeric: tabular-nums; line-height: 1; margin-top: var(--space-1); }
+  .kpi .v small { font-family: var(--font-body); font-style: normal; font-size: var(--text-xs); color: var(--ink-800); margin-left: var(--space-1); }
+  .kpi .delta { font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--signal-400); letter-spacing: var(--tracking-wider); text-transform: uppercase; margin-top: var(--space-1); }
+
+  .shortcuts { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
+  @media (max-width: 800px) { .shortcuts { grid-template-columns: 1fr 1fr; } }
+  .shortcut { background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-5); display: flex; gap: var(--space-3); align-items: center; cursor: pointer; transition: border-color var(--duration-base) var(--ease-out); }
+  .shortcut:hover { border-color: var(--brand-500); }
+  .shortcut .ic-wrap { width: 40px; height: 40px; border-radius: var(--radius); background: var(--ink-300); display: grid; place-items: center; color: var(--brand-400); }
+  .shortcut .text { flex: 1; }
+  .shortcut h4 { font-family: var(--font-heading); font-size: var(--text-base); font-weight: 500; color: var(--ink-1000); margin: 0; }
+  .shortcut p { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); margin: 0; }
+
+  /* ORDER CARD */
+  .orders-stack { display: grid; gap: var(--space-3); }
+  .order-card { background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; }
+  .order-card .o-head { display: grid; grid-template-columns: 1fr max-content; padding: var(--space-3) var(--space-5); background: var(--ink-300); border-bottom: 1px solid var(--ink-500); gap: var(--space-3); align-items: center; }
+  .order-card .o-head .name { font-family: var(--font-heading); font-size: var(--text-base); font-weight: 500; color: var(--ink-1000); }
+  .order-card .o-head .id { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); display: block; }
+  .order-card .o-body { padding: var(--space-3) var(--space-5); display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center; }
+  .order-card .o-body .meta { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); display: flex; gap: var(--space-3); flex-wrap: wrap; }
+  .order-card .o-body .meta b { color: var(--ink-1000); font-weight: 500; }
+  .order-card .o-body .actions { margin-left: auto; display: inline-flex; gap: var(--space-2); }
+  .order-card .o-thumbs { display: flex; gap: var(--space-2); padding: 0 var(--space-5) var(--space-3); flex-wrap: wrap; }
+  .order-card .o-thumbs .th { width: 56px; height: 56px; border-radius: var(--radius-sm); background: var(--ph-anchor); }
+
+  /* SKELETON · reusa o keyframe skel de components-composite.html:516 */
+  .skel-block { display: block; height: 12px; border-radius: 6px; background: linear-gradient(90deg, var(--ink-300) 0%, var(--ink-400) 50%, var(--ink-300) 100%); background-size: 200% 100%; animation: skel 1.6s ease-in-out infinite; }
+  .skel-block.is-tall { height: 18px; }
+  .skel-block.is-pill { height: 22px; border-radius: var(--radius-pill); }
+  .skel-block.w-30 { width: 30%; }
+  .skel-block.w-45 { width: 45%; }
+  .skel-block.w-60 { width: 60%; }
+  .skel-block.w-80 { width: 80%; }
+  @keyframes skel { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .skel-block { animation: none; }
+  }
+
+  /* ERROR FRAME */
+  .err-frame { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-4); padding: var(--space-16) var(--space-6); text-align: center; background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); }
+  .err-frame .ic { width: 48px; height: 48px; border-radius: var(--radius-pill); background: var(--danger-dim); border: 1px solid var(--danger-500); color: var(--danger-500); display: grid; place-items: center; }
+  .err-frame h3 { font-family: var(--font-display); font-style: italic; font-size: var(--text-2xl); color: var(--ink-1000); margin: 0; }
+  .err-frame p { font-size: var(--text-sm); color: var(--ink-900); max-width: 40ch; margin: 0; line-height: var(--leading-relaxed); }
+
+  /* TIMELINE */
+  .timeline { background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-5); }
+  .timeline ol { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-3); }
+  .timeline li { display: grid; grid-template-columns: 16px 1fr; gap: var(--space-3); position: relative; padding-left: var(--space-2); }
+  .timeline li::before { content: ""; position: absolute; top: 6px; left: 7px; width: 8px; height: 8px; border-radius: 50%; background: var(--brand-500); border: 2px solid var(--ink-200); z-index: 1; }
+  .timeline li::after { content: ""; position: absolute; top: 14px; left: 10px; bottom: -16px; width: 1px; background: var(--ink-500); }
+  .timeline li:last-child::after { display: none; }
+  .timeline li.done::before { background: var(--signal-500); }
+  .timeline li .when { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-snug); display: block; }
+  .timeline li .what { font-size: var(--text-sm); color: var(--ink-1000); line-height: var(--leading-relaxed); }
+  .timeline li .what b { color: var(--ink-1000); font-weight: 500; }
+
+  /* FILE LIST */
+  .file-list { background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; }
+  .file-row { display: grid; grid-template-columns: 56px 1fr max-content max-content; padding: var(--space-3) var(--space-5); border-bottom: 1px solid var(--ink-500); align-items: center; gap: var(--space-4); }
+  .file-row:last-child { border-bottom: 0; }
+  .file-row .thumb { width: 56px; height: 56px; border-radius: var(--radius-sm); background: var(--ph-amber); }
+  .file-row .name { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-900); display: block; }
+  .file-row .meta { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-700); }
+  .file-row .size { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-900); }
+
+  /* FAV GRID */
+  .fav-tabs { display: flex; gap: var(--space-3); padding-bottom: var(--space-3); border-bottom: 1px solid var(--ink-500); }
+  .fav-tabs a { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); letter-spacing: var(--tracking-wider); text-transform: uppercase; padding-bottom: var(--space-2); border-bottom: 2px solid transparent; cursor: pointer; }
+  .fav-tabs a.is-active { color: var(--ink-1000); border-bottom-color: var(--brand-500); }
+  .fav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: var(--space-2); }
+  .fav-grid .photo { position: relative; aspect-ratio: 1; border-radius: var(--radius); overflow: hidden; background: var(--ink-200); border: 1px solid var(--ink-500); }
+  .fav-grid .photo .ph { position: absolute; inset: 0; background: var(--ph-anchor); }
+  .fav-grid .photo .ph.t-a { background: var(--ph-rust); }
+  .fav-grid .photo .ph.t-b { background: var(--ph-forest); }
+  .fav-grid .photo .ph.t-c { background: var(--ph-amber); }
+  .fav-grid .photo .ph.t-d { background: var(--ph-mono); }
+  .fav-grid .photo .fav { position: absolute; top: var(--space-2); right: var(--space-2); width: 28px; height: 28px; border-radius: var(--radius-pill); background: rgba(0,0,0,0.7); display: grid; place-items: center; color: var(--brand-400); border: 1px solid rgba(255,255,255,0.16); }
+
+  /* COMMENTS */
+  .comment-list { display: grid; gap: var(--space-3); }
+  .comment-card { background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-4); display: grid; grid-template-columns: 80px 1fr max-content; gap: var(--space-4); align-items: center; }
+  @media (max-width: 700px) { .comment-card { grid-template-columns: 64px 1fr; } .comment-card .actions { grid-column: 2; justify-self: start; } }
+  .comment-card .thumb { width: 80px; height: 80px; border-radius: var(--radius); background: var(--ph-anchor); }
+  .comment-card .ctx { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-snug); }
+  .comment-card .ctx a { color: var(--brand-400); }
+  .comment-card .body { color: var(--ink-1000); font-size: var(--text-sm); line-height: var(--leading-relaxed); margin: var(--space-1) 0; }
+  .comment-card .when { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-700); }
+  .comment-card .actions { display: inline-flex; gap: var(--space-2); }
+
+  /* NOTIF */
+  .notif-list { display: grid; gap: var(--space-2); }
+  .notif { display: grid; grid-template-columns: 36px 1fr max-content; gap: var(--space-3); padding: var(--space-3) var(--space-4); background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius); align-items: center; }
+  .notif.is-unread { border-left: 2px solid var(--brand-500); background: var(--brand-dim); padding-left: calc(var(--space-4) - 2px); }
+  .notif .ic-wrap { width: 36px; height: 36px; border-radius: var(--radius-pill); background: var(--ink-300); display: grid; place-items: center; color: var(--brand-400); }
+  .notif.t-success .ic-wrap { color: var(--signal-400); }
+  .notif.t-warning .ic-wrap { color: var(--warning-500); }
+  .notif .text { font-size: var(--text-sm); color: var(--ink-900); line-height: var(--leading-relaxed); }
+  .notif .text b { color: var(--ink-1000); font-weight: 500; }
+  .notif .when { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-700); white-space: nowrap; }
+
+  /* PROFILE / LGPD */
+  .form-block { background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-6); display: grid; gap: var(--space-4); }
+  .form-block h3 { font-family: var(--font-heading); font-size: var(--text-lg); font-weight: 500; color: var(--ink-1000); margin: 0; letter-spacing: var(--tracking-snug); }
+  .form-block .label { font-family: var(--font-body); font-size: var(--text-xs); font-weight: 500; letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-800); display: block; margin-bottom: var(--space-2); }
+  .form-block .row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  @media (max-width: 700px) { .form-block .row { grid-template-columns: 1fr; } }
+  .form-block .danger-zone { background: var(--danger-dim); border: 1px solid var(--danger-500); border-radius: var(--radius); padding: var(--space-4); display: grid; gap: var(--space-3); }
+  .form-block .danger-zone h4 { font-family: var(--font-heading); font-size: var(--text-base); color: var(--danger-500); margin: 0; }
+  .form-block .danger-zone p { color: var(--ink-900); font-size: var(--text-sm); line-height: var(--leading-relaxed); margin: 0; }
+  .form-block .lgpd-list { display: grid; gap: var(--space-3); padding: 0; list-style: none; }
+  .form-block .lgpd-list li { display: grid; grid-template-columns: 1fr max-content; gap: var(--space-3); padding: var(--space-3) var(--space-4); background: var(--ink-100); border-left: 2px solid var(--brand-500); border-radius: 0 var(--radius) var(--radius) 0; align-items: center; }
+  .form-block .lgpd-list li b { color: var(--ink-1000); font-weight: 500; }
+  .form-block .lgpd-list li small { color: var(--ink-800); font-size: var(--text-xs); }
+
+  .avatar-uploader { display: grid; grid-template-columns: 88px 1fr; gap: var(--space-5); align-items: center; padding: var(--space-4); background: var(--ink-100); border: 1px dashed var(--ink-500); border-radius: var(--radius); }
+  .avatar-uploader .av-current { width: 88px; height: 88px; border-radius: var(--radius-pill); background: var(--ink-400); display: grid; place-items: center; font-family: var(--font-heading); font-weight: 500; color: var(--ink-1000); font-size: 30px; border: 1px solid var(--ink-500); }
+  .avatar-uploader .av-actions { display: flex; flex-direction: column; gap: var(--space-2); }
+  .avatar-uploader .av-actions h4 { font-family: var(--font-heading); font-size: var(--text-base); font-weight: 500; color: var(--ink-1000); margin: 0; }
+  .avatar-uploader .av-actions p { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); margin: 0 0 var(--space-2); }
+  .avatar-uploader .av-actions .btns { display: flex; gap: var(--space-2); }
+
+  /* MOBILE — bottom-tab nav */
+  .m-shell { display: flex; flex-direction: column; min-height: 600px; }
+  .m-top { padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--ink-500); display: flex; align-items: center; gap: var(--space-3); }
+  .m-top .av { width: 36px; height: 36px; border-radius: var(--radius-pill); background: var(--ink-400); display: grid; place-items: center; font-family: var(--font-heading); font-weight: 500; color: var(--ink-1000); font-size: 13px; }
+  .m-top .name { font-family: var(--font-heading); font-size: var(--text-sm); font-weight: 500; color: var(--ink-1000); }
+  .m-top .name small { display: block; font-family: var(--font-mono); font-size: 9.5px; color: var(--ink-700); letter-spacing: var(--tracking-wider); }
+  .m-top .icon-btn { margin-left: auto; width: 36px; height: 36px; display: grid; place-items: center; border: 1px solid var(--ink-500); border-radius: var(--radius); color: var(--ink-1000); position: relative; }
+  .m-top .icon-btn .dot { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; border-radius: 50%; background: var(--brand-500); }
+  .m-canvas { padding: var(--space-4); display: grid; gap: var(--space-3); flex: 1; }
+  .m-tabbar { display: grid; grid-template-columns: repeat(5, 1fr); border-top: 1px solid var(--ink-500); background: var(--ink-100); padding: var(--space-2) 0; }
+  .m-tabbar a { display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--ink-800); font-family: var(--font-mono); font-size: 9px; letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+  .m-tabbar a.is-active { color: var(--brand-400); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="kit-head" data-screen-label="UI Kit Cliente · Header">
+    <p class="crumbs">
+      <a href="index.html">DS</a> · <a href="index.html#surfaces">Surfaces</a> · <b>05.2 · UI Kit · Cliente</b>
+      <span style="color: var(--brand-400);">v1.0 · 1280 · 390 · pt-BR</span>
+    </p>
+    <h1>Arquivo do que<br>já é seu.</h1>
+    <p class="lede">
+      A área do cliente é <em>arquival</em>: dados em primeiro plano, prosa só quando agrega. Sidebar 240 px à esquerda,
+      canvas à direita. Tom calmo, IDs em mono, links de download que duram 30 dias. Dois breakpoints (1280 desktop · 390 mobile).
+    </p>
+    <div class="toc">
+      <a href="#dashboard">01 · Dashboard</a>
+      <a href="#orders">02 · Compras</a>
+      <a href="#orders-states">02b · Loading + erro</a>
+      <a href="#order">03 · Pedido</a>
+      <a href="#favorites">04 · Salvos</a>
+      <a href="#comments">05 · Comentários</a>
+      <a href="#notifs">06 · Notificações</a>
+      <a href="#profile">07 · Perfil + LGPD</a>
+      <a href="#avatar">08 · Avatar upload</a>
+    </div>
+  </header>
+
+  <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></symbol>
+      <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></symbol>
+      <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/></symbol>
+      <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+      <symbol id="i-comment" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+      <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
+      <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+      <symbol id="i-face" viewBox="0 0 24 24"><path d="M9 11a3 3 0 1 1 6 0"/><path d="M12 17v.01"/><circle cx="12" cy="12" r="10"/></symbol>
+      <symbol id="i-dl" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+      <symbol id="i-chevron-r" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+      <symbol id="i-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></symbol>
+      <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+      <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></symbol>
+    </defs>
+  </svg>
+
+  <!-- ═════ 01 · DASHBOARD ═════ -->
+  <section class="screen" id="dashboard">
+    <div class="screen-head">
+      <span class="num">01.1</span>
+      <h2>Dashboard · saudação + KPIs + atalhos + pedidos recentes</h2>
+      <p class="copy">Primeira tela após login. Saudação <em>uma vez</em>, KPIs em <em>type-display</em> com tabular-nums.</p>
+      <span class="tag">composite · kpi · order-card</span>
+    </div>
+
+    <div class="frames">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>/minha-conta</span></div>
+        <div class="vp-stage">
+          <div class="shell">
+            <aside class="side">
+              <div class="profile">
+                <span class="av">MA</span>
+                <span class="name">Marina Albuquerque</span>
+                <span class="since">Cliente desde mar/26</span>
+              </div>
+              <p class="nav-section">Compras</p>
+              <a class="nav-item is-active"><svg class="ico is-16"><use href="#i-grid"/></svg><span class="lbl">Dashboard</span></a>
+              <a class="nav-item"><svg class="ico is-16"><use href="#i-receipt"/></svg><span class="lbl">Histórico</span><span class="count">7</span></a>
+              <a class="nav-item"><svg class="ico is-16"><use href="#i-cart"/></svg><span class="lbl">Meu carrinho</span><span class="count">3</span></a>
+              <a class="nav-item"><svg class="ico is-16"><use href="#i-heart"/></svg><span class="lbl">Salvos</span><span class="count">147</span></a>
+              <p class="nav-section">Conversas</p>
+              <a class="nav-item"><svg class="ico is-16"><use href="#i-comment"/></svg><span class="lbl">Comentários</span></a>
+              <a class="nav-item"><svg class="ico is-16"><use href="#i-bell"/></svg><span class="lbl">Notificações</span><span class="count">2</span></a>
+              <p class="nav-section">Conta</p>
+              <a class="nav-item"><svg class="ico is-16"><use href="#i-face"/></svg><span class="lbl">Reconhecimento</span></a>
+              <a class="nav-item"><svg class="ico is-16"><use href="#i-settings"/></svg><span class="lbl">Configurações</span></a>
+            </aside>
+
+            <main class="canvas">
+              <header class="page-head">
+                <div><p class="crumb">DS / Cliente</p><h1>Olá, Marina.</h1></div>
+                <div class="actions"><a class="btn btn-primary">Ver eventos abertos</a></div>
+              </header>
+
+              <div class="kpis">
+                <div class="kpi"><span class="k">Compras</span><span class="v">7<small>pedidos</small></span><span class="delta">+ 1 este mês</span></div>
+                <div class="kpi"><span class="k">Fotos compradas</span><span class="v">42<small>itens</small></span></div>
+                <div class="kpi"><span class="k">Salvos</span><span class="v">147<small>fotos</small></span></div>
+                <div class="kpi"><span class="k">Recompensa</span><span class="v">Prata<small>nível</small></span><span class="delta">R$ 38 de saldo</span></div>
+              </div>
+
+              <div>
+                <p style="font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); margin: 0 0 var(--space-3);">Atalhos</p>
+                <div class="shortcuts">
+                  <a class="shortcut"><div class="ic-wrap"><svg class="ico is-20"><use href="#i-cart"/></svg></div><div class="text"><h4>Meu carrinho</h4><p>3 fotos · R$ 86,40</p></div><svg class="ico is-16" style="color: var(--ink-700);"><use href="#i-chevron-r"/></svg></a>
+                  <a class="shortcut"><div class="ic-wrap"><svg class="ico is-20"><use href="#i-face"/></svg></div><div class="text"><h4>Reconhecimento facial</h4><p>Encontre você nas fotos</p></div><svg class="ico is-16" style="color: var(--ink-700);"><use href="#i-chevron-r"/></svg></a>
+                  <a class="shortcut"><div class="ic-wrap"><svg class="ico is-20"><use href="#i-heart"/></svg></div><div class="text"><h4>Salvos &amp; curtidas</h4><p>147 fotos guardadas</p></div><svg class="ico is-16" style="color: var(--ink-700);"><use href="#i-chevron-r"/></svg></a>
+                </div>
+              </div>
+
+              <div>
+                <p style="font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); margin: 0 0 var(--space-3);">Compras recentes</p>
+                <div class="orders-stack">
+                  <article class="order-card">
+                    <header class="o-head"><div><span class="name">Abertura da Safra 2026</span><span class="id">#A8F2-91D0</span></div><span class="badge b-success"><span class="dot"></span>Pago</span></header>
+                    <div class="o-body">
+                      <p class="meta"><span>22 mai 2026</span><span>·</span><span>14 fotos · <b>R$ 403,20</b></span></p>
+                      <div class="actions"><button class="btn btn-success btn-sm"><svg class="ico is-14"><use href="#i-dl"/></svg>Baixar todas em ZIP</button><a class="btn btn-secondary btn-sm">Ver pedido</a></div>
+                    </div>
+                    <div class="o-thumbs"><div class="th"></div><div class="th" style="background: var(--ph-rust);"></div><div class="th" style="background: var(--ph-forest);"></div><div class="th"></div></div>
+                  </article>
+                  <article class="order-card">
+                    <header class="o-head"><div><span class="name">Meia de Anápolis</span><span class="id">#6B11-4F2A</span></div><span class="badge b-warning"><span class="dot"></span>PIX Pendente</span></header>
+                    <div class="o-body">
+                      <p class="meta"><span>14 mai 2026</span><span>·</span><span>2 fotos · <b>R$ 57,60</b></span></p>
+                      <div class="actions"><button class="btn btn-primary btn-sm">Concluir pagamento</button></div>
+                    </div>
+                  </article>
+                </div>
+              </div>
+            </main>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-mobile">
+        <div class="vp-ruler"><span>Mobile · 390</span><span>m-dashboard</span></div>
+        <div class="vp-stage">
+          <div class="m-shell">
+            <header class="m-top">
+              <span class="av">MA</span>
+              <span class="name">Marina<small>Cliente desde mar/26</small></span>
+              <button class="icon-btn"><svg class="ico is-16"><use href="#i-bell"/></svg><span class="dot"></span></button>
+            </header>
+            <div class="m-canvas">
+              <h1 style="font-family: var(--font-display); font-style: italic; font-size: var(--text-2xl); color: var(--ink-1000); margin: 0;">Olá, Marina.</h1>
+              <div class="kpis" style="grid-template-columns: 1fr 1fr;">
+                <div class="kpi"><span class="k">Compras</span><span class="v" style="font-size: var(--text-xl);">7</span></div>
+                <div class="kpi"><span class="k">Salvos</span><span class="v" style="font-size: var(--text-xl);">147</span></div>
+                <div class="kpi"><span class="k">Carrinho</span><span class="v" style="font-size: var(--text-xl);">3</span></div>
+                <div class="kpi"><span class="k">Nível</span><span class="v" style="font-size: var(--text-xl);">Prata</span></div>
+              </div>
+              <article class="order-card">
+                <header class="o-head"><div><span class="name" style="font-size: var(--text-sm);">Abertura da Safra</span><span class="id">#A8F2-91D0</span></div><span class="badge b-success">Pago</span></header>
+                <div class="o-body"><p class="meta">14 fotos · R$ 403,20</p></div>
+              </article>
+            </div>
+            <nav class="m-tabbar">
+              <a class="is-active"><svg class="ico is-20"><use href="#i-grid"/></svg>Início</a>
+              <a><svg class="ico is-20"><use href="#i-receipt"/></svg>Compras</a>
+              <a><svg class="ico is-20"><use href="#i-heart"/></svg>Salvos</a>
+              <a><svg class="ico is-20"><use href="#i-bell"/></svg>Notif</a>
+              <a><svg class="ico is-20"><use href="#i-user"/></svg>Conta</a>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ 02 · ORDERS LIST ═════ -->
+  <section class="screen" id="orders">
+    <div class="screen-head">
+      <span class="num">02.1</span>
+      <h2>Compras · lista de pedidos</h2>
+      <p class="copy">Filter chips por status. <em>Empty</em> documentado em mobile.</p>
+      <span class="tag">composite · order-card</span>
+    </div>
+
+    <div class="frames">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>/compras</span></div>
+        <div class="vp-stage">
+          <div class="shell">
+            <aside class="side">
+              <div class="profile"><span class="av">MA</span><span class="name">Marina</span><span class="since">Cliente desde mar/26</span></div>
+              <a class="nav-item"><svg class="ico is-16"><use href="#i-grid"/></svg><span class="lbl">Dashboard</span></a>
+              <a class="nav-item is-active"><svg class="ico is-16"><use href="#i-receipt"/></svg><span class="lbl">Histórico</span><span class="count">7</span></a>
+              <a class="nav-item"><svg class="ico is-16"><use href="#i-cart"/></svg><span class="lbl">Meu carrinho</span><span class="count">3</span></a>
+              <a class="nav-item"><svg class="ico is-16"><use href="#i-heart"/></svg><span class="lbl">Salvos</span><span class="count">147</span></a>
+            </aside>
+            <main class="canvas">
+              <header class="page-head"><div><p class="crumb">DS / Cliente / Compras</p><h1>Histórico de compras</h1></div></header>
+              <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+                <button class="badge b-info"><span class="dot"></span>Todos · 7</button>
+                <button class="badge b-success"><span class="dot"></span>Pago · 6</button>
+                <button class="badge b-warning"><span class="dot"></span>Pendente · 1</button>
+              </div>
+              <div class="orders-stack">
+                <article class="order-card">
+                  <header class="o-head"><div><span class="name">Abertura da Safra 2026</span><span class="id">#A8F2-91D0</span></div><span class="badge b-success"><span class="dot"></span>Pago</span></header>
+                  <div class="o-body"><p class="meta"><span>22 mai 2026 · 18:48</span><span>·</span><span>14 fotos · <b>R$ 403,20</b></span><span>·</span><span>PIX · Asaas</span></p><div class="actions"><button class="btn btn-success btn-sm"><svg class="ico is-14"><use href="#i-dl"/></svg>Baixar ZIP</button><a class="btn btn-secondary btn-sm">Ver pedido</a></div></div>
+                </article>
+                <article class="order-card">
+                  <header class="o-head"><div><span class="name">Meia de Anápolis</span><span class="id">#6B11-4F2A</span></div><span class="badge b-warning"><span class="dot"></span>PIX Pendente</span></header>
+                  <div class="o-body"><p class="meta"><span>14 mai 2026 · 09:32</span><span>·</span><span>2 fotos · <b>R$ 57,60</b></span></p><div class="actions"><button class="btn btn-primary btn-sm">Concluir pagamento</button></div></div>
+                </article>
+                <article class="order-card">
+                  <header class="o-head"><div><span class="name">Festa do Peão · Jataí</span><span class="id">#33A1-22C7</span></div><span class="badge b-success"><span class="dot"></span>Pago</span></header>
+                  <div class="o-body"><p class="meta"><span>04 mai 2026</span><span>·</span><span>8 fotos · <b>R$ 230,40</b></span><span>·</span><span>Cartão · Stripe</span></p><div class="actions"><button class="btn btn-success btn-sm">Baixar ZIP</button></div></div>
+                </article>
+                <article class="order-card">
+                  <header class="o-head"><div><span class="name">GP de Brasília · Sela</span><span class="id">#7C09-91FE</span></div><span class="badge b-danger"><span class="dot"></span>Reembolsado</span></header>
+                  <div class="o-body"><p class="meta"><span>27 abr 2026</span><span>·</span><span>3 fotos · <b>R$ 102,00</b></span><span>·</span><span>reembolso em 28 abr</span></p></div>
+                </article>
+              </div>
+            </main>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-mobile">
+        <div class="vp-ruler"><span>Mobile · 390</span><span>empty</span></div>
+        <div class="vp-stage">
+          <div class="m-shell">
+            <header class="m-top"><span class="av">MA</span><span class="name">Marina<small>Histórico</small></span><button class="icon-btn"><svg class="ico is-16"><use href="#i-bell"/></svg></button></header>
+            <div class="m-canvas" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: var(--space-12) var(--space-5); gap: var(--space-4);">
+              <svg class="ico is-32" style="color: var(--ink-700);"><use href="#i-receipt"/></svg>
+              <h2 style="font-family: var(--font-display); font-style: italic; font-size: var(--text-2xl); color: var(--ink-1000); margin: 0;">Sem compras ainda.</h2>
+              <p style="font-size: var(--text-sm); color: var(--ink-900); max-width: 32ch;">Você ainda não comprou nenhuma foto. Comece pelos eventos abertos.</p>
+              <a class="btn btn-primary">Ver eventos</a>
+            </div>
+            <nav class="m-tabbar"><a><svg class="ico is-20"><use href="#i-grid"/></svg>Início</a><a class="is-active"><svg class="ico is-20"><use href="#i-receipt"/></svg>Compras</a><a><svg class="ico is-20"><use href="#i-heart"/></svg>Salvos</a><a><svg class="ico is-20"><use href="#i-bell"/></svg>Notif</a><a><svg class="ico is-20"><use href="#i-user"/></svg>Conta</a></nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ 02b · ORDERS · LOADING + ERROR ═════ -->
+  <section class="screen" id="orders-states">
+    <div class="screen-head">
+      <span class="num">02.2</span>
+      <h2>Compras · skeleton de loading + frame de erro</h2>
+      <p class="copy">Os outros dois estados canônicos do <code class="type-mono">/compras</code>: skeleton enquanto o fetch ainda não voltou, frame de erro quando a request falha. Em conjunto com 02.1 (populated + empty) cobre os quatro estados.</p>
+      <span class="tag">loading · error</span>
+    </div>
+
+    <div class="frames" style="grid-template-columns: 1fr 1fr;">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>/compras · loading</span></div>
+        <div class="vp-stage">
+          <div class="shell">
+            <aside class="side">
+              <div class="profile"><span class="av">MA</span><span class="name">Marina</span><span class="since">Cliente desde mar/26</span></div>
+              <a class="nav-item"><svg class="ico is-16"><use href="#i-grid"/></svg><span class="lbl">Dashboard</span></a>
+              <a class="nav-item is-active"><svg class="ico is-16"><use href="#i-receipt"/></svg><span class="lbl">Histórico</span></a>
+              <a class="nav-item"><svg class="ico is-16"><use href="#i-cart"/></svg><span class="lbl">Meu carrinho</span></a>
+              <a class="nav-item"><svg class="ico is-16"><use href="#i-heart"/></svg><span class="lbl">Salvos</span></a>
+            </aside>
+            <main class="canvas" aria-busy="true">
+              <header class="page-head"><div><p class="crumb">DS / Cliente / Compras</p><h1>Histórico de compras</h1></div></header>
+              <p style="font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-700); margin: 0;">Carregando suas compras…</p>
+              <div class="orders-stack" aria-hidden="true">
+                <article class="order-card">
+                  <header class="o-head"><span class="skel-block is-tall w-45"></span><span class="skel-block is-pill w-30" style="justify-self: end;"></span></header>
+                  <div class="o-body" style="flex-direction: column; align-items: stretch; gap: var(--space-2);"><span class="skel-block w-60"></span><span class="skel-block w-80"></span></div>
+                </article>
+                <article class="order-card">
+                  <header class="o-head"><span class="skel-block is-tall w-60"></span><span class="skel-block is-pill w-30" style="justify-self: end;"></span></header>
+                  <div class="o-body" style="flex-direction: column; align-items: stretch; gap: var(--space-2);"><span class="skel-block w-45"></span><span class="skel-block w-60"></span></div>
+                </article>
+                <article class="order-card">
+                  <header class="o-head"><span class="skel-block is-tall w-45"></span><span class="skel-block is-pill w-30" style="justify-self: end;"></span></header>
+                  <div class="o-body" style="flex-direction: column; align-items: stretch; gap: var(--space-2);"><span class="skel-block w-80"></span><span class="skel-block w-45"></span></div>
+                </article>
+                <article class="order-card">
+                  <header class="o-head"><span class="skel-block is-tall w-60"></span><span class="skel-block is-pill w-30" style="justify-self: end;"></span></header>
+                  <div class="o-body" style="flex-direction: column; align-items: stretch; gap: var(--space-2);"><span class="skel-block w-60"></span><span class="skel-block w-30"></span></div>
+                </article>
+              </div>
+            </main>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>/compras · erro</span></div>
+        <div class="vp-stage">
+          <div class="shell">
+            <aside class="side">
+              <div class="profile"><span class="av">MA</span><span class="name">Marina</span><span class="since">Cliente desde mar/26</span></div>
+              <a class="nav-item"><svg class="ico is-16"><use href="#i-grid"/></svg><span class="lbl">Dashboard</span></a>
+              <a class="nav-item is-active"><svg class="ico is-16"><use href="#i-receipt"/></svg><span class="lbl">Histórico</span></a>
+              <a class="nav-item"><svg class="ico is-16"><use href="#i-cart"/></svg><span class="lbl">Meu carrinho</span></a>
+              <a class="nav-item"><svg class="ico is-16"><use href="#i-heart"/></svg><span class="lbl">Salvos</span></a>
+            </aside>
+            <main class="canvas">
+              <header class="page-head"><div><p class="crumb">DS / Cliente / Compras</p><h1>Histórico de compras</h1></div></header>
+              <div class="err-frame" role="alert">
+                <span class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+                <h3>Algo travou.</h3>
+                <p>Não foi possível carregar suas compras. Tente de novo.</p>
+                <button class="btn btn-secondary">Tentar novamente</button>
+              </div>
+            </main>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ 03 · ORDER DETAIL ═════ -->
+  <section class="screen" id="order">
+    <div class="screen-head">
+      <span class="num">03.1</span>
+      <h2>Pedido · timeline + arquivos + download</h2>
+      <p class="copy">Timeline vertical, lista de arquivos, botão de ZIP. Reembolso parcial pelo botão "Solicitar reembolso".</p>
+      <span class="tag">composite · timeline · file-list</span>
+    </div>
+
+    <div class="frames">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>/compras/A8F2-91D0</span></div>
+        <div class="vp-stage">
+          <div class="shell">
+            <aside class="side">
+              <div class="profile"><span class="av">MA</span><span class="name">Marina</span><span class="since">Cliente desde mar/26</span></div>
+              <a class="nav-item is-active"><svg class="ico is-16"><use href="#i-receipt"/></svg><span class="lbl">Histórico</span></a>
+              <a class="nav-item"><svg class="ico is-16"><use href="#i-heart"/></svg><span class="lbl">Salvos</span></a>
+            </aside>
+            <main class="canvas">
+              <header class="page-head">
+                <div><p class="crumb">DS / Cliente / Compras / <span style="color: var(--brand-400);">#A8F2-91D0</span></p><h1>Pedido #A8F2-91D0</h1></div>
+                <div class="actions"><button class="btn btn-success"><svg class="ico is-16"><use href="#i-dl"/></svg>Baixar todas · ZIP 380 MB</button></div>
+              </header>
+
+              <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-5); align-items: start;">
+                <div>
+                  <p style="font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); margin: 0 0 var(--space-3);">Arquivos · 14</p>
+                  <div class="file-list">
+                    <div class="file-row"><div class="thumb"></div><div><span class="name">IMG_0421-AX.jpg</span><span class="meta">6000 × 4000 · JPEG · 8.2 MB</span></div><span class="size">8.2 MB</span><button class="btn btn-ghost btn-sm"><svg class="ico is-14"><use href="#i-dl"/></svg></button></div>
+                    <div class="file-row"><div class="thumb" style="background: var(--ph-rust);"></div><div><span class="name">IMG_0438-BL.jpg</span><span class="meta">6000 × 4000 · JPEG · 7.6 MB</span></div><span class="size">7.6 MB</span><button class="btn btn-ghost btn-sm"><svg class="ico is-14"><use href="#i-dl"/></svg></button></div>
+                    <div class="file-row"><div class="thumb" style="background: var(--ph-forest);"></div><div><span class="name">IMG_0492-CK.jpg</span><span class="meta">6000 × 4000 · JPEG · 8.9 MB</span></div><span class="size">8.9 MB</span><button class="btn btn-ghost btn-sm"><svg class="ico is-14"><use href="#i-dl"/></svg></button></div>
+                    <div class="file-row"><div class="thumb" style="background: var(--ph-anchor);"></div><div><span class="name">VIDEO_0501-XV.mp4</span><span class="meta">3840 × 2160 · MP4 · 142 MB · 1:42</span></div><span class="size">142 MB</span><button class="btn btn-ghost btn-sm"><svg class="ico is-14"><use href="#i-dl"/></svg></button></div>
+                  </div>
+                </div>
+                <div>
+                  <p style="font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); margin: 0 0 var(--space-3);">Linha do tempo</p>
+                  <div class="timeline">
+                    <ol>
+                      <li class="done"><div><span class="when">22 mai · 18:42</span><span class="what"><b>Pedido criado</b> · carrinho com 14 fotos</span></div></li>
+                      <li class="done"><div><span class="when">22 mai · 18:43</span><span class="what"><b>PIX gerado</b> · QR Code enviado</span></div></li>
+                      <li class="done"><div><span class="when">22 mai · 18:48</span><span class="what"><b>Pagamento confirmado</b> · R$ 403,20</span></div></li>
+                      <li class="done"><div><span class="when">22 mai · 18:50</span><span class="what"><b>Links de download liberados</b></span></div></li>
+                      <li><div><span class="when">21 jun · 18:50</span><span class="what">Links expiram em 30 dias</span></div></li>
+                    </ol>
+                  </div>
+                  <div style="margin-top: var(--space-4); padding: var(--space-4); background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius); display: flex; flex-direction: column; gap: var(--space-2);">
+                    <p style="font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); margin: 0;">Precisa de reembolso?</p>
+                    <button class="btn btn-danger btn-sm" style="align-self: flex-start;">Solicitar reembolso</button>
+                  </div>
+                </div>
+              </div>
+            </main>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-mobile">
+        <div class="vp-ruler"><span>Mobile · 390</span><span>pedido</span></div>
+        <div class="vp-stage">
+          <div class="m-shell">
+            <header class="m-top"><span class="av">MA</span><span class="name">#A8F2-91D0<small>22 mai · pago</small></span><button class="icon-btn"><svg class="ico is-16"><use href="#i-bell"/></svg></button></header>
+            <div class="m-canvas">
+              <button class="btn btn-success btn-lg" style="justify-content: center;"><svg class="ico is-16"><use href="#i-dl"/></svg>Baixar todas · 380 MB</button>
+              <div class="file-list">
+                <div class="file-row" style="grid-template-columns: 48px 1fr max-content; padding: var(--space-3) var(--space-4);"><div class="thumb" style="width: 48px; height: 48px;"></div><div><span class="name" style="font-size: 10.5px;">IMG_0421-AX</span><span class="meta" style="font-size: 9.5px;">6000×4000 · 8.2 MB</span></div><button class="btn btn-ghost btn-sm"><svg class="ico is-14"><use href="#i-dl"/></svg></button></div>
+                <div class="file-row" style="grid-template-columns: 48px 1fr max-content; padding: var(--space-3) var(--space-4);"><div class="thumb" style="width: 48px; height: 48px; background: var(--ph-rust);"></div><div><span class="name" style="font-size: 10.5px;">IMG_0438-BL</span><span class="meta" style="font-size: 9.5px;">6000×4000 · 7.6 MB</span></div><button class="btn btn-ghost btn-sm"><svg class="ico is-14"><use href="#i-dl"/></svg></button></div>
+              </div>
+            </div>
+            <nav class="m-tabbar"><a><svg class="ico is-20"><use href="#i-grid"/></svg>Início</a><a class="is-active"><svg class="ico is-20"><use href="#i-receipt"/></svg>Compras</a><a><svg class="ico is-20"><use href="#i-heart"/></svg>Salvos</a><a><svg class="ico is-20"><use href="#i-bell"/></svg>Notif</a><a><svg class="ico is-20"><use href="#i-user"/></svg>Conta</a></nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ 04 · FAVORITES ═════ -->
+  <section class="screen" id="favorites">
+    <div class="screen-head">
+      <span class="num">04.1</span>
+      <h2>Salvos &amp; curtidas</h2>
+      <p class="copy">Grid de favoritos. Tabs: <em>Todas · Por evento · Curtidas</em>.</p>
+      <span class="tag">composite · photo-card</span>
+    </div>
+
+    <div class="frames">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>/favoritos</span></div>
+        <div class="vp-stage">
+          <div class="shell">
+            <aside class="side">
+              <div class="profile"><span class="av">MA</span><span class="name">Marina</span><span class="since">Cliente desde mar/26</span></div>
+              <a class="nav-item"><svg class="ico is-16"><use href="#i-receipt"/></svg><span class="lbl">Histórico</span></a>
+              <a class="nav-item is-active"><svg class="ico is-16"><use href="#i-heart"/></svg><span class="lbl">Salvos</span><span class="count">147</span></a>
+            </aside>
+            <main class="canvas">
+              <header class="page-head"><div><p class="crumb">DS / Cliente / Salvos</p><h1>Salvos &amp; curtidas</h1></div><div class="actions"><a class="btn btn-success btn-sm"><svg class="ico is-14"><use href="#i-cart"/></svg>Comprar selecionadas</a></div></header>
+              <div class="fav-tabs"><a class="is-active">Todas · 147</a><a>Por evento</a><a>Curtidas · 38</a></div>
+              <div class="fav-grid">
+                <div class="photo"><div class="ph t-a"></div><span class="fav"><svg class="ico is-14" style="fill: currentColor;"><use href="#i-heart"/></svg></span></div>
+                <div class="photo"><div class="ph t-b"></div><span class="fav"><svg class="ico is-14" style="fill: currentColor;"><use href="#i-heart"/></svg></span></div>
+                <div class="photo"><div class="ph t-c"></div><span class="fav"><svg class="ico is-14" style="fill: currentColor;"><use href="#i-heart"/></svg></span></div>
+                <div class="photo"><div class="ph t-d"></div><span class="fav"><svg class="ico is-14" style="fill: currentColor;"><use href="#i-heart"/></svg></span></div>
+                <div class="photo"><div class="ph"></div><span class="fav"><svg class="ico is-14" style="fill: currentColor;"><use href="#i-heart"/></svg></span></div>
+                <div class="photo"><div class="ph t-a"></div><span class="fav"><svg class="ico is-14" style="fill: currentColor;"><use href="#i-heart"/></svg></span></div>
+                <div class="photo"><div class="ph t-c"></div><span class="fav"><svg class="ico is-14" style="fill: currentColor;"><use href="#i-heart"/></svg></span></div>
+                <div class="photo"><div class="ph t-b"></div><span class="fav"><svg class="ico is-14" style="fill: currentColor;"><use href="#i-heart"/></svg></span></div>
+                <div class="photo"><div class="ph t-d"></div><span class="fav"><svg class="ico is-14" style="fill: currentColor;"><use href="#i-heart"/></svg></span></div>
+                <div class="photo"><div class="ph"></div><span class="fav"><svg class="ico is-14" style="fill: currentColor;"><use href="#i-heart"/></svg></span></div>
+              </div>
+            </main>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-mobile">
+        <div class="vp-ruler"><span>Mobile · 390</span><span>2-col grid</span></div>
+        <div class="vp-stage">
+          <div class="m-shell">
+            <header class="m-top"><span class="av">MA</span><span class="name">Salvos<small>147 fotos</small></span><button class="icon-btn"><svg class="ico is-16"><use href="#i-bell"/></svg></button></header>
+            <div class="m-canvas">
+              <div class="fav-tabs" style="gap: var(--space-2); overflow-x: auto; flex-wrap: nowrap;"><a class="is-active">Todas</a><a>Por evento</a><a>Curtidas</a></div>
+              <div class="fav-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="photo"><div class="ph t-a"></div><span class="fav"><svg class="ico is-14" style="fill: currentColor;"><use href="#i-heart"/></svg></span></div>
+                <div class="photo"><div class="ph t-b"></div><span class="fav"><svg class="ico is-14" style="fill: currentColor;"><use href="#i-heart"/></svg></span></div>
+                <div class="photo"><div class="ph t-c"></div><span class="fav"><svg class="ico is-14" style="fill: currentColor;"><use href="#i-heart"/></svg></span></div>
+                <div class="photo"><div class="ph t-d"></div><span class="fav"><svg class="ico is-14" style="fill: currentColor;"><use href="#i-heart"/></svg></span></div>
+              </div>
+            </div>
+            <nav class="m-tabbar"><a><svg class="ico is-20"><use href="#i-grid"/></svg>Início</a><a><svg class="ico is-20"><use href="#i-receipt"/></svg>Compras</a><a class="is-active"><svg class="ico is-20"><use href="#i-heart"/></svg>Salvos</a><a><svg class="ico is-20"><use href="#i-bell"/></svg>Notif</a><a><svg class="ico is-20"><use href="#i-user"/></svg>Conta</a></nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ 05 · COMMENTS ═════ -->
+  <section class="screen" id="comments">
+    <div class="screen-head">
+      <span class="num">05.1</span>
+      <h2>Comentários · meus comments</h2>
+      <p class="copy">Cards horizontais. Edit-mode mostrado em mobile.</p>
+      <span class="tag">composite · comment-card</span>
+    </div>
+
+    <div class="frames">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>/comentarios</span></div>
+        <div class="vp-stage">
+          <div class="shell">
+            <aside class="side">
+              <div class="profile"><span class="av">MA</span><span class="name">Marina</span><span class="since">Cliente desde mar/26</span></div>
+              <a class="nav-item"><svg class="ico is-16"><use href="#i-heart"/></svg><span class="lbl">Salvos</span></a>
+              <a class="nav-item is-active"><svg class="ico is-16"><use href="#i-comment"/></svg><span class="lbl">Comentários</span></a>
+            </aside>
+            <main class="canvas">
+              <header class="page-head"><div><p class="crumb">DS / Cliente / Comentários</p><h1>Meus comentários</h1></div></header>
+              <div class="comment-list">
+                <article class="comment-card">
+                  <div class="thumb"></div>
+                  <div>
+                    <p class="ctx"><a>Abertura da Safra 2026</a> · #0421-AX</p>
+                    <p class="body">Que ângulo! Comprei na hora.</p>
+                    <span class="when">22 mai · 19:14 · 4 curtidas</span>
+                  </div>
+                  <div class="actions"><button class="btn btn-ghost btn-sm"><svg class="ico is-14"><use href="#i-edit"/></svg>Editar</button><button class="btn btn-ghost btn-sm" style="color: var(--danger-500);"><svg class="ico is-14"><use href="#i-trash"/></svg>Excluir</button></div>
+                </article>
+                <article class="comment-card">
+                  <div class="thumb" style="background: var(--ph-rust);"></div>
+                  <div>
+                    <p class="ctx"><a>Meia de Anápolis</a> · #1844-MA</p>
+                    <p class="body">Quem é o cavaleiro? Mandei pra ele pelo Insta.</p>
+                    <span class="when">14 mai · 08:42</span>
+                  </div>
+                  <div class="actions"><button class="btn btn-ghost btn-sm"><svg class="ico is-14"><use href="#i-edit"/></svg>Editar</button><button class="btn btn-ghost btn-sm" style="color: var(--danger-500);"><svg class="ico is-14"><use href="#i-trash"/></svg></button></div>
+                </article>
+                <article class="comment-card">
+                  <div class="thumb" style="background: var(--ph-forest);"></div>
+                  <div>
+                    <p class="ctx"><a>Festa do Peão · Jataí</a> · #2088-JJ</p>
+                    <p class="body">Compra direto da fonte. Vinícius é o melhor.</p>
+                    <span class="when">04 mai · 23:11</span>
+                  </div>
+                  <div class="actions"><button class="btn btn-ghost btn-sm"><svg class="ico is-14"><use href="#i-edit"/></svg></button><button class="btn btn-ghost btn-sm" style="color: var(--danger-500);"><svg class="ico is-14"><use href="#i-trash"/></svg></button></div>
+                </article>
+              </div>
+            </main>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-mobile">
+        <div class="vp-ruler"><span>Mobile · 390</span><span>edit mode</span></div>
+        <div class="vp-stage">
+          <div class="m-shell">
+            <header class="m-top"><span class="av">MA</span><span class="name">Comentários<small>editando</small></span><button class="icon-btn"><svg class="ico is-16"><use href="#i-bell"/></svg></button></header>
+            <div class="m-canvas">
+              <article class="comment-card" style="grid-template-columns: 64px 1fr; padding: var(--space-3);">
+                <div class="thumb" style="width: 64px; height: 64px;"></div>
+                <div>
+                  <p class="ctx" style="font-size: 10.5px;">Abertura da Safra · #0421-AX</p>
+                  <textarea class="input" rows="3" style="margin-top: var(--space-2);">Que ângulo! Comprei na hora.</textarea>
+                  <div style="display: flex; gap: var(--space-2); margin-top: var(--space-2);"><button class="btn btn-primary btn-sm">Salvar</button><button class="btn btn-ghost btn-sm">Cancelar</button></div>
+                </div>
+              </article>
+            </div>
+            <nav class="m-tabbar"><a><svg class="ico is-20"><use href="#i-grid"/></svg>Início</a><a><svg class="ico is-20"><use href="#i-receipt"/></svg>Compras</a><a><svg class="ico is-20"><use href="#i-heart"/></svg>Salvos</a><a><svg class="ico is-20"><use href="#i-bell"/></svg>Notif</a><a class="is-active"><svg class="ico is-20"><use href="#i-user"/></svg>Conta</a></nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ 06 · NOTIFICATIONS ═════ -->
+  <section class="screen" id="notifs">
+    <div class="screen-head">
+      <span class="num">06.1</span>
+      <h2>Notificações · inbox</h2>
+      <p class="copy">Não lidas com borda <em>brand</em>. Pagamento, comentário, cupom, remoção, reconhecimento, curtida.</p>
+      <span class="tag">composite · notification-row</span>
+    </div>
+
+    <div class="frames">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>/notificacoes</span></div>
+        <div class="vp-stage">
+          <div class="shell">
+            <aside class="side">
+              <div class="profile"><span class="av">MA</span><span class="name">Marina</span><span class="since">Cliente desde mar/26</span></div>
+              <a class="nav-item is-active"><svg class="ico is-16"><use href="#i-bell"/></svg><span class="lbl">Notificações</span><span class="count">2</span></a>
+            </aside>
+            <main class="canvas">
+              <header class="page-head"><div><p class="crumb">DS / Cliente / Notificações</p><h1>Notificações</h1></div><div class="actions"><button class="btn btn-ghost btn-sm">Marcar todas como lidas</button></div></header>
+              <div class="notif-list">
+                <div class="notif is-unread t-success"><div class="ic-wrap"><svg class="ico is-16"><use href="#i-check"/></svg></div><div class="text"><b>Pagamento confirmado</b> · <a style="color: var(--brand-400);">#A8F2-91D0</a> · R$ 403,20</div><span class="when">há 14 min</span></div>
+                <div class="notif is-unread"><div class="ic-wrap"><svg class="ico is-16"><use href="#i-comment"/></svg></div><div class="text">Vinícius respondeu seu comentário em <b>Abertura da Safra</b></div><span class="when">há 2 h</span></div>
+                <div class="notif t-warning"><div class="ic-wrap"><svg class="ico is-16"><use href="#i-receipt"/></svg></div><div class="text">Você ganhou um <b>cupom 10% off</b> em equestre · expira em 30 dias</div><span class="when">22 mai</span></div>
+                <div class="notif"><div class="ic-wrap"><svg class="ico is-16"><use href="#i-face"/></svg></div><div class="text">Encontramos você em <b>3 álbuns novos</b> · ver resultados</div><span class="when">20 mai</span></div>
+                <div class="notif"><div class="ic-wrap"><svg class="ico is-16"><use href="#i-check"/></svg></div><div class="text"><b>Remoção aceita</b> · sua foto foi removida de Cavalgada Tradicional</div><span class="when">18 mai</span></div>
+                <div class="notif"><div class="ic-wrap"><svg class="ico is-16"><use href="#i-heart"/></svg></div><div class="text">João Ricardo curtiu sua compra em <b>Festa do Peão</b></div><span class="when">15 mai</span></div>
+              </div>
+            </main>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-mobile">
+        <div class="vp-ruler"><span>Mobile · 390</span><span>compact</span></div>
+        <div class="vp-stage">
+          <div class="m-shell">
+            <header class="m-top"><span class="av">MA</span><span class="name">Notificações<small>2 não lidas</small></span><button class="icon-btn"><svg class="ico is-16"><use href="#i-check"/></svg></button></header>
+            <div class="m-canvas">
+              <div class="notif-list">
+                <div class="notif is-unread t-success" style="grid-template-columns: 28px 1fr; padding: var(--space-3); gap: var(--space-2);"><div class="ic-wrap" style="width: 28px; height: 28px;"><svg class="ico is-12"><use href="#i-check"/></svg></div><div class="text" style="font-size: var(--text-xs);"><b>Pagamento confirmado</b> · #A8F2 · há 14 min</div></div>
+                <div class="notif is-unread" style="grid-template-columns: 28px 1fr; padding: var(--space-3); gap: var(--space-2);"><div class="ic-wrap" style="width: 28px; height: 28px;"><svg class="ico is-12"><use href="#i-comment"/></svg></div><div class="text" style="font-size: var(--text-xs);">Vinícius respondeu · há 2 h</div></div>
+                <div class="notif" style="grid-template-columns: 28px 1fr; padding: var(--space-3); gap: var(--space-2);"><div class="ic-wrap" style="width: 28px; height: 28px;"><svg class="ico is-12"><use href="#i-face"/></svg></div><div class="text" style="font-size: var(--text-xs);">3 álbuns novos · 20 mai</div></div>
+              </div>
+            </div>
+            <nav class="m-tabbar"><a><svg class="ico is-20"><use href="#i-grid"/></svg>Início</a><a><svg class="ico is-20"><use href="#i-receipt"/></svg>Compras</a><a><svg class="ico is-20"><use href="#i-heart"/></svg>Salvos</a><a class="is-active"><svg class="ico is-20"><use href="#i-bell"/></svg>Notif</a><a><svg class="ico is-20"><use href="#i-user"/></svg>Conta</a></nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ 07 · PROFILE + LGPD ═════ -->
+  <section class="screen" id="profile">
+    <div class="screen-head">
+      <span class="num">07.1</span>
+      <h2>Perfil · dados, segurança, LGPD, zona de perigo</h2>
+      <p class="copy">Quatro blocos. LGPD permite exportar dados, listar remoções, excluir conta.</p>
+      <span class="tag">composite · form-block</span>
+    </div>
+
+    <div class="frames">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>/configuracoes</span></div>
+        <div class="vp-stage">
+          <div class="shell">
+            <aside class="side">
+              <div class="profile"><span class="av">MA</span><span class="name">Marina</span><span class="since">Cliente desde mar/26</span></div>
+              <a class="nav-item is-active"><svg class="ico is-16"><use href="#i-settings"/></svg><span class="lbl">Configurações</span></a>
+            </aside>
+            <main class="canvas">
+              <header class="page-head"><div><p class="crumb">DS / Cliente / Configurações</p><h1>Configurações</h1></div><div class="actions"><button class="btn btn-success">Salvar alterações</button></div></header>
+
+              <section class="form-block">
+                <h3>Dados pessoais</h3>
+                <div class="row">
+                  <div><span class="label">Nome completo</span><input class="input" value="Marina Albuquerque"></div>
+                  <div><span class="label">E-mail</span><input class="input" type="email" value="marina@example.com"></div>
+                </div>
+                <div class="row">
+                  <div><span class="label">Telefone</span><input class="input" value="(11) 9 8765-4321"></div>
+                  <div><span class="label">CPF</span><input class="input" value="123.***.***-09" readonly></div>
+                </div>
+              </section>
+
+              <section class="form-block">
+                <h3>Segurança</h3>
+                <div class="row">
+                  <div><span class="label">Senha atual</span><input class="input" type="password" placeholder="••••••••"></div>
+                  <div><span class="label">Nova senha</span><input class="input" type="password" placeholder="ao menos 8 caracteres"></div>
+                </div>
+                <p style="font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); margin: 0;">Última troca: 18 mar 2026</p>
+              </section>
+
+              <section class="form-block">
+                <h3>LGPD · seus dados</h3>
+                <p style="font-family: var(--font-body); font-size: var(--text-sm); color: var(--ink-900); line-height: var(--leading-relaxed); margin: 0;">Você tem direito a baixar uma cópia dos seus dados ou pedir a remoção da sua imagem de qualquer foto pública.</p>
+                <ul class="lgpd-list">
+                  <li><div><b>Exportar meus dados</b><br><small>Arquivo ZIP com pedidos, comentários e EXIFs.</small></div><button class="btn btn-secondary btn-sm">Solicitar exportação</button></li>
+                  <li><div><b>Solicitações de remoção</b><br><small>3 aceitas · 1 em análise · 0 recusadas</small></div><a class="btn btn-secondary btn-sm">Ver pedidos</a></li>
+                  <li><div><b>Política de privacidade</b><br><small>Atualizada em 22 mai 2026</small></div><a class="btn btn-secondary btn-sm">Ler política</a></li>
+                </ul>
+              </section>
+
+              <section class="form-block">
+                <div class="danger-zone">
+                  <h4>Zona de perigo</h4>
+                  <p>Excluir sua conta remove o e-mail, comentários e o histórico de pedidos do nosso banco. As fotos compradas permanecem suas e os recibos ficam arquivados por 5 anos por exigência fiscal.</p>
+                  <button class="btn btn-danger" style="align-self: flex-start;">Excluir conta</button>
+                </div>
+              </section>
+            </main>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-mobile">
+        <div class="vp-ruler"><span>Mobile · 390</span><span>scroll</span></div>
+        <div class="vp-stage">
+          <div class="m-shell">
+            <header class="m-top"><span class="av">MA</span><span class="name">Configurações<small>Marina</small></span><button class="icon-btn"><svg class="ico is-16"><use href="#i-bell"/></svg></button></header>
+            <div class="m-canvas">
+              <section class="form-block" style="padding: var(--space-4); gap: var(--space-3);">
+                <h3 style="font-size: var(--text-base);">Dados pessoais</h3>
+                <div><span class="label">Nome</span><input class="input" value="Marina Albuquerque"></div>
+                <div><span class="label">E-mail</span><input class="input" value="marina@example.com"></div>
+                <button class="btn btn-success btn-sm" style="align-self: flex-start;">Salvar</button>
+              </section>
+              <section class="form-block" style="padding: var(--space-4);">
+                <div class="danger-zone">
+                  <h4>Zona de perigo</h4>
+                  <p>Excluir conta é irreversível.</p>
+                  <button class="btn btn-danger btn-sm">Excluir</button>
+                </div>
+              </section>
+            </div>
+            <nav class="m-tabbar"><a><svg class="ico is-20"><use href="#i-grid"/></svg>Início</a><a><svg class="ico is-20"><use href="#i-receipt"/></svg>Compras</a><a><svg class="ico is-20"><use href="#i-heart"/></svg>Salvos</a><a><svg class="ico is-20"><use href="#i-bell"/></svg>Notif</a><a class="is-active"><svg class="ico is-20"><use href="#i-user"/></svg>Conta</a></nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ 08 · AVATAR UPLOAD ═════ -->
+  <section class="screen" id="avatar">
+    <div class="screen-head">
+      <span class="num">08.1</span>
+      <h2>Avatar · uploader</h2>
+      <p class="copy">Foto atual à esquerda, ações + dica à direita. Crop modal 1 : 1 após upload.</p>
+      <span class="tag">composite · avatar-uploader</span>
+    </div>
+
+    <div class="frames">
+      <div class="vp vp-desktop">
+        <div class="vp-ruler"><span>Desktop · 1280</span><span>uploader inline</span></div>
+        <div class="vp-stage">
+          <div class="shell">
+            <aside class="side">
+              <div class="profile"><span class="av">MA</span><span class="name">Marina</span><span class="since">Cliente desde mar/26</span></div>
+              <a class="nav-item is-active"><svg class="ico is-16"><use href="#i-settings"/></svg><span class="lbl">Configurações</span></a>
+            </aside>
+            <main class="canvas">
+              <header class="page-head"><div><p class="crumb">DS / Cliente / Configurações</p><h1>Foto de perfil</h1></div></header>
+              <section class="form-block">
+                <h3>Avatar</h3>
+                <div class="avatar-uploader">
+                  <div class="av-current">MA</div>
+                  <div class="av-actions">
+                    <h4>Iniciais como avatar</h4>
+                    <p>JPG, PNG ou WebP · até 2 MB · proporção 1 : 1 recomendada</p>
+                    <div class="btns">
+                      <button class="btn btn-primary btn-sm"><svg class="ico is-14"><use href="#i-upload"/></svg>Trocar foto</button>
+                      <button class="btn btn-ghost btn-sm" style="color: var(--danger-500);">Remover</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="background: var(--ink-100); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-5); margin-top: var(--space-3); display: grid; grid-template-columns: 280px 1fr; gap: var(--space-5); align-items: center;">
+                  <div style="aspect-ratio: 1; background: var(--ph-rust); border-radius: var(--radius); position: relative; display: grid; place-items: center;">
+                    <div style="width: 65%; aspect-ratio: 1; border: 2px solid var(--brand-500); border-radius: var(--radius-pill); box-shadow: 0 0 0 9999px rgba(0,0,0,0.45);"></div>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+                    <h4 style="font-family: var(--font-heading); font-size: var(--text-base); font-weight: 500; color: var(--ink-1000); margin: 0;">Recorte 1 : 1</h4>
+                    <p style="font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); margin: 0; line-height: var(--leading-relaxed);">Arraste para reposicionar · zoom 1.4×</p>
+                    <input type="range" min="100" max="300" value="140" style="width: 200px;">
+                    <div style="display: flex; gap: var(--space-2);"><button class="btn btn-success btn-sm">Salvar avatar</button><button class="btn btn-ghost btn-sm">Cancelar</button></div>
+                  </div>
+                </div>
+              </section>
+            </main>
+          </div>
+        </div>
+      </div>
+
+      <div class="vp vp-mobile">
+        <div class="vp-ruler"><span>Mobile · 390</span><span>full-screen crop</span></div>
+        <div class="vp-stage">
+          <div class="m-shell">
+            <header class="m-top"><span class="av">MA</span><span class="name">Trocar foto<small>recorte 1 : 1</small></span><button class="icon-btn"><svg class="ico is-16"><use href="#i-x"/></svg></button></header>
+            <div class="m-canvas" style="display: flex; flex-direction: column; align-items: center; gap: var(--space-4);">
+              <div style="width: 280px; aspect-ratio: 1; background: var(--ph-rust); border-radius: var(--radius); position: relative; display: grid; place-items: center;">
+                <div style="width: 75%; aspect-ratio: 1; border: 2px solid var(--brand-500); border-radius: var(--radius-pill); box-shadow: 0 0 0 9999px rgba(0,0,0,0.45);"></div>
+              </div>
+              <input type="range" min="100" max="300" value="140" style="width: 100%;">
+              <div style="display: flex; gap: var(--space-2);"><button class="btn btn-success">Salvar avatar</button><button class="btn btn-ghost btn-sm">Cancelar</button></div>
+            </div>
+            <nav class="m-tabbar"><a><svg class="ico is-20"><use href="#i-grid"/></svg>Início</a><a><svg class="ico is-20"><use href="#i-receipt"/></svg>Compras</a><a><svg class="ico is-20"><use href="#i-heart"/></svg>Salvos</a><a><svg class="ico is-20"><use href="#i-bell"/></svg>Notif</a><a class="is-active"><svg class="ico is-20"><use href="#i-user"/></svg>Conta</a></nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="margin-top: var(--space-24); padding-top: var(--space-6); border-top: 1px solid var(--ink-500); display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-wider);">
+    <span>VINÍCIUS SOUZA · UI KIT CLIENTE v1.0 · 2026-05-10</span>
+    <span><a href="index.html" style="color: var(--ink-700);">Index</a> · <a href="ui-kit-public.html" style="color: var(--ink-700);">Público</a> · <a href="ui-kit-admin.html" style="color: var(--ink-700);">Admin</a></span>
+  </footer>
+
+</div>
+</body>
+</html>

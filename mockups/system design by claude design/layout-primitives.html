@@ -1,0 +1,881 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Vinícius Souza — Layout primitives</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { padding-bottom: var(--space-24); }
+
+  .wrap { max-width: var(--content-max); margin: 0 auto; padding: var(--space-20) var(--space-12) var(--space-24); display: grid; grid-template-columns: 220px 1fr; gap: var(--space-12); align-items: start; }
+  @media (max-width: 1080px) { .wrap { grid-template-columns: 1fr; gap: var(--space-8); } }
+  @media (max-width: 800px)  { .wrap { padding: var(--space-12) var(--space-5); } }
+
+  .col-main { min-width: 0; }
+
+  .page-head { grid-column: 1 / -1; margin-bottom: var(--space-12); padding-bottom: var(--space-8); border-bottom: 1px solid var(--ink-500); }
+  .page-head .back { display: inline-block; font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-700); margin-bottom: var(--space-4); }
+  .page-head .lede { max-width: 65ch; color: var(--ink-800); margin-top: var(--space-4); font-size: var(--text-md); line-height: var(--leading-relaxed); }
+  .page-head nav { margin-top: var(--space-8); display: flex; gap: var(--space-5); flex-wrap: wrap; }
+  .page-head nav a { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-700); padding-bottom: var(--space-1); border-bottom: 1px solid transparent; }
+  .page-head nav a:hover { color: var(--ink-1000); }
+  .page-head nav a[aria-current] { color: var(--ink-1000); border-bottom-color: var(--brand-500); }
+
+  .toc { position: sticky; top: var(--space-6); align-self: start; display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-5) 0; border-top: 1px solid var(--ink-500); border-bottom: 1px solid var(--ink-500); }
+  .toc .toc-num { font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); padding: 0 0 var(--space-2); }
+  .toc a { display: flex; justify-content: space-between; gap: var(--space-2); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); padding: var(--space-1) 0; letter-spacing: var(--tracking-wide); }
+  .toc a:hover { color: var(--ink-1000); }
+  .toc a b { color: var(--ink-700); font-weight: 400; }
+  @media (max-width: 1080px) { .toc { position: static; flex-direction: row; flex-wrap: wrap; gap: var(--space-3); padding: var(--space-3) 0; } .toc .toc-num { width: 100%; } .toc a { padding: 0; } }
+
+  section.prim { margin-top: var(--space-16); padding-top: var(--space-8); border-top: 1px solid var(--ink-500); }
+  section.prim:first-of-type { margin-top: 0; padding-top: 0; border-top: 0; }
+  .s-num { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); color: var(--ink-700); display: block; margin-bottom: var(--space-2); text-transform: uppercase; }
+  .s-title { margin: 0 0 var(--space-3); font-size: var(--text-3xl); font-family: var(--font-heading); font-weight: 400; }
+  .s-deck { color: var(--ink-800); max-width: 65ch; margin: 0 0 var(--space-8); font-size: var(--text-md); line-height: var(--leading-relaxed); }
+  .s-deck b { color: var(--ink-1000); font-weight: 500; }
+
+  h3.row-title { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-800); font-weight: 500; margin: var(--space-8) 0 var(--space-3); }
+  h3.row-title:first-of-type { margin-top: 0; }
+  .row-caption { font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-wide); color: var(--ink-700); margin: 0 0 var(--space-3); }
+
+  .doc-note { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-800); line-height: var(--leading-relaxed); padding: var(--space-3) var(--space-4); border-left: 2px solid var(--brand-500); background: var(--brand-dim); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: var(--space-4) 0; }
+  .doc-note b { color: var(--ink-1000); font-weight: 500; }
+
+  .xref { margin-top: var(--space-5); padding: var(--space-4) var(--space-5); background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius); display: grid; grid-template-columns: max-content 1fr; gap: var(--space-3) var(--space-5); align-items: baseline; font-family: var(--font-mono); font-size: var(--text-xs); }
+  .xref dt { color: var(--ink-700); text-transform: uppercase; letter-spacing: var(--tracking-wider); font-size: var(--text-xxs); }
+  .xref dd { margin: 0; color: var(--ink-900); }
+  .xref dd code { color: var(--ink-1000); background: var(--ink-300); padding: 1px 6px; border-radius: var(--radius-sm); }
+
+  /* a viewport "scaler" — represents 1280 / 1440 viewports inside the page */
+  .vp { background: var(--ink-50); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; position: relative; margin: 0 0 var(--space-3); }
+  .vp .vp-ruler { position: absolute; top: 0; left: 0; right: 0; padding: 4px var(--space-3); background: var(--ink-200); border-bottom: 1px solid var(--ink-500); font-family: var(--font-mono); font-size: 9.5px; color: var(--ink-700); letter-spacing: var(--tracking-wider); text-transform: uppercase; display: flex; justify-content: space-between; z-index: 5; }
+  .vp .vp-stage { padding-top: 28px; min-height: 320px; }
+  .vp.is-1280 .vp-stage { max-width: 100%; }
+  .vp .vp-grid { position: absolute; inset: 28px 0 0; pointer-events: none; opacity: 0.06;
+    background-image: linear-gradient(to right, var(--ink-1000) 1px, transparent 1px); background-size: 60px 100%; }
+
+  /* shared "atom" CSS subset that this page uses */
+  .ico { display: inline-block; width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vertical-align: middle; flex-shrink: 0; }
+  .ico.is-12 { width: 12px; height: 12px; }
+  .ico.is-14 { width: 14px; height: 14px; }
+  .ico.is-16 { width: 16px; height: 16px; }
+  .ico.is-20 { width: 20px; height: 20px; }
+  .ico.is-22 { width: 22px; height: 22px; }
+  .ico.is-24 { width: 24px; height: 24px; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+    font-family: var(--font-body); font-size: var(--text-sm); font-weight: 500;
+    padding: var(--space-3) var(--space-5);
+    background: transparent; color: var(--ink-1000); border: 1px solid transparent; border-radius: var(--radius);
+    cursor: pointer; white-space: nowrap;
+  }
+  .btn-primary { background: var(--brand-500); }
+  .btn-secondary { border-color: var(--ink-500); }
+  .btn-ghost { color: var(--ink-800); }
+  .btn-success { background: var(--signal-500); color: var(--ink-50); }
+  .btn-sm { padding: var(--space-2) var(--space-3); font-size: var(--text-xs); }
+  .btn-lg { padding: var(--space-3) var(--space-6); font-size: var(--text-base); }
+
+  .input { background: var(--ink-400); color: var(--ink-1000); font-family: var(--font-body); font-size: var(--text-sm); padding: var(--space-3) var(--space-4); border: 1px solid var(--ink-500); border-radius: var(--radius); outline: none; width: 100%; }
+  .input::placeholder { color: var(--ink-700); }
+
+  .field-label { font-family: var(--font-body); font-size: var(--text-xs); font-weight: 500; letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--ink-800); margin-bottom: var(--space-2); display: block; }
+
+  /* ════════════════════════════════════════════════════════════════════
+     01 · CONTAINERS
+     ════════════════════════════════════════════════════════════════════ */
+  .container-demo { display: flex; flex-direction: column; gap: var(--space-2); align-items: center; }
+  .container-demo .ruler { width: 100%; height: 1px; background: var(--ink-500); position: relative; }
+  .container-demo .ruler::before, .container-demo .ruler::after { content: ""; position: absolute; top: -3px; width: 1px; height: 7px; background: var(--brand-400); }
+  .container-demo .container-bar {
+    height: 28px; border-radius: var(--radius-sm); background: var(--brand-dim); border: 1px solid var(--brand-500);
+    display: grid; place-items: center;
+    font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--brand-300); letter-spacing: var(--tracking-wider); text-transform: uppercase;
+  }
+  .container-demo .container-bar.is-1280 { width: min(100%, 1280px); }
+  .container-demo .container-bar.is-1440 { width: min(100%, 1440px); background: var(--warning-dim); border-color: var(--warning-500); color: var(--warning-500); }
+  .container-demo .container-bar.is-720  { width: min(100%, 720px); background: var(--signal-dim); border-color: var(--signal-500); color: var(--signal-400); }
+  .container-demo .gutter { display: flex; gap: var(--space-2); align-items: center; font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--ink-700); letter-spacing: var(--tracking-snug); }
+
+  /* ════════════════════════════════════════════════════════════════════
+     02 · SECTION RHYTHM
+     ════════════════════════════════════════════════════════════════════ */
+  .rhythm-stage { background: var(--ink-100); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-3); }
+  .rhythm-row { display: grid; grid-template-columns: 100px 1fr; gap: var(--space-4); align-items: center; padding: var(--space-2) 0; }
+  .rhythm-row .tag { font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); }
+  .rhythm-row .block { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius); display: grid; place-items: center; font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--ink-800); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+  .rhythm-row .gap-marker { font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--brand-400); letter-spacing: var(--tracking-snug); padding: var(--space-1) 0; }
+
+  /* ════════════════════════════════════════════════════════════════════
+     03 · PAGE HEADER
+     ════════════════════════════════════════════════════════════════════ */
+  .page-header-demo { background: var(--ink-100); padding: var(--space-6) var(--space-8); border-bottom: 1px solid var(--ink-500); }
+  .page-header-demo .breadcrumb { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-snug); margin-bottom: var(--space-3); }
+  .page-header-demo .breadcrumb a { color: var(--ink-700); }
+  .page-header-demo .breadcrumb a:hover { color: var(--ink-1000); }
+  .page-header-demo .breadcrumb .sep { color: var(--ink-600); }
+  .page-header-demo .breadcrumb .current { color: var(--ink-1000); }
+  .page-header-demo .ph-row { display: grid; grid-template-columns: 1fr max-content; gap: var(--space-6); align-items: end; }
+  .page-header-demo .ph-titles { min-width: 0; }
+  .page-header-demo .kicker { font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--brand-400); margin-bottom: var(--space-2); }
+  .page-header-demo h1 { font-family: var(--font-display); font-style: italic; font-size: var(--text-4xl); margin: 0 0 var(--space-2); color: var(--ink-1000); line-height: var(--leading-flat); letter-spacing: var(--tracking-tight); }
+  .page-header-demo .ph-meta { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-snug); }
+  .page-header-demo .ph-actions { display: inline-flex; gap: var(--space-2); }
+
+  /* ════════════════════════════════════════════════════════════════════
+     04 · ADMIN SIDEBAR
+     ════════════════════════════════════════════════════════════════════ */
+  .admin-shell { display: grid; grid-template-columns: 240px 1fr; min-height: 380px; background: var(--ink-50); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); overflow: hidden; }
+  .admin-shell.is-collapsed { grid-template-columns: 64px 1fr; }
+  .admin-side { background: var(--ink-200); border-right: 1px solid var(--ink-500); display: flex; flex-direction: column; padding: var(--space-4) 0; }
+  .admin-shell.is-collapsed .admin-side { padding: var(--space-4) 0; }
+  .admin-side .as-brand { display: flex; align-items: center; gap: var(--space-3); padding: 0 var(--space-5) var(--space-5); border-bottom: 1px solid var(--ink-500); margin-bottom: var(--space-4); }
+  .admin-shell.is-collapsed .admin-side .as-brand { padding: 0 0 var(--space-5); justify-content: center; }
+  .admin-side .as-brand .as-logo { width: 32px; height: 32px; border-radius: var(--radius-sm); background: var(--brand-500); color: var(--ink-1000); font-family: var(--font-brand); font-weight: 800; display: grid; place-items: center; font-size: 14px; letter-spacing: -0.05em; }
+  .admin-side .as-brand .as-name { font-family: var(--font-heading); font-size: var(--text-sm); font-weight: 500; color: var(--ink-1000); line-height: 1.1; }
+  .admin-side .as-brand .as-name small { display: block; font-family: var(--font-mono); font-size: 9.5px; color: var(--ink-700); letter-spacing: var(--tracking-wider); margin-top: 2px; }
+  .admin-shell.is-collapsed .admin-side .as-brand .as-name { display: none; }
+  .admin-side .as-section { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); padding: var(--space-3) var(--space-5) var(--space-1); }
+  .admin-shell.is-collapsed .admin-side .as-section { text-align: center; padding: var(--space-3) 0 var(--space-1); }
+  .admin-side .as-nav {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-2) var(--space-5); margin: 0 var(--space-2);
+    color: var(--ink-900); text-decoration: none; font-size: var(--text-sm); border-radius: var(--radius);
+    border-left: 2px solid transparent; padding-left: calc(var(--space-5) - 2px);
+  }
+  .admin-side .as-nav:hover { background: var(--ink-300); color: var(--ink-1000); }
+  .admin-side .as-nav.is-active { background: var(--brand-dim); color: var(--brand-300); border-left-color: var(--brand-500); }
+  .admin-shell.is-collapsed .admin-side .as-nav { justify-content: center; padding: var(--space-3) 0; margin: 0; border-left: 0; }
+  .admin-shell.is-collapsed .admin-side .as-nav.is-active { background: transparent; box-shadow: inset 3px 0 0 var(--brand-500); }
+  .admin-shell.is-collapsed .admin-side .as-nav .as-label { display: none; }
+  .admin-side .as-nav .as-label { flex: 1; }
+  .admin-side .as-nav .as-count { font-family: var(--font-mono); font-size: 10px; color: var(--ink-700); padding: 1px 6px; border-radius: var(--radius-pill); background: var(--ink-300); }
+  .admin-shell.is-collapsed .admin-side .as-nav .as-count { display: none; }
+  .admin-main { padding: var(--space-6); color: var(--ink-900); font-size: var(--text-sm); }
+  .admin-main .placeholder { border: 1px dashed var(--ink-500); border-radius: var(--radius); padding: var(--space-12); text-align: center; color: var(--ink-700); font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase; }
+
+  /* admin toolbar (bulk actions) */
+  .admin-toolbar {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
+    background: var(--brand-dim); border: 1px solid rgba(31,122,224,0.30); border-radius: var(--radius);
+    padding: var(--space-2) var(--space-4); margin-bottom: var(--space-3);
+  }
+  .admin-toolbar .at-count { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--ink-1000); }
+  .admin-toolbar .at-count b { color: var(--brand-300); font-weight: 500; }
+  .admin-toolbar .at-actions { display: inline-flex; gap: var(--space-2); flex-wrap: wrap; }
+
+  /* ════════════════════════════════════════════════════════════════════
+     05 · PUBLIC NAVBAR
+     ════════════════════════════════════════════════════════════════════ */
+  .public-navbar {
+    height: 58px; padding: 0 var(--space-6); background: rgba(7,7,8,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--ink-500);
+    display: grid; grid-template-columns: max-content 1fr max-content; gap: var(--space-6); align-items: center;
+  }
+  .public-navbar.is-scrolled { background: rgba(7,7,8,0.96); border-bottom-color: var(--ink-600); }
+  .public-navbar .pn-brand { display: inline-flex; align-items: center; gap: var(--space-2); font-family: var(--font-brand); font-weight: 700; font-size: 14px; letter-spacing: -0.02em; color: var(--ink-1000); text-decoration: none; }
+  .public-navbar .pn-brand .glyph { width: 24px; height: 24px; border-radius: var(--radius-sm); background: var(--brand-500); color: var(--ink-1000); display: grid; place-items: center; font-family: var(--font-brand); font-weight: 800; font-size: 11px; }
+  .public-navbar .pn-links { display: inline-flex; gap: var(--space-6); }
+  .public-navbar .pn-links a { font-family: var(--font-body); font-size: var(--text-sm); color: var(--ink-900); }
+  .public-navbar .pn-links a:hover, .public-navbar .pn-links a.is-active { color: var(--ink-1000); }
+  .public-navbar .pn-actions { display: inline-flex; gap: var(--space-2); align-items: center; }
+  .public-navbar .pn-cart { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-pill); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-1000); }
+  .public-navbar .pn-cart .count { background: var(--brand-500); color: var(--ink-1000); padding: 1px 6px; border-radius: var(--radius-pill); font-size: 10px; font-weight: 600; }
+  .public-navbar.is-mobile { grid-template-columns: max-content 1fr max-content max-content; gap: var(--space-3); }
+  .public-navbar.is-mobile .pn-links { display: none; }
+
+  /* ════════════════════════════════════════════════════════════════════
+     06 · PUBLIC FOOTER
+     ════════════════════════════════════════════════════════════════════ */
+  .public-footer { background: var(--ink-50); border-top: 1px solid var(--ink-500); padding: var(--space-12) var(--space-8) var(--space-6); }
+  .public-footer .pf-row { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: var(--space-8); margin-bottom: var(--space-12); }
+  .public-footer .pf-news .brand { font-family: var(--font-brand); font-weight: 700; font-size: 16px; color: var(--ink-1000); margin-bottom: var(--space-2); }
+  .public-footer .pf-news p { color: var(--ink-800); font-size: var(--text-sm); margin: 0 0 var(--space-3); max-width: 38ch; line-height: var(--leading-relaxed); }
+  .public-footer .pf-news .news-form { display: grid; grid-template-columns: 1fr max-content; gap: var(--space-2); }
+  .public-footer .pf-col h4 { font-family: var(--font-mono); font-size: var(--text-xxs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-700); margin: 0 0 var(--space-3); }
+  .public-footer .pf-col ul { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-2); }
+  .public-footer .pf-col a { color: var(--ink-900); font-size: var(--text-sm); }
+  .public-footer .pf-col a:hover { color: var(--ink-1000); }
+  .public-footer .pf-stripe { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-bottom: var(--space-6); }
+  .public-footer .pf-stripe span { height: 4px; }
+  .public-footer .pf-stripe span:nth-child(1) { background: var(--sub-fotografia-500); }
+  .public-footer .pf-stripe span:nth-child(2) { background: var(--sub-editorial-500); }
+  .public-footer .pf-stripe span:nth-child(3) { background: var(--sub-esportes-500); }
+  .public-footer .pf-stripe span:nth-child(4) { background: var(--sub-natureza-500); }
+  .public-footer .pf-legal { display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); padding-top: var(--space-4); border-top: 1px solid var(--ink-500); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-snug); }
+  .public-footer .pf-legal a { color: var(--ink-700); }
+  .public-footer .pf-legal a:hover { color: var(--ink-1000); }
+
+  /* ════════════════════════════════════════════════════════════════════
+     07 · FORMS
+     ════════════════════════════════════════════════════════════════════ */
+  .form-stage { background: var(--ink-100); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-6); }
+  .form-row { display: grid; gap: var(--space-3); margin-bottom: var(--space-4); }
+  .form-row.is-cols-2 { grid-template-columns: 1fr 1fr; }
+  .form-row.is-inline { grid-template-columns: 160px 1fr; align-items: center; gap: var(--space-4); }
+  .form-row.is-inline .field-label { text-align: right; padding-top: 0; margin-bottom: 0; }
+  fieldset { border: 1px solid var(--ink-500); border-radius: var(--radius); padding: var(--space-5); margin: 0 0 var(--space-4); }
+  legend { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--ink-800); padding: 0 var(--space-2); }
+  .form-actions { display: flex; gap: var(--space-2); justify-content: flex-end; padding-top: var(--space-3); border-top: 1px solid var(--ink-500); margin-top: var(--space-3); }
+
+  /* ════════════════════════════════════════════════════════════════════
+     08 · GRID RECIPES
+     ════════════════════════════════════════════════════════════════════ */
+  .grid-stage { background: var(--ink-100); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-5); }
+  .grid-stage .cell { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius); aspect-ratio: 1; display: grid; place-items: center; font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--ink-700); letter-spacing: var(--tracking-snug); }
+  .grid-stage .cell.is-event { aspect-ratio: 16/10; }
+  .gallery-130 { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 4px; }
+  .gallery-180 { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+  .gallery-220 { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .events-3   { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .events-4   { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .checkout-2 { display: grid; grid-template-columns: 1fr 360px; gap: 32px; }
+  .checkout-2 .check-aside { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-4); position: sticky; top: var(--space-3); height: max-content; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); display: grid; place-items: center; min-height: 220px; letter-spacing: var(--tracking-wider); text-transform: uppercase; }
+  .checkout-2 .check-main { background: var(--ink-300); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-4); min-height: 280px; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); display: grid; place-items: center; letter-spacing: var(--tracking-wider); text-transform: uppercase; }
+
+  footer { margin-top: var(--space-20); padding-top: var(--space-6); border-top: 1px solid var(--ink-500); display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); letter-spacing: var(--tracking-wider); grid-column: 1 / -1; }
+  footer a { color: var(--ink-700); }
+  footer a:hover { color: var(--ink-1000); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+      <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></symbol>
+      <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+      <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></symbol>
+      <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></symbol>
+      <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+      <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></symbol>
+      <symbol id="i-comment" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+      <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></symbol>
+      <symbol id="i-chart" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></symbol>
+      <symbol id="i-folder" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></symbol>
+      <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+      <symbol id="i-tag" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+      <symbol id="i-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></symbol>
+      <symbol id="i-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></symbol>
+      <symbol id="i-instagram" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37a4 4 0 1 1-4.73-4.73 4 4 0 0 1 4.73 4.73z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></symbol>
+      <symbol id="i-whatsapp" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163a11.87 11.87 0 0 1-1.587-5.946C.16 5.337 5.494.001 12.05.001a11.81 11.81 0 0 1 8.413 3.488 11.82 11.82 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24z"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="page-head">
+    <a class="back" href="index.html">← Sistema</a>
+    <p class="eyebrow">Vinícius Souza · Layout 04</p>
+    <h1 class="type-h1">Layout primitives</h1>
+    <p class="lede">
+      Os blocos estruturais que carregam os <a href="components-composite.html">compostos</a>: containers nas três larguras canônicas (1280 público · 1280 cliente · 1440 admin), ritmo vertical de seções, page header com kicker e ações, sidebar admin (collapsed × expanded), navbar pública (rest · scrolled · mobile), footer com sub-brand stripe, formulários (single/two-col, label-top × label-inline, fieldsets) e o catálogo de grid recipes (galeria 130/180/220, lista de eventos 3/4-col, checkout 2-col com aside sticky).
+    </p>
+    <nav>
+      <a href="index.html">Sistema</a>
+      <a href="components-atomic.html">Atômicos · 03</a>
+      <a href="components-composite.html">Compostos · 04</a>
+      <a href="layout-primitives.html" aria-current="page">Layout · 04</a>
+      <a href="spacing-elevation-motion.html">Espaço · Motion</a>
+    </nav>
+  </header>
+
+  <aside class="toc" aria-label="Índice da página">
+    <span class="toc-num">Nesta página</span>
+    <a href="#container">01 · Containers <b>3</b></a>
+    <a href="#section">02 · Seção · ritmo</a>
+    <a href="#page-header">03 · Page header</a>
+    <a href="#admin-sidebar">04 · Admin sidebar</a>
+    <a href="#admin-toolbar">04b · Admin toolbar</a>
+    <a href="#public-navbar">05 · Public navbar</a>
+    <a href="#public-footer">06 · Public footer</a>
+    <a href="#forms">07 · Form layouts</a>
+    <a href="#grid">08 · Grid recipes</a>
+  </aside>
+
+  <main class="col-main">
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       01 · CONTAINERS
+       ════════════════════════════════════════════════════════════════════ -->
+  <section class="prim" id="container" data-screen-label="Layout · Containers">
+    <span class="s-num">01 · Containers</span>
+    <h2 class="s-title">Três larguras canônicas, três tokens.</h2>
+    <p class="s-deck">
+      <code class="type-mono">--content-narrow: 720px</code> para prosa e formulários de autenticação. <code class="type-mono">--content-max: 1280px</code> para o público e a área da cliente. <code class="type-mono">--content-wide: 1440px</code> para o admin (mais densidade, mais colunas). Gutters laterais escalam: 48 px desktop · 32 px tablet · 20 px mobile.
+    </p>
+
+    <h3 class="row-title">Comparação ampliada (escala 1:3)</h3>
+    <div class="container-demo" style="background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-6);">
+      <div class="container-bar is-1440">1440 wide · admin · --content-wide</div>
+      <div class="container-bar is-1280">1280 max · público + cliente · --content-max</div>
+      <div class="container-bar is-720">720 narrow · prosa · --content-narrow</div>
+      <div class="gutter">
+        <span>← gutters laterais ·</span>
+        <span style="color: var(--ink-1000);">desktop 48 px</span>
+        <span>·</span>
+        <span style="color: var(--ink-1000);">tablet 32 px</span>
+        <span>·</span>
+        <span style="color: var(--ink-1000);">mobile 20 px</span>
+      </div>
+    </div>
+
+    <h3 class="row-title">Aninhamento — sidebar + content-max</h3>
+    <div class="vp">
+      <div class="vp-ruler"><span>viewport · 1440</span><span>admin</span></div>
+      <div class="vp-grid"></div>
+      <div class="vp-stage" style="display: grid; grid-template-columns: 240px 1fr; min-height: 240px;">
+        <div style="background: var(--ink-200); border-right: 1px solid var(--ink-500); padding: var(--space-3); font-family: var(--font-mono); font-size: var(--text-xxs); color: var(--ink-700); letter-spacing: var(--tracking-wider); text-transform: uppercase;">sidebar 240px</div>
+        <div style="padding: var(--space-3);">
+          <div style="max-width: 1440px; margin: 0 auto; background: var(--brand-dim); border: 1px dashed var(--brand-500); height: 200px; display: grid; place-items: center; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--brand-300); letter-spacing: var(--tracking-wider); text-transform: uppercase;">conteúdo · até 1440 − sidebar</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vp">
+      <div class="vp-ruler"><span>viewport · 1280</span><span>público</span></div>
+      <div class="vp-grid"></div>
+      <div class="vp-stage" style="padding: var(--space-3);">
+        <div style="max-width: 1280px; margin: 0 auto; padding: 0 var(--space-12); background: var(--brand-dim); border: 1px dashed var(--brand-500); height: 200px; display: grid; place-items: center; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--brand-300); letter-spacing: var(--tracking-wider); text-transform: uppercase;">content-max · 1280 com gutter 48</div>
+      </div>
+    </div>
+
+    <dl class="xref">
+      <dt>Tokens</dt>            <dd><code>--content-narrow</code> · <code>--content-max</code> · <code>--content-wide</code></dd>
+      <dt>Implementa</dt>        <dd>Wrapper top-level em <code>src/app/layout.js</code> · sidebar admin em <code>src/app/admin/layout.js</code></dd>
+      <dt>Breakpoints</dt>       <dd><code>--bp-sm 480</code> · <code>--bp-md 768</code> · <code>--bp-lg 1024</code> · <code>--bp-xl 1280</code></dd>
+    </dl>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       02 · SECTION RHYTHM
+       ════════════════════════════════════════════════════════════════════ -->
+  <section class="prim" id="section" data-screen-label="Layout · Section rhythm">
+    <span class="s-num">02 · Seção · ritmo vertical</span>
+    <h2 class="s-title">Hero · content · CTA · footer — espaços canônicos.</h2>
+    <p class="s-deck">
+      Toda página pública segue o mesmo ritmo: <b>hero</b> 80–96 px de respiração antes do conteúdo, <b>blocos de conteúdo</b> separados por 64 px, <b>CTA final</b> 64 px de margem superior, <b>footer</b> 96 px. Em mobile, todos os 96 viram 64 e os 64 viram 48. Os tokens de espaço são <code class="type-mono">--space-12 / --space-16 / --space-20 / --space-24</code>.
+    </p>
+
+    <div class="rhythm-stage">
+      <div class="rhythm-row"><span class="tag">hero</span><div class="block" style="height: 88px;">Hero · type-display + lede</div></div>
+      <div class="rhythm-row"><span class="tag">↕ space-20</span><div class="gap-marker">— 80 px (rítmo abaixo do hero) —</div></div>
+      <div class="rhythm-row"><span class="tag">content</span><div class="block" style="height: 64px;">Block #1 — eventos em destaque</div></div>
+      <div class="rhythm-row"><span class="tag">↕ space-16</span><div class="gap-marker">— 64 px —</div></div>
+      <div class="rhythm-row"><span class="tag">content</span><div class="block" style="height: 64px;">Block #2 — face-search</div></div>
+      <div class="rhythm-row"><span class="tag">↕ space-16</span><div class="gap-marker">— 64 px —</div></div>
+      <div class="rhythm-row"><span class="tag">content</span><div class="block" style="height: 64px;">Block #3 — depoimentos</div></div>
+      <div class="rhythm-row"><span class="tag">↕ space-16</span><div class="gap-marker">— 64 px —</div></div>
+      <div class="rhythm-row"><span class="tag">cta</span><div class="block" style="height: 56px; background: var(--brand-dim); border-color: var(--brand-500); color: var(--brand-300);">CTA — "Encontre suas fotos"</div></div>
+      <div class="rhythm-row"><span class="tag">↕ space-24</span><div class="gap-marker">— 96 px antes do footer —</div></div>
+      <div class="rhythm-row"><span class="tag">footer</span><div class="block" style="height: 80px;">Footer · sub-brand stripe + legal</div></div>
+    </div>
+
+    <dl class="xref">
+      <dt>Tokens</dt>            <dd><code>--space-12 (48)</code> · <code>--space-16 (64)</code> · <code>--space-20 (80)</code> · <code>--space-24 (96)</code></dd>
+      <dt>Mobile</dt>            <dd>Multiplicar por 0,67 nas três grandes paradas. Conteúdo permanece em <code>--space-8</code> entre subitens.</dd>
+    </dl>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       03 · PAGE HEADER
+       ════════════════════════════════════════════════════════════════════ -->
+  <section class="prim" id="page-header" data-screen-label="Layout · Page header">
+    <span class="s-num">03 · Page header</span>
+    <h2 class="s-title">Breadcrumb · kicker · título · meta · ações.</h2>
+    <p class="s-deck">
+      Cabeçalho canônico de toda subpágina. Breadcrumb em mono uppercase 12 px no topo (sempre, exceto na home). Kicker em <code class="type-mono">brand-400</code> mono indicando a categoria. Título em <code class="type-mono">type-display</code> italic 56 px. Meta em mono 12 px com separadores · . Ações alinhadas à direita pelo grid de duas colunas (<code class="type-mono">1fr max-content</code>).
+    </p>
+
+    <div class="page-header-demo">
+      <nav class="breadcrumb" aria-label="Trilha">
+        <a href="#">Início</a><span class="sep">›</span>
+        <a href="#">Eventos</a><span class="sep">›</span>
+        <span class="current">Abertura da Safra 2026</span>
+      </nav>
+      <div class="ph-row">
+        <div class="ph-titles">
+          <p class="kicker">Rodeio · 2026</p>
+          <h1>Abertura da Safra 2026</h1>
+          <p class="ph-meta">17 abr 2026 · Itajá · GO · 1 581 fotos · 18 vídeos · capa por Vinícius Souza</p>
+        </div>
+        <div class="ph-actions">
+          <button class="btn btn-secondary"><svg class="ico is-16"><use href="#i-search"/></svg>Procurar pelo meu rosto</button>
+          <button class="btn btn-primary"><svg class="ico is-16"><use href="#i-image"/></svg>Ver fotos</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: var(--space-3);">
+      <div class="page-header-demo" style="background: var(--ink-200); border: 1px solid var(--ink-500); border-radius: var(--radius-lg);">
+        <nav class="breadcrumb">
+          <a href="#">Admin</a><span class="sep">›</span>
+          <a href="#">Eventos</a><span class="sep">›</span>
+          <span class="current">Abertura da Safra · Mídia</span>
+        </nav>
+        <div class="ph-row">
+          <div class="ph-titles">
+            <p class="kicker" style="color: var(--warning-500);">Admin · álbum</p>
+            <h1 style="font-family: var(--font-heading); font-style: normal; font-size: var(--text-3xl); font-weight: 400;">Abertura da Safra 2026</h1>
+            <p class="ph-meta">ID 200000018 · 1.581 fotos · 18 vídeos · publicado em 17 abr 2026 · receita R$ 4 218,40</p>
+          </div>
+          <div class="ph-actions">
+            <button class="btn btn-secondary btn-sm">Despublicar</button>
+            <button class="btn btn-secondary btn-sm"><svg class="ico is-14"><use href="#i-edit"/></svg>Editar evento</button>
+            <button class="btn btn-primary btn-sm"><svg class="ico is-14"><use href="#i-plus"/></svg>Subir mídia</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <dl class="xref">
+      <dt>Implementa</dt>        <dd><code>src/app/evento/[id]/page.js</code> (header público) · <code>src/app/admin/eventos/[id]/page.js</code> (header admin)</dd>
+      <dt>Átomos</dt>             <dd><code>breadcrumb</code>, <code>btn-primary</code>, <code>btn-secondary</code>, <code>type-display</code></dd>
+      <dt>Strings (voz · 04)</dt> <dd>"Procurar pelo meu rosto" · "Ver fotos" · "Despublicar" · "Editar evento" · "Subir mídia"</dd>
+    </dl>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       04 · ADMIN SIDEBAR
+       ════════════════════════════════════════════════════════════════════ -->
+  <section class="prim" id="admin-sidebar" data-screen-label="Layout · Admin sidebar">
+    <span class="s-num">04 · Admin sidebar</span>
+    <h2 class="s-title">240 px expandido · 64 px colapsado · borda esquerda no ativo.</h2>
+    <p class="s-deck">
+      Sidebar admin é <b>fixa</b> em desktop (≥ 1024), com três seções rotuladas (<b>Operação</b>, <b>Configuração</b>, <b>Acesso</b>). Ativos ganham fundo <code class="type-mono">brand-dim</code> + borda esquerda 2 px <code class="type-mono">brand-500</code> + texto <code class="type-mono">brand-300</code>. Colapsada (64 px) só mostra ícones; o estado ativo migra para um shadow inset esquerdo.
+    </p>
+
+    <h3 class="row-title">Estado expandido</h3>
+    <div class="admin-shell">
+      <aside class="admin-side">
+        <div class="as-brand">
+          <div class="as-logo">VS</div>
+          <div class="as-name">Vinícius Souza<small>admin · v1.0</small></div>
+        </div>
+        <span class="as-section">Operação</span>
+        <a class="as-nav is-active"><svg class="ico is-16"><use href="#i-grid"/></svg><span class="as-label">Dashboard</span></a>
+        <a class="as-nav"><svg class="ico is-16"><use href="#i-chart"/></svg><span class="as-label">Estatísticas</span></a>
+        <a class="as-nav"><svg class="ico is-16"><use href="#i-receipt"/></svg><span class="as-label">Pedidos</span><span class="as-count">5</span></a>
+        <a class="as-nav"><svg class="ico is-16"><use href="#i-image"/></svg><span class="as-label">Álbuns</span><span class="as-count">142</span></a>
+        <a class="as-nav"><svg class="ico is-16"><use href="#i-comment"/></svg><span class="as-label">Comentários</span><span class="as-count">7</span></a>
+        <a class="as-nav"><svg class="ico is-16"><use href="#i-cart"/></svg><span class="as-label">Carrinhos abertos</span><span class="as-count">12</span></a>
+        <a class="as-nav"><svg class="ico is-16"><use href="#i-user"/></svg><span class="as-label">Contas</span><span class="as-count">128</span></a>
+        <a class="as-nav"><svg class="ico is-16"><use href="#i-trash"/></svg><span class="as-label">Lixeira</span></a>
+
+        <span class="as-section">Configuração</span>
+        <a class="as-nav"><svg class="ico is-16"><use href="#i-tag"/></svg><span class="as-label">Cupons</span></a>
+        <a class="as-nav"><svg class="ico is-16"><use href="#i-folder"/></svg><span class="as-label">Marca-d'água</span></a>
+        <a class="as-nav"><svg class="ico is-16"><use href="#i-settings"/></svg><span class="as-label">Configurações</span></a>
+      </aside>
+      <main class="admin-main">
+        <div class="placeholder">— Conteúdo da página vai aqui —</div>
+      </main>
+    </div>
+
+    <h3 class="row-title">Estado colapsado (64 px)</h3>
+    <div class="admin-shell is-collapsed">
+      <aside class="admin-side">
+        <div class="as-brand">
+          <div class="as-logo">VS</div>
+          <div class="as-name">Vinícius Souza<small>admin · v1.0</small></div>
+        </div>
+        <span class="as-section">Op</span>
+        <a class="as-nav is-active" title="Dashboard"><svg class="ico is-20"><use href="#i-grid"/></svg></a>
+        <a class="as-nav" title="Estatísticas"><svg class="ico is-20"><use href="#i-chart"/></svg></a>
+        <a class="as-nav" title="Pedidos"><svg class="ico is-20"><use href="#i-receipt"/></svg></a>
+        <a class="as-nav" title="Álbuns"><svg class="ico is-20"><use href="#i-image"/></svg></a>
+        <a class="as-nav" title="Comentários"><svg class="ico is-20"><use href="#i-comment"/></svg></a>
+        <a class="as-nav" title="Carrinhos"><svg class="ico is-20"><use href="#i-cart"/></svg></a>
+        <a class="as-nav" title="Contas"><svg class="ico is-20"><use href="#i-user"/></svg></a>
+        <a class="as-nav" title="Lixeira"><svg class="ico is-20"><use href="#i-trash"/></svg></a>
+        <span class="as-section">Conf</span>
+        <a class="as-nav" title="Cupons"><svg class="ico is-20"><use href="#i-tag"/></svg></a>
+        <a class="as-nav" title="Marca-d'água"><svg class="ico is-20"><use href="#i-folder"/></svg></a>
+        <a class="as-nav" title="Configurações"><svg class="ico is-20"><use href="#i-settings"/></svg></a>
+      </aside>
+      <main class="admin-main">
+        <div class="placeholder">— Idem · 64 px ganhou ~176 px de canvas —</div>
+      </main>
+    </div>
+
+    <dl class="xref">
+      <dt>Implementa</dt>        <dd><code>src/app/admin/layout.js</code> (.admin-sidebar) · CSS em <code>src/app/admin.css:55–133</code></dd>
+      <dt>Átomos</dt>             <dd><code>ico (#i-grid, #i-chart, #i-receipt, #i-image, #i-comment, #i-cart, #i-user, #i-trash, #i-tag, #i-folder, #i-settings)</code></dd>
+      <dt>Strings (voz · 04)</dt> <dd>"Operação" · "Configuração" · "Dashboard" · "Pedidos" · "Álbuns" · "Carrinhos abertos" · "Contas" · "Marca-d'água" · "Cupons"</dd>
+    </dl>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       04b · ADMIN TOOLBAR
+       ════════════════════════════════════════════════════════════════════ -->
+  <section class="prim" id="admin-toolbar" data-screen-label="Layout · Admin toolbar">
+    <span class="s-num">04b · Admin toolbar (bulk-actions)</span>
+    <h2 class="s-title">Aparece quando há seleção. Desaparece quando não há.</h2>
+    <p class="s-deck">
+      Barra contextual sobre a grade de fotos/vídeos no admin. Mostra <b>contagem da seleção</b> à esquerda e <b>ações pertinentes</b> à direita. Fundo <code class="type-mono">brand-dim</code> para diferenciar do bg da página. Some completamente quando a seleção é zerada — não fica desabilitada.
+    </p>
+
+    <div style="background: var(--ink-50); border: 1px solid var(--ink-500); border-radius: var(--radius-lg); padding: var(--space-4);">
+      <div class="admin-toolbar">
+        <span class="at-count"><b>3 fotos</b> selecionadas</span>
+        <div class="at-actions">
+          <button class="btn btn-secondary btn-sm">Mover p/ pasta</button>
+          <button class="btn btn-secondary btn-sm">Alterar preço</button>
+          <button class="btn btn-success btn-sm">Marcar como GRÁTIS</button>
+          <button class="btn btn-secondary btn-sm">Definir como capa</button>
+          <button class="btn btn-secondary btn-sm" style="color: var(--danger-500); border-color: rgba(224,85,79,0.35);"><svg class="ico is-14"><use href="#i-trash"/></svg>Mover p/ lixeira</button>
+        </div>
+      </div>
+      <div style="font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-700); padding: var(--space-2) var(--space-3); letter-spacing: var(--tracking-snug);">— grade de fotos abaixo —</div>
+    </div>
+
+    <dl class="xref">
+      <dt>Implementa</dt>        <dd><code>.bulk-bar</code> em <code>frontend-final/admin.html:994–1003</code> · port pendente para <code>src/app/admin/upload-fotos/[eventId]/page.js</code></dd>
+      <dt>Strings (voz · 04)</dt> <dd>"3 fotos selecionadas" · "Mover p/ pasta" · "Alterar preço" · "Marcar como GRÁTIS" · "Definir como capa" · "Mover p/ lixeira"</dd>
+    </dl>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       05 · PUBLIC NAVBAR
+       ════════════════════════════════════════════════════════════════════ -->
+  <section class="prim" id="public-navbar" data-screen-label="Layout · Public navbar">
+    <span class="s-num">05 · Public navbar</span>
+    <h2 class="s-title">58 px de altura · transparente sobre hero · opaca depois.</h2>
+    <p class="s-deck">
+      Navbar pública é <b>fixa no topo</b>, com altura constante (58 px desktop · 54 px mobile, conforme <code class="type-mono">--nav-height</code>). Em estado <b>rest</b> sobre o hero, o fundo é <code class="type-mono">rgba(7,7,8,0.85)</code> com blur. Em <b>scrolled</b> (após 64 px de scroll), o fundo passa a <code class="type-mono">rgba(7,7,8,0.96)</code> e a borda inferior fica mais nítida. Em <b>mobile</b>, os links viram um drawer aberto pelo ícone hamburger.
+    </p>
+
+    <h3 class="row-title">Desktop · rest (sobre hero escuro)</h3>
+    <div class="vp">
+      <div class="vp-ruler"><span>viewport · 1280</span><span>público · scroll: 0</span></div>
+      <div class="vp-stage" style="padding-top: 28px; background: var(--ph-anchor); min-height: 220px;">
+        <div class="public-navbar">
+          <a class="pn-brand"><span class="glyph">VS</span><span>Vinícius Souza · Fotografia</span></a>
+          <nav class="pn-links">
+            <a class="is-active">Eventos</a>
+            <a>Sobre</a>
+            <a>Contato</a>
+          </nav>
+          <div class="pn-actions">
+            <button class="pn-cart"><svg class="ico is-14"><use href="#i-cart"/></svg>Carrinho<span class="count">3</span></button>
+            <a class="btn btn-secondary btn-sm">Entrar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="row-title">Desktop · scrolled (após 64 px)</h3>
+    <div class="vp">
+      <div class="vp-ruler"><span>viewport · 1280</span><span>público · scroll: 200</span></div>
+      <div class="vp-stage" style="padding-top: 28px; background: var(--ink-100); min-height: 220px;">
+        <div class="public-navbar is-scrolled">
+          <a class="pn-brand"><span class="glyph">VS</span><span>Vinícius Souza · Fotografia</span></a>
+          <nav class="pn-links">
+            <a>Eventos</a>
+            <a class="is-active">Sobre</a>
+            <a>Contato</a>
+          </nav>
+          <div class="pn-actions">
+            <button class="pn-cart"><svg class="ico is-14"><use href="#i-cart"/></svg>Carrinho<span class="count">3</span></button>
+            <a class="btn btn-secondary btn-sm">Entrar</a>
+          </div>
+        </div>
+        <div style="padding: var(--space-12) var(--space-6); color: var(--ink-700); font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wider); text-transform: uppercase;">— conteúdo da página em scroll —</div>
+      </div>
+    </div>
+
+    <h3 class="row-title">Mobile · 390 px</h3>
+    <div style="display: grid; grid-template-columns: 390px 1fr; gap: var(--space-4); align-items: start;">
+      <div class="vp" style="margin: 0;">
+        <div class="vp-ruler"><span>viewport · 390</span><span>público</span></div>
+        <div class="vp-stage" style="padding-top: 28px; background: var(--ink-100); min-height: 220px;">
+          <div class="public-navbar is-mobile" style="padding: 0 var(--space-3);">
+            <a class="pn-brand" style="font-size: 12px;"><span class="glyph" style="width: 22px; height: 22px;">VS</span></a>
+            <div></div>
+            <button class="pn-cart" style="padding: 4px 8px;"><svg class="ico is-12"><use href="#i-cart"/></svg><span class="count">3</span></button>
+            <button class="btn btn-ghost btn-sm" aria-label="Menu"><svg class="ico is-20"><use href="#i-menu"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <div style="padding-top: var(--space-3); color: var(--ink-800); font-size: var(--text-sm); line-height: var(--leading-relaxed);">
+        Mobile colapsa os links em um <b style="color: var(--ink-1000);">drawer side-sheet</b> (ver <a href="components-composite.html#modals">compostos · modais</a>) acessado pelo ícone hamburger. O carrinho permanece visível porque é a ação primária do leitor que entrou para comprar fotos.
+      </div>
+    </div>
+
+    <dl class="xref">
+      <dt>Implementa</dt>        <dd><code>src/components/Navbar.js</code> · classes <code>.navbar</code>, <code>.navbar-drawer</code>, <code>.navbar-mobile-right</code></dd>
+      <dt>Tokens</dt>             <dd><code>--nav-height: 58px</code> · <code>--nav-height-mobile: 54px</code></dd>
+      <dt>Strings (voz · 04)</dt> <dd>"Eventos" · "Sobre" · "Contato" · "Carrinho" · "Entrar"</dd>
+    </dl>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       06 · PUBLIC FOOTER
+       ════════════════════════════════════════════════════════════════════ -->
+  <section class="prim" id="public-footer" data-screen-label="Layout · Public footer">
+    <span class="s-num">06 · Public footer</span>
+    <h2 class="s-title">Newsletter · três colunas de links · sub-brand stripe · legal.</h2>
+    <p class="s-deck">
+      Footer fecha toda página pública e da cliente. Quatro elementos verticais: <b>newsletter opcional</b> à esquerda + três colunas de links · faixa <b>sub-brand stripe</b> com as quatro verticais · linha legal mono.
+    </p>
+
+    <div class="public-footer">
+      <div class="pf-row">
+        <div class="pf-news">
+          <p class="brand">Vinícius Souza · Fotografia</p>
+          <p>Receba aviso quando o próximo álbum sair. Um e-mail por evento, nunca mais que isso.</p>
+          <form class="news-form" onsubmit="return false;">
+            <input class="input" type="email" placeholder="seu@email.com" aria-label="E-mail">
+            <button class="btn btn-primary btn-sm" type="submit">Receber<svg class="ico is-14"><use href="#i-arrow-right"/></svg></button>
+          </form>
+        </div>
+        <div class="pf-col">
+          <h4>Plataforma</h4>
+          <ul>
+            <li><a href="#">Eventos</a></li>
+            <li><a href="#">Procurar pelo rosto</a></li>
+            <li><a href="#">Vídeos</a></li>
+            <li><a href="#">Como funciona</a></li>
+          </ul>
+        </div>
+        <div class="pf-col">
+          <h4>Estúdio</h4>
+          <ul>
+            <li><a href="#">Sobre</a></li>
+            <li><a href="#">Editorial</a></li>
+            <li><a href="#">Esportes</a></li>
+            <li><a href="#">Natureza</a></li>
+          </ul>
+        </div>
+        <div class="pf-col">
+          <h4>Suporte</h4>
+          <ul>
+            <li><a href="#">Contato</a></li>
+            <li><a href="#"><svg class="ico is-14" style="margin-right: 4px;"><use href="#i-whatsapp"/></svg>WhatsApp</a></li>
+            <li><a href="#"><svg class="ico is-14" style="margin-right: 4px;"><use href="#i-instagram"/></svg>Instagram</a></li>
+            <li><a href="#">Termos · Privacidade</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="pf-stripe"><span></span><span></span><span></span><span></span></div>
+      <div class="pf-legal">
+        <span>© 2026 Vinícius Souza · CNPJ 12.345.678/0001-90</span>
+        <span>Brasília · DF · Brasil</span>
+      </div>
+    </div>
+
+    <dl class="xref">
+      <dt>Implementa</dt>        <dd><code>src/components/Footer.js</code> · classes <code>.footer</code>, <code>.footer-*</code></dd>
+      <dt>Sub-brand stripe</dt>   <dd>4 faixas de 4 px nas cores <code>--sub-fotografia-500</code> · <code>--sub-editorial-500</code> · <code>--sub-esportes-500</code> · <code>--sub-natureza-500</code> (ordem fixa).</dd>
+      <dt>Strings (voz · 04)</dt> <dd>"Receba aviso quando o próximo álbum sair. Um e-mail por evento, nunca mais que isso." · "Plataforma" · "Estúdio" · "Suporte"</dd>
+    </dl>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       07 · FORM LAYOUTS
+       ════════════════════════════════════════════════════════════════════ -->
+  <section class="prim" id="forms" data-screen-label="Layout · Forms">
+    <span class="s-num">07 · Form layouts</span>
+    <h2 class="s-title">Single-column como default. Two-column quando os campos são pares semânticos.</h2>
+    <p class="s-deck">
+      Toda formulário começa em <b>single-column label-top</b> (mais legível, menos quebra mobile). <b>Two-column</b> só para pares óbvios (cidade/UF, mês/ano, preço/desconto). <b>Label-inline</b> só em filtros e em formulários muito longos no admin onde o eixo vertical é caro. <b>Fieldset + legend</b> agrupa campos relacionados — sempre com legend mono uppercase.
+    </p>
+
+    <h3 class="row-title">Single-column · label-top</h3>
+    <div class="form-stage" style="max-width: 480px;">
+      <div class="form-row">
+        <label class="field-label" for="f1">Nome completo</label>
+        <input class="input" id="f1" type="text" placeholder="Marina Carvalho">
+      </div>
+      <div class="form-row">
+        <label class="field-label" for="f2">E-mail</label>
+        <input class="input" id="f2" type="email" placeholder="seu@email.com">
+      </div>
+      <div class="form-row">
+        <label class="field-label" for="f3">WhatsApp</label>
+        <input class="input" id="f3" type="tel" placeholder="(61) 9 9876-5432">
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-ghost">Cancelar</button>
+        <button class="btn btn-primary">Continuar</button>
+      </div>
+    </div>
+
+    <h3 class="row-title">Two-column · pares semânticos</h3>
+    <div class="form-stage">
+      <div class="form-row is-cols-2">
+        <div>
+          <label class="field-label" for="g1">Cidade</label>
+          <input class="input" id="g1" type="text" placeholder="Brasília">
+        </div>
+        <div>
+          <label class="field-label" for="g2">UF</label>
+          <input class="input" id="g2" type="text" placeholder="DF" maxlength="2" style="text-transform: uppercase;">
+        </div>
+      </div>
+      <div class="form-row is-cols-2">
+        <div>
+          <label class="field-label" for="g3">Preço base</label>
+          <input class="input" id="g3" type="text" value="R$ 28,80" style="font-family: var(--font-mono);">
+        </div>
+        <div>
+          <label class="field-label" for="g4">Desconto progressivo</label>
+          <input class="input" id="g4" type="text" value="10%" style="font-family: var(--font-mono);">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-ghost">Cancelar</button>
+        <button class="btn btn-primary">Salvar</button>
+      </div>
+    </div>
+
+    <h3 class="row-title">Label-inline · filtros admin</h3>
+    <div class="form-stage">
+      <div class="form-row is-inline">
+        <label class="field-label" for="h1">Período</label>
+        <input class="input" id="h1" type="text" value="01 abr 2026 — 30 abr 2026">
+      </div>
+      <div class="form-row is-inline">
+        <label class="field-label" for="h2">Status</label>
+        <input class="input" id="h2" type="text" value="Pago, Pendente">
+      </div>
+      <div class="form-row is-inline">
+        <label class="field-label" for="h3">Cliente</label>
+        <input class="input" id="h3" type="text" placeholder="Nome ou e-mail">
+      </div>
+    </div>
+
+    <h3 class="row-title">Fieldset + legend</h3>
+    <div class="form-stage">
+      <fieldset>
+        <legend>Endereço de cobrança</legend>
+        <div class="form-row">
+          <label class="field-label" for="j1">Logradouro</label>
+          <input class="input" id="j1" type="text" placeholder="Av. Paulista, 1578">
+        </div>
+        <div class="form-row is-cols-2">
+          <div>
+            <label class="field-label" for="j2">Bairro</label>
+            <input class="input" id="j2" type="text" placeholder="Bela Vista">
+          </div>
+          <div>
+            <label class="field-label" for="j3">CEP</label>
+            <input class="input" id="j3" type="text" placeholder="01310-200">
+          </div>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Notificações</legend>
+        <div style="display: grid; gap: var(--space-2); font-size: var(--text-sm); color: var(--ink-900);">
+          <label style="display: flex; align-items: center; gap: var(--space-2);"><input type="checkbox" checked> Receber e-mail quando o pedido for pago</label>
+          <label style="display: flex; align-items: center; gap: var(--space-2);"><input type="checkbox" checked> Receber WhatsApp quando o álbum publicar</label>
+          <label style="display: flex; align-items: center; gap: var(--space-2);"><input type="checkbox"> Receber aviso de novos eventos no meu estado</label>
+        </div>
+      </fieldset>
+    </div>
+
+    <dl class="xref">
+      <dt>Tokens</dt>             <dd>Padding interno do formulário <code>--space-6 (24)</code> · gap entre rows <code>--space-4 (16)</code> · gap entre fieldsets <code>--space-4</code></dd>
+      <dt>Átomos</dt>             <dd><code>field-label</code>, <code>input</code>, <code>btn-primary</code>, <code>btn-ghost</code>, <code>check-row</code></dd>
+      <dt>Strings (voz · 04)</dt> <dd>"Continuar" · "Cancelar" · "Salvar" · "Endereço de cobrança" · "Notificações"</dd>
+    </dl>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       08 · GRID RECIPES
+       ════════════════════════════════════════════════════════════════════ -->
+  <section class="prim" id="grid" data-screen-label="Layout · Grid recipes">
+    <span class="s-num">08 · Grid recipes</span>
+    <h2 class="s-title">Galeria 130/180/220 · eventos 3/4-col · checkout 2-col com aside.</h2>
+    <p class="s-deck">
+      Catálogo dos grids canônicos da plataforma. <b>Galeria 130</b> = admin denso (mais cabeças por viewport). <b>Galeria 180</b> = público padrão (legível e clicável em mobile). <b>Galeria 220</b> = curadoria/destaque (poucas fotos cuidadosamente escolhidas). <b>Eventos 3-col</b> = landing pública. <b>Eventos 4-col</b> = admin lista. <b>Checkout 2-col</b> = main + sticky aside.
+    </p>
+
+    <h3 class="row-title">Gallery · 130 px (admin · auto-fill)</h3>
+    <div class="grid-stage">
+      <div class="gallery-130">
+        <div class="cell">001</div><div class="cell">002</div><div class="cell">003</div><div class="cell">004</div>
+        <div class="cell">005</div><div class="cell">006</div><div class="cell">007</div><div class="cell">008</div>
+        <div class="cell">009</div><div class="cell">010</div><div class="cell">011</div><div class="cell">012</div>
+        <div class="cell">013</div><div class="cell">014</div><div class="cell">015</div><div class="cell">016</div>
+      </div>
+    </div>
+
+    <h3 class="row-title">Gallery · 180 px (público · auto-fill)</h3>
+    <div class="grid-stage">
+      <div class="gallery-180">
+        <div class="cell">VS-001</div><div class="cell">VS-002</div><div class="cell">VS-003</div><div class="cell">VS-004</div>
+        <div class="cell">VS-005</div><div class="cell">VS-006</div><div class="cell">VS-007</div><div class="cell">VS-008</div>
+      </div>
+    </div>
+
+    <h3 class="row-title">Gallery · 220 px (curadoria · auto-fill)</h3>
+    <div class="grid-stage">
+      <div class="gallery-220">
+        <div class="cell">Capa 01</div><div class="cell">Capa 02</div><div class="cell">Capa 03</div>
+        <div class="cell">Capa 04</div><div class="cell">Capa 05</div><div class="cell">Capa 06</div>
+      </div>
+    </div>
+
+    <h3 class="row-title">Event-list · 3-col (público · /eventos)</h3>
+    <div class="grid-stage">
+      <div class="events-3">
+        <div class="cell is-event">Abertura da Safra 2026</div>
+        <div class="cell is-event">Festival Pop Rural</div>
+        <div class="cell is-event">ExpoFlora Holambra</div>
+        <div class="cell is-event">GP de Brasília · Sela</div>
+        <div class="cell is-event">Festa do Peão · Jataí</div>
+        <div class="cell is-event">Cavalgada Tradicional</div>
+      </div>
+    </div>
+
+    <h3 class="row-title">Event-list · 4-col (admin · /admin/eventos)</h3>
+    <div class="grid-stage">
+      <div class="events-4">
+        <div class="cell is-event">17 abr · Itajá</div>
+        <div class="cell is-event">02 abr · Goiânia</div>
+        <div class="cell is-event">11 mai · Holambra</div>
+        <div class="cell is-event">28 mai · Brasília</div>
+        <div class="cell is-event">02 jun · Jataí</div>
+        <div class="cell is-event">15 jun · Barretos</div>
+        <div class="cell is-event">22 jun · Catalão</div>
+        <div class="cell is-event">29 jun · Goiânia</div>
+      </div>
+    </div>
+
+    <h3 class="row-title">Checkout · 2-col (main 1fr + aside 360 sticky)</h3>
+    <div class="grid-stage">
+      <div class="checkout-2">
+        <div class="check-main">— main · itens + endereço + pagamento —</div>
+        <aside class="check-aside">— aside sticky · cart-summary 360 —</aside>
+      </div>
+    </div>
+
+    <div class="doc-note">
+      <b>Por que <code class="type-mono">auto-fill</code> em vez de <code class="type-mono">repeat(N, 1fr)</code>:</b> auto-fill mantém o tamanho mínimo da célula e <em>cresce</em> a quantidade de colunas quando há espaço. É o que dá a sensação de "quanto maior a tela, mais fotos por linha" sem custo de breakpoint manual.
+    </div>
+
+    <dl class="xref">
+      <dt>Implementa</dt>        <dd><code>src/app/components.css:87–100</code> (.gallery-grid · 4-col desktop)</dd>
+      <dt>Tokens</dt>             <dd>Mínimos: <code>130px</code> (admin) · <code>180px</code> (público) · <code>220px</code> (curadoria) · <code>320px</code> (event-card)</dd>
+      <dt>Gaps canônicos</dt>     <dd><code>4px</code> admin · <code>8px</code> público · <code>12px</code> curadoria · <code>14–16px</code> event-list · <code>32px</code> checkout</dd>
+    </dl>
+  </section>
+
+  <footer>
+    <span>VINÍCIUS SOUZA · LAYOUT PRIMITIVES · v1.0 · 2026-05-10</span>
+    <span><a href="index.html">Index</a> · <a href="components-atomic.html">Atômicos · 03</a> · <a href="components-composite.html">Compostos · 04</a></span>
+  </footer>
+
+  </main>
+
+</div>
+</body>
+</html>
