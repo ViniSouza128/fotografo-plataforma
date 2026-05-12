@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=1480">
 <title>Frontend Final · Site Público — Vinícius Souza Fotografia</title>
+<!-- v1.0.33 — 2026-05-12 · checkpoint A coerência público (nav padrão adicionada em Termos/Privacidade/Cookies — Autenticidade já tinha; auditoria 15 rotas públicas: 0 mojibake, 0 hex inline novo, 0 imagem quebrada, footer/m-foot coerentes) -->
 <!-- v1.0.32 — 2026-05-12 · varredura g6 público erros & estados (500: fix semântico signal→danger desktop+mobile, igual fix do Recusado g3; 404 e 500: + data-sim-route="/" nos botões Voltar à home/Ver álbuns para handler do simulador funcionar) -->
 <!-- v1.0.31 — 2026-05-12 · varredura g5 público conteúdo & legais (Termos/Privacidade/Cookies: + footer site-foot + botões Falar com estúdio/Solicitações LGPD no final, paridade com LegalPage.js; Contato Mobile: + m-foot coerente com outras telas mobile) -->
 <!-- v1.0.30 — 2026-05-12 · varredura g4 público auth & cadastro (Conta Bloqueada: fix semântico signal→danger; Cadastro: + toggle CPF/CNPJ + Data de nascimento; Compras Guest: + botão Remover deste navegador no pedido expandido; Cadastro Sucesso: avatar Lucas Almeida → img=3 canonical) -->
@@ -3879,6 +3880,12 @@
       <div>
         <span class="label">Termos · /termos-de-uso</span>
         <div class="frame" data-screen-label="Public · Termos">
+          <div class="nav">
+            <a class="nav-logo-link"><svg class="nav-logo"><use href="#nav-logo-h"/></svg></a>
+            <div class="nav-spacer"></div>
+            <button class="nav-cart" type="button">Carrinho <span class="count">0</span></button>
+            <a class="nav-login">Entrar</a>
+          </div>
           <div class="legal">
             <div class="eyebrow">— Documento —</div>
             <h2>Termos de uso</h2>
@@ -3928,6 +3935,12 @@
       <div>
         <span class="label">Privacidade · /politica-de-privacidade</span>
         <div class="frame" data-screen-label="Public · Privacidade">
+          <div class="nav">
+            <a class="nav-logo-link"><svg class="nav-logo"><use href="#nav-logo-h"/></svg></a>
+            <div class="nav-spacer"></div>
+            <button class="nav-cart" type="button">Carrinho <span class="count">0</span></button>
+            <a class="nav-login">Entrar</a>
+          </div>
           <div class="legal">
             <div class="eyebrow">— LGPD —</div>
             <h2>Política de privacidade</h2>
@@ -3990,6 +4003,12 @@
       <div>
         <span class="label">Cookies · /politica-de-cookies</span>
         <div class="frame" data-screen-label="Public · Cookies">
+          <div class="nav">
+            <a class="nav-logo-link"><svg class="nav-logo"><use href="#nav-logo-h"/></svg></a>
+            <div class="nav-spacer"></div>
+            <button class="nav-cart" type="button">Carrinho <span class="count">0</span></button>
+            <a class="nav-login">Entrar</a>
+          </div>
           <div class="legal">
             <div class="eyebrow">— Documento —</div>
             <h2>Política de cookies</h2>
