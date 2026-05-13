@@ -1,9 +1,37 @@
 import crypto from 'crypto'
-import { findClientById } from './clients'
+import { findClientById, readClients, writeClients } from './clients'
 
 const SECRET = process.env.AUTH_SECRET || 'fotografo-plataforma-secret-key-2024'
 const DEFAULT_TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000
 const DOWNLOAD_TOKEN_TTL_MS = 24 * 60 * 60 * 1000
+const DEFAULT_ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@test.com'
+
+function isDefaultAdminEmail(email) {
+  return String(email || '').trim().toLowerCase() === String(DEFAULT_ADMIN_EMAIL || '').trim().toLowerCase()
+}
+
+function elevateDefaultAdminClient(client) {
+  if (!client?.id || !client.isAdmin || client.isSuperAdmin || !isDefaultAdminEmail(client.email)) {
+    return client
+  }
+
+  try {
+    const clients = readClients()
+    const index = clients.findIndex((item) => item.id === client.id)
+    if (index === -1) return client
+
+    clients[index] = {
+      ...clients[index],
+      isSuperAdmin: true,
+      atualizadoEm: new Date().toISOString(),
+    }
+    writeClients(clients)
+    return clients[index]
+  } catch (error) {
+    console.error('Falha ao promover admin padrão a super-admin:', error)
+    return client
+  }
+}
 
 export function hashPassword(password) {
   const salt = crypto.randomBytes(16).toString('hex')
@@ -70,7 +98,8 @@ export function validateAuthToken(token, { requireAdmin = false, requireFullAdmi
     return { error: 'Não autorizado.', status: 401, code: 'unauthorized' }
   }
 
-  const client = findClientById(payload.id)
+  const currentClient = findClientById(payload.id)
+  const client = elevateDefaultAdminClient(currentClient)
   if (!client) {
     return { error: 'Usuário não encontrado.', status: 401, code: 'user_not_found' }
   }

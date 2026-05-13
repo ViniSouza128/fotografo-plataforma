@@ -9,6 +9,42 @@ import { appendAuditLog } from '@/lib/auditLog'
 const DEFAULT_ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@test.com'
 const DEFAULT_ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '123456'
 
+function isDefaultAdminEmail(email) {
+  return String(email || '').trim().toLowerCase() === String(DEFAULT_ADMIN_EMAIL || '').trim().toLowerCase()
+}
+
+function elevateDefaultAdminIfNeeded(client, request) {
+  if (!client?.id || !client.isAdmin || client.isSuperAdmin || !isDefaultAdminEmail(client.email)) {
+    return client
+  }
+
+  try {
+    const clients = readClients()
+    const index = clients.findIndex((item) => item.id === client.id)
+    if (index === -1) return client
+
+    clients[index] = {
+      ...clients[index],
+      isSuperAdmin: true,
+      atualizadoEm: new Date().toISOString(),
+    }
+    writeClients(clients)
+
+    appendAuditLog({
+      action: 'admin.elevated_to_super_admin',
+      actor: clients[index],
+      target: { type: 'client', id: clients[index].id, label: clients[index].email },
+      details: { reason: 'default_admin_auto_heal' },
+      request,
+    })
+
+    return clients[index]
+  } catch (error) {
+    console.error('Falha ao promover admin padrão a super-admin:', error)
+    return client
+  }
+}
+
 export async function POST(request) {
   try {
     const rateLimit = checkRateLimit(request, {
@@ -41,7 +77,7 @@ export async function POST(request) {
     let client = findClientByEmail(normalizedEmail)
 
     // 2) Fallback: credenciais hardcoded do admin padrão
-    if (!client && email.trim() === DEFAULT_ADMIN_EMAIL && senha === DEFAULT_ADMIN_PASSWORD) {
+    if (!client && isDefaultAdminEmail(email) && senha === DEFAULT_ADMIN_PASSWORD) {
       // Cria automaticamente a conta admin no banco na primeira vez
       const clients = readClients()
       const novoAdmin = {
@@ -59,6 +95,7 @@ export async function POST(request) {
         organizacoes: [],
         senha: hashPassword(DEFAULT_ADMIN_PASSWORD),
         isAdmin: true,
+        isSuperAdmin: true,
         ativo: true,
         criadoEm: new Date().toISOString(),
         atualizadoEm: new Date().toISOString(),
@@ -76,6 +113,8 @@ export async function POST(request) {
         request,
       })
     }
+
+    client = elevateDefaultAdminIfNeeded(client, request)
 
     if (!client) {
       appendAuditLog({
