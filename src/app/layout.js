@@ -3,7 +3,12 @@
 import './globals.css';
 import ThemeInjector from '../components/ThemeInjector';
 
-const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://fotografo-plataforma.onrender.com').replace(/\/+$/, '');
+const siteUrl = (
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  process.env.RENDER_EXTERNAL_URL ||
+  (process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : '') ||
+  'https://fotografo-plataforma.onrender.com'
+).replace(/\/+$/, '');
 const title = 'Vinícius Rodrigues | Fotografia';
 const description = 'Plataforma de venda de fotos — Vinícius Rodrigues de Souza';
 
