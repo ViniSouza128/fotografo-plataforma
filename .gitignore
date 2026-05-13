@@ -41,6 +41,7 @@ data/*.json
 *.dump
 *.sql
 *.sqlite
+*.sqlite-*
 *.sqlite3
 *.tar
 *.tar.gz
