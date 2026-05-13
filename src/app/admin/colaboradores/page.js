@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 export default function AdminColaboradoresPage() {
   const [authorized, setAuthorized] = useState(null)
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false)
   const [list, setList] = useState([])
   const [loading, setLoading] = useState(true)
   const [showCreate, setShowCreate] = useState(false)
@@ -20,7 +21,8 @@ export default function AdminColaboradoresPage() {
     try {
       const raw = localStorage.getItem('clienteLogado')
       const parsed = raw ? JSON.parse(raw) : null
-      setAuthorized(!!(parsed && parsed.isSuperAdmin))
+      setAuthorized(!!(parsed && parsed.isAdmin))
+      setIsSuperAdmin(!!parsed?.isSuperAdmin)
     } catch { setAuthorized(false) }
   }, [])
 
@@ -40,6 +42,7 @@ export default function AdminColaboradoresPage() {
 
   async function handleCreate(e) {
     e.preventDefault()
+    if (!isSuperAdmin) return
     if (!createData.nomeCompleto || !createData.email || creating) return
     setCreating(true)
     try {
@@ -68,6 +71,7 @@ export default function AdminColaboradoresPage() {
   }
 
   async function saveEdit() {
+    if (!isSuperAdmin) return
     if (!editing) return
     try {
       const body = { id: editing.id, ...editData }
@@ -94,6 +98,7 @@ export default function AdminColaboradoresPage() {
   }
 
   async function toggleAtivo(item) {
+    if (!isSuperAdmin) return
     if (!confirm(`Tem certeza que quer ${item.ativo ? 'desativar' : 'ativar'} ${item.nomeCompleto}?`)) return
     try {
       await fetch('/api/colaboradores', {
@@ -124,8 +129,14 @@ export default function AdminColaboradoresPage() {
             Crie e gerencie fotógrafos com acesso parcial.
           </p>
         </div>
-        <button className="btn btn-primary" onClick={() => setShowCreate(true)}>+ Novo colaborador</button>
+        <button className="btn btn-primary" onClick={() => setShowCreate(true)} disabled={!isSuperAdmin}>+ Novo colaborador</button>
       </div>
+
+      {!isSuperAdmin && (
+        <div className="alert alert-info" style={{ marginBottom: '0.75rem' }}>
+          ðŸ‘ï¸ Admin pode visualizar colaboradores. CriaÃ§Ã£o, ediÃ§Ã£o, ativaÃ§Ã£o e senhas temporÃ¡rias ficam only to super admin.
+        </div>
+      )}
 
       {feedback && (
         <div style={{
@@ -173,11 +184,11 @@ export default function AdminColaboradoresPage() {
                 </p>
               </div>
               <div style={{ display: 'flex', gap: '0.4rem' }}>
-                <button className="btn btn-ghost btn-sm" onClick={() => {
+                <button className="btn btn-ghost btn-sm" disabled={!isSuperAdmin} onClick={() => {
                   setEditing(item)
                   setEditData({ nomeCompleto: item.nomeCompleto, percentualRepasse: item.percentualRepasse ?? '' })
                 }}>Editar</button>
-                <button className="btn btn-ghost btn-sm" onClick={() => toggleAtivo(item)}>
+                <button className="btn btn-ghost btn-sm" disabled={!isSuperAdmin} onClick={() => toggleAtivo(item)}>
                   {item.ativo ? 'Desativar' : 'Ativar'}
                 </button>
               </div>

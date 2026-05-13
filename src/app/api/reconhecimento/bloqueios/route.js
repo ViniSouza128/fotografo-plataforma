@@ -97,7 +97,7 @@ export async function POST(request) {
 
 export async function PATCH(request) {
   try {
-    const auth = await requireAuth({ requireFullAdmin: true })
+    const auth = await requireAuth({ requireSuperAdmin: true })
     if (auth.error) return NextResponse.json({ error: auth.error, code: auth.code }, { status: auth.status })
 
     const body = await request.json()

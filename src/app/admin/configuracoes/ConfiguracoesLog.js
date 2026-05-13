@@ -4,7 +4,7 @@
 import { useState } from 'react'
 import { useConfirmDialog } from '@/hooks/useConfirmDialog'
 
-export default function ConfiguracoesLog({ showMsg }) {
+export default function ConfiguracoesLog({ showMsg, readOnly = false }) {
   const [logEntries, setLogEntries] = useState([])
   const [logLoading, setLogLoading] = useState(false)
   const [logFilter, setLogFilter] = useState('todos')
@@ -23,6 +23,10 @@ export default function ConfiguracoesLog({ showMsg }) {
   }
 
   async function clearLog() {
+    if (readOnly) {
+      showMsg('error', 'Only to super admin.')
+      return
+    }
     const accepted = await confirm({
       title: 'Limpar log de pagamento',
       message: 'Limpar todo o log de pagamento?',
@@ -84,6 +88,11 @@ export default function ConfiguracoesLog({ showMsg }) {
             <br />
             Histórico detalhado de todos os eventos de gateway — requisições, respostas, webhooks, erros.
           </p>
+          {readOnly && (
+            <p style={{ fontSize: '0.74rem', color: 'var(--text-dim)', margin: '0.45rem 0 0' }}>
+              Admin comum só consulta. Exportação completa e limpeza only to super admin.
+            </p>
+          )}
         </div>
         <span style={{ fontSize: '1.2rem', color: 'var(--text-dim)', flexShrink: 0, marginLeft: '1rem' }}>
           {logOpen ? '▲' : '▼'}
@@ -97,10 +106,10 @@ export default function ConfiguracoesLog({ showMsg }) {
             <button className="btn btn-secondary btn-sm" onClick={loadLog} disabled={logLoading}>
               {logLoading ? <><div className="spinner" style={{ width: 12, height: 12 }} /> Carregando...</> : '🔄 Atualizar'}
             </button>
-            <button className="btn btn-ghost btn-sm" onClick={downloadLog} disabled={logEntries.length === 0} style={{ color: 'var(--accent)' }}>
+            <button className="btn btn-ghost btn-sm" onClick={downloadLog} disabled={readOnly || logEntries.length === 0} style={{ color: 'var(--accent)' }}>
               ⬇ JSON
             </button>
-            <button className="btn btn-ghost btn-sm" onClick={downloadLogCSV} disabled={logEntries.length === 0} style={{ color: 'var(--accent)' }}>
+            <button className="btn btn-ghost btn-sm" onClick={downloadLogCSV} disabled={readOnly || logEntries.length === 0} style={{ color: 'var(--accent)' }}>
               ⬇ CSV
             </button>
             <div style={{ flex: 1 }} />
@@ -116,7 +125,7 @@ export default function ConfiguracoesLog({ showMsg }) {
               <option value="webhook">📡 Webhook</option>
               <option value="info">ℹ Info</option>
             </select>
-            <button className="btn btn-danger btn-sm" onClick={clearLog} disabled={clearingLog || logEntries.length === 0}>
+            <button className="btn btn-danger btn-sm" onClick={clearLog} disabled={readOnly || clearingLog || logEntries.length === 0}>
               {clearingLog ? '...' : '🗑 Limpar'}
             </button>
           </div>

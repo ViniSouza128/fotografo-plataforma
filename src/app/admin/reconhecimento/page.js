@@ -3,6 +3,7 @@
 // Admin: configuração + indexação + busca + bloqueios
 
 import { useCallback, useEffect, useState } from 'react'
+import { isReadOnlyAdmin } from '@/lib/adminAccess'
 
 function formatRelativo(iso) {
   if (!iso) return '—'
@@ -51,6 +52,7 @@ export default function AdminReconhecimentoPage() {
   useEffect(() => { carregar() }, [carregar])
 
   const isSuperAdmin = !!me?.isSuperAdmin
+  const readOnly = isReadOnlyAdmin(me)
 
   async function patchConfig(patch) {
     if (!isSuperAdmin) {
@@ -74,6 +76,10 @@ export default function AdminReconhecimentoPage() {
   }
 
   async function indexarEvento() {
+    if (readOnly) {
+      setFeedback({ type: 'error', text: 'Only to super admin.' })
+      return
+    }
     if (!eventoSel) return
     setIndexando(true)
     setFeedback(null)
@@ -122,6 +128,10 @@ export default function AdminReconhecimentoPage() {
   }
 
   async function resolverBloqueio(b, decisao) {
+    if (readOnly) {
+      setFeedback({ type: 'error', text: 'Only to super admin.' })
+      return
+    }
     const obs = decisao === 'aprovado'
       ? prompt('Observação opcional:') || ''
       : prompt('Motivo da rejeição:') || ''
@@ -162,6 +172,12 @@ export default function AdminReconhecimentoPage() {
           color: feedback.type === 'error' ? '#fca5a5' : '#86efac',
           borderRadius: 'var(--radius)', fontSize: '0.85rem',
         }}>{feedback.text}</div>
+      )}
+
+      {readOnly && (
+        <div className="alert alert-info" style={{ marginBottom: '0.75rem' }}>
+          👁️ Admin pode consultar reconhecimento, buscas e bloqueios. Alterações, indexação e decisões ficam only to super admin.
+        </div>
       )}
 
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
@@ -251,7 +267,7 @@ export default function AdminReconhecimentoPage() {
               <option value="">Selecione um álbum...</option>
               {eventos.map(ev => <option key={ev.id} value={ev.id}>{ev.name}</option>)}
             </select>
-            <button className="btn btn-primary" onClick={indexarEvento} disabled={!eventoSel || indexando}>
+            <button className="btn btn-primary" onClick={indexarEvento} disabled={readOnly || !eventoSel || indexando}>
               {indexando ? 'Indexando...' : 'Indexar agora'}
             </button>
           </div>
@@ -334,8 +350,8 @@ export default function AdminReconhecimentoPage() {
                   <p style={{ margin: '0.3rem 0 0', fontSize: '0.85rem' }}>{b.motivo}</p>
                   {b.status === 'pendente' && (
                     <div style={{ marginTop: '0.5rem', display: 'flex', gap: '0.4rem' }}>
-                      <button className="btn btn-sm btn-primary" onClick={() => resolverBloqueio(b, 'aprovado')}>Aprovar</button>
-                      <button className="btn btn-sm btn-ghost" onClick={() => resolverBloqueio(b, 'rejeitado')}>Rejeitar</button>
+                      <button className="btn btn-sm btn-primary" disabled={readOnly} onClick={() => resolverBloqueio(b, 'aprovado')}>Aprovar</button>
+                      <button className="btn btn-sm btn-ghost" disabled={readOnly} onClick={() => resolverBloqueio(b, 'rejeitado')}>Rejeitar</button>
                     </div>
                   )}
                   {b.observacao && (

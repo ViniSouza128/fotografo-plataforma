@@ -11,7 +11,7 @@ import { appendAuditLog } from '@/lib/auditLog'
 //   - 'onlyDefault': only updates events that have no custom table or have it empty/inactive
 export async function POST(request) {
   try {
-    const auth = await requireAuth({ requireAdmin: true })
+    const auth = await requireAuth({ requireSuperAdmin: true })
     if (auth.error) {
       return NextResponse.json({ error: auth.error, code: auth.code }, { status: auth.status })
     }

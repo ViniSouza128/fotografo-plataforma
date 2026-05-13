@@ -451,6 +451,7 @@ export default function ResetBackupPage() {
   const [createLabel, setCreateLabel] = useState('')
 
   const [activeAction, setActiveAction] = useState(null)
+  const readOnly = !isSuperAdmin
 
   useEffect(() => {
     try {
@@ -479,11 +480,11 @@ export default function ResetBackupPage() {
   }, [])
 
   useEffect(() => {
-    if (isSuperAdmin) loadBackups()
-    else setLoading(false)
-  }, [isSuperAdmin, loadBackups])
+    loadBackups()
+  }, [loadBackups])
 
   async function handleCreateBackup() {
+    if (readOnly) return
     const scopes = Object.entries(createScopes).filter(([, v]) => v).map(([k]) => k)
     if (scopes.length === 0) {
       setError('Selecione ao menos um escopo.')
@@ -517,7 +518,7 @@ export default function ResetBackupPage() {
     )
   }
 
-  if (!isSuperAdmin) {
+  if (!isSuperAdmin && false) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '1rem', textAlign: 'center' }}>
         <div style={{ fontSize: '3.5rem' }}>🔒</div>
@@ -544,6 +545,12 @@ export default function ResetBackupPage() {
 
       {error && <div className="alert alert-error" style={{ marginBottom: '1rem' }}>{error}</div>}
 
+      {readOnly && (
+        <div className="alert alert-info" style={{ marginBottom: '1rem' }}>
+          👁️ Admin pode revisar esta área. Criar backup, restaurar, excluir e resetar ficam only to super admin.
+        </div>
+      )}
+
       {/* ── BACKUPS SECTION ───────────────────────────────────────────────── */}
       <section style={{
         background: 'var(--bg-card)', border: '1px solid var(--border)',
@@ -559,6 +566,7 @@ export default function ResetBackupPage() {
           <button
             className="btn btn-primary"
             onClick={() => setShowCreate(s => !s)}
+            disabled={readOnly}
           >
             {showCreate ? '✕ Cancelar' : '+ Criar backup'}
           </button>
@@ -592,7 +600,7 @@ export default function ResetBackupPage() {
             />
             <button
               className="btn btn-primary"
-              disabled={creating || !Object.values(createScopes).some(v => v)}
+                disabled={readOnly || creating || !Object.values(createScopes).some(v => v)}
               onClick={handleCreateBackup}
             >
               {creating ? '⏳ Criando…' : '💾 Criar backup agora'}
@@ -640,6 +648,7 @@ export default function ResetBackupPage() {
                   <div style={{ display: 'flex', gap: '0.4rem' }}>
                     <button
                       className="btn btn-ghost btn-sm"
+                      disabled={readOnly}
                       onClick={() => setActiveAction({ kind: 'restore', backup: b })}
                       title="Restaurar este backup"
                     >
@@ -647,6 +656,7 @@ export default function ResetBackupPage() {
                     </button>
                     <button
                       className="btn btn-ghost btn-sm"
+                      disabled={readOnly}
                       onClick={() => setActiveAction({ kind: 'delete', backup: b })}
                       title="Excluir backup"
                       style={{ color: '#ef4444' }}
@@ -691,6 +701,7 @@ export default function ResetBackupPage() {
               </p>
               <button
                 onClick={() => setActiveAction({ kind: 'reset', card })}
+                disabled={readOnly}
                 style={{
                   padding: '0.5rem 0.85rem', borderRadius: 'var(--radius)',
                   background: card.extraDanger ? '#ef4444' : 'rgba(239,68,68,0.15)',

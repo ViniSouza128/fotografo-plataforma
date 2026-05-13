@@ -107,6 +107,7 @@ export default function ConfiguracoesImagens({
   descontosVideoAtivos,
   setDescontosVideoAtivos,
   showMsg,
+  readOnly = false,
 }) {
   const defaults = useMemo(() => getDefaultDerivativeConfig(), [])
   const [novaCategoria, setNovaCategoria] = useState('')
@@ -235,6 +236,12 @@ export default function ConfiguracoesImagens({
   return (
     <>
       <div style={cardStyle()}>
+        {readOnly && (
+          <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
+            Visualização liberada para Admin. Ajustes de imagens only to super admin.
+          </p>
+        )}
+        <fieldset disabled={readOnly} style={{ border: 'none', padding: 0, margin: 0, minWidth: 0 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', alignItems: 'flex-start', flexWrap: 'wrap', marginBottom: '1rem' }}>
           <div>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', marginBottom: '0.4rem' }}>Imagens derivadas</h2>
@@ -318,9 +325,11 @@ export default function ConfiguracoesImagens({
             Padrão atual: cover em {currentConfig.derivatives.covers.width}px com qualidade {currentConfig.derivatives.covers.quality}%.
           </span>
         </div>
+        </fieldset>
       </div>
 
       <div style={cardStyle()}>
+        <fieldset disabled={readOnly} style={{ border: 'none', padding: 0, margin: 0, minWidth: 0 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', alignItems: 'flex-start', flexWrap: 'wrap', marginBottom: '1rem' }}>
           <div>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', marginBottom: '0.4rem' }}>Otimização de upload</h2>
@@ -414,6 +423,7 @@ export default function ConfiguracoesImagens({
               : `Arquivos serão salvos como JPG até ${currentConfig.uploadOptimization.maxLongSide || 'sem limite'}px.`}
           </span>
         </div>
+        </fieldset>
       </div>
 
       <DescontosCard
@@ -432,6 +442,7 @@ export default function ConfiguracoesImagens({
         showMsg={showMsg}
         title="📷 Descontos progressivos padrão (fotos)"
         applyMode="fotos"
+        readOnly={readOnly}
       />
 
       <DescontosCard
@@ -450,9 +461,11 @@ export default function ConfiguracoesImagens({
         showMsg={showMsg}
         title="🎬 Descontos progressivos padrão (vídeos)"
         applyMode="videos"
+        readOnly={readOnly}
       />
 
       <div style={cardStyle()}>
+        <fieldset disabled={readOnly} style={{ border: 'none', padding: 0, margin: 0, minWidth: 0 }}>
         <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', marginBottom: '0.5rem' }}>Categorias / modalidades</h2>
         <p style={{ fontSize: '0.78rem', color: 'var(--text-dim)', marginBottom: '1rem', lineHeight: '1.5' }}>
           Adicione categorias personalizadas além das padrão. Elas aparecem no seletor de categoria dos eventos.
@@ -513,6 +526,7 @@ export default function ConfiguracoesImagens({
             {saving ? 'Salvando...' : 'Salvar categorias'}
           </button>
         </div>
+        </fieldset>
       </div>
     </>
   )
@@ -534,6 +548,7 @@ function DescontosCard({
   showMsg,
   title = 'Descontos progressivos padrão',
   applyMode = 'fotos',
+  readOnly = false,
 }) {
   const [showSimulator, setShowSimulator] = useState(false)
   const [applying, setApplying] = useState(false)
@@ -569,6 +584,7 @@ function DescontosCard({
 
   return (
     <div style={cardStyle()}>
+      <fieldset disabled={readOnly} style={{ border: 'none', padding: 0, margin: 0, minWidth: 0 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
         <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem' }}>{title}</h2>
         <button
@@ -733,6 +749,7 @@ function DescontosCard({
           </p>
         )}
       </div>
+      </fieldset>
     </div>
   )
 }

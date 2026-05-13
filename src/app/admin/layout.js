@@ -156,7 +156,7 @@ export default function AdminLayout({ children }) {
     { href: '/admin/eventos', label: 'Álbuns', icon: '📅', visibleTo: 'all' },
     { href: '/admin/comentarios', label: 'Comentários', icon: '💬', visibleTo: 'all' },
     { href: '/admin/clientes', label: 'Contas', icon: '👥', visibleTo: 'fullAdmin' },
-    { href: '/admin/colaboradores', label: 'Colaboradores', icon: '🧑‍🤝‍🧑', visibleTo: 'superAdmin' },
+    { href: '/admin/colaboradores', label: 'Colaboradores', icon: '🧑‍🤝‍🧑', visibleTo: 'fullAdmin' },
     { href: '/admin/repasses', label: 'Repasses', icon: '💸', visibleTo: 'all' },
     { href: '/admin/carrinhos', label: 'Carrinhos', icon: '🛒', visibleTo: 'fullAdmin' },
     { href: '/admin/contatos', label: 'Contatos', icon: '✉️', visibleTo: 'fullAdmin' },
@@ -259,7 +259,7 @@ export default function AdminLayout({ children }) {
             </button>
           </div>
 
-          {isSuperAdmin && siteItems.slice(1).map(item => (
+          {!isColaborador && siteItems.slice(1).map(item => (
             <Link
               key={item.href}
               href={item.href}

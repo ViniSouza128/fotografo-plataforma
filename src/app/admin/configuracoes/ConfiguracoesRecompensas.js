@@ -25,7 +25,7 @@ function emptyNivel() {
   }
 }
 
-export default function ConfiguracoesRecompensas({ showMsg }) {
+export default function ConfiguracoesRecompensas({ showMsg, readOnly = false }) {
   const [config, setConfig] = useState({ ativo: false, acumulacao: 'maior', niveis: [] })
   const [savedSnapshot, setSavedSnapshot] = useState('')
   const [loading, setLoading] = useState(true)
@@ -92,6 +92,10 @@ export default function ConfiguracoesRecompensas({ showMsg }) {
   }
 
   async function salvar() {
+    if (readOnly) {
+      showMsg?.('error', 'Only to super admin.')
+      return
+    }
     // Validação
     for (const n of config.niveis) {
       if (!n.nome.trim()) {
@@ -152,6 +156,12 @@ export default function ConfiguracoesRecompensas({ showMsg }) {
 
   return (
     <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '1.5rem' }}>
+      {readOnly && (
+        <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
+          Recompensas em modo leitura para Admin.
+        </p>
+      )}
+      <fieldset disabled={readOnly} style={{ border: 'none', padding: 0, margin: 0, minWidth: 0 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
         <div>
           <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.15rem', margin: 0 }}>🎁 Cashback, saldo e níveis</h2>
@@ -352,6 +362,7 @@ export default function ConfiguracoesRecompensas({ showMsg }) {
       >
         {saving ? 'Salvando...' : (isDirty ? 'Salvar configurações' : 'Salvo')}
       </button>
+      </fieldset>
     </div>
   )
 }

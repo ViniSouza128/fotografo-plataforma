@@ -4,6 +4,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import { SUPER_ADMIN_ONLY_PLACEHOLDER } from '@/lib/adminAccess'
 
 const PROVIDERS = [
   { id: 'r2', label: 'Cloudflare R2', endpointHint: 'https://<accountid>.r2.cloudflarestorage.com', region: 'auto', pathStyle: false,
@@ -45,16 +46,20 @@ export default function AdminStoragePage() {
       ])
       if (r1.ok) {
         const data = await r1.json()
-        setConfig(data)
-        setEditing(prev => prev || { ...data })
+        const safeData = !me?.isSuperAdmin && me?.isAdmin
+          ? { ...data, accessKeyId: SUPER_ADMIN_ONLY_PLACEHOLDER, secretAccessKey: SUPER_ADMIN_ONLY_PLACEHOLDER }
+          : data
+        setConfig(safeData)
+        setEditing({ ...safeData })
       }
       if (r2.ok) setMigrationStatus(await r2.json())
     } catch {}
-  }, [])
+  }, [me])
 
   useEffect(() => { carregar() }, [carregar])
 
   const isSuperAdmin = !!me?.isSuperAdmin
+  const readOnly = !!me?.isAdmin && !isSuperAdmin
 
   // Polling do status enquanto migrando
   useEffect(() => {
@@ -159,6 +164,12 @@ export default function AdminStoragePage() {
         </p>
       </div>
 
+      {readOnly && (
+        <div className="alert alert-info" style={{ marginBottom: '0.75rem' }}>
+          👁️ Admin pode revisar a configuração atual. Access Key ID, Secret Access Key e ações de storage ficam only to super admin.
+        </div>
+      )}
+
       {feedback && (
         <div style={{
           padding: '0.65rem 0.9rem', marginBottom: '0.75rem',
@@ -226,11 +237,11 @@ export default function AdminStoragePage() {
           </FormField>
           <FormField label="Access Key ID *">
             <input disabled={!isSuperAdmin} value={editing.accessKeyId || ''} onChange={e => setEditing(p => ({ ...p, accessKeyId: e.target.value }))}
-              style={inputStyle} placeholder="AKIA... (mascarado depois de salvar)" />
+              style={inputStyle} placeholder={readOnly ? SUPER_ADMIN_ONLY_PLACEHOLDER : 'AKIA... (mascarado depois de salvar)'} />
           </FormField>
           <FormField label="Secret Access Key *">
             <input type="password" disabled={!isSuperAdmin} value={editing.secretAccessKey || ''} onChange={e => setEditing(p => ({ ...p, secretAccessKey: e.target.value }))}
-              style={inputStyle} placeholder="••••••" />
+              style={inputStyle} placeholder={readOnly ? SUPER_ADMIN_ONLY_PLACEHOLDER : '••••••'} />
           </FormField>
           <FormField label="TTL signed URL (segundos)">
             <input type="number" disabled={!isSuperAdmin} value={editing.signedUrlTtlSeconds ?? 900}

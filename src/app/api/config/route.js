@@ -7,11 +7,9 @@ import { PRICE_MIN, PRICE_MAX } from '@/lib/price'
 import { appendAuditLog } from '@/lib/auditLog'
 
 // Campos de pagamento com credenciais — nunca expostos ao público
-const PAYMENT_CREDENTIAL_FIELDS = ['asaas_sandbox', 'asaas_producao', 'stripe']
 
 // Campos que apenas super-admin pode alterar via PATCH
 // (credenciais sensíveis ficam dentro de `pagamento`)
-const SUPER_ADMIN_FIELDS = ['pagamento']
 
 function normalizeText(value) {
   if (value === null || value === undefined) return ''
@@ -77,21 +75,15 @@ export async function GET() {
   }
 }
 
-// PATCH /api/config — requer autenticação; campos de pagamento exigem super-admin
+// PATCH /api/config — requer super-admin
 export async function PATCH(request) {
   try {
-    const auth = await requireAuth({ requireFullAdmin: true })
+    const auth = await requireAuth({ requireSuperAdmin: true })
     if (auth.error) {
       return NextResponse.json({ error: auth.error, code: auth.code }, { status: auth.status })
     }
 
     const updates = await request.json()
-
-    // Bloqueia alteração de campos sensíveis para não-super-admins
-    const tentaSensivel = SUPER_ADMIN_FIELDS.some(f => f in updates)
-    if (tentaSensivel && !auth.payload.isSuperAdmin) {
-      return NextResponse.json({ error: 'Apenas super-admins podem alterar configurações de pagamento.' }, { status: 403 })
-    }
 
     const current = readConfig()
 

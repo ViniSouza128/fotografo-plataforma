@@ -237,9 +237,8 @@ export async function POST(request) {
 
 export async function GET() {
   try {
-    const auth = await requireAuth({ requireAdmin: true })
-    const blocked = gateSuperAdmin(auth)
-    if (blocked) return blocked
+    const auth = await requireAuth({ requireFullAdmin: true })
+    if (auth.error) return NextResponse.json({ error: auth.error, code: auth.code }, { status: auth.status })
     // Returns the reset type definitions so the UI can render phrases consistently.
     return NextResponse.json({
       types: Object.fromEntries(Object.entries(RESET_TYPES).map(([k, v]) => [k, v])),

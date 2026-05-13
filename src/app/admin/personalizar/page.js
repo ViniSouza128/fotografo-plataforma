@@ -117,6 +117,7 @@ export default function PersonalizarSitePage() {
   const [previewing, setPreviewing] = useState(false)
   const [systemDark, setSystemDark] = useState(true)
   const previewApplied = useRef(false)
+  const readOnly = !isSuperAdmin
 
   useEffect(() => {
     try {
@@ -156,6 +157,7 @@ export default function PersonalizarSitePage() {
   }, [])
 
   const applyPreview = useCallback(() => {
+    if (readOnly) return
     const tema = draft.tema || 'escuro'
     if (tema === 'escuro') {
       document.documentElement.removeAttribute('data-theme')
@@ -176,7 +178,7 @@ export default function PersonalizarSitePage() {
     }
     previewApplied.current = true
     setPreviewing(true)
-  }, [draft.tema, draft.accentColor])
+  }, [draft.tema, draft.accentColor, readOnly])
 
   const revertPreview = useCallback(() => {
     const tema = config.tema || 'escuro'
@@ -197,6 +199,10 @@ export default function PersonalizarSitePage() {
   }, [config.tema, config.accentColor])
 
   async function handleSave() {
+    if (readOnly) {
+      setSaveMsg('Only to super admin.')
+      return
+    }
     setSaving(true)
     setSaveMsg('')
     try {
@@ -239,7 +245,7 @@ export default function PersonalizarSitePage() {
     )
   }
 
-  if (!isSuperAdmin) {
+  if (!isSuperAdmin && false) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '1rem', textAlign: 'center' }}>
         <div style={{ fontSize: '3.5rem' }}>🔒</div>
@@ -271,14 +277,14 @@ export default function PersonalizarSitePage() {
         </div>
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
           {previewing ? (
-            <button className="btn btn-ghost" onClick={revertPreview}>↩ Reverter preview</button>
+            <button className="btn btn-ghost" onClick={revertPreview} disabled={readOnly}>↩ Reverter preview</button>
           ) : (
-            <button className="btn btn-ghost" onClick={applyPreview} disabled={!hasChanges}>👁 Preview</button>
+            <button className="btn btn-ghost" onClick={applyPreview} disabled={readOnly || !hasChanges}>👁 Preview</button>
           )}
           <button
             className="btn btn-primary"
             onClick={handleSave}
-            disabled={saving || !hasChanges}
+            disabled={readOnly || saving || !hasChanges}
           >
             {saving ? 'Salvando…' : 'Salvar'}
           </button>
@@ -291,6 +297,12 @@ export default function PersonalizarSitePage() {
         </div>
       )}
 
+      {readOnly && (
+        <div className="alert alert-info" style={{ marginBottom: '1.5rem' }}>
+          👁️ Admin pode revisar a personalização atual, mas editar e aplicar preview ficam only to super admin.
+        </div>
+      )}
+
       {previewing && (
         <div className="alert" style={{ marginBottom: '1.5rem', background: 'var(--accent-dim)', color: 'var(--accent)', border: '1px solid var(--accent)', borderRadius: 'var(--radius)' }}>
           Preview ativo — as mudanças estão aplicadas nesta aba. Salve para tornar permanente ou reverta para cancelar.
@@ -300,6 +312,7 @@ export default function PersonalizarSitePage() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '1.5rem', alignItems: 'start' }}>
         {/* Painel de configurações */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <fieldset disabled={readOnly} style={{ border: 'none', padding: 0, margin: 0, minWidth: 0, display: 'contents' }}>
 
           {/* Tema */}
           <div className="card" style={{ padding: '1.5rem' }}>
@@ -428,6 +441,7 @@ export default function PersonalizarSitePage() {
             </div>
           </div>
 
+          </fieldset>
         </div>
 
         {/* Painel de preview */}
@@ -436,9 +450,9 @@ export default function PersonalizarSitePage() {
             <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Preview do site</span>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
               {previewing ? (
-                <button className="btn btn-ghost" style={{ fontSize: '0.75rem', padding: '0.25rem 0.6rem' }} onClick={revertPreview}>↩ Reverter</button>
+                <button className="btn btn-ghost" style={{ fontSize: '0.75rem', padding: '0.25rem 0.6rem' }} onClick={revertPreview} disabled={readOnly}>↩ Reverter</button>
               ) : (
-                <button className="btn btn-ghost" style={{ fontSize: '0.75rem', padding: '0.25rem 0.6rem' }} onClick={applyPreview} disabled={!hasChanges}>👁 Aplicar preview</button>
+                <button className="btn btn-ghost" style={{ fontSize: '0.75rem', padding: '0.25rem 0.6rem' }} onClick={applyPreview} disabled={readOnly || !hasChanges}>👁 Aplicar preview</button>
               )}
             </div>
           </div>

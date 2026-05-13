@@ -17,7 +17,7 @@ export const GATEWAY_OPTIONS = [
 const PIX_DESCRIPTION = 'Cobrança instantânea por QR Code e copia e cola.'
 const CARD_DESCRIPTION = 'Pagamento por cartão com gateway primário e fallback dedicados.'
 
-export default function ConfiguracoesPagamento({ pg, setPg, savingPg, isDirty, onSavePg }) {
+export default function ConfiguracoesPagamento({ pg, setPg, savingPg, isDirty, onSavePg, readOnly = false }) {
   function toggleMetodo(m) {
     setPg(prev => {
       const ativos = prev.metodos_ativos || []
@@ -36,6 +36,12 @@ export default function ConfiguracoesPagamento({ pg, setPg, savingPg, isDirty, o
         O fallback entra se o primário falhar ou não suportar o método.
         Suportados: <strong>Asaas</strong>, <strong>Stripe</strong>, <strong>Mercado Pago</strong> e <strong>PagSeguro/PagBank</strong>.
       </p>
+      {readOnly && (
+        <div className="alert alert-info" style={{ marginBottom: '1rem' }}>
+          Credenciais, wallet IDs e chaves ficam visíveis only to super admin.
+        </div>
+      )}
+      <fieldset disabled={readOnly} style={{ border: 'none', padding: 0, margin: 0, minWidth: 0 }}>
 
       {/* Gateway por método */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
@@ -237,6 +243,7 @@ export default function ConfiguracoesPagamento({ pg, setPg, savingPg, isDirty, o
       <button className={`btn ${isDirty ? 'btn-state-dirty' : 'btn-state-clean'}`} onClick={onSavePg} disabled={savingPg || !isDirty}>
         {savingPg ? <><div className="spinner" /> Salvando...</> : '💾 Salvar Configurações de Pagamento'}
       </button>
+      </fieldset>
     </div>
   )
 }

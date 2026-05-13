@@ -16,17 +16,23 @@ import { mascararWhatsAppTempoReal, normalizarWhatsApp } from '@/lib/whatsapp'
 import { temApenasUmNome } from '@/lib/nome'
 import { getDefaultDerivativeConfig } from '@/lib/derivedImagesConfig'
 import { useConfirmDialog } from '@/hooks/useConfirmDialog'
+import { SUPER_ADMIN_ONLY_PLACEHOLDER, isReadOnlyAdmin } from '@/lib/adminAccess'
 
-function normalizePaymentConfig(pg = {}) {
+function normalizePaymentConfig(pg = {}, { readOnly = false } = {}) {
+  const secretValue = readOnly ? SUPER_ADMIN_ONLY_PLACEHOLDER : ''
   return {
     gateway_pix: pg.gateway_pix || pg.gateway_ativo || 'manual',
     gateway_pix_fallback: pg.gateway_pix_fallback ?? pg.gateway_fallback ?? null,
     gateway_cartao: pg.gateway_cartao || pg.gateway_ativo || 'manual',
     gateway_cartao_fallback: pg.gateway_cartao_fallback ?? pg.gateway_fallback ?? null,
     metodos_ativos: Array.isArray(pg.metodos_ativos) && pg.metodos_ativos.length > 0 ? pg.metodos_ativos : ['pix', 'cartao'],
-    asaas_sandbox: { api_key: '', wallet_id: '', ...(pg.asaas_sandbox || {}) },
-    asaas_producao: { api_key: '', wallet_id: '', ...(pg.asaas_producao || {}) },
-    stripe: { public_key: '', secret_key: '', ...(pg.stripe || {}) },
+    asaas_sandbox: { api_key: secretValue, wallet_id: secretValue, ...(pg.asaas_sandbox || {}) },
+    asaas_producao: { api_key: secretValue, wallet_id: secretValue, ...(pg.asaas_producao || {}) },
+    stripe: { public_key: secretValue, secret_key: secretValue, ...(pg.stripe || {}) },
+    mercadopago_sandbox: { public_key: secretValue, access_token: secretValue, ...(pg.mercadopago_sandbox || {}) },
+    mercadopago_producao: { public_key: secretValue, access_token: secretValue, ...(pg.mercadopago_producao || {}) },
+    pagseguro_sandbox: { api_token: secretValue, ...(pg.pagseguro_sandbox || {}) },
+    pagseguro_producao: { api_token: secretValue, ...(pg.pagseguro_producao || {}) },
   }
 }
 
@@ -142,6 +148,7 @@ export default function ConfiguracoesPage() {
   const currentPgSnapshot = useMemo(() => JSON.stringify(normalizePaymentConfig(pg)), [pg])
   const isConfigDirty = Boolean(savedConfigSnapshot) && currentConfigSnapshot !== savedConfigSnapshot
   const isPaymentDirty = Boolean(savedPgSnapshot) && currentPgSnapshot !== savedPgSnapshot
+  const readOnly = isReadOnlyAdmin(admin)
 
   useEffect(() => {
     async function load() {
@@ -163,11 +170,6 @@ export default function ConfiguracoesPage() {
         }
 
         setAdmin(adminData)
-        if (!adminData.isSuperAdmin) {
-          setLoading(false)
-          return
-        }
-
         const cfgRes = await fetch('/api/config')
         const cfg = await cfgRes.json()
         setConfig({
@@ -194,7 +196,8 @@ export default function ConfiguracoesPage() {
           dataNascimento: adminData.dataNascimento || '',
           instagram: adminData.instagram || cfg.instagram || '',
         })
-        if (cfg.pagamento) setPg(normalizePaymentConfig(cfg.pagamento))
+        if (cfg.pagamento) setPg(normalizePaymentConfig(cfg.pagamento, { readOnly: !adminData.isSuperAdmin }))
+        else setPg(normalizePaymentConfig({}, { readOnly: !adminData.isSuperAdmin }))
         if (cfg.descontosGlobais?.length) setDescontosRows(cfg.descontosGlobais)
         setDescontosAtivos(!!cfg.descontosGlobaisAtivos)
         if (Array.isArray(cfg.descontosVideoGlobais) && cfg.descontosVideoGlobais.length) {
@@ -227,7 +230,7 @@ export default function ConfiguracoesPage() {
           descontosVideoGlobais: normalizeRows(cfg.descontosVideoGlobais || []),
           descontosVideoGlobaisAtivos: !!cfg.descontosVideoGlobaisAtivos,
         }))
-        setSavedPgSnapshot(JSON.stringify(normalizePaymentConfig(cfg.pagamento || {})))
+        setSavedPgSnapshot(JSON.stringify(normalizePaymentConfig(cfg.pagamento || {}, { readOnly: !adminData.isSuperAdmin })))
       } catch {
         showMsg('error', 'Erro ao carregar configurações.')
       } finally {
@@ -293,6 +296,10 @@ export default function ConfiguracoesPage() {
 
   async function handleSaveConfig(e) {
     if (e?.preventDefault) e.preventDefault()
+    if (readOnly) {
+      showMsg('error', 'Only to super admin.')
+      return
+    }
     if (temApenasUmNome(sharedProfile.nomeCompleto)) {
       const accepted = await confirm({
         title: 'Confirmar nome',
@@ -387,6 +394,10 @@ export default function ConfiguracoesPage() {
   }
 
   async function handleSavePg() {
+    if (readOnly) {
+      showMsg('error', 'Only to super admin.')
+      return
+    }
     setSavingPg(true)
     try {
       const pgToSave = {
@@ -413,6 +424,10 @@ export default function ConfiguracoesPage() {
   }
 
   async function handleStartMissingJob() {
+    if (readOnly) {
+      showMsg('error', 'Only to super admin.')
+      return
+    }
     setStartingMissingJob(true)
     try {
       const res = await fetch('/api/images/missing', { method: 'POST' })
@@ -438,20 +453,6 @@ export default function ConfiguracoesPage() {
     )
   }
 
-  if (!admin?.isSuperAdmin) {
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '1rem', textAlign: 'center' }}>
-        <div style={{ fontSize: '3.5rem' }}>🔒</div>
-        <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', color: 'var(--text)' }}>Área exclusiva de super-admins</h2>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', maxWidth: '360px', lineHeight: 1.6 }}>
-          Esta página contém configurações sensíveis do sistema, incluindo gateways de pagamento e chaves de API.
-          Apenas o super-administrador pode acessá-la.
-        </p>
-        <Link href="/admin" className="btn btn-primary" style={{ marginTop: '0.5rem' }}>← Voltar ao Dashboard</Link>
-      </div>
-    )
-  }
-
   return (
     <>
       {confirmDialog}
@@ -468,6 +469,12 @@ export default function ConfiguracoesPage() {
         </div>
       )}
 
+      {readOnly && (
+        <div className="alert alert-info mb-3">
+          👁️ Modo leitura para Admin. Alterações e segredos ficam disponíveis only to super admin.
+        </div>
+      )}
+
       <div style={{ maxWidth: '960px', marginBottom: '1.25rem', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '1rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
           <div>
@@ -476,7 +483,7 @@ export default function ConfiguracoesPage() {
               Arquiva legados e órfãos fora do padrão, regenera derivadas canonicamente a partir dos originais e aplica as configurações atuais.
             </p>
           </div>
-          <button className="btn btn-sm btn-primary" onClick={handleStartMissingJob} disabled={startingMissingJob || !!missingJob?.running}>
+          <button className="btn btn-sm btn-primary" onClick={handleStartMissingJob} disabled={readOnly || startingMissingJob || !!missingJob?.running}>
             {startingMissingJob ? 'Iniciando...' : missingJob?.running ? 'Em andamento...' : 'Sanitizar imagens'}
           </button>
         </div>
@@ -527,6 +534,7 @@ export default function ConfiguracoesPage() {
           saving={saving}
           isDirty={isConfigDirty}
           onSaveConfig={handleSaveConfig}
+          readOnly={readOnly}
         />
 
         <ConfiguracoesImagens
@@ -544,6 +552,7 @@ export default function ConfiguracoesPage() {
           descontosVideoAtivos={descontosVideoAtivos}
           setDescontosVideoAtivos={setDescontosVideoAtivos}
           showMsg={showMsg}
+          readOnly={readOnly}
         />
 
         <ConfiguracoesPagamento
@@ -552,11 +561,12 @@ export default function ConfiguracoesPage() {
           savingPg={savingPg}
           isDirty={isPaymentDirty}
           onSavePg={handleSavePg}
+          readOnly={readOnly}
         />
 
-        <ConfiguracoesRecompensas showMsg={showMsg} />
+        <ConfiguracoesRecompensas showMsg={showMsg} readOnly={readOnly} />
 
-        <ConfiguracoesResolucoes showMsg={showMsg} />
+        <ConfiguracoesResolucoes showMsg={showMsg} readOnly={readOnly} />
 
         <section className="config-section" style={{ marginTop: '2rem' }}>
           <h2 className="config-section-title">☁️ Armazenamento externo (S3 / R2)</h2>
@@ -569,7 +579,7 @@ export default function ConfiguracoesPage() {
           </Link>
         </section>
 
-        <ConfiguracoesLog showMsg={showMsg} />
+        <ConfiguracoesLog showMsg={showMsg} readOnly={readOnly} />
 
         <ConfiguracoesAuditoria showMsg={showMsg} />
       </div>

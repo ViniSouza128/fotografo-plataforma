@@ -14,7 +14,7 @@ import { appendAuditLog } from '@/lib/auditLog'
 
 export async function POST(request) {
   try {
-    const auth = await requireAuth({ requireAdmin: true })
+    const auth = await requireAuth({ requireSuperAdmin: true })
     if (auth.error) return NextResponse.json({ error: auth.error, code: auth.code }, { status: auth.status })
 
     const cfg = readVisionConfig()

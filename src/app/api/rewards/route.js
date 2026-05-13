@@ -15,7 +15,7 @@ export async function GET() {
 }
 
 export async function PATCH(request) {
-  const auth = await requireAuth({ requireAdmin: true })
+  const auth = await requireAuth({ requireSuperAdmin: true })
   if (auth.error) return NextResponse.json({ error: auth.error, code: auth.code }, { status: auth.status })
 
   try {

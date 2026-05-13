@@ -7,7 +7,7 @@ import { DEFAULT_TIERS_CONFIG } from '@/lib/downloadTiersDefaults'
 
 function clone(o) { return JSON.parse(JSON.stringify(o)) }
 
-export default function ConfiguracoesResolucoes({ showMsg }) {
+export default function ConfiguracoesResolucoes({ showMsg, readOnly = false }) {
   const [config, setConfig] = useState(null)
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -85,6 +85,10 @@ export default function ConfiguracoesResolucoes({ showMsg }) {
   }
 
   async function handleSave() {
+    if (readOnly) {
+      showMsg?.('error', 'Only to super admin.')
+      return
+    }
     if (!config) return
     setSaving(true)
     try {
@@ -120,6 +124,12 @@ export default function ConfiguracoesResolucoes({ showMsg }) {
         Permite ao cliente escolher o tamanho ao comprar (Social/Web/Original) e baixar em formatos predefinidos
         (WhatsApp, Instagram, etc.) Tudo é gerado on-demand a partir do original.
       </p>
+      {readOnly && (
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem', margin: '0 0 1rem' }}>
+          Visualização liberada para Admin. Edição only to super admin.
+        </p>
+      )}
+      <fieldset disabled={readOnly} style={{ border: 'none', padding: 0, margin: 0, minWidth: 0 }}>
 
       <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', flexWrap: 'wrap', marginBottom: '1rem' }}>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem' }}>
@@ -200,6 +210,7 @@ export default function ConfiguracoesResolucoes({ showMsg }) {
           {saving ? 'Salvando...' : 'Salvar configuração de resoluções'}
         </button>
       </div>
+      </fieldset>
     </section>
   )
 }

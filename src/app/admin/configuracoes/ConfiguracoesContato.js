@@ -19,6 +19,7 @@ export default function ConfiguracoesContato({
   saving,
   isDirty,
   onSaveConfig,
+  readOnly = false,
 }) {
   const instagramHandle = normalizeInstagram(sharedProfile.instagram)
   const instagramUrl = instagramHandle ? `https://instagram.com/${instagramHandle}` : ''
@@ -32,7 +33,13 @@ export default function ConfiguracoesContato({
   return (
     <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '1.75rem' }}>
       <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', marginBottom: '1.5rem' }}>Perfil compartilhado</h2>
+      {readOnly && (
+        <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
+          Visualização liberada para Admin. Edição only to super admin.
+        </p>
+      )}
       <form onSubmit={onSaveConfig}>
+        <fieldset disabled={readOnly} style={{ border: 'none', padding: 0, margin: 0, minWidth: 0 }}>
         <div className="form-group">
           <label className="form-label">Nome completo</label>
           <input aria-label="Nome completo"
@@ -199,6 +206,7 @@ export default function ConfiguracoesContato({
         <button type="submit" className={`btn btn-full ${isDirty ? 'btn-state-dirty' : 'btn-state-clean'}`} disabled={saving || !isDirty || !cnpjValido}>
           {saving ? <><div className="spinner" /> Salvando...</> : 'Salvar Configurações'}
         </button>
+        </fieldset>
       </form>
     </div>
   )
