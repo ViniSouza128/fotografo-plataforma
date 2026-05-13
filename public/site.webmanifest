@@ -1,0 +1,20 @@
+{
+  "name": "Vinícius Rodrigues | Fotografia",
+  "short_name": "VR Fotografia",
+  "description": "Plataforma de venda de fotos para eventos.",
+  "icons": [
+    {
+      "src": "/brand/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/brand/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "background_color": "#111418",
+  "theme_color": "#111418",
+  "display": "standalone"
+}

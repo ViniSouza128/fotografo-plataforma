@@ -7,6 +7,7 @@
     "node": ">=22 <23"
   },
   "scripts": {
+    "brand:assets": "node scripts/generate-brand-assets.js",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
