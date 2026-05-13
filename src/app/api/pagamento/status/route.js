@@ -10,6 +10,8 @@ import { getPedidoItens, normalizePedidoStatus } from '../../../../lib/commerceU
 import { createDownloadToken, verifyDownloadToken, validateAuthToken } from '../../../../lib/auth'
 import { findClientById } from '../../../../lib/clients'
 
+export const dynamic = 'force-dynamic'
+
 function normalizePhone(value) {
   return String(value || '').replace(/\D/g, '')
 }

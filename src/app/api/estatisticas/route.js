@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { requireAuth } from '@/lib/apiAuth'
 import { computeAnalytics } from '@/lib/analytics'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request) {
   try {
     const auth = await requireAuth({ requireAdmin: true })

@@ -30,12 +30,12 @@ data/*.json
 !data/*.sample.json
 !data/*.example.json
 
-# Originais e migracoes locais
-storage/
+# Originais e migracoes locais na raiz do projeto
+/storage/
 
 # Backups e dumps locais
-backup/
-backups/
+/backup/
+/backups/
 *.backup
 *.bak
 *.dump

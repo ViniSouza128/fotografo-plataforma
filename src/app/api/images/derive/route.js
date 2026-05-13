@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { ensurePhotoDerivedVariant } from '@/lib/imageDerivatives'
 
+export const dynamic = 'force-dynamic'
+
 function validateKind(value) {
   return ['grid', 'thumbs', 'mini'].includes(value)
 }

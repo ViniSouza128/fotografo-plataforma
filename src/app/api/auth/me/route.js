@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { requireAuth } from '@/lib/apiAuth'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     const auth = await requireAuth({ allowMustChangePassword: true })
