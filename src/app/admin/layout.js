@@ -17,6 +17,7 @@ export default function AdminLayout({ children }) {
   const [chatCount, setChatCount] = useState(0)
   const [siteCopyFeedback, setSiteCopyFeedback] = useState('')
   const siteCopyTimeoutRef = useRef(null)
+  const loginHref = `/login?returnTo=${encodeURIComponent(pathname || '/admin')}`
 
   useEffect(() => {
     let cancelled = false
@@ -44,7 +45,7 @@ export default function AdminLayout({ children }) {
         if (!res.ok) {
           if (!cancelled) {
             localStorage.removeItem('adminLogado')
-            router.replace('/login')
+            router.replace(loginHref)
           }
           return
         }
@@ -53,7 +54,8 @@ export default function AdminLayout({ children }) {
         if (!c || !c.isAdmin) {
           if (!cancelled) {
             localStorage.removeItem('adminLogado')
-            router.replace('/login')
+            localStorage.removeItem('clienteLogado')
+            router.replace(loginHref)
           }
           return
         }
@@ -66,12 +68,12 @@ export default function AdminLayout({ children }) {
         window.dispatchEvent(new Event('authUpdated'))
         setVerificando(false)
       } catch {
-        if (!cancelled) router.replace('/login')
+        if (!cancelled) router.replace(loginHref)
       }
     })()
 
     return () => { cancelled = true }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [loginHref, router]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (verificando) return

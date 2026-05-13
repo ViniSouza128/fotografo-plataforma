@@ -17,25 +17,61 @@ function LoginForm() {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem('clienteLogado')
-      if (raw) {
-        const parsed = JSON.parse(raw)
-        if (parsed && parsed.id) {
-          const redirectTo = parsed.mustChangePassword
-            ? `/trocar-senha?returnTo=${encodeURIComponent(returnTo)}`
-            : returnTo
-          router.replace(redirectTo)
+    let cancelled = false
+
+    ;(async () => {
+      try {
+        const raw = localStorage.getItem('clienteLogado')
+        if (!raw) {
+          localStorage.removeItem('adminLogado')
+          if (!cancelled) setReady(true)
           return
         }
+
+        const parsed = JSON.parse(raw)
+        if (!parsed?.id) {
+          localStorage.removeItem('clienteLogado')
+          localStorage.removeItem('adminLogado')
+          if (!cancelled) setReady(true)
+          return
+        }
+
+        const res = await fetch('/api/auth/me', { credentials: 'include' })
+        if (!res.ok) {
+          localStorage.removeItem('clienteLogado')
+          localStorage.removeItem('adminLogado')
+          if (!cancelled) setReady(true)
+          return
+        }
+
+        const data = await res.json().catch(() => null)
+        const client = data?.client
+        if (!client?.id) {
+          localStorage.removeItem('clienteLogado')
+          localStorage.removeItem('adminLogado')
+          if (!cancelled) setReady(true)
+          return
+        }
+
+        localStorage.setItem('clienteLogado', JSON.stringify(client))
+        if (client.isAdmin) localStorage.setItem('adminLogado', 'true')
+        else localStorage.removeItem('adminLogado')
+
+        const baseDest = returnTo.startsWith('/admin') && !client.isAdmin ? '/minha-conta' : returnTo
+        const redirectTo = client.mustChangePassword
+          ? `/trocar-senha?returnTo=${encodeURIComponent(baseDest)}`
+          : baseDest
+
+        if (!cancelled) router.replace(redirectTo)
+      } catch {
+        localStorage.removeItem('clienteLogado')
+        localStorage.removeItem('adminLogado')
+        if (!cancelled) setReady(true)
       }
-      localStorage.removeItem('adminLogado')
-    } catch {
-      localStorage.removeItem('clienteLogado')
-      localStorage.removeItem('adminLogado')
-    }
-    setReady(true)
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    })()
+
+    return () => { cancelled = true }
+  }, [router, returnTo])
 
   async function handleSubmit(e) {
     e.preventDefault()
