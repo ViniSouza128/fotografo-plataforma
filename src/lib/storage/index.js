@@ -10,8 +10,6 @@ import fs from 'fs'
 import { getStorageConfig, isExternalEnabled, getPublicCdnBase } from './config'
 import { putObject, getSignedDownloadUrl, headObject, getObjectBuffer } from './s3'
 
-const ROOT = process.cwd()
-
 // ---------- Chaves S3 (mesma estrutura do FS) ----------
 function originalKey({ eventId, filename }) {
   const bucket = String(eventId || '__unassigned').replace(/[^a-zA-Z0-9._-]/g, '_')

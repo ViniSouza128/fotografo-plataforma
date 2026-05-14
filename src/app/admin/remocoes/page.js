@@ -5,6 +5,15 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { applyNextImageFallback, getPhotoCartPreviewCandidates, isLazyDerivedUrl } from '@/lib/imagePaths'
 import { formatarCPF, mascararCPF } from '@/lib/cpf'
 import { buildWhatsAppHref, formatarWhatsApp } from '@/lib/whatsapp'
+import {
+  adminFetchArray,
+  adminFetchJson,
+  clearAdminSession,
+  getCurrentReturnTo,
+  getStoredAdminClient,
+  isAdminUnauthorizedError,
+  redirectToAdminLogin,
+} from '@/lib/adminFetch'
 
 const STATUS = {
   pendente:  { label: 'Pendente',  color: 'var(--accent)',  bg: 'var(--accent-dim)'  },
@@ -258,21 +267,28 @@ export default function RemocoesPage() {
   const [comentarios, setComentarios] = useState({})
   const [isSuperAdmin, setIsSuperAdmin] = useState(false)
   const [preview, setPreview] = useState(null)
+  const [erro, setErro] = useState('')
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem('clienteLogado')
-      const cl = raw ? JSON.parse(raw) : null
-      setIsSuperAdmin(!!cl?.isSuperAdmin)
-    } catch {}
+    setIsSuperAdmin(!!getStoredAdminClient()?.isSuperAdmin)
   }, [])
 
   const load = useCallback(async () => {
     setLoading(true)
+    setErro('')
     try {
-      const res = await fetch('/api/remocoes')
-      setItems(await res.json())
-    } catch { }
+      const data = await adminFetchArray('/api/remocoes')
+      setItems(data)
+    } catch (error) {
+      setItems([])
+      if (isAdminUnauthorizedError(error)) {
+        setErro('Sessao expirada. Redirecionando para o login...')
+        clearAdminSession()
+        redirectToAdminLogin(getCurrentReturnTo())
+        return
+      }
+      setErro(error?.message || 'Erro ao carregar solicitacoes.')
+    }
     finally { setLoading(false) }
   }, [])
 
@@ -281,19 +297,20 @@ export default function RemocoesPage() {
   async function patch(id, payload) {
     setBusy(id)
     try {
-      const res = await fetch('/api/remocoes', {
+      const updated = await adminFetchJson('/api/remocoes', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, ...payload }),
       })
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        alert(data.error || 'Erro ao atualizar')
+      setItems(prev => prev.map(i => i.id === id ? { ...i, ...updated } : i))
+    } catch (error) {
+      if (isAdminUnauthorizedError(error)) {
+        clearAdminSession()
+        redirectToAdminLogin(getCurrentReturnTo())
         return
       }
-      const updated = await res.json()
-      setItems(prev => prev.map(i => i.id === id ? { ...i, ...updated } : i))
-    } catch { alert('Erro de conexão') }
+      alert(error?.message || 'Erro de conexão')
+    }
     finally { setBusy(null) }
   }
 
@@ -329,7 +346,15 @@ export default function RemocoesPage() {
         <button className="btn btn-ghost btn-sm" onClick={load}>🔄 Atualizar</button>
       </div>
 
-      <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+      {erro && (
+        <div className="empty-state">
+          <h2 className="empty-state-title">Nao foi possivel carregar solicitacoes</h2>
+          <p>{erro}</p>
+          <button className="btn btn-ghost btn-sm" onClick={load}>Tentar novamente</button>
+        </div>
+      )}
+
+      {!erro && <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
         {['todos', 'pendente', 'aceita', 'rejeitada'].map(f => (
           <button key={f}
             className={`btn btn-sm ${filtro === f ? 'btn-primary' : 'btn-ghost'}`}
@@ -340,9 +365,9 @@ export default function RemocoesPage() {
             </span>
           </button>
         ))}
-      </div>
+      </div>}
 
-      {filtrados.length === 0 ? (
+      {!erro && (filtrados.length === 0 ? (
         <div className="empty-state">
           <div className="empty-state-icon">🗑</div>
           <h2 className="empty-state-title">
@@ -639,7 +664,7 @@ export default function RemocoesPage() {
             )
           })}
         </div>
-      )}
+      ))}
       {preview && (
         <div
           className="modal-backdrop"

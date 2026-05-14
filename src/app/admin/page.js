@@ -7,6 +7,11 @@ import { useRouter } from 'next/navigation'
 import { applyNextImageFallback, getEventCoverCandidates, getFirstUrl, getPhotoCartPreviewCandidates } from '@/lib/imagePaths'
 import { buildWhatsAppHref, formatarWhatsApp } from '@/lib/whatsapp'
 import { buildOrderFinancialSummary, getFinancialStatus, getFinancialToneStyle, summarizeFinancialOrders } from '@/lib/commerceUtils'
+import {
+  adminFetchArray,
+  clearAdminSession,
+  isAdminUnauthorizedError,
+} from '@/lib/adminFetch'
 
 function formatDate(d) {
   if (!d) return '—'
@@ -108,29 +113,25 @@ export default function AdminDashboard() {
   useEffect(() => {
     async function load() {
       try {
-        const [evRes, phRes, pdRes] = await Promise.all([
+        const [evRes, phRes, pedidosData] = await Promise.all([
           fetch('/api/events'),
           fetch('/api/photos'),
-          fetch('/api/pedidos?admin=1'),
+          adminFetchArray('/api/pedidos?admin=1'),
         ])
-        const [eventsData, photosData, pedidosData] = await Promise.all([
+        const [eventsData, photosData] = await Promise.all([
           evRes.json().catch(() => []),
           phRes.json().catch(() => []),
-          pdRes.json().catch(() => []),
         ])
         setEvents(Array.isArray(eventsData) ? eventsData : [])
         setPhotos(Array.isArray(photosData) ? photosData : [])
-        setPedidos(Array.isArray(pedidosData) ? pedidosData : [])
-
-        if (!pdRes.ok) {
-          setErro(pedidosData?.error || 'Nao foi possivel carregar os pedidos do painel.')
-          if (pdRes.status === 401 || pdRes.status === 403) {
-            localStorage.removeItem('adminLogado')
-            router.replace('/login?returnTo=/admin')
-          }
-        }
+        setPedidos(pedidosData)
       } catch (e) {
         console.error(e)
+        if (isAdminUnauthorizedError(e)) {
+          clearAdminSession()
+          router.replace('/login?returnTo=/admin')
+          return
+        }
         setErro('Erro ao carregar dados do dashboard.')
       }
       finally { setLoading(false) }

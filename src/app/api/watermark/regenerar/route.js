@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server'
 import { requireAuth } from '@/lib/apiAuth'
 import { getWatermarkRegenerationState, startWatermarkRegeneration } from '@/lib/watermarkRegenerationJob'
+import {
+  assertCanUpload,
+  isStorageQuotaExceededError,
+  toStorageQuotaErrorPayload,
+} from '@/lib/storageQuota'
 
 export async function GET() {
   try {
@@ -30,9 +35,14 @@ export async function POST(request) {
     const overlay = !!payload?.overlay
     const forceRegenerate = payload?.forceRegenerate !== false
 
+    assertCanUpload({ kind: 'photo', incomingBytes: 0 })
+
     const result = startWatermarkRegeneration({ eventIds, overlay, forceRegenerate })
     return NextResponse.json(result)
   } catch (err) {
+    if (isStorageQuotaExceededError(err)) {
+      return NextResponse.json(toStorageQuotaErrorPayload(err), { status: err.status || 507 })
+    }
     return NextResponse.json({ error: 'Erro: ' + err.message }, { status: 500 })
   }
 }

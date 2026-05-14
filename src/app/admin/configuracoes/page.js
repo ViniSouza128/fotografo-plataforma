@@ -579,6 +579,19 @@ export default function ConfiguracoesPage() {
           </Link>
         </section>
 
+        {!!admin?.isAdmin && !admin?.isColaborador && (
+          <section className="config-section" style={{ marginTop: '2rem' }}>
+            <h2 className="config-section-title">💾 Limite de armazenamento</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+              Controle a quota local persistente usada por banco, JSONs, uploads derivados, originais privados e backups.
+              {!admin?.isSuperAdmin ? ' Admin pode visualizar a area; dados e alteracoes ficam only to super admin.' : ''}
+            </p>
+            <Link href="/admin/configuracoes/armazenamento" className="btn btn-primary" style={{ marginTop: '0.5rem', display: 'inline-block' }}>
+              {admin?.isSuperAdmin ? 'Gerenciar limite →' : 'Ver area →'}
+            </Link>
+          </section>
+        )}
+
         <ConfiguracoesLog showMsg={showMsg} readOnly={readOnly} />
 
         <ConfiguracoesAuditoria showMsg={showMsg} />

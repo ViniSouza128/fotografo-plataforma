@@ -3,8 +3,9 @@ import path from 'path'
 import crypto from 'crypto'
 import { useDb } from './db/router'
 import { comentariosRepo } from './db/repositories'
+import { DATA_DIR, ensureRuntimeDirs } from './runtimePaths'
 
-const FILE_PATH = path.join(process.cwd(), 'data', 'comentarios.json')
+const FILE_PATH = path.join(DATA_DIR, 'comentarios.json')
 const LIMIT_10_SECONDS_MS = 10 * 1000
 const LIMIT_1_MINUTE_MS = 60 * 1000
 const LIMIT_1_HOUR_MS = 60 * 60 * 1000
@@ -130,6 +131,7 @@ export function readComentarios() {
     return rows.map(normalizeComentario)
   }
   if (!fs.existsSync(FILE_PATH)) {
+    ensureRuntimeDirs()
     fs.writeFileSync(FILE_PATH, '[]')
     return []
   }
@@ -141,6 +143,7 @@ export function readComentarios() {
 export function writeComentarios(items) {
   const sanitized = Array.isArray(items) ? items.map(normalizeComentario) : []
   if (useDb()) { comentariosRepo.writeAll(sanitized); return }
+  ensureRuntimeDirs()
   fs.writeFileSync(FILE_PATH, JSON.stringify(sanitized, null, 2), 'utf-8')
 }
 

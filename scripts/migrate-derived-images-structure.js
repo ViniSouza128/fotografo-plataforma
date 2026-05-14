@@ -2,10 +2,12 @@
 /* eslint-disable no-console */
 const fs = require('fs');
 const path = require('path');
+const {
+  DATA_DIR,
+  UPLOADS_DIR,
+  ensureRuntimeDirs,
+} = require('../src/lib/runtimePaths.cjs');
 
-const ROOT = process.cwd();
-const DATA_DIR = path.join(ROOT, 'data');
-const UPLOADS_DIR = path.join(ROOT, 'public', 'uploads');
 const LEGACY_THUMBS_DIR = path.join(UPLOADS_DIR, 'thumbs');
 
 const args = new Set(process.argv.slice(2));
@@ -149,6 +151,7 @@ function executePlan(plan) {
 }
 
 function main() {
+  ensureRuntimeDirs();
   ensureDirSync(path.join(UPLOADS_DIR, 'grid', 'wm'));
   ensureDirSync(path.join(UPLOADS_DIR, 'thumbs', 'wm'));
   ensureDirSync(path.join(UPLOADS_DIR, 'mini', 'clean'));

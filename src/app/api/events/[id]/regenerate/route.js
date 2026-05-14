@@ -12,6 +12,11 @@ import {
 } from '@/lib/imageStorage'
 import { renderCoverBuffers, renderPhotoBuffers } from '@/lib/derivedImagesRenderer'
 import { mergeWatermarkConfig } from '@/lib/watermark'
+import {
+  assertCanUpload,
+  isStorageQuotaExceededError,
+  toStorageQuotaErrorPayload,
+} from '@/lib/storageQuota'
 
 export async function POST(request, { params }) {
   try {
@@ -31,6 +36,8 @@ export async function POST(request, { params }) {
       return NextResponse.json({ error: 'Evento nao encontrado' }, { status: 404 })
     }
     const event = events[eventIndex]
+
+    assertCanUpload({ kind: 'photo', incomingBytes: 0 })
 
     const config = mergeWatermarkConfig(readConfig(), event)
     const results = { cover: null, thumbsRegenerated: 0, errors: [] }
@@ -134,6 +141,9 @@ export async function POST(request, { params }) {
 
     return NextResponse.json({ success: true, ...results })
   } catch (error) {
+    if (isStorageQuotaExceededError(error)) {
+      return NextResponse.json(toStorageQuotaErrorPayload(error), { status: error.status || 507 })
+    }
     console.error('Erro ao regenerar imagens:', error)
     return NextResponse.json({ error: 'Erro ao regenerar imagens: ' + error.message }, { status: 500 })
   }

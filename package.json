@@ -13,6 +13,7 @@
     "start": "next start",
     "verify:full": "node scripts/verify-full.js",
     "verify:deep": "node scripts/verify-deep.js",
+    "diagnose:runtime-paths": "node scripts/diagnose-runtime-paths.mjs",
     "images:audit": "node scripts/normalize-image-variants.js",
     "images:normalize": "node scripts/normalize-image-variants.js --apply",
     "db:migrate": "node scripts/migrate-json-to-sqlite.js",

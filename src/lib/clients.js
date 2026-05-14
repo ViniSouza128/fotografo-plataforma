@@ -2,8 +2,9 @@ import fs from 'fs'
 import path from 'path'
 import { useDb } from './db/router'
 import { clientsRepo } from './db/repositories'
+import { DATA_DIR, ensureRuntimeDirs } from './runtimePaths'
 
-const CLIENTS_PATH = path.join(process.cwd(), 'data', 'clients.json')
+const CLIENTS_PATH = path.join(DATA_DIR, 'clients.json')
 
 export function normalizeEmail(email) {
   return String(email || '').trim().toLowerCase()
@@ -22,6 +23,7 @@ export function stripClientSecrets(client) {
 export function readClients() {
   if (useDb()) return clientsRepo.readAll()
   if (!fs.existsSync(CLIENTS_PATH)) {
+    ensureRuntimeDirs()
     fs.writeFileSync(CLIENTS_PATH, '[]')
     return []
   }
@@ -30,6 +32,7 @@ export function readClients() {
 
 export function writeClients(clients) {
   if (useDb()) { clientsRepo.writeAll(clients); return }
+  ensureRuntimeDirs()
   fs.writeFileSync(CLIENTS_PATH, JSON.stringify(clients, null, 2), 'utf-8')
 }
 

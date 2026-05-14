@@ -20,6 +20,11 @@ import { mergeWatermarkConfig } from '@/lib/watermark'
 import { readConfig } from '@/lib/config'
 import { renderVideoPosterBuffers } from '@/lib/derivedImagesRenderer'
 import { ensureJobsBootstrapped } from '@/lib/jobsBootstrap'
+import {
+  assertCanUpload,
+  isStorageQuotaExceededError,
+  toStorageQuotaErrorPayload,
+} from '@/lib/storageQuota'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
@@ -100,6 +105,9 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Resolução inválida.' }, { status: 400 })
     }
 
+    const posterBytes = poster && typeof poster === 'object' ? Number(poster.size) || 0 : 0
+    assertCanUpload({ kind: 'video', incomingBytes: (Number(file.size) || 0) + posterBytes })
+
     const filename = sanitizeVideoFilename(makeUniqueFilename(file.name || 'video.mp4'))
     if (!filename) return NextResponse.json({ error: 'Nome de arquivo inválido.' }, { status: 400 })
     const targetPath = getVideoOriginalAbsolutePath({ eventId, filename })
@@ -157,6 +165,9 @@ export async function POST(request) {
     }, { status: 201 })
   } catch (error) {
     await Promise.all(writtenPaths.map(p => safeUnlink(p)))
+    if (isStorageQuotaExceededError(error)) {
+      return NextResponse.json(toStorageQuotaErrorPayload(error), { status: error.status || 507 })
+    }
     console.error('[upload-video] erro:', error)
     return NextResponse.json({ error: `Erro: ${error.message || 'desconhecido'}` }, { status: 500 })
   }

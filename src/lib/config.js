@@ -3,8 +3,9 @@ import path from 'path'
 import { normalizeDerivativeConfig } from './derivedImagesConfig'
 import { useDb } from './db/router'
 import { configRepo } from './db/repositories'
+import { DATA_DIR, ensureRuntimeDirs } from './runtimePaths'
 
-const CONFIG_PATH = path.join(process.cwd(), 'data', 'config.json')
+const CONFIG_PATH = path.join(DATA_DIR, 'config.json')
 
 const DEFAULT_CONFIG = () => normalizeDerivativeConfig({
   whatsapp: '',
@@ -26,6 +27,7 @@ export function readConfig() {
   }
   if (!fs.existsSync(CONFIG_PATH)) {
     const defaultConfig = DEFAULT_CONFIG()
+    ensureRuntimeDirs()
     fs.writeFileSync(CONFIG_PATH, JSON.stringify(defaultConfig, null, 2), 'utf-8')
     return defaultConfig
   }
@@ -35,5 +37,6 @@ export function readConfig() {
 export function writeConfig(config) {
   const normalized = normalizeDerivativeConfig(config)
   if (useDb()) { configRepo.write(normalized); return }
+  ensureRuntimeDirs()
   fs.writeFileSync(CONFIG_PATH, JSON.stringify(normalized, null, 2), 'utf-8')
 }

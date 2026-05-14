@@ -7,6 +7,11 @@ import {
   setAssetOrientation,
 } from '@/lib/watermark'
 import { appendAuditLog } from '@/lib/auditLog'
+import {
+  assertCanUpload,
+  isStorageQuotaExceededError,
+  toStorageQuotaErrorPayload,
+} from '@/lib/storageQuota'
 
 export async function GET() {
   try {
@@ -29,6 +34,8 @@ export async function POST(request) {
     if (!file) return NextResponse.json({ error: 'Nenhum arquivo enviado' }, { status: 400 })
     if (file.type !== 'image/png') return NextResponse.json({ error: 'A marca d\'água deve ser PNG' }, { status: 400 })
 
+    assertCanUpload({ kind: 'photo', incomingBytes: Number(file.size) || 0 })
+
     const buffer = Buffer.from(await file.arrayBuffer())
     const asset = saveWatermarkAsset(buffer, name ? String(name) : null, orientation ? String(orientation) : null)
     appendAuditLog({
@@ -45,6 +52,9 @@ export async function POST(request) {
       assets: listWatermarkAssets(),
     })
   } catch (error) {
+    if (isStorageQuotaExceededError(error)) {
+      return NextResponse.json(toStorageQuotaErrorPayload(error), { status: error.status || 507 })
+    }
     return NextResponse.json({ error: 'Erro ao salvar marca d\'água' }, { status: 500 })
   }
 }

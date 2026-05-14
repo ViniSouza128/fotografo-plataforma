@@ -2,9 +2,8 @@ import fs from 'fs'
 import path from 'path'
 import { useDb } from './db/router'
 import { photosRepo } from './db/repositories'
+import { DATA_DIR, ensureRuntimeDirs } from './runtimePaths'
 
-const ROOT = process.cwd()
-const DATA_DIR = path.join(ROOT, 'data')
 const LEGACY_DATA_PATH = path.join(DATA_DIR, 'photos.json')
 const PHOTOS_DIR = path.join(DATA_DIR, 'photos')
 const UNASSIGNED_BUCKET = '_unassigned'
@@ -12,6 +11,7 @@ const UNASSIGNED_BUCKET = '_unassigned'
 const EVENT_BUCKET_REGEX = /^[a-zA-Z0-9._-]+$/
 
 function ensureDir() {
+  ensureRuntimeDirs()
   if (!fs.existsSync(PHOTOS_DIR)) fs.mkdirSync(PHOTOS_DIR, { recursive: true })
 }
 

@@ -8,16 +8,16 @@ import path from 'path'
 import fs from 'fs'
 import { createRequire } from 'module'
 import { applySchema, readSchemaVersion, SCHEMA_VERSION } from './schema'
+import { DATA_DIR, ensureRuntimeDirs } from '../runtimePaths'
 
 let _db = null
 let _initFailed = false
 const require = createRequire(import.meta.url)
 
-const DB_DIR = path.join(process.cwd(), 'data')
-const DB_PATH = path.join(DB_DIR, 'db.sqlite')
+const DB_PATH = path.join(DATA_DIR, 'db.sqlite')
 
 function ensureDir() {
-  if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true })
+  ensureRuntimeDirs()
 }
 
 export function getDb() {

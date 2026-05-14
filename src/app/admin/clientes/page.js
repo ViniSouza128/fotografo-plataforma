@@ -6,6 +6,14 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { applyNextImageFallback, getFirstUrl, getPhotoCartPreviewCandidates, getUploadsUrlFallbackCandidates } from '@/lib/imagePaths'
 import { formatarCPF, mascararCPF } from '@/lib/cpf'
+import {
+  adminFetchArray,
+  clearAdminSession,
+  getCurrentReturnTo,
+  getStoredAdminClient,
+  isAdminUnauthorizedError,
+  redirectToAdminLogin,
+} from '@/lib/adminFetch'
 import { buildWhatsAppHref, formatarWhatsApp } from '@/lib/whatsapp'
 import Avatar from '@/components/Avatar'
 import AvatarUploader from '@/components/AvatarUploader'
@@ -124,11 +132,14 @@ function ClienteModal({ cliente: clienteProp, pedidos, remocoes, carrinhos, isSu
         tree: '1',
         sort: ordenacaoComentarios,
       })
-      const res = await fetch(`/api/comentarios?${params.toString()}`)
-      const data = res.ok ? await res.json() : []
-      setComentarios(Array.isArray(data) ? data : [])
-    } catch {
+      const data = await adminFetchArray(`/api/comentarios?${params.toString()}`)
+      setComentarios(data)
+    } catch (error) {
       setComentarios([])
+      if (isAdminUnauthorizedError(error)) {
+        clearAdminSession()
+        redirectToAdminLogin(getCurrentReturnTo())
+      }
     } finally {
       setLoadingComentarios(false)
     }
@@ -867,21 +878,35 @@ export default function ClientesPage() {
   const [viewMode, setViewMode] = useState('lista')
   const [copiouSenha, setCopiouSenha] = useState(false)
   const [reviewingLgpd, setReviewingLgpd] = useState(null)
+  const [erro, setErro] = useState('')
 
   const load = useCallback(async () => {
     setLoading(true)
+    setErro('')
     try {
-      const [cliRes, pedRes, remRes, carRes] = await Promise.all([
-        fetch('/api/clients'),
-        fetch('/api/pedidos?admin=1'),
-        fetch('/api/remocoes'),
-        fetch('/api/carrinhos'),
+      const [clientesData, pedidosData, remocoesData, carrinhosData] = await Promise.all([
+        adminFetchArray('/api/clients'),
+        adminFetchArray('/api/pedidos?admin=1'),
+        adminFetchArray('/api/remocoes'),
+        adminFetchArray('/api/carrinhos'),
       ])
-      setClientes(await cliRes.json())
-      setPedidos(await pedRes.json())
-      setRemocoes(await remRes.json())
-      setCarrinhos(await carRes.json())
-    } catch {}
+      setClientes(clientesData)
+      setPedidos(pedidosData)
+      setRemocoes(remocoesData)
+      setCarrinhos(carrinhosData)
+    } catch (error) {
+      setClientes([])
+      setPedidos([])
+      setRemocoes([])
+      setCarrinhos([])
+      if (isAdminUnauthorizedError(error)) {
+        setErro('Sessao expirada. Redirecionando para o login...')
+        clearAdminSession()
+        redirectToAdminLogin(getCurrentReturnTo())
+        return
+      }
+      setErro(error?.message || 'Erro ao carregar contas.')
+    }
     finally { setLoading(false) }
   }, [])
 
@@ -898,11 +923,7 @@ export default function ClientesPage() {
   }, [loading, searchParams, clientes, clienteModal?.id])
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem('clienteLogado')
-      const cl = raw ? JSON.parse(raw) : null
-      setIsSuperAdmin(!!cl?.isSuperAdmin)
-    } catch {}
+    setIsSuperAdmin(!!getStoredAdminClient()?.isSuperAdmin)
     try {
       const saved = localStorage.getItem('adminContasViewMode')
       if (saved === 'grid' || saved === 'lista') setViewMode(saved)
@@ -1049,6 +1070,23 @@ export default function ClientesPage() {
       <div className="spinner" style={{ width: '32px', height: '32px' }} />
       <span style={{ color: 'var(--text-muted)' }}>Carregando contas...</span>
     </div>
+  )
+
+  if (erro) return (
+    <>
+      <div className="admin-header">
+        <div>
+          <Link href="/admin" style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Dashboard</Link>
+          <h1 className="admin-page-title" style={{ marginTop: '0.25rem' }}>Contas</h1>
+        </div>
+        <button className="btn btn-ghost btn-sm" onClick={load}>Atualizar</button>
+      </div>
+      <div className="empty-state">
+        <h2 className="empty-state-title">Nao foi possivel carregar as contas</h2>
+        <p>{erro}</p>
+        <button className="btn btn-ghost btn-sm" onClick={load}>Tentar novamente</button>
+      </div>
+    </>
   )
 
   return (

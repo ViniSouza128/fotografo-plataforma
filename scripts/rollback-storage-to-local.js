@@ -10,11 +10,16 @@
 
 const fs = require('fs')
 const path = require('path')
-
-const ROOT = process.cwd()
+const {
+  DATA_DIR,
+  STORAGE_DIR,
+  UPLOADS_DIR,
+  ensureRuntimeDirs,
+} = require('../src/lib/runtimePaths.cjs')
 
 async function main() {
-  const cfgPath = path.join(ROOT, 'data', 'config.json')
+  ensureRuntimeDirs()
+  const cfgPath = path.join(DATA_DIR, 'config.json')
   if (!fs.existsSync(cfgPath)) { console.error('[rollback-s3] data/config.json não existe.'); process.exit(1) }
   const cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf-8'))
   const sc = cfg.storageExterno || {}
@@ -41,9 +46,9 @@ async function main() {
       const key = obj.Key
       let absTarget
       if (key.startsWith('originals/')) {
-        absTarget = path.join(ROOT, 'storage', key)
+        absTarget = path.join(STORAGE_DIR, key)
       } else if (key.startsWith('uploads/')) {
-        absTarget = path.join(ROOT, 'public', key)
+        absTarget = path.join(UPLOADS_DIR, key.slice('uploads/'.length))
       } else {
         continue // ignora chaves desconhecidas
       }

@@ -19,11 +19,16 @@ const { spawn, spawnSync } = require('child_process')
 const crypto = require('crypto')
 const fs = require('fs')
 const path = require('path')
+const {
+  DATA_DIR,
+  PROJECT_ROOT,
+  STORAGE_DIR,
+  ensureRuntimeDirs,
+} = require('../src/lib/runtimePaths.cjs')
 
-const ROOT = process.cwd()
 const PORT = Number(process.env.VERIFY_PORT || 3199)
 const BASE_URL = `http://127.0.0.1:${PORT}`
-const REPORT_DIR = path.join(ROOT, 'reports')
+const REPORT_DIR = path.join(PROJECT_ROOT, 'reports')
 const REPORT_MD = path.join(REPORT_DIR, 'verify-deep-latest.md')
 const REPORT_JSON = path.join(REPORT_DIR, 'verify-deep-latest.json')
 const SCREENSHOT_DIR = path.join(REPORT_DIR, 'screenshots-deep')
@@ -35,6 +40,15 @@ const NETWORK_IDLE_MS = 8000
 const SKIP_BUILD = process.env.VERIFY_SKIP_BUILD === '1'
 const HEADLESS = process.env.VERIFY_HEADLESS !== '0'
 const AUTH_SECRET = process.env.AUTH_SECRET || 'fotografo-plataforma-secret-key-2024'
+
+function resolveProjectPath(relativePath) {
+  const normalized = String(relativePath || '').replace(/\\/g, '/')
+  if (normalized === 'data') return DATA_DIR
+  if (normalized.startsWith('data/')) return path.join(DATA_DIR, ...normalized.slice('data/'.length).split('/'))
+  if (normalized === 'storage') return STORAGE_DIR
+  if (normalized.startsWith('storage/')) return path.join(STORAGE_DIR, ...normalized.slice('storage/'.length).split('/'))
+  return path.join(PROJECT_ROOT, relativePath)
+}
 
 const DATA_FILES = [
   'data/clients.json',
@@ -70,7 +84,7 @@ function ensureDir(dir) { fs.mkdirSync(dir, { recursive: true }) }
 
 function readJson(relativePath, fallback) {
   try {
-    const file = path.join(ROOT, relativePath)
+    const file = resolveProjectPath(relativePath)
     if (!fs.existsSync(file)) return fallback
     return JSON.parse(fs.readFileSync(file, 'utf-8'))
   } catch {
@@ -81,7 +95,7 @@ function readJson(relativePath, fallback) {
 // Storage-aware helpers (P38). Detecta JSON vs SQLite e lê/escreve no backend ativo.
 function readActiveBackend() {
   try {
-    const f = path.join(ROOT, 'data', 'storage-backend.txt')
+    const f = path.join(DATA_DIR, 'storage-backend.txt')
     if (fs.existsSync(f)) {
       const v = String(fs.readFileSync(f, 'utf-8') || '').trim().toLowerCase()
       if (v === 'sqlite' || v === 'json') return v
@@ -94,7 +108,7 @@ function readActiveBackend() {
 function getDbHandle(readonly = true) {
   try {
     const Database = require('better-sqlite3')
-    const dbPath = path.join(ROOT, 'data', 'db.sqlite')
+    const dbPath = path.join(DATA_DIR, 'db.sqlite')
     if (!fs.existsSync(dbPath)) return null
     return new Database(dbPath, { readonly })
   } catch { return null }
@@ -135,7 +149,7 @@ function upsertClientDirect(client) {
   const arr = readJson('data/clients.json', [])
   const next = arr.filter(c => c.id !== client.id)
   next.push(client)
-  fs.writeFileSync(path.join(ROOT, 'data', 'clients.json'), JSON.stringify(next, null, 2), 'utf-8')
+  fs.writeFileSync(path.join(DATA_DIR, 'clients.json'), JSON.stringify(next, null, 2), 'utf-8')
   return true
 }
 
@@ -157,17 +171,17 @@ function upsertPedidoDirect(pedido) {
   const arr = readJson('data/pedidos.json', [])
   const next = arr.filter(p => p.id !== pedido.id)
   next.push(pedido)
-  fs.writeFileSync(path.join(ROOT, 'data', 'pedidos.json'), JSON.stringify(next, null, 2), 'utf-8')
+  fs.writeFileSync(path.join(DATA_DIR, 'pedidos.json'), JSON.stringify(next, null, 2), 'utf-8')
   return true
 }
 
 function getFileContentOrNull(relativePath) {
-  const file = path.join(ROOT, relativePath)
+  const file = resolveProjectPath(relativePath)
   return fs.existsSync(file) ? fs.readFileSync(file, 'utf-8') : null
 }
 
 function writeFileRestore(relativePath, previousContent) {
-  const file = path.join(ROOT, relativePath)
+  const file = resolveProjectPath(relativePath)
   if (previousContent === null) {
     if (fs.existsSync(file)) fs.rmSync(file, { force: true })
     return
@@ -180,7 +194,7 @@ function snapshotData() {
   const snapshot = {}
   for (const file of DATA_FILES) snapshot[file] = getFileContentOrNull(file)
   // Snapshot binário do SQLite (se em uso) e da flag de backend
-  const dbPath = path.join(ROOT, 'data', 'db.sqlite')
+  const dbPath = path.join(DATA_DIR, 'db.sqlite')
   if (fs.existsSync(dbPath)) {
     snapshot.__db_sqlite = fs.readFileSync(dbPath)
     const wal = dbPath + '-wal'; if (fs.existsSync(wal)) snapshot.__db_sqlite_wal = fs.readFileSync(wal)
@@ -195,7 +209,7 @@ function restoreData(snapshot) {
     if (file.startsWith('__')) continue
     try { writeFileRestore(file, content) } catch {}
   }
-  const dbPath = path.join(ROOT, 'data', 'db.sqlite')
+  const dbPath = path.join(DATA_DIR, 'db.sqlite')
   try {
     if (snapshot.__db_sqlite) {
       fs.writeFileSync(dbPath, snapshot.__db_sqlite)
@@ -280,7 +294,7 @@ function safeName(s) {
 }
 
 function rimraf(relativePath) {
-  const target = path.join(ROOT, relativePath)
+  const target = resolveProjectPath(relativePath)
   if (fs.existsSync(target)) fs.rmSync(target, { recursive: true, force: true })
 }
 
@@ -290,7 +304,7 @@ function stopProcessOnPort(port) {
     '-NoProfile',
     '-Command',
     `$pids = Get-NetTCPConnection -LocalPort ${port} -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique; foreach ($pid in $pids) { if ($pid -and $pid -ne 0) { Stop-Process -Id $pid -Force -ErrorAction SilentlyContinue } }`,
-  ], { cwd: ROOT, encoding: 'utf-8' })
+  ], { cwd: PROJECT_ROOT, encoding: 'utf-8' })
 }
 
 function run(command, args, options = {}) {
@@ -299,7 +313,7 @@ function run(command, args, options = {}) {
   const finalCommand = isNpmOnWindows ? 'cmd.exe' : command
   const finalArgs = isNpmOnWindows ? ['/d', '/s', '/c', ['npm', ...args].join(' ')] : args
   const result = spawnSync(finalCommand, finalArgs, {
-    cwd: ROOT,
+    cwd: PROJECT_ROOT,
     encoding: 'utf-8',
     shell: false,
     maxBuffer: 1024 * 1024 * 16,
@@ -322,7 +336,7 @@ function startDevServer() {
     ? ['/d', '/s', '/c', `npm run dev -- -p ${PORT} -H 127.0.0.1`]
     : ['run', 'dev', '--', '-p', String(PORT), '-H', '127.0.0.1']
   const child = spawn(command, args, {
-    cwd: ROOT,
+    cwd: PROJECT_ROOT,
     env: { ...process.env, BROWSER: 'none' },
     stdio: ['ignore', 'pipe', 'pipe'],
     windowsHide: true,
@@ -350,7 +364,7 @@ async function waitForServer() {
 }
 
 function discoverStaticRoutes() {
-  const appDir = path.join(ROOT, 'src', 'app')
+  const appDir = path.join(PROJECT_ROOT, 'src', 'app')
   const routes = new Set()
   function walk(dir) {
     const entries = fs.readdirSync(dir, { withFileTypes: true })
@@ -454,12 +468,12 @@ function ensureFixtureImage() {
   if (fs.existsSync(target)) return target
   // Tenta achar uma imagem real no projeto para reuso
   const candidates = [
-    path.join(ROOT, 'public', 'logo.png'),
-    path.join(ROOT, 'public', 'favicon.ico'),
+    path.join(PROJECT_ROOT, 'public', 'logo.png'),
+    path.join(PROJECT_ROOT, 'public', 'favicon.ico'),
   ]
   // Tambem procura em storage/originals (qualquer foto)
   try {
-    const orig = path.join(ROOT, 'storage', 'originals')
+    const orig = path.join(STORAGE_DIR, 'originals')
     if (fs.existsSync(orig)) {
       const stack = [orig]
       while (stack.length) {
@@ -717,7 +731,7 @@ async function visitRoute(context, route, index, contextKind = 'anon') {
       const name = `${String(index + 1).padStart(3, '0')}-${safeName(route)}.png`
       const screenshotPath = path.join(SCREENSHOT_DIR, name)
       await page.screenshot({ path: screenshotPath, fullPage: true }).catch(() => {})
-      record.screenshot = path.relative(ROOT, screenshotPath).replace(/\\/g, '/')
+      record.screenshot = path.relative(PROJECT_ROOT, screenshotPath).replace(/\\/g, '/')
     }
   } catch (error) {
     record.ok = false
@@ -725,7 +739,7 @@ async function visitRoute(context, route, index, contextKind = 'anon') {
     const name = `${String(index + 1).padStart(3, '0')}-${safeName(route)}-exception.png`
     const screenshotPath = path.join(SCREENSHOT_DIR, name)
     await page.screenshot({ path: screenshotPath, fullPage: true }).catch(() => {})
-    record.screenshot = path.relative(ROOT, screenshotPath).replace(/\\/g, '/')
+    record.screenshot = path.relative(PROJECT_ROOT, screenshotPath).replace(/\\/g, '/')
   } finally {
     await page.close().catch(() => {})
   }
@@ -850,7 +864,7 @@ async function screenshotInto(page, name) {
   ensureDir(SCREENSHOT_DIR)
   const screenshotPath = path.join(SCREENSHOT_DIR, `flow-${safeName(name)}.png`)
   await page.screenshot({ path: screenshotPath, fullPage: true }).catch(() => {})
-  return path.relative(ROOT, screenshotPath).replace(/\\/g, '/')
+  return path.relative(PROJECT_ROOT, screenshotPath).replace(/\\/g, '/')
 }
 
 async function recordCheck(checks, name, fn) {
@@ -1709,6 +1723,7 @@ function renderMarkdown(report) {
 // ===== Main =====
 
 async function main() {
+  ensureRuntimeDirs()
   ensureDir(REPORT_DIR)
   ensureDir(SCREENSHOT_DIR)
   ensureDir(FIXTURES_DIR)

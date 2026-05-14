@@ -12,9 +12,7 @@
 import fs from 'fs'
 import path from 'path'
 import { bootstrapJobsQueue, registerJobProcessor } from './jobsQueue'
-
-const ROOT = process.cwd()
-const PRIVATE_ORIGINALS_DIR = path.join(ROOT, 'storage', 'originals')
+import { PRIVATE_ORIGINALS_DIR } from './imageStorage'
 
 let _initialized = false
 

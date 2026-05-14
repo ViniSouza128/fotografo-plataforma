@@ -24,12 +24,16 @@
 const fs = require('fs')
 const path = require('path')
 const os = require('os')
+const {
+  BACKUP_DIR,
+  DATA_DIR,
+  PROJECT_ROOT,
+  STORAGE_DIR,
+  UPLOADS_DIR,
+  ensureRuntimeDirs,
+} = require('../src/lib/runtimePaths.cjs')
 
-const ROOT = process.cwd()
-const DATA_DIR = path.join(ROOT, 'data')
-const STORAGE_DIR = path.join(ROOT, 'storage')
-const PUBLIC_UPLOADS = path.join(ROOT, 'public', 'uploads')
-const REPORTS_DIR = path.join(ROOT, 'reports')
+const REPORTS_DIR = path.join(PROJECT_ROOT, 'reports')
 
 const DISK_MIN_GB = Number(process.env.MONITORING_DISK_MIN_GB || 10)
 const WEBHOOK = process.env.MONITORING_WEBHOOK_URL || null
@@ -72,7 +76,7 @@ function checkDisk() {
   // Em Windows, usar wmic. Em Linux/Mac, statvfs via Node 18+ não é trivial; usa "df -k".
   try {
     if (process.platform === 'win32') {
-      const drive = path.parse(ROOT).root.replace(/\\/g, '')   // ex: "H:"
+      const drive = path.parse(PROJECT_ROOT).root.replace(/\\/g, '')   // ex: "H:"
       const { execSync } = require('child_process')
       const out = execSync(`wmic logicaldisk where DeviceID="${drive}" get FreeSpace /value`, { encoding: 'utf-8' })
       const m = out.match(/FreeSpace=(\d+)/)
@@ -80,7 +84,7 @@ function checkDisk() {
       return { ok: true, freeGB: freeBytes / 1024 / 1024 / 1024, drive }
     } else {
       const { execSync } = require('child_process')
-      const out = execSync(`df -k "${ROOT}" | tail -1`, { encoding: 'utf-8' })
+      const out = execSync(`df -k "${PROJECT_ROOT}" | tail -1`, { encoding: 'utf-8' })
       const cols = out.trim().split(/\s+/)
       // df: Filesystem 1K-blocks Used Available Use% Mounted
       const availableKB = Number(cols[3]) || 0
@@ -133,12 +137,13 @@ async function sendWebhook(payload) {
 }
 
 async function main() {
+  ensureRuntimeDirs()
   const report = {
     timestamp: new Date().toISOString(),
     hostname: os.hostname(),
     platform: process.platform,
     node: process.version,
-    cwd: ROOT,
+    cwd: PROJECT_ROOT,
     sizes: {},
     disk: null,
     server: null,
@@ -148,8 +153,8 @@ async function main() {
   // 1) Tamanhos
   report.sizes.data = dirSize(DATA_DIR)
   report.sizes.storage_originals = dirSize(path.join(STORAGE_DIR, 'originals'))
-  report.sizes.storage_backups = dirSize(path.join(STORAGE_DIR, 'backups'))
-  report.sizes.public_uploads = dirSize(PUBLIC_UPLOADS)
+  report.sizes.backups = dirSize(BACKUP_DIR)
+  report.sizes.public_uploads = dirSize(UPLOADS_DIR)
   report.sizes.reports = dirSize(REPORTS_DIR)
   report.sizes.audit_log = fileSize(path.join(DATA_DIR, 'audit_log.json'))
   report.sizes.payment_log = fileSize(path.join(DATA_DIR, 'payment_log.json'))

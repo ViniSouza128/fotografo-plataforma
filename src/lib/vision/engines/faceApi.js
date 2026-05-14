@@ -12,11 +12,14 @@
 
 import path from 'path'
 import fs from 'fs'
+import { VISION_MODELS_DIR } from '../storage'
 
 let _faceapi = null
 let _modelsLoaded = false
 let _initError = null
-const MODELS_DIR = path.join(process.cwd(), 'data', 'vision', 'models')
+const MODELS_DIR = process.env.VISION_MODELS_DIR
+  ? path.resolve(process.env.VISION_MODELS_DIR)
+  : VISION_MODELS_DIR
 
 async function tryLoadFaceApi() {
   if (_faceapi) return _faceapi

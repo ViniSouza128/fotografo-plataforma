@@ -26,11 +26,13 @@ import { readEvents } from './events'
 import { readClients } from './clients'
 import { creditarSaldo } from './rewards'
 import { getPedidoItens } from './commerceUtils'
+import { DATA_DIR, ensureRuntimeDirs } from './runtimePaths'
 
-const DATA_PATH = path.join(process.cwd(), 'data', 'repasses.json')
+const DATA_PATH = path.join(DATA_DIR, 'repasses.json')
 const PAID_STATUSES = new Set(['pago', 'liberado_manual'])
 
 function ensureFile() {
+  ensureRuntimeDirs()
   const dir = path.dirname(DATA_PATH)
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
   if (!fs.existsSync(DATA_PATH)) fs.writeFileSync(DATA_PATH, '[]', 'utf-8')

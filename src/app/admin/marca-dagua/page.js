@@ -357,8 +357,8 @@ export default function MarcaDaguaPage() {
 
       setWatermarks(data.watermarks || watermarks)
       showMsg('success', `PNG salvo para ${VARIANT_META[variant].title.toLowerCase()}.`)
-    } catch {
-      showMsg('error', 'Erro ao enviar o PNG.')
+    } catch (err) {
+      showMsg('error', err.message && err.message !== 'upload_failed' ? err.message : 'Erro ao enviar o PNG.')
     } finally {
       setUploadingVariant(null)
       if (inputRefs[variant]?.current) inputRefs[variant].current.value = ''
@@ -550,16 +550,16 @@ export default function MarcaDaguaPage() {
       formData.append('file', file)
       formData.append('orientation', uploadOrientation || 'any')
       const res = await fetch('/api/watermark/assets', { method: 'POST', body: formData })
-      if (!res.ok) throw new Error('upload_failed')
-      const data = await res.json()
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data?.error || 'upload_failed')
       setAssets(data.assets || [])
       if (!config.watermarkAsset) {
         const newest = data.asset?.id || (data.assets || [])[0]?.id || null
         if (newest) setConfig((prev) => ({ ...prev, watermarkAsset: newest }))
       }
       showMsg('success', 'PNG cadastrado.')
-    } catch {
-      showMsg('error', 'Erro ao enviar PNG.')
+    } catch (err) {
+      showMsg('error', err.message && err.message !== 'upload_failed' ? err.message : 'Erro ao enviar PNG.')
     } finally {
       setUploadingAsset(false)
       if (assetInputRef.current) assetInputRef.current.value = ''

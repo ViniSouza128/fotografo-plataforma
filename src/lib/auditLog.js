@@ -1,15 +1,15 @@
 import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
+import { DATA_DIR, ensureRuntimeDirs } from './runtimePaths'
 
-const DATA_DIR = path.join(process.cwd(), 'data')
 const AUDIT_LOG_PATH = path.join(DATA_DIR, 'audit_log.json')
 const MAX_ENTRIES = 5000
 const MAX_STRING_LENGTH = 300
 const SENSITIVE_KEY_RE = /(senha|password|token|secret|api[_-]?key|apikey|wallet|authorization|cookie|credential|chave)/i
 
 function ensureDataDir() {
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true })
+  ensureRuntimeDirs()
 }
 
 function truncateString(value) {

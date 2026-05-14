@@ -115,9 +115,8 @@ export default function CriarEventoPage() {
           body: fd,
         });
 
-        if (!uploadRes.ok) throw new Error('Falha no upload da capa');
-
-        const uploadData = await uploadRes.json();
+        const uploadData = await uploadRes.json().catch(() => ({}));
+        if (!uploadRes.ok) throw new Error(uploadData.error || 'Falha no upload da capa');
         coverImageFilename = uploadData.filename;
       }
 

@@ -20,6 +20,11 @@ import {
 } from '@/lib/vision/storage'
 import { extractEmbeddingsFromImage, isFaceApiAvailable } from '@/lib/vision/engines/faceApi'
 import { appendAuditLog } from '@/lib/auditLog'
+import {
+  assertCanUpload,
+  isStorageQuotaExceededError,
+  toStorageQuotaErrorPayload,
+} from '@/lib/storageQuota'
 import crypto from 'crypto'
 
 function clientHasConsent(client) {
@@ -92,6 +97,7 @@ export async function POST(request) {
     const ownerId = isAdmin ? null : auth.client.id
     const ownerType = isAdmin ? 'admin' : 'client'
     const absPath = getReferenceFileAbsPath({ ownerId, ownerType, filename: safeName })
+    assertCanUpload({ kind: 'photo', incomingBytes: Number(file.size) || 0 })
     const buf = Buffer.from(await file.arrayBuffer())
     await fs.promises.writeFile(absPath, buf)
 
@@ -144,6 +150,9 @@ export async function POST(request) {
       engineReason: status.reason,
     }, { status: 201 })
   } catch (err) {
+    if (isStorageQuotaExceededError(err)) {
+      return NextResponse.json(toStorageQuotaErrorPayload(err), { status: err.status || 507 })
+    }
     console.error('[vision refs POST] erro:', err)
     return NextResponse.json({ error: 'Erro interno.' }, { status: 500 })
   }

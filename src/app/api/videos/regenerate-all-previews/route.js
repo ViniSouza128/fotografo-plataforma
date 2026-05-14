@@ -22,6 +22,11 @@ import { readEvents } from '@/lib/events'
 import { mergeWatermarkConfig, getVideoWatermarkPath, watermarkExists } from '@/lib/watermark'
 import { readConfig } from '@/lib/config'
 import { renderVideoPosterBuffers } from '@/lib/derivedImagesRenderer'
+import {
+  assertCanUpload,
+  isStorageQuotaExceededError,
+  toStorageQuotaErrorPayload,
+} from '@/lib/storageQuota'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
@@ -73,6 +78,8 @@ export async function POST(request) {
 
     const body = await request.json().catch(() => ({}))
     const { eventId = null, onlyFailed = false, force = false } = body
+
+    assertCanUpload({ kind: 'video', incomingBytes: 0 })
 
     const events = readEvents()
     const eventMap = Object.fromEntries(events.map((e) => [e.id, e]))
@@ -171,6 +178,9 @@ export async function POST(request) {
       skipped,
     })
   } catch (err) {
+    if (isStorageQuotaExceededError(err)) {
+      return NextResponse.json(toStorageQuotaErrorPayload(err), { status: err.status || 507 })
+    }
     console.error('[regen-all-previews POST]', err)
     return NextResponse.json({ error: err.message || 'Erro interno.' }, { status: 500 })
   }

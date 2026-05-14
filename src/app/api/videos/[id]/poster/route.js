@@ -17,6 +17,11 @@ import { canManageEvent } from '@/lib/colaborador'
 import { readConfig } from '@/lib/config'
 import { mergeWatermarkConfig } from '@/lib/watermark'
 import { renderVideoPosterBuffers } from '@/lib/derivedImagesRenderer'
+import {
+  assertCanUpload,
+  isStorageQuotaExceededError,
+  toStorageQuotaErrorPayload,
+} from '@/lib/storageQuota'
 
 export const runtime = 'nodejs'
 
@@ -47,6 +52,8 @@ export async function POST(request, { params }) {
       return NextResponse.json({ error: `Imagem muito grande. Máx. ${(MAX_BYTES / 1024 / 1024).toFixed(0)} MB.` }, { status: 413 })
     }
 
+    assertCanUpload({ kind: 'photo', incomingBytes: Number(file.size) || 0 })
+
     const buf = Buffer.from(await file.arrayBuffer())
     const cleanAbs = getVideoPosterAbsolutePath({ filename: video.filename, kind: 'clean' })
     const wmAbs = getVideoPosterAbsolutePath({ filename: video.filename, kind: 'wm' })
@@ -70,6 +77,9 @@ export async function POST(request, { params }) {
 
     return NextResponse.json({ ok: true, posterClean, posterWm })
   } catch (err) {
+    if (isStorageQuotaExceededError(err)) {
+      return NextResponse.json(toStorageQuotaErrorPayload(err), { status: err.status || 507 })
+    }
     console.error('[video poster] erro:', err)
     return NextResponse.json({ error: err.message || 'Erro ao salvar miniatura.' }, { status: 500 })
   }

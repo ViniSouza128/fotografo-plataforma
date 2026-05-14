@@ -3,9 +3,10 @@ import fs from 'fs'
 import path from 'path'
 import { NextResponse } from 'next/server'
 import { requireAuth } from '@/lib/apiAuth'
+import { DATA_DIR, ensureRuntimeDirs } from '@/lib/runtimePaths'
 import { normalizarWhatsApp } from '@/lib/whatsapp'
 
-const CONTACTS_PATH = path.join(process.cwd(), 'data', 'contatos.json')
+const CONTACTS_PATH = path.join(DATA_DIR, 'contatos.json')
 const STATUS_VALUES = new Set(['novo', 'em_atendimento', 'resolvido', 'arquivado'])
 
 function normalizeText(value, max = 2000) {
@@ -27,6 +28,7 @@ function readContacts() {
 }
 
 function writeContacts(items) {
+  ensureRuntimeDirs()
   fs.mkdirSync(path.dirname(CONTACTS_PATH), { recursive: true })
   fs.writeFileSync(CONTACTS_PATH, JSON.stringify(items, null, 2), 'utf-8')
 }

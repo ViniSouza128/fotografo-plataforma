@@ -13,6 +13,14 @@ import {
 } from '@/lib/commerceUtils'
 import { applyNextImageFallback, getFirstUrl, getPhotoCartPreviewCandidates } from '@/lib/imagePaths'
 import { buildWhatsAppHref, formatarWhatsApp } from '@/lib/whatsapp'
+import {
+  adminFetchArray,
+  adminFetchJson,
+  clearAdminSession,
+  getCurrentReturnTo,
+  isAdminUnauthorizedError,
+  redirectToAdminLogin,
+} from '@/lib/adminFetch'
 
 const STATUS_LABEL = {
   pago:      { label: 'Pago',       color: 'var(--success)', bg: 'var(--success-dim)' },
@@ -43,30 +51,36 @@ export default function PedidosPage() {
   const [atualizando, setAtualizando] = useState(null)
   const [filtro, setFiltro]         = useState('todos')
   const [busca, setBusca]           = useState('')
+  const [erro, setErro]             = useState('')
 
   const load = useCallback(async () => {
     setLoading(true)
+    setErro('')
     try {
-      const [pedidosRes, feedbackRes] = await Promise.all([
-        fetch('/api/pedidos?admin=1'),
-        fetch('/api/feedback'),
+      const [pedidosData, feedbackItems] = await Promise.all([
+        adminFetchArray('/api/pedidos?admin=1'),
+        adminFetchArray('/api/feedback'),
       ])
-      const pedidosData = pedidosRes.ok ? await pedidosRes.json() : []
-      setPedidos(Array.isArray(pedidosData) ? pedidosData : [])
+      setPedidos(pedidosData)
 
-      if (feedbackRes.ok) {
-        const feedbackItems = await feedbackRes.json()
-        const nextMap = {}
-        for (const item of feedbackItems) {
-          const orderId = item.orderId || item.pedidoId
-          if (!orderId || nextMap[orderId]) continue
-          nextMap[orderId] = item
-        }
-        setFeedbacksByOrder(nextMap)
-      } else {
-        setFeedbacksByOrder({})
+      const nextMap = {}
+      for (const item of feedbackItems) {
+        const orderId = item.orderId || item.pedidoId
+        if (!orderId || nextMap[orderId]) continue
+        nextMap[orderId] = item
       }
-    } catch { /* silencioso */ }
+      setFeedbacksByOrder(nextMap)
+    } catch (error) {
+      setPedidos([])
+      setFeedbacksByOrder({})
+      if (isAdminUnauthorizedError(error)) {
+        setErro('Sessao expirada. Redirecionando para o login...')
+        clearAdminSession()
+        redirectToAdminLogin(getCurrentReturnTo())
+        return
+      }
+      setErro(error?.message || 'Erro ao carregar pedidos.')
+    }
     finally { setLoading(false) }
   }, [])
 
@@ -75,13 +89,20 @@ export default function PedidosPage() {
   async function atualizarStatus(id, novoStatus) {
     setAtualizando(id)
     try {
-      await fetch('/api/pedidos', {
+      await adminFetchJson('/api/pedidos', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, status: novoStatus }),
       })
       setPedidos(prev => prev.map(p => p.id === id ? { ...p, status: novoStatus } : p))
-    } catch { alert('Erro ao atualizar status') }
+    } catch (error) {
+      if (isAdminUnauthorizedError(error)) {
+        clearAdminSession()
+        redirectToAdminLogin(getCurrentReturnTo())
+        return
+      }
+      alert(error?.message || 'Erro ao atualizar status')
+    }
     finally { setAtualizando(null) }
   }
 
@@ -181,6 +202,22 @@ export default function PedidosPage() {
       <div className="spinner" style={{ width: '32px', height: '32px' }} />
       <span style={{ color: 'var(--text-muted)' }}>Carregando pedidos...</span>
     </div>
+  )
+
+  if (erro) return (
+    <>
+      <div className="admin-header">
+        <div>
+          <h1 className="admin-page-title">Pedidos & Vendas</h1>
+        </div>
+        <button className="btn btn-ghost btn-sm" onClick={load}>Atualizar</button>
+      </div>
+      <div className="empty-state">
+        <h2 className="empty-state-title">Nao foi possivel carregar os pedidos</h2>
+        <p>{erro}</p>
+        <button className="btn btn-ghost btn-sm" onClick={load}>Tentar novamente</button>
+      </div>
+    </>
   )
 
   return (

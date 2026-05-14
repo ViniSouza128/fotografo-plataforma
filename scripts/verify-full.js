@@ -2,11 +2,15 @@ const { spawn, spawnSync } = require('child_process')
 const crypto = require('crypto')
 const fs = require('fs')
 const path = require('path')
+const {
+  DATA_DIR,
+  PROJECT_ROOT,
+  ensureRuntimeDirs,
+} = require('../src/lib/runtimePaths.cjs')
 
-const ROOT = process.cwd()
 const PORT = Number(process.env.VERIFY_PORT || 3100)
 const BASE_URL = `http://127.0.0.1:${PORT}`
-const REPORT_DIR = path.join(ROOT, 'reports')
+const REPORT_DIR = path.join(PROJECT_ROOT, 'reports')
 const REPORT_MD = path.join(REPORT_DIR, 'verify-latest.md')
 const REPORT_JSON = path.join(REPORT_DIR, 'verify-latest.json')
 const SCREENSHOT_DIR = path.join(REPORT_DIR, 'screenshots')
@@ -15,13 +19,20 @@ const WAIT_SERVER_MS = 45000
 const PAGE_TIMEOUT_MS = 15000
 const AUTH_SECRET = process.env.AUTH_SECRET || 'fotografo-plataforma-secret-key-2024'
 
+function resolveProjectPath(relativePath) {
+  const normalized = String(relativePath || '').replace(/\\/g, '/')
+  if (normalized === 'data') return DATA_DIR
+  if (normalized.startsWith('data/')) return path.join(DATA_DIR, ...normalized.slice('data/'.length).split('/'))
+  return path.join(PROJECT_ROOT, relativePath)
+}
+
 function nowIso() {
   return new Date().toISOString()
 }
 
 function readJson(relativePath, fallback) {
   try {
-    const file = path.join(ROOT, relativePath)
+    const file = resolveProjectPath(relativePath)
     if (!fs.existsSync(file)) return fallback
     return JSON.parse(fs.readFileSync(file, 'utf-8'))
   } catch {
@@ -30,7 +41,7 @@ function readJson(relativePath, fallback) {
 }
 
 function writeFileRestore(relativePath, previousContent) {
-  const file = path.join(ROOT, relativePath)
+  const file = resolveProjectPath(relativePath)
   if (previousContent === null) {
     if (fs.existsSync(file)) fs.rmSync(file, { force: true })
     return
@@ -40,7 +51,7 @@ function writeFileRestore(relativePath, previousContent) {
 }
 
 function getFileContentOrNull(relativePath) {
-  const file = path.join(ROOT, relativePath)
+  const file = resolveProjectPath(relativePath)
   return fs.existsSync(file) ? fs.readFileSync(file, 'utf-8') : null
 }
 
@@ -99,7 +110,7 @@ function run(command, args, options = {}) {
   const finalCommand = isNpmOnWindows ? 'cmd.exe' : command
   const finalArgs = isNpmOnWindows ? ['/d', '/s', '/c', ['npm', ...args].join(' ')] : args
   const result = spawnSync(finalCommand, finalArgs, {
-    cwd: ROOT,
+    cwd: PROJECT_ROOT,
     encoding: 'utf-8',
     shell: false,
     maxBuffer: 1024 * 1024 * 8,
@@ -116,7 +127,7 @@ function run(command, args, options = {}) {
 }
 
 function rimraf(relativePath) {
-  const target = path.join(ROOT, relativePath)
+  const target = resolveProjectPath(relativePath)
   if (fs.existsSync(target)) fs.rmSync(target, { recursive: true, force: true })
 }
 
@@ -126,11 +137,11 @@ function stopProcessOnPort(port) {
     '-NoProfile',
     '-Command',
     `$pids = Get-NetTCPConnection -LocalPort ${port} -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique; foreach ($pid in $pids) { if ($pid -and $pid -ne 0) { Stop-Process -Id $pid -Force -ErrorAction SilentlyContinue } }`,
-  ], { cwd: ROOT, encoding: 'utf-8' })
+  ], { cwd: PROJECT_ROOT, encoding: 'utf-8' })
 }
 
 function discoverStaticRoutes() {
-  const appDir = path.join(ROOT, 'src', 'app')
+  const appDir = path.join(PROJECT_ROOT, 'src', 'app')
   const routes = new Set()
 
   function walk(dir) {
@@ -213,7 +224,7 @@ function startDevServer() {
     ? ['/d', '/s', '/c', `npm run dev -- -p ${PORT} -H 127.0.0.1`]
     : ['run', 'dev', '--', '-p', String(PORT), '-H', '127.0.0.1']
   const child = spawn(command, args, {
-    cwd: ROOT,
+    cwd: PROJECT_ROOT,
     env: { ...process.env, BROWSER: 'none' },
     stdio: ['ignore', 'pipe', 'pipe'],
     windowsHide: true,
@@ -332,7 +343,7 @@ async function visitRoute(context, route, index) {
       const name = `${String(index + 1).padStart(2, '0')}-${route.replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') || 'home'}.png`
       const screenshotPath = path.join(SCREENSHOT_DIR, name)
       await page.screenshot({ path: screenshotPath, fullPage: true }).catch(() => {})
-      record.screenshot = path.relative(ROOT, screenshotPath).replace(/\\/g, '/')
+      record.screenshot = path.relative(PROJECT_ROOT, screenshotPath).replace(/\\/g, '/')
     }
   } catch (error) {
     record.ok = false
@@ -340,7 +351,7 @@ async function visitRoute(context, route, index) {
     const name = `${String(index + 1).padStart(2, '0')}-${route.replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') || 'home'}-exception.png`
     const screenshotPath = path.join(SCREENSHOT_DIR, name)
     await page.screenshot({ path: screenshotPath, fullPage: true }).catch(() => {})
-    record.screenshot = path.relative(ROOT, screenshotPath).replace(/\\/g, '/')
+    record.screenshot = path.relative(PROJECT_ROOT, screenshotPath).replace(/\\/g, '/')
   } finally {
     await page.close().catch(() => {})
   }
@@ -408,7 +419,7 @@ function assertCondition(condition, message) {
 async function screenshotCheck(page, check, name) {
   const screenshotPath = path.join(SCREENSHOT_DIR, `check-${name.replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '')}.png`)
   await page.screenshot({ path: screenshotPath, fullPage: true }).catch(() => {})
-  check.screenshot = path.relative(ROOT, screenshotPath).replace(/\\/g, '/')
+  check.screenshot = path.relative(PROJECT_ROOT, screenshotPath).replace(/\\/g, '/')
 }
 
 async function runInteractiveChecks({ browser, anonContext, adminContext }) {
@@ -604,8 +615,8 @@ async function runInteractiveChecks({ browser, anonContext, adminContext }) {
 
       const clients = readJson('data/clients.json', [])
       const pedidos = readJson('data/pedidos.json', [])
-      fs.writeFileSync(path.join(ROOT, 'data', 'clients.json'), JSON.stringify([...clients, tempClient], null, 2), 'utf-8')
-      fs.writeFileSync(path.join(ROOT, 'data', 'pedidos.json'), JSON.stringify([...pedidos, tempPedido], null, 2), 'utf-8')
+      fs.writeFileSync(path.join(DATA_DIR, 'clients.json'), JSON.stringify([...clients, tempClient], null, 2), 'utf-8')
+      fs.writeFileSync(path.join(DATA_DIR, 'pedidos.json'), JSON.stringify([...pedidos, tempPedido], null, 2), 'utf-8')
 
       clientContext = await createAuthenticatedContext(browser, tempClient)
 
@@ -767,6 +778,7 @@ function renderMarkdown(report) {
 }
 
 async function main() {
+  ensureRuntimeDirs()
   ensureDir(REPORT_DIR)
   ensureDir(SCREENSHOT_DIR)
 

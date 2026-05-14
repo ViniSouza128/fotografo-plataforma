@@ -4,6 +4,27 @@
 
 O P39 introduz uma **camada opcional** de storage externo (S3, R2, B2, MinIO etc.) sem quebrar o fluxo local. Por padrão, o sistema continua usando apenas o sistema de arquivos local. Quando ativado pelo super-admin no painel, novos uploads são automaticamente espelhados para o bucket e downloads usam URLs assinadas/CDN.
 
+## Relação com Railway Volume
+
+O storage externo não substitui automaticamente o volume persistente. O volume continua sendo a fonte local de verdade e o bucket funciona como espelho/fallback quando o recurso está ativo.
+
+Em Railway, use:
+
+```dotenv
+APP_PERSIST_DIR=/app/persist
+STORAGE_BACKEND=sqlite
+BACKUP_DIR=/app/persist/backups
+```
+
+Com isso:
+
+- Originais privados locais ficam em `/app/persist/storage/originals`.
+- Derivadas públicas locais ficam em `/app/persist/uploads` e continuam acessíveis por `/uploads/...`.
+- JSONs, SQLite e estado de migração ficam em `/app/persist/data`.
+- O bucket S3/R2/B2/MinIO replica `originals/...` e `uploads/...` a partir desses caminhos runtime.
+
+Se o bucket estiver desativado, o Railway Volume ainda precisa existir para não perder uploads e banco em restart/deploy.
+
 ## Decisão: AWS SDK v3 (S3-compatível, provider-agnóstico)
 
 Recomendação: **Cloudflare R2** — egress grátis, S3-compatível, ~$0.015/GB armazenado, CDN incluso. Funciona também com AWS S3, Backblaze B2, Wasabi, MinIO, Scaleway, DigitalOcean Spaces.

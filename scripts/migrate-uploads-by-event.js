@@ -14,13 +14,16 @@
 
 const fs = require('fs')
 const path = require('path')
+const {
+  DATA_DIR,
+  PROJECT_ROOT,
+  UPLOADS_DIR,
+  ensureRuntimeDirs,
+} = require('../src/lib/runtimePaths.cjs')
 
-const ROOT = process.cwd()
-const DATA_DIR = path.join(ROOT, 'data')
 const PHOTOS_DIR = path.join(DATA_DIR, 'photos')
 const PHOTOS_LEGACY = path.join(DATA_DIR, 'photos.json')
 const EVENTS_LEGACY = path.join(DATA_DIR, 'events.json')
-const UPLOADS_DIR = path.join(ROOT, 'public', 'uploads')
 const SQLITE_DB = path.join(DATA_DIR, 'db.sqlite')
 const STORAGE_FLAG = path.join(DATA_DIR, 'storage-backend.txt')
 const UNASSIGNED = '_unassigned'
@@ -93,7 +96,7 @@ function moveFileSync(from, to) {
     const dir = path.dirname(to)
     const renamed = path.join(dir, `${base}__conflict_${ts}${ext}`)
     fs.renameSync(to, renamed)
-    warn('  conflito alvo já existia, renomeado para', path.relative(ROOT, renamed))
+    warn('  conflito alvo já existia, renomeado para', path.relative(PROJECT_ROOT, renamed))
   }
   fs.renameSync(from, to)
 }
@@ -293,7 +296,7 @@ function executeFilesystemMigration(plan) {
       moveFileSync(item.from, item.to)
       moved += 1
     } catch (e) {
-      err('Falha movendo', path.relative(ROOT, item.from), '->', path.relative(ROOT, item.to), ':', e.message)
+      err('Falha movendo', path.relative(PROJECT_ROOT, item.from), '->', path.relative(PROJECT_ROOT, item.to), ':', e.message)
     }
   }
   return moved
@@ -369,7 +372,7 @@ function backupDataFolder(stamp) {
     }
   }
   if (fs.existsSync(SQLITE_DB)) fs.copyFileSync(SQLITE_DB, path.join(target, 'db.sqlite'))
-  log('Backup de data/ em', path.relative(ROOT, target))
+  log('Backup de data/ em', path.relative(PROJECT_ROOT, target))
   return target
 }
 
@@ -486,6 +489,7 @@ function cleanupOrphanFlatDirs() {
 }
 
 function main() {
+  ensureRuntimeDirs()
   const stamp = timestamp()
   log('=== Migração public/uploads + photos.json para per-event ===')
   log('Modo:', apply ? 'APPLY' : 'DRY-RUN', '| skip-files:', skipFiles, '| skip-data:', skipData)
@@ -514,7 +518,7 @@ function main() {
     log('  Origens não encontradas (skip):', fsPlan.skipMissing)
 
     // Mostra alguns exemplos
-    const sample = (arr, n = 3) => arr.slice(0, n).map(x => `${path.relative(ROOT, x.from)} -> ${path.relative(ROOT, x.to)}`)
+    const sample = (arr, n = 3) => arr.slice(0, n).map(x => `${path.relative(PROJECT_ROOT, x.from)} -> ${path.relative(PROJECT_ROOT, x.to)}`)
     if (fsPlan.photoMoves.length) log('  Exemplos:\n   -', sample(fsPlan.photoMoves).join('\n   - '))
     if (fsPlan.coverMoves.length) log('  Exemplos covers:\n   -', sample(fsPlan.coverMoves).join('\n   - '))
   }
@@ -577,7 +581,7 @@ function main() {
     }
   }
 
-  log('\nMigração concluída. Backup em:', backupDir ? path.relative(ROOT, backupDir) : '(nenhum)')
+  log('\nMigração concluída. Backup em:', backupDir ? path.relative(PROJECT_ROOT, backupDir) : '(nenhum)')
 }
 
 try {

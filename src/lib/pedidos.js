@@ -6,12 +6,14 @@ import path from 'path'
 import crypto from 'crypto'
 import { useDb } from './db/router'
 import { pedidosRepo } from './db/repositories'
+import { DATA_DIR, ensureRuntimeDirs } from './runtimePaths'
 
-const DATA_PATH = path.join(process.cwd(), 'data', 'pedidos.json')
+const DATA_PATH = path.join(DATA_DIR, 'pedidos.json')
 export const PAYMENT_LINK_TTL_MS = 48 * 60 * 60 * 1000
 
 function ensureFile() {
   if (!fs.existsSync(DATA_PATH)) {
+    ensureRuntimeDirs()
     fs.writeFileSync(DATA_PATH, '[]', 'utf-8')
   }
 }
@@ -24,6 +26,7 @@ export function readPedidos() {
 
 export function writePedidos(pedidos) {
   if (useDb()) { pedidosRepo.writeAll(pedidos); return }
+  ensureRuntimeDirs()
   fs.writeFileSync(DATA_PATH, JSON.stringify(pedidos, null, 2), 'utf-8')
 }
 

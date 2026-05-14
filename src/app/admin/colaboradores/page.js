@@ -3,6 +3,14 @@
 // Super-admin: gestão de colaboradores
 
 import { useCallback, useEffect, useState } from 'react'
+import {
+  adminFetchArray,
+  clearAdminSession,
+  getCurrentReturnTo,
+  getStoredAdminClient,
+  isAdminUnauthorizedError,
+  redirectToAdminLogin,
+} from '@/lib/adminFetch'
 
 export default function AdminColaboradoresPage() {
   const [authorized, setAuthorized] = useState(null)
@@ -16,23 +24,30 @@ export default function AdminColaboradoresPage() {
   const [editData, setEditData] = useState({})
   const [feedback, setFeedback] = useState(null)
   const [revealedSenha, setRevealedSenha] = useState(null)
+  const [erro, setErro] = useState('')
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem('clienteLogado')
-      const parsed = raw ? JSON.parse(raw) : null
-      setAuthorized(!!(parsed && parsed.isAdmin))
-      setIsSuperAdmin(!!parsed?.isSuperAdmin)
-    } catch { setAuthorized(false) }
+    const parsed = getStoredAdminClient()
+    setAuthorized(!!parsed)
+    setIsSuperAdmin(!!parsed?.isSuperAdmin)
   }, [])
 
   const carregar = useCallback(async () => {
     setLoading(true)
+    setErro('')
     try {
-      const res = await fetch('/api/colaboradores?summary=1')
-      const data = res.ok ? await res.json() : []
-      setList(Array.isArray(data) ? data : [])
-    } catch { setList([]) }
+      const data = await adminFetchArray('/api/colaboradores?summary=1')
+      setList(data)
+    } catch (error) {
+      setList([])
+      if (isAdminUnauthorizedError(error)) {
+        setErro('Sessao expirada. Redirecionando para o login...')
+        clearAdminSession()
+        redirectToAdminLogin(getCurrentReturnTo())
+        return
+      }
+      setErro(error?.message || 'Erro ao carregar colaboradores.')
+    }
     finally { setLoading(false) }
   }, [])
 
@@ -150,7 +165,13 @@ export default function AdminColaboradoresPage() {
         </div>
       )}
 
-      {loading ? (
+      {erro ? (
+        <div className="empty-state">
+          <h2 className="empty-state-title">Nao foi possivel carregar colaboradores</h2>
+          <p>{erro}</p>
+          <button className="btn btn-ghost btn-sm" onClick={carregar}>Tentar novamente</button>
+        </div>
+      ) : loading ? (
         <div className="flex-center" style={{ minHeight: '20vh' }}>
           <div className="spinner" style={{ width: '32px', height: '32px' }} />
         </div>

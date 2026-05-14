@@ -1,16 +1,21 @@
 import fs from 'fs'
 import path from 'path'
 import { buildCoverPathFields, buildDerivedRelativePath, buildPhotoPathFields } from './imagePaths'
+import { DATA_DIR, PROJECT_ROOT, STORAGE_DIR, UPLOADS_DIR, ensureRuntimeDirs } from './runtimePaths'
 
-const ROOT = process.cwd()
+const ROOT = PROJECT_ROOT
 
-export const PUBLIC_UPLOADS_DIR = path.join(ROOT, 'public', 'uploads')
+export const PUBLIC_UPLOADS_DIR = UPLOADS_DIR
+export const LEGACY_PUBLIC_UPLOADS_DIR = path.join(ROOT, 'public', 'uploads')
 export const LEGACY_PUBLIC_THUMBS_DIR = path.join(PUBLIC_UPLOADS_DIR, 'thumbs')
-export const PRIVATE_ORIGINALS_DIR = path.join(ROOT, 'storage', 'originals')
-export const LEGACY_PRIVATE_ORIGINALS_DIR = path.join(ROOT, 'data', 'originals')
+export const LEGACY_PROJECT_PUBLIC_THUMBS_DIR = path.join(LEGACY_PUBLIC_UPLOADS_DIR, 'thumbs')
+export const PRIVATE_ORIGINALS_DIR = path.join(STORAGE_DIR, 'originals')
+export const LEGACY_PRIVATE_ORIGINALS_DIR = path.join(DATA_DIR, 'originals')
+export const LEGACY_PROJECT_PRIVATE_ORIGINALS_DIR = path.join(ROOT, 'storage', 'originals')
+export const LEGACY_PROJECT_DATA_ORIGINALS_DIR = path.join(ROOT, 'data', 'originals')
 export const UNASSIGNED_ORIGINALS_BUCKET = '__unassigned'
-export const MEDIA_TRASH_DIR = path.join(ROOT, 'storage', 'trash', 'media')
-export const DELETION_LOG_PATH = path.join(ROOT, 'storage', 'trash', 'deletion-log.json')
+export const MEDIA_TRASH_DIR = path.join(STORAGE_DIR, 'trash', 'media')
+export const DELETION_LOG_PATH = path.join(STORAGE_DIR, 'trash', 'deletion-log.json')
 export const PRESERVED_ORIGINALS_BUCKET = '_preserved'
 export const PRESERVED_PUBLIC_RELATIVE_ROOT = 'thumbs/_preserved'
 
@@ -56,8 +61,62 @@ function isInsideDirectory(targetPath, rootPath) {
   return target === root || target.startsWith(root + path.sep)
 }
 
+function uniquePaths(paths) {
+  const seen = new Set()
+  const out = []
+  for (const item of paths) {
+    if (!item) continue
+    const resolved = path.resolve(item)
+    if (seen.has(resolved)) continue
+    seen.add(resolved)
+    out.push(resolved)
+  }
+  return out
+}
+
+const MANAGED_ROOTS = uniquePaths([
+  ROOT,
+  DATA_DIR,
+  STORAGE_DIR,
+  PUBLIC_UPLOADS_DIR,
+  LEGACY_PUBLIC_UPLOADS_DIR,
+])
+
+function isInsideManagedRoot(targetPath) {
+  return MANAGED_ROOTS.some((rootPath) => isInsideDirectory(targetPath, rootPath))
+}
+
 function projectRelativePath(absolutePath) {
-  return toPosixPath(path.relative(ROOT, absolutePath))
+  const resolved = path.resolve(absolutePath)
+  if (isInsideDirectory(resolved, PUBLIC_UPLOADS_DIR)) {
+    return toPosixPath(path.join('public', 'uploads', path.relative(PUBLIC_UPLOADS_DIR, resolved)))
+  }
+  if (isInsideDirectory(resolved, STORAGE_DIR)) {
+    return toPosixPath(path.join('storage', path.relative(STORAGE_DIR, resolved)))
+  }
+  if (isInsideDirectory(resolved, DATA_DIR)) {
+    return toPosixPath(path.join('data', path.relative(DATA_DIR, resolved)))
+  }
+  return toPosixPath(path.relative(ROOT, resolved))
+}
+
+function resolveStoredManagedPath(storedPath) {
+  if (!storedPath) return null
+  if (path.isAbsolute(storedPath)) return storedPath
+  const normalized = toPosixPath(storedPath)
+  if (normalized.startsWith('public/uploads/')) {
+    return path.join(PUBLIC_UPLOADS_DIR, ...splitRelativePath(normalized.slice('public/uploads/'.length)))
+  }
+  if (normalized.startsWith('uploads/')) {
+    return path.join(PUBLIC_UPLOADS_DIR, ...splitRelativePath(normalized.slice('uploads/'.length)))
+  }
+  if (normalized.startsWith('storage/')) {
+    return path.join(STORAGE_DIR, ...splitRelativePath(normalized.slice('storage/'.length)))
+  }
+  if (normalized.startsWith('data/')) {
+    return path.join(DATA_DIR, ...splitRelativePath(normalized.slice('data/'.length)))
+  }
+  return path.join(ROOT, ...splitRelativePath(normalized))
 }
 
 function uniqueTargetPath(targetPath) {
@@ -74,7 +133,7 @@ function uniqueTargetPath(targetPath) {
 
 function moveFileSync(sourcePath, targetPath) {
   if (!sourcePath || !fs.existsSync(sourcePath)) return null
-  if (!isInsideDirectory(sourcePath, ROOT)) {
+  if (!isInsideManagedRoot(sourcePath)) {
     throw new Error(`unsafe_source:${sourcePath}`)
   }
 
@@ -95,7 +154,15 @@ function getUploadsAbsolutePath(relativePath) {
   if (!normalized) return null
   const targetPath = path.join(PUBLIC_UPLOADS_DIR, ...splitRelativePath(normalized))
   if (!isInsideDirectory(targetPath, PUBLIC_UPLOADS_DIR)) return null
-  return targetPath
+  const legacyTargetPath = path.join(LEGACY_PUBLIC_UPLOADS_DIR, ...splitRelativePath(normalized))
+  const safeLegacy = isInsideDirectory(legacyTargetPath, LEGACY_PUBLIC_UPLOADS_DIR) ? legacyTargetPath : null
+  return preferExistingPath(targetPath, safeLegacy)
+}
+
+function preferExistingPath(primaryPath, legacyPath = null) {
+  if (primaryPath && fs.existsSync(primaryPath)) return primaryPath
+  if (legacyPath && fs.existsSync(legacyPath)) return legacyPath
+  return primaryPath
 }
 
 function getPublicPathFieldAbsolutePath(photo, field) {
@@ -117,7 +184,7 @@ function addManagedFile(files, seen, descriptor) {
   if (!descriptor?.absolutePath || !fs.existsSync(descriptor.absolutePath)) return
   const resolved = path.resolve(descriptor.absolutePath)
   if (seen.has(resolved)) return
-  if (!isInsideDirectory(resolved, ROOT)) return
+  if (!isInsideManagedRoot(resolved)) return
   seen.add(resolved)
   files.push({
     ...descriptor,
@@ -133,6 +200,7 @@ function sanitizeOriginalBucket(value) {
 }
 
 export function ensureImageStorageDirs() {
+  ensureRuntimeDirs()
   ensureDirSync(PUBLIC_UPLOADS_DIR)
   ensureDirSync(LEGACY_PUBLIC_THUMBS_DIR)
   ensureDirSync(PRIVATE_ORIGINALS_DIR)
@@ -193,10 +261,31 @@ export function getLegacyAbsolutePath(type, filename) {
   const safeFilename = sanitizeStoredFilename(filename)
   if (!safeFilename) return null
 
-  if (type === 'wm') return path.join(PUBLIC_UPLOADS_DIR, `wm_${safeFilename}`)
-  if (type === 'thumb') return path.join(LEGACY_PUBLIC_THUMBS_DIR, `thumb_${safeFilename}`)
-  if (type === 'mini') return path.join(LEGACY_PUBLIC_THUMBS_DIR, `mini_${safeFilename.replace(/\.\w+$/, '.jpg')}`)
-  if (type === 'cover') return path.join(LEGACY_PUBLIC_THUMBS_DIR, safeFilename)
+  if (type === 'wm') {
+    return preferExistingPath(
+      path.join(PUBLIC_UPLOADS_DIR, `wm_${safeFilename}`),
+      path.join(LEGACY_PUBLIC_UPLOADS_DIR, `wm_${safeFilename}`),
+    )
+  }
+  if (type === 'thumb') {
+    return preferExistingPath(
+      path.join(LEGACY_PUBLIC_THUMBS_DIR, `thumb_${safeFilename}`),
+      path.join(LEGACY_PROJECT_PUBLIC_THUMBS_DIR, `thumb_${safeFilename}`),
+    )
+  }
+  if (type === 'mini') {
+    const miniFilename = `mini_${safeFilename.replace(/\.\w+$/, '.jpg')}`
+    return preferExistingPath(
+      path.join(LEGACY_PUBLIC_THUMBS_DIR, miniFilename),
+      path.join(LEGACY_PROJECT_PUBLIC_THUMBS_DIR, miniFilename),
+    )
+  }
+  if (type === 'cover') {
+    return preferExistingPath(
+      path.join(LEGACY_PUBLIC_THUMBS_DIR, safeFilename),
+      path.join(LEGACY_PROJECT_PUBLIC_THUMBS_DIR, safeFilename),
+    )
+  }
 
   return null
 }
@@ -333,7 +422,7 @@ function preservePublicVariant(photo, { batchId, field, candidates, bucket }) {
   const result = moveFileSync(sourcePath, targetPath)
   if (!result) return null
 
-  photo[field] = result.to.replace(/^public\/uploads\//, '')
+  photo[field] = relativeTarget
   return {
     role: 'preserved-derived',
     field,
@@ -447,7 +536,7 @@ export function movePhotoFilesToPreservedArea(photo, { batchId }) {
 export function purgeTrashFiles(fileEntries = []) {
   const purged = []
   for (const file of fileEntries) {
-    const trashPath = file?.to ? path.join(ROOT, ...splitRelativePath(file.to)) : null
+    const trashPath = file?.to ? resolveStoredManagedPath(file.to) : null
     if (!trashPath || !fs.existsSync(trashPath)) continue
     if (!isInsideDirectory(trashPath, MEDIA_TRASH_DIR)) {
       throw new Error(`unsafe_trash_purge:${trashPath}`)
@@ -492,7 +581,17 @@ export function resolveOriginalPath(input, options = {}) {
     path.join(PRIVATE_ORIGINALS_DIR, ...splitRelativePath(buildOriginalRelativePath({ eventId: UNASSIGNED_ORIGINALS_BUCKET, filename: safeFilename }))),
     path.join(PRIVATE_ORIGINALS_DIR, safeFilename),
     path.join(LEGACY_PRIVATE_ORIGINALS_DIR, safeFilename),
+    explicitOriginalPath
+      ? path.join(LEGACY_PROJECT_PRIVATE_ORIGINALS_DIR, ...splitRelativePath(explicitOriginalPath))
+      : null,
+    eventId
+      ? path.join(LEGACY_PROJECT_PRIVATE_ORIGINALS_DIR, ...splitRelativePath(buildOriginalRelativePath({ eventId, filename: safeFilename })))
+      : null,
+    path.join(LEGACY_PROJECT_PRIVATE_ORIGINALS_DIR, ...splitRelativePath(buildOriginalRelativePath({ eventId: UNASSIGNED_ORIGINALS_BUCKET, filename: safeFilename }))),
+    path.join(LEGACY_PROJECT_PRIVATE_ORIGINALS_DIR, safeFilename),
+    path.join(LEGACY_PROJECT_DATA_ORIGINALS_DIR, safeFilename),
     path.join(PUBLIC_UPLOADS_DIR, safeFilename),
+    path.join(LEGACY_PUBLIC_UPLOADS_DIR, safeFilename),
   ]
 
   for (const candidate of candidates) {

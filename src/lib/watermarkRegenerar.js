@@ -9,6 +9,7 @@ import {
 } from './imageStorage'
 import { renderCoverBuffers, renderPhotoBuffers } from './derivedImagesRenderer'
 import { mergeWatermarkConfig } from './watermark'
+import { assertCanUpload } from './storageQuota'
 
 async function regeneratePhotoVariants(photo, config) {
     const originalPath = resolveOriginalPath(photo)
@@ -67,6 +68,7 @@ async function regenerateCoverVariants(event, config) {
 
 export async function regenerarWatermarks() {
   ensureImageStorageDirs()
+  assertCanUpload({ kind: 'photo', incomingBytes: 0 })
 
   const photos = readPhotos()
   const events = readEvents()

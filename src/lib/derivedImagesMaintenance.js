@@ -16,6 +16,7 @@ import { getDerivativeRuntimeConfig } from './derivedImagesConfig'
 import { renderCoverBuffers, renderPhotoBuffers } from './derivedImagesRenderer'
 import { organizeOriginalsByEvent } from './originalsMaintenance'
 import { mergeWatermarkConfig } from './watermark'
+import { assertCanUpload } from './storageQuota'
 
 function stampNow() {
   const now = new Date()
@@ -296,6 +297,7 @@ export async function sanitizeDerivedImages({
   overlay = false,
 } = {}) {
   ensureImageStorageDirs()
+  if (apply) assertCanUpload({ kind: 'photo', incomingBytes: 0 })
 
   const config = readConfig()
   const runtimeConfig = getDerivativeRuntimeConfig(config)

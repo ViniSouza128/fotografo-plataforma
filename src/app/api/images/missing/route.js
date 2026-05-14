@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server'
 import { getMissingDerivativesJobState, startMissingDerivativesJob } from '@/lib/missingDerivativesJob'
 import { requireAuth } from '@/lib/apiAuth'
+import {
+  assertCanUpload,
+  isStorageQuotaExceededError,
+  toStorageQuotaErrorPayload,
+} from '@/lib/storageQuota'
 
 export async function GET() {
   try {
@@ -20,9 +25,13 @@ export async function POST() {
     if (auth.error) {
       return NextResponse.json({ error: auth.error, code: auth.code }, { status: auth.status })
     }
+    assertCanUpload({ kind: 'photo', incomingBytes: 0 })
     const result = startMissingDerivativesJob()
     return NextResponse.json(result)
   } catch (error) {
+    if (isStorageQuotaExceededError(error)) {
+      return NextResponse.json(toStorageQuotaErrorPayload(error), { status: error.status || 507 })
+    }
     return NextResponse.json({ error: error?.message || 'erro' }, { status: 500 })
   }
 }

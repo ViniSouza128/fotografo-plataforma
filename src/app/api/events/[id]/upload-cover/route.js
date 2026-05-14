@@ -2,6 +2,11 @@ import { NextResponse } from 'next/server'
 import { requireAuth } from '@/lib/apiAuth'
 import { PUBLIC_UPLOADS_DIR } from '@/lib/imageStorage'
 import { sanitizeEventBucket } from '@/lib/imagePaths'
+import {
+  assertCanUpload,
+  isStorageQuotaExceededError,
+  toStorageQuotaErrorPayload,
+} from '@/lib/storageQuota'
 import path from 'path'
 import fs from 'fs'
 
@@ -30,7 +35,9 @@ export async function POST(request, { params }) {
       return NextResponse.json({ error: 'Tipo de arquivo não suportado' }, { status: 400 })
     }
 
-    const filename = `cover_custom_${id}_${Date.now()}${ext}`
+    assertCanUpload({ kind: 'photo', incomingBytes: Number(file.size) || 0 })
+
+    const filename = `cover_custom_${safeEventId}_${Date.now()}${ext}`
     const destDir = path.join(PUBLIC_UPLOADS_DIR, safeEventId)
     const destPath = path.join(destDir, filename)
 
@@ -40,6 +47,9 @@ export async function POST(request, { params }) {
 
     return NextResponse.json({ filename: `${safeEventId}/${filename}` })
   } catch (error) {
+    if (isStorageQuotaExceededError(error)) {
+      return NextResponse.json(toStorageQuotaErrorPayload(error), { status: error.status || 507 })
+    }
     console.error('Erro ao fazer upload de capa personalizada:', error)
     return NextResponse.json({ error: 'Erro ao processar upload' }, { status: 500 })
   }

@@ -6,8 +6,9 @@
 import path from 'path'
 import fs from 'fs'
 import crypto from 'crypto'
+import { UPLOADS_DIR, ensureRuntimeDirs } from './runtimePaths'
 
-export const SPONSORS_PUBLIC_DIR = path.join(process.cwd(), 'public', 'uploads', 'sponsors')
+export const SPONSORS_PUBLIC_DIR = path.join(UPLOADS_DIR, 'sponsors')
 
 const ALLOWED_EXTS = new Set(['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp'])
 const ALLOWED_MIME = new Set([
@@ -35,6 +36,7 @@ export function getSponsorDir(eventId) {
 }
 
 export function getSponsorAbsolutePath(eventId, filename) {
+  ensureRuntimeDirs()
   const dir = getSponsorDir(eventId)
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
   const safe = String(filename || '').replace(/[^a-zA-Z0-9._-]/g, '_')

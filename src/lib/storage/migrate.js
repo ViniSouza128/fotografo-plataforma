@@ -7,10 +7,9 @@ import path from 'path'
 import { putObject, headObject } from './s3'
 import { isExternalEnabled } from './config'
 import { readMigrationState, writeMigrationState, resetMigrationState } from './migrationState'
+import { STORAGE_DIR, UPLOADS_DIR } from '../runtimePaths'
 
-const ROOT = process.cwd()
-const ORIGINALS_DIR = path.join(ROOT, 'storage', 'originals')
-const UPLOADS_DIR = path.join(ROOT, 'public', 'uploads')
+const ORIGINALS_DIR = path.join(STORAGE_DIR, 'originals')
 
 function* walk(dir) {
   if (!fs.existsSync(dir)) return

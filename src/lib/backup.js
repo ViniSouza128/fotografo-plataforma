@@ -1,13 +1,17 @@
 import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
+import {
+  BACKUP_DIR,
+  DATA_DIR,
+  PROJECT_ROOT,
+  STORAGE_DIR,
+  UPLOADS_DIR,
+  ensureRuntimeDirs,
+} from './runtimePaths'
 
-const ROOT = process.cwd()
-const DATA_DIR = path.join(ROOT, 'data')
-const STORAGE_DIR = path.join(ROOT, 'storage')
 const ORIGINALS_DIR = path.join(STORAGE_DIR, 'originals')
-const UPLOADS_DIR = path.join(ROOT, 'public', 'uploads')
-const BACKUPS_DIR = path.join(STORAGE_DIR, 'backups')
+const BACKUPS_DIR = BACKUP_DIR
 
 // Files always backed up. audit_log/pending_resets deliberately excluded so
 // audit trails survive restore and resets don't recursively mutate themselves.
@@ -30,6 +34,7 @@ export const DATA_FILES = [
 const ID_RE = /^[a-zA-Z0-9_\-.]+$/
 
 function ensureBackupsDir() {
+  ensureRuntimeDirs()
   if (!fs.existsSync(BACKUPS_DIR)) fs.mkdirSync(BACKUPS_DIR, { recursive: true })
 }
 
@@ -134,20 +139,9 @@ export async function createBackup({ scopes = ['data'], label = '', actor = null
   try {
     if (scopes.includes('data')) {
       const dst = path.join(dir, 'data')
-      fs.mkdirSync(dst, { recursive: true })
-      let count = 0, size = 0
-      for (const file of DATA_FILES) {
-        const src = path.join(DATA_DIR, file)
-        if (fs.existsSync(src)) {
-          const target = path.join(dst, file)
-          fs.copyFileSync(src, target)
-          count++
-          const st = safeStat(target)
-          if (st) size += st.size
-        }
-      }
+      copyDirRecursive(DATA_DIR, dst)
       manifest.scopes.push('data')
-      manifest.contents.data = { fileCount: count, sizeBytes: size }
+      manifest.contents.data = dirStats(dst)
     }
 
     if (scopes.includes('originals')) {
@@ -208,14 +202,8 @@ export async function restoreBackup({ id, scopes = [], actor = null }) {
   if (requested.includes('data')) {
     const dataDir = path.join(dir, 'data')
     if (fs.existsSync(dataDir)) {
-      for (const file of DATA_FILES) {
-        const src = path.join(dataDir, file)
-        const dst = path.join(DATA_DIR, file)
-        if (fs.existsSync(src)) {
-          if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true })
-          fs.copyFileSync(src, dst)
-        }
-      }
+      ensureRuntimeDirs()
+      copyDirRecursive(dataDir, DATA_DIR)
       restored.push('data')
     }
   }
@@ -246,5 +234,6 @@ export async function restoreBackup({ id, scopes = [], actor = null }) {
 export function getBackupsRootInfo() {
   ensureBackupsDir()
   const stats = dirStats(BACKUPS_DIR)
-  return { ...stats, path: 'storage/backups' }
+  const relative = path.relative(PROJECT_ROOT, BACKUPS_DIR)
+  return { ...stats, path: relative && !relative.startsWith('..') ? relative : BACKUPS_DIR }
 }

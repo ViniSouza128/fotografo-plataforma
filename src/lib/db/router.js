@@ -12,8 +12,9 @@
 import fs from 'fs'
 import path from 'path'
 import { isDbAvailable } from './connection'
+import { DATA_DIR, ensureRuntimeDirs } from '../runtimePaths'
 
-const FLAG_PATH = path.join(process.cwd(), 'data', 'storage-backend.txt')
+const FLAG_PATH = path.join(DATA_DIR, 'storage-backend.txt')
 
 let _cached = null
 let _cachedAt = 0
@@ -49,7 +50,7 @@ export function setStorageBackend(value) {
   if (value !== 'sqlite' && value !== 'json') {
     throw new Error(`Backend inválido: ${value}`)
   }
-  fs.mkdirSync(path.dirname(FLAG_PATH), { recursive: true })
+  ensureRuntimeDirs()
   fs.writeFileSync(FLAG_PATH, value, 'utf-8')
   _cached = value
   _cachedAt = Date.now()

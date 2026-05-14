@@ -4,9 +4,10 @@
 
 import fs from 'fs'
 import path from 'path'
+import { STORAGE_DIR, UPLOADS_DIR, ensureRuntimeDirs } from './runtimePaths'
 
-export const AVATAR_PRIVATE_DIR = path.join(process.cwd(), 'storage', 'originals', 'avatars')
-export const AVATAR_PUBLIC_DIR  = path.join(process.cwd(), 'public', 'uploads', 'avatars')
+export const AVATAR_PRIVATE_DIR = path.join(STORAGE_DIR, 'originals', 'avatars')
+export const AVATAR_PUBLIC_DIR  = path.join(UPLOADS_DIR, 'avatars')
 
 export const AVATAR_LARGE_SIZE = 512
 export const AVATAR_THUMB_SIZE = 96
@@ -14,6 +15,7 @@ export const AVATAR_MAX_BYTES  = 12 * 1024 * 1024 // 12 MB
 export const AVATAR_ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp', 'image/avif']
 
 function ensureDir(dir) {
+  ensureRuntimeDirs()
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
 }
 

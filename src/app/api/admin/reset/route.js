@@ -3,6 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import { requireAuth } from '@/lib/apiAuth'
 import { createBackup } from '@/lib/backup'
+import { DATA_DIR, ensureRuntimeDirs } from '@/lib/runtimePaths'
 import { appendAuditLog } from '@/lib/auditLog'
 import { readPedidos, writePedidos } from '@/lib/pedidos'
 import { readPhotos, writePhotos } from '@/lib/photos'
@@ -10,7 +11,6 @@ import { readEvents, writeEvents } from '@/lib/events'
 import { readConfig, writeConfig } from '@/lib/config'
 import { getPedidoItens } from '@/lib/commerceUtils'
 
-const DATA_DIR = path.join(process.cwd(), 'data')
 const PAID_STATUSES = new Set(['pago', 'liberado_manual'])
 
 const RESET_TYPES = {
@@ -31,6 +31,7 @@ function gateSuperAdmin(auth) {
 }
 
 function writeJsonSafe(filename, data) {
+  ensureRuntimeDirs()
   const file = path.join(DATA_DIR, filename)
   fs.writeFileSync(file, JSON.stringify(data, null, 2), 'utf-8')
 }

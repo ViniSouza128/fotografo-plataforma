@@ -30,14 +30,16 @@
 import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
+import { DATA_DIR, STORAGE_DIR, UPLOADS_DIR, ensureRuntimeDirs } from './runtimePaths'
 
-const DATA_PATH = path.join(process.cwd(), 'data', 'videos.json')
-export const VIDEOS_PRIVATE_DIR = path.join(process.cwd(), 'storage', 'originals')
-export const VIDEO_POSTERS_DIR = path.join(process.cwd(), 'public', 'uploads', 'video-posters')
+const DATA_PATH = path.join(DATA_DIR, 'videos.json')
+export const VIDEOS_PRIVATE_DIR = path.join(STORAGE_DIR, 'originals')
+export const VIDEO_POSTERS_DIR = path.join(UPLOADS_DIR, 'video-posters')
 
 const ALLOWED_RESOLUTIONS = ['360p', '480p', '720p', '1080p', '1440p', '4K']
 
 function ensureFile() {
+  ensureRuntimeDirs()
   const dir = path.dirname(DATA_PATH)
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
   if (!fs.existsSync(DATA_PATH)) fs.writeFileSync(DATA_PATH, '[]', 'utf-8')
@@ -82,6 +84,7 @@ export function getVideoOriginalAbsolutePath({ eventId, filename }) {
   const safeFilename = sanitizeVideoFilename(filename)
   const safeBucket = sanitizeVideoFilename(eventId) || '__unassigned'
   if (!safeFilename) return null
+  ensureRuntimeDirs()
   const dir = path.join(VIDEOS_PRIVATE_DIR, safeBucket, 'videos')
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
   return path.join(dir, safeFilename)
@@ -110,6 +113,7 @@ export function getVideoPreviewWmAbsolutePath({ eventId, filename }) {
     : getVideoPreviewWmFilename(filename)
   const safeBucket = sanitizeVideoFilename(eventId) || '__unassigned'
   if (!f) return null
+  ensureRuntimeDirs()
   const dir = path.join(VIDEOS_PRIVATE_DIR, safeBucket, 'videos')
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
   return path.join(dir, f)
@@ -118,6 +122,7 @@ export function getVideoPreviewWmAbsolutePath({ eventId, filename }) {
 export function getVideoPosterAbsolutePath({ filename, kind = 'clean' }) {
   const safeFilename = sanitizeVideoFilename(filename)
   if (!safeFilename) return null
+  ensureRuntimeDirs()
   const folder = kind === 'wm' ? 'wm' : 'clean'
   const dir = path.join(VIDEO_POSTERS_DIR, folder)
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })

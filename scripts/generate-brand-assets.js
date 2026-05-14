@@ -1,8 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
+const { PROJECT_ROOT } = require('../src/lib/runtimePaths.cjs');
 
-const brandDir = path.join(process.cwd(), 'public', 'brand');
+const brandDir = path.join(PROJECT_ROOT, 'public', 'brand');
 const principalPath = path.join(brandDir, 'source-symbol-principal.svg');
 const darkPath = path.join(brandDir, 'source-symbol-dark.svg');
 

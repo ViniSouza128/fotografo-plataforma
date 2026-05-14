@@ -13,8 +13,8 @@ import {
 } from '@/lib/clients'
 import { readPedidos, writePedidos } from '@/lib/pedidos'
 import { appendAuditLog, sanitizeAuditValue } from '@/lib/auditLog'
+import { DATA_DIR, ensureRuntimeDirs } from '@/lib/runtimePaths'
 
-const DATA_DIR = path.join(process.cwd(), 'data')
 const SENSITIVE_KEY_RE = /(senha|password|token|secret|api.?key|authorization|auth)/i
 const PAID_STATUSES = new Set(['pago', 'paid', 'aprovado', 'approved', 'liberado', 'liberado_manual', 'manual'])
 
@@ -35,6 +35,7 @@ function readJsonFile(name, fallback = []) {
 function writeJsonFileIfExists(name, data) {
   const filePath = path.join(DATA_DIR, name)
   if (!fs.existsSync(filePath)) return false
+  ensureRuntimeDirs()
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8')
   return true
 }

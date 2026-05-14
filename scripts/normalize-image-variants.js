@@ -3,6 +3,7 @@
 const path = require('path')
 const { pathToFileURL } = require('url')
 const { registerHooks } = require('module')
+const { PROJECT_ROOT } = require('../src/lib/runtimePaths.cjs')
 
 registerHooks({
   resolve(specifier, context, nextResolve) {
@@ -21,7 +22,7 @@ registerHooks({
 async function main() {
   const args = new Set(process.argv.slice(2))
   const apply = args.has('--apply')
-  const moduleUrl = pathToFileURL(path.join(process.cwd(), 'src', 'lib', 'derivedImagesMaintenance.js')).href
+  const moduleUrl = pathToFileURL(path.join(PROJECT_ROOT, 'src', 'lib', 'derivedImagesMaintenance.js')).href
   const { sanitizeDerivedImages } = await import(moduleUrl)
   const result = await sanitizeDerivedImages({
     apply,

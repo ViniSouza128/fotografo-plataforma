@@ -5,6 +5,14 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { applyNextImageFallback, getFirstUrl, getPhotoCartPreviewCandidates } from '@/lib/imagePaths'
 import { buildWhatsAppHref, formatarWhatsApp } from '@/lib/whatsapp'
+import {
+  adminFetchArray,
+  adminFetchJson,
+  clearAdminSession,
+  getCurrentReturnTo,
+  isAdminUnauthorizedError,
+  redirectToAdminLogin,
+} from '@/lib/adminFetch'
 
 function formatCurrency(value) {
   return `R$ ${Number(value).toFixed(2).replace('.', ',')}`
@@ -15,13 +23,24 @@ export default function CarrinhosPage() {
   const [loading, setLoading]     = useState(true)
   const [expandido, setExpandido] = useState(null)
   const [filtro, setFiltro]       = useState('nao')
+  const [erro, setErro]           = useState('')
 
   const load = useCallback(async () => {
     setLoading(true)
+    setErro('')
     try {
-      const res = await fetch('/api/carrinhos')
-      setCarrinhos(await res.json())
-    } catch { /* silencioso */ }
+      const data = await adminFetchArray('/api/carrinhos')
+      setCarrinhos(data)
+    } catch (error) {
+      setCarrinhos([])
+      if (isAdminUnauthorizedError(error)) {
+        setErro('Sessao expirada. Redirecionando para o login...')
+        clearAdminSession()
+        redirectToAdminLogin(getCurrentReturnTo())
+        return
+      }
+      setErro(error?.message || 'Erro ao carregar carrinhos.')
+    }
     finally { setLoading(false) }
   }, [])
 
@@ -43,14 +62,19 @@ export default function CarrinhosPage() {
 
   async function marcarRevisado(id, value) {
     try {
-      await fetch('/api/carrinhos', {
+      await adminFetchJson('/api/carrinhos', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, reviewed: value }),
       })
       setCarrinhos(prev => prev.map(c => (c.id === id || c.clienteId === id) ? { ...c, reviewed: value } : c))
-    } catch {
-      // silent
+    } catch (error) {
+      if (isAdminUnauthorizedError(error)) {
+        clearAdminSession()
+        redirectToAdminLogin(getCurrentReturnTo())
+        return
+      }
+      alert(error?.message || 'Erro ao atualizar carrinho.')
     }
   }
 
@@ -74,8 +98,16 @@ export default function CarrinhosPage() {
         <button className="btn btn-ghost btn-sm" onClick={load}>Atualizar</button>
       </div>
 
+      {erro && (
+        <div className="empty-state">
+          <h2 className="empty-state-title">Nao foi possivel carregar os carrinhos</h2>
+          <p>{erro}</p>
+          <button className="btn btn-ghost btn-sm" onClick={load}>Tentar novamente</button>
+        </div>
+      )}
+
       {/* Stats */}
-      <div className="stats-grid" style={{ marginBottom: '1.5rem' }}>
+      {!erro && <div className="stats-grid" style={{ marginBottom: '1.5rem' }}>
         <div className="stat-card">
           <p className="stat-label">Total de Carrinhos</p>
           <p className="stat-value">{totalCarrinhos}</p>
@@ -90,9 +122,9 @@ export default function CarrinhosPage() {
             {formatCurrency(valorTotal)}
           </p>
         </div>
-      </div>
+      </div>}
 
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+      {!erro && <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
         <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginRight: '0.5rem' }}>Filtrar:</span>
         {[
           { key: 'nao', label: 'Não revisados' },
@@ -107,10 +139,10 @@ export default function CarrinhosPage() {
             {f.label}
           </button>
         ))}
-      </div>
+      </div>}
 
       {/* Lista de carrinhos */}
-      {carrinhos.length === 0 ? (
+      {!erro && (carrinhos.length === 0 ? (
         <div className="empty-state">
           <div className="empty-state-icon">🛒</div>
           <h2 className="empty-state-title">Nenhum carrinho ativo</h2>
@@ -302,7 +334,7 @@ export default function CarrinhosPage() {
             )
           })}
         </div>
-      )}
+      ))}
     </>
   )
 }

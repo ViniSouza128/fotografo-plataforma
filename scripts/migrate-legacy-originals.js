@@ -17,14 +17,20 @@
 const fs = require('fs')
 const path = require('path')
 const crypto = require('crypto')
+const {
+  DATA_DIR,
+  STORAGE_DIR,
+  UPLOADS_DIR,
+  ensureRuntimeDirs,
+} = require('../src/lib/runtimePaths.cjs')
 
 function parseArgs(argv) {
   const args = {
     apply: false,
     cleanupDuplicates: false,
     onlyReferenced: false,
-    sourceDir: path.join(process.cwd(), 'public', 'uploads'),
-    destDir: path.join(process.cwd(), 'storage', 'originals'),
+    sourceDir: UPLOADS_DIR,
+    destDir: path.join(STORAGE_DIR, 'originals'),
     logPath: null,
   }
 
@@ -107,7 +113,7 @@ function collectReferencedOriginals() {
   const referenced = new Set()
   const errors = []
 
-  const photosPath = path.join(process.cwd(), 'data', 'photos.json')
+  const photosPath = path.join(DATA_DIR, 'photos.json')
   const photosJson = readJsonSafe(photosPath)
   if (photosJson.ok && Array.isArray(photosJson.value)) {
     for (const photo of photosJson.value) {
@@ -117,7 +123,7 @@ function collectReferencedOriginals() {
     errors.push({ file: photosPath, error: photosJson.error })
   }
 
-  const eventsPath = path.join(process.cwd(), 'data', 'events.json')
+  const eventsPath = path.join(DATA_DIR, 'events.json')
   const eventsJson = readJsonSafe(eventsPath)
   if (eventsJson.ok && Array.isArray(eventsJson.value)) {
     for (const evt of eventsJson.value) {
@@ -181,6 +187,7 @@ function moveFileConservativelySync(srcPath, destPath, srcSizeBytes) {
 }
 
 function main() {
+  ensureRuntimeDirs()
   const args = parseArgs(process.argv.slice(2))
   if (args.help) {
     printHelp()
@@ -191,7 +198,7 @@ function main() {
   const sourceDir = path.resolve(args.sourceDir)
   const destDir = path.resolve(args.destDir)
 
-  const migrationsDir = path.join(process.cwd(), 'storage', 'migrations')
+  const migrationsDir = path.join(STORAGE_DIR, 'migrations')
   const defaultLogPath = path.join(migrationsDir, `migrate-legacy-originals-${nowStamp()}.jsonl`)
   const logPath = path.resolve(args.logPath || defaultLogPath)
 

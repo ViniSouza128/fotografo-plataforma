@@ -20,9 +20,11 @@
 
 const fs = require('fs')
 const path = require('path')
+const {
+  DATA_DIR,
+  ensureRuntimeDirs,
+} = require('../src/lib/runtimePaths.cjs')
 
-const ROOT = process.cwd()
-const DATA_DIR = path.join(ROOT, 'data')
 const DB_PATH = path.join(DATA_DIR, 'db.sqlite')
 const FLAG_PATH = path.join(DATA_DIR, 'storage-backend.txt')
 const DRY = process.argv.includes('--dry')
@@ -299,6 +301,7 @@ const SCHEMA_STATEMENTS = [
 ]
 
 async function main() {
+  ensureRuntimeDirs()
   console.log(`[migrate] Início — DRY=${DRY}`)
 
   if (!fs.existsSync(DATA_DIR)) {

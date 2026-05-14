@@ -2,11 +2,13 @@ import fs from 'fs'
 import path from 'path'
 import { useDb } from './db/router'
 import { feedbacksRepo } from './db/repositories'
+import { DATA_DIR, ensureRuntimeDirs } from './runtimePaths'
 
-const FILE_PATH = path.join(process.cwd(), 'data', 'feedbacks.json')
+const FILE_PATH = path.join(DATA_DIR, 'feedbacks.json')
 
 function ensureFile() {
   if (!fs.existsSync(FILE_PATH)) {
+    ensureRuntimeDirs()
     fs.writeFileSync(FILE_PATH, '[]', 'utf-8')
   }
 }
@@ -54,5 +56,6 @@ export function readFeedbacks() {
 export function writeFeedbacks(items) {
   if (useDb()) { feedbacksRepo.writeAll(items); return }
   ensureFile()
+  ensureRuntimeDirs()
   fs.writeFileSync(FILE_PATH, JSON.stringify(items, null, 2), 'utf-8')
 }

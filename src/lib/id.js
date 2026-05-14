@@ -9,8 +9,9 @@ import fs from 'fs'
 import path from 'path'
 import { useDb } from './db/router'
 import { countersRepo } from './db/repositories'
+import { DATA_DIR, ensureRuntimeDirs } from './runtimePaths'
 
-const COUNTER_PATH = path.join(process.cwd(), 'data', 'counter.json')
+const COUNTER_PATH = path.join(DATA_DIR, 'counter.json')
 
 function readCounter() {
   if (useDb()) {
@@ -23,6 +24,7 @@ function readCounter() {
     return data
   }
   if (!fs.existsSync(COUNTER_PATH)) {
+    ensureRuntimeDirs()
     fs.writeFileSync(COUNTER_PATH, JSON.stringify({
       lastPhotoId:  100000000,
       lastPedidoId: 200000000,
@@ -37,6 +39,7 @@ function readCounter() {
 
 function writeCounter(data) {
   if (useDb()) { countersRepo.writeAll(data); return }
+  ensureRuntimeDirs()
   fs.writeFileSync(COUNTER_PATH, JSON.stringify(data, null, 2))
 }
 

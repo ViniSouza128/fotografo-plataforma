@@ -84,7 +84,7 @@ export default function ReconhecimentoClientePage() {
     fd.append('consentido', '1')
     try {
       const res = await fetch('/api/reconhecimento/referencias', { method: 'POST', body: fd })
-      const data = await res.json()
+      const data = await res.json().catch(() => ({}))
       if (!res.ok) {
         setFeedback({ type: 'error', text: data.error || 'Erro' })
         return

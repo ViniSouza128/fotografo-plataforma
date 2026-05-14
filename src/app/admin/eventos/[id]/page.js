@@ -2533,7 +2533,11 @@ function TabFotos(param) {
                         reject(new Error("Resposta inv\xe1lida"));
                     }
                 } else {
-                    reject(new Error("Falha no upload (".concat(xhr.status, ")")));
+                    let body = {};
+                    try {
+                        body = JSON.parse(xhr.responseText || "{}");
+                    } catch {}
+                    reject(new Error(body.error || "Falha no upload (".concat(xhr.status, ")")));
                 }
             });
             xhr.addEventListener("error", ()=>reject(new Error("Erro de rede")));
@@ -6657,11 +6661,12 @@ function TabInfo(param) {
                                             method: "POST",
                                             body: fd
                                         });
-                                        if (!r.ok) throw new Error();
-                                        const { filename } = await r.json();
+                                        const data = await r.json().catch(()=>({}));
+                                        if (!r.ok) throw new Error(data.error || "Erro ao enviar imagem.");
+                                        const { filename } = data;
                                         handleChange("capaPersonalizadaUrl", filename);
-                                    } catch {
-                                        if (showToast) showToast("Erro ao enviar imagem.");
+                                    } catch (error) {
+                                        if (showToast) showToast(error.message || "Erro ao enviar imagem.");
                                     }
                                 }}
                              />

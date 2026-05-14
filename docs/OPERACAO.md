@@ -61,6 +61,49 @@ STRIPE_WEBHOOK_SECRET=<whsec_...>
 
 > As **API keys** do Asaas e Stripe continuam em `data/config.json` porque precisam ser editadas pelo admin via painel. Em um deploy público, mover essas leituras para `.env` é um hardening recomendado.
 
+### 2.1 Railway Volume
+
+No Railway, o filesystem do deploy não deve ser tratado como permanente. Para persistir banco, JSONs, uploads e originais, crie um **Volume** e monte em:
+
+```txt
+/app/persist
+```
+
+Configure as variáveis:
+
+```dotenv
+APP_PERSIST_DIR=/app/persist
+STORAGE_BACKEND=sqlite
+BACKUP_DIR=/app/persist/backups
+```
+
+Com `APP_PERSIST_DIR` ativo, o app resolve os caminhos assim:
+
+| Tipo | Caminho runtime |
+| --- | --- |
+| JSONs e SQLite | `/app/persist/data` |
+| Originais privados | `/app/persist/storage/originals` |
+| Derivadas públicas | `/app/persist/uploads` |
+| Backups | `/app/persist/backups` |
+
+A URL pública continua sendo `/uploads/...`; a rota interna serve os arquivos a partir de `APP_PERSIST_DIR/uploads` e não serve `storage/originals`.
+
+Diagnóstico rápido:
+
+```sh
+npm run diagnose:runtime-paths
+```
+
+No Windows/PowerShell, para simular Railway localmente:
+
+```powershell
+$env:APP_PERSIST_DIR="$PWD\.tmp-persist"
+npm run diagnose:runtime-paths
+Remove-Item Env:APP_PERSIST_DIR
+```
+
+Nunca use GitHub para guardar dados reais. `data/*.json`, `data/db.sqlite*`, `storage/originals/`, `public/uploads/` e backups devem ficar fora do Git ou removidos apenas do índice com `git rm --cached`, preservando os arquivos no disco.
+
 ---
 
 ## 3. Comandos úteis
@@ -310,7 +353,7 @@ Existe um script Node pronto: **`scripts/backup-daily.js`** (P40). Ele copia:
 npm run backup
 ```
 
-A saída vai para `storage/backups/<data-hora>/` e mantém os últimos 30 dias por padrão (configurável em `BACKUP_RETENTION_DAYS` no `.env.local`).
+A saída vai para `BACKUP_DIR/<data-hora>/` e mantém os últimos 30 dias por padrão (configurável em `BACKUP_RETENTION_DAYS` no `.env.local`). Sem `BACKUP_DIR`, o helper usa `APP_PERSIST_DIR/backups` no Railway ou `backups/` no ambiente local.
 
 **Agendar no Windows (Agendador de Tarefas)**:
 

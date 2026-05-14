@@ -3,8 +3,8 @@
 
 import fs from 'fs'
 import path from 'path'
+import { DATA_DIR, ensureRuntimeDirs } from './runtimePaths'
 
-const DATA_DIR = path.join(process.cwd(), 'data')
 const LEGACY_LOG_PATH = path.join(DATA_DIR, 'payment_log.json')
 const DAILY_LOG_ROOT = path.join(DATA_DIR, 'payment-logs')
 const LEGACY_LIMIT = 500
@@ -17,7 +17,7 @@ function ensureDir(dir) {
 }
 
 function ensureLegacyFile() {
-  ensureDir(DATA_DIR)
+  ensureRuntimeDirs()
   if (!fs.existsSync(LEGACY_LOG_PATH)) fs.writeFileSync(LEGACY_LOG_PATH, '[]', 'utf-8')
 }
 
@@ -32,6 +32,7 @@ function safeReadJsonArray(filePath) {
 }
 
 function writeJsonArray(filePath, entries) {
+  ensureRuntimeDirs()
   ensureDir(path.dirname(filePath))
   fs.writeFileSync(filePath, JSON.stringify(entries, null, 2), 'utf-8')
 }

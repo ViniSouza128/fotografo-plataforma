@@ -16,6 +16,11 @@ import {
   getSponsorPublicUrl,
   newSponsorId,
 } from '@/lib/sponsors'
+import {
+  assertCanUpload,
+  isStorageQuotaExceededError,
+  toStorageQuotaErrorPayload,
+} from '@/lib/storageQuota'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -67,6 +72,8 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Sem permissão para este evento.' }, { status: 403 })
     }
 
+    assertCanUpload({ kind: 'photo', incomingBytes: Number(file.size) || 0 })
+
     const ext = pickExt(file.type, file.name)
     const filename = `${sponsorId}${ext}`
     const absPath = getSponsorAbsolutePath(eventId, filename)
@@ -109,6 +116,9 @@ export async function POST(request) {
       logoUrl: getSponsorPublicUrl(eventId, filename),
     }, { status: 201 })
   } catch (err) {
+    if (isStorageQuotaExceededError(err)) {
+      return NextResponse.json(toStorageQuotaErrorPayload(err), { status: err.status || 507 })
+    }
     console.error('[upload-sponsor-logo] erro:', err)
     return NextResponse.json({ error: err.message || 'Erro ao salvar logo.' }, { status: 500 })
   }

@@ -2,12 +2,12 @@
 import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
+import { DATA_DIR, ensureRuntimeDirs } from './runtimePaths'
 
-const DATA_DIR = path.join(process.cwd(), 'data')
 const CUPONS_PATH = path.join(DATA_DIR, 'cupons.json')
 
 function ensureDir() {
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true })
+  ensureRuntimeDirs()
 }
 
 function round2(v) { return Math.round(Number(v || 0) * 100) / 100 }

@@ -4,6 +4,16 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { isReadOnlyAdmin } from '@/lib/adminAccess'
+import {
+  adminFetchArray,
+  adminFetchJson,
+  adminFetchObject,
+  clearAdminSession,
+  getCurrentReturnTo,
+  getStoredAdminClient,
+  isAdminUnauthorizedError,
+  redirectToAdminLogin,
+} from '@/lib/adminFetch'
 
 function formatRelativo(iso) {
   if (!iso) return '—'
@@ -27,26 +37,36 @@ export default function AdminReconhecimentoPage() {
   const [searchQuery, setSearchQuery] = useState({ code: '', tokens: '', eventId: '' })
   const [searchResults, setSearchResults] = useState(null)
   const [searchLoading, setSearchLoading] = useState(false)
+  const [erro, setErro] = useState('')
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem('clienteLogado')
-      setMe(raw ? JSON.parse(raw) : null)
-    } catch { setMe(null) }
+    setMe(getStoredAdminClient())
   }, [])
 
   const carregar = useCallback(async () => {
     setLoading(true)
+    setErro('')
     try {
       const [s, b, e] = await Promise.all([
-        fetch('/api/reconhecimento/config').then(r => r.ok ? r.json() : null),
-        fetch('/api/reconhecimento/bloqueios').then(r => r.ok ? r.json() : []),
-        fetch('/api/events').then(r => r.ok ? r.json() : []),
+        adminFetchObject('/api/reconhecimento/config'),
+        adminFetchArray('/api/reconhecimento/bloqueios'),
+        adminFetchArray('/api/events'),
       ])
       setStatus(s)
-      setBloqueios(Array.isArray(b) ? b : [])
-      setEventos(Array.isArray(e) ? e : [])
-    } catch {} finally { setLoading(false) }
+      setBloqueios(b)
+      setEventos(e)
+    } catch (error) {
+      setStatus(null)
+      setBloqueios([])
+      setEventos([])
+      if (isAdminUnauthorizedError(error)) {
+        setErro('Sessao expirada. Redirecionando para o login...')
+        clearAdminSession()
+        redirectToAdminLogin(getCurrentReturnTo())
+        return
+      }
+      setErro(error?.message || 'Erro ao carregar reconhecimento.')
+    } finally { setLoading(false) }
   }, [])
 
   useEffect(() => { carregar() }, [carregar])
@@ -54,25 +74,29 @@ export default function AdminReconhecimentoPage() {
   const isSuperAdmin = !!me?.isSuperAdmin
   const readOnly = isReadOnlyAdmin(me)
 
+  function handleAdminActionError(error, fallback = 'Erro de rede.') {
+    if (isAdminUnauthorizedError(error)) {
+      clearAdminSession()
+      redirectToAdminLogin(getCurrentReturnTo())
+      return
+    }
+    setFeedback({ type: 'error', text: error?.message || fallback })
+  }
+
   async function patchConfig(patch) {
     if (!isSuperAdmin) {
       setFeedback({ type: 'error', text: 'Apenas super-admin pode alterar a configuração.' })
       return
     }
     try {
-      const res = await fetch('/api/reconhecimento/config', {
+      await adminFetchJson('/api/reconhecimento/config', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(patch),
       })
-      const data = await res.json()
-      if (!res.ok) {
-        setFeedback({ type: 'error', text: data.error || 'Erro' })
-        return
-      }
       await carregar()
       setFeedback({ type: 'success', text: 'Config atualizada.' })
-    } catch { setFeedback({ type: 'error', text: 'Erro de rede.' }) }
+    } catch (error) { handleAdminActionError(error) }
   }
 
   async function indexarEvento() {
@@ -84,18 +108,13 @@ export default function AdminReconhecimentoPage() {
     setIndexando(true)
     setFeedback(null)
     try {
-      const res = await fetch('/api/reconhecimento/indexar', {
+      const data = await adminFetchJson('/api/reconhecimento/indexar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ eventId: eventoSel }),
       })
-      const data = await res.json()
-      if (!res.ok) {
-        setFeedback({ type: 'error', text: data.error || 'Erro' })
-      } else {
-        setFeedback({ type: 'success', text: `Indexadas ${data.indexed}/${data.total} fotos.` })
-      }
-    } catch { setFeedback({ type: 'error', text: 'Erro de rede.' }) }
+      setFeedback({ type: 'success', text: `Indexadas ${data.indexed}/${data.total} fotos.` })
+    } catch (error) { handleAdminActionError(error) }
     finally { setIndexando(false) }
   }
 
@@ -112,18 +131,17 @@ export default function AdminReconhecimentoPage() {
         tokens,
         eventId: searchQuery.eventId || null,
       }
-      const res = await fetch('/api/reconhecimento/buscar', {
+      const data = await adminFetchJson('/api/reconhecimento/buscar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       })
-      const data = await res.json()
-      if (!res.ok) {
-        setFeedback({ type: 'error', text: data.error || 'Erro' })
-      } else {
-        setSearchResults(data)
+      if (!data || !Array.isArray(data.results)) {
+        setFeedback({ type: 'error', text: 'Resposta inesperada do servidor.' })
+        return
       }
-    } catch { setFeedback({ type: 'error', text: 'Erro de rede.' }) }
+      setSearchResults(data)
+    } catch (error) { handleAdminActionError(error) }
     finally { setSearchLoading(false) }
   }
 
@@ -136,19 +154,27 @@ export default function AdminReconhecimentoPage() {
       ? prompt('Observação opcional:') || ''
       : prompt('Motivo da rejeição:') || ''
     try {
-      const res = await fetch('/api/reconhecimento/bloqueios', {
+      await adminFetchJson('/api/reconhecimento/bloqueios', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: b.id, decisao, observacao: obs }),
       })
-      const data = await res.json()
-      if (!res.ok) { setFeedback({ type: 'error', text: data.error || 'Erro' }); return }
       await carregar()
-    } catch { setFeedback({ type: 'error', text: 'Erro de rede.' }) }
+    } catch (error) { handleAdminActionError(error) }
   }
 
   if (loading) {
     return <div className="flex-center" style={{ minHeight: '40vh' }}><div className="spinner" /></div>
+  }
+
+  if (erro) {
+    return (
+      <div className="empty-state">
+        <h2 className="empty-state-title">Nao foi possivel carregar reconhecimento</h2>
+        <p>{erro}</p>
+        <button className="btn btn-ghost btn-sm" onClick={carregar}>Tentar novamente</button>
+      </div>
+    )
   }
 
   if (!status) return <div style={{ padding: '2rem' }}>Erro ao carregar.</div>

@@ -2,8 +2,8 @@
 import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
+import { DATA_DIR, ensureRuntimeDirs } from './runtimePaths'
 
-const DATA_DIR = path.join(process.cwd(), 'data')
 const NOTIF_PATH = path.join(DATA_DIR, 'notificacoes.json')
 const MAX_TOTAL = 2000   // hard cap; prune oldest when exceeded
 const MAX_PER_DEST = 200 // per-destinatario cap
@@ -19,7 +19,7 @@ export const TIPOS = {
 }
 
 function ensureDir() {
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true })
+  ensureRuntimeDirs()
 }
 
 export function readNotificacoes() {

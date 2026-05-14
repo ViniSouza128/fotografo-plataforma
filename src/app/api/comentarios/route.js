@@ -1,6 +1,5 @@
 import crypto from 'crypto'
 import fs from 'fs'
-import path from 'path'
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { validateAuthToken } from '@/lib/auth'
@@ -21,6 +20,7 @@ import {
   getPhotoCommentPreviewCandidates,
   isUploadsUrl,
 } from '@/lib/imagePaths'
+import { resolveUploadsUrlCandidates } from '@/lib/uploadsSecurity'
 import { appendNotificacao } from '@/lib/notificacoes'
 
 function normalizeText(value) {
@@ -79,9 +79,7 @@ function getEventCoverThumbUrl(event) {
 
 function uploadsUrlToAbsolutePath(value) {
   if (!isUploadsUrl(value)) return null
-  const relative = value.slice('/uploads/'.length)
-  if (!relative || relative.includes('..')) return null
-  return path.join(process.cwd(), 'public', 'uploads', ...relative.split('/'))
+  return resolveUploadsUrlCandidates(value).find((candidate) => fs.existsSync(candidate)) || null
 }
 
 function getFirstAvailableUploadsUrl(candidates, { preferDynamic = false } = {}) {

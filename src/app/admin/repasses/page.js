@@ -3,6 +3,16 @@
 // Admin: vê e registra repasses; Colaborador: só vê os próprios.
 
 import { useCallback, useEffect, useState } from 'react'
+import {
+  adminFetchArray,
+  adminFetchJson,
+  adminFetchObject,
+  clearAdminSession,
+  getCurrentReturnTo,
+  getStoredAdminClient,
+  isAdminUnauthorizedError,
+  redirectToAdminLogin,
+} from '@/lib/adminFetch'
 
 function formatBRL(v) {
   return Number(v || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
@@ -21,28 +31,34 @@ export default function RepassesPage() {
   const [loading, setLoading] = useState(true)
   const [pagandoFor, setPagandoFor] = useState(null)
   const [feedback, setFeedback] = useState(null)
+  const [erro, setErro] = useState('')
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem('clienteLogado')
-      const parsed = raw ? JSON.parse(raw) : null
-      setMe(parsed)
-    } catch { setMe(null) }
+    setMe(getStoredAdminClient())
   }, [])
 
   const carregar = useCallback(async () => {
     setLoading(true)
+    setErro('')
     try {
-      const [resStats, resHist] = await Promise.all([
-        fetch('/api/repasses'),
-        fetch('/api/repasses?listar=1'),
+      const [ds, dh] = await Promise.all([
+        adminFetchObject('/api/repasses'),
+        adminFetchArray('/api/repasses?listar=1'),
       ])
-      const ds = resStats.ok ? await resStats.json() : { stats: [], configPadrao: {} }
-      const dh = resHist.ok ? await resHist.json() : []
       setStats(Array.isArray(ds.stats) ? ds.stats : [])
       setConfig(ds.configPadrao || { percentualPadrao: 70, carenciaDias: 7 })
-      setHistorico(Array.isArray(dh) ? dh : [])
-    } catch {}
+      setHistorico(dh)
+    } catch (error) {
+      setStats([])
+      setHistorico([])
+      if (isAdminUnauthorizedError(error)) {
+        setErro('Sessao expirada. Redirecionando para o login...')
+        clearAdminSession()
+        redirectToAdminLogin(getCurrentReturnTo())
+        return
+      }
+      setErro(error?.message || 'Erro ao carregar repasses.')
+    }
     finally { setLoading(false) }
   }, [])
 
@@ -54,6 +70,16 @@ export default function RepassesPage() {
     return (
       <div className="flex-center" style={{ minHeight: '40vh' }}>
         <div className="spinner" style={{ width: '32px', height: '32px' }} />
+      </div>
+    )
+  }
+
+  if (erro) {
+    return (
+      <div className="empty-state">
+        <h2 className="empty-state-title">Nao foi possivel carregar repasses</h2>
+        <p>{erro}</p>
+        <button className="btn btn-ghost btn-sm" onClick={carregar}>Tentar novamente</button>
       </div>
     )
   }
@@ -193,10 +219,15 @@ function PagamentoModal({ colaborador, carenciaPadrao, onClose, onDone, onError 
 
   useEffect(() => {
     if (tipo !== 'convertido_saldo_cliente') return
-    fetch('/api/clients').then(r => r.ok ? r.json() : []).then(d => {
-      const arr = Array.isArray(d) ? d.filter(c => !c.isAdmin && !c.isColaborador) : []
+    adminFetchArray('/api/clients').then(d => {
+      const arr = d.filter(c => !c.isAdmin && !c.isColaborador)
       setClientes(arr)
-    }).catch(() => {})
+    }).catch((error) => {
+      if (isAdminUnauthorizedError(error)) {
+        clearAdminSession()
+        redirectToAdminLogin(getCurrentReturnTo())
+      }
+    })
   }, [tipo])
 
   async function submit() {
@@ -215,7 +246,7 @@ function PagamentoModal({ colaborador, carenciaPadrao, onClose, onDone, onError 
     }
     setEnviando(true)
     try {
-      const res = await fetch('/api/repasses', {
+      await adminFetchJson('/api/repasses', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -225,14 +256,14 @@ function PagamentoModal({ colaborador, carenciaPadrao, onClose, onDone, onError 
           carenciaDias: tipo === 'convertido_saldo_cliente' ? Number(carencia || 0) : null,
         }),
       })
-      const data = await res.json().catch(() => ({}))
-      if (!res.ok) {
-        onError(data.error || 'Erro ao registrar.')
+      onDone(tipo === 'convertido_saldo_cliente' ? 'Repasse convertido em saldo de cliente.' : 'Pagamento registrado.')
+    } catch (error) {
+      if (isAdminUnauthorizedError(error)) {
+        clearAdminSession()
+        redirectToAdminLogin(getCurrentReturnTo())
         return
       }
-      onDone(tipo === 'convertido_saldo_cliente' ? 'Repasse convertido em saldo de cliente.' : 'Pagamento registrado.')
-    } catch {
-      onError('Erro de rede.')
+      onError(error?.message || 'Erro de rede.')
     } finally { setEnviando(false) }
   }
 

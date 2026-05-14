@@ -5,10 +5,10 @@
 // Embeddings e índice ficam em data/vision/*.json.
 import fs from 'fs'
 import path from 'path'
+import { DATA_DIR, STORAGE_DIR, ensureRuntimeDirs } from '../runtimePaths'
 
-const ROOT = process.cwd()
-export const VISION_DATA_DIR = path.join(ROOT, 'data', 'vision')
-export const VISION_REFS_DIR = path.join(ROOT, 'storage', 'vision', 'refs')
+export const VISION_DATA_DIR = path.join(DATA_DIR, 'vision')
+export const VISION_REFS_DIR = path.join(STORAGE_DIR, 'vision', 'refs')
 export const VISION_MODELS_DIR = path.join(VISION_DATA_DIR, 'models')
 
 const CONFIG_PATH = path.join(VISION_DATA_DIR, 'config.json')
@@ -31,6 +31,7 @@ const DEFAULT_CONFIG = {
 }
 
 function ensureDirs() {
+  ensureRuntimeDirs()
   if (!fs.existsSync(VISION_DATA_DIR)) fs.mkdirSync(VISION_DATA_DIR, { recursive: true })
   if (!fs.existsSync(VISION_REFS_DIR)) fs.mkdirSync(VISION_REFS_DIR, { recursive: true })
   if (!fs.existsSync(VISION_MODELS_DIR)) fs.mkdirSync(VISION_MODELS_DIR, { recursive: true })
@@ -184,5 +185,3 @@ export function getBlockedPhotoIds() {
       .filter(Boolean)
   )
 }
-
-ensureDirs()

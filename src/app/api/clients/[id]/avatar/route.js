@@ -20,6 +20,11 @@ import {
   getAvatarOriginalPath,
   safeUnlinkSync,
 } from '@/lib/avatars'
+import {
+  assertCanUpload,
+  isStorageQuotaExceededError,
+  toStorageQuotaErrorPayload,
+} from '@/lib/storageQuota'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -58,6 +63,8 @@ export async function POST(request, { params }) {
     if (mime && !AVATAR_ALLOWED_MIME.includes(mime)) {
       return NextResponse.json({ error: 'Formato não suportado. Use JPG, PNG, WebP ou AVIF.' }, { status: 400 })
     }
+
+    assertCanUpload({ kind: 'avatar', incomingBytes: Number(file.size) || 0 })
 
     const arrayBuf = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuf)
@@ -109,6 +116,9 @@ export async function POST(request, { params }) {
     const { senha, ...safe } = clients[idx]
     return NextResponse.json({ ok: true, avatar, client: safe })
   } catch (err) {
+    if (isStorageQuotaExceededError(err)) {
+      return NextResponse.json(toStorageQuotaErrorPayload(err), { status: err.status || 507 })
+    }
     console.error('[avatar] POST error:', err)
     return NextResponse.json({ error: 'Erro ao processar imagem.' }, { status: 500 })
   }

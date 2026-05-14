@@ -243,7 +243,12 @@ function uploadFileWithProgress(file, eventId, onProgress) {
     xhr.onload = () => {
       const ok = xhr.status >= 200 && xhr.status < 300;
       if (!ok) {
-        reject(new Error('Falha no upload'));
+        const body = xhr.response && typeof xhr.response === 'object'
+          ? xhr.response
+          : (() => {
+              try { return JSON.parse(xhr.responseText || '{}'); } catch { return {}; }
+            })();
+        reject(new Error(body.error || 'Falha no upload'));
         return;
       }
       if (xhr.response && typeof xhr.response === 'object') {

@@ -3,6 +3,14 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
+import {
+  adminFetchArray,
+  adminFetchJson,
+  clearAdminSession,
+  getCurrentReturnTo,
+  isAdminUnauthorizedError,
+  redirectToAdminLogin,
+} from '@/lib/adminFetch'
 
 const TIPO_META = {
   novo_pedido:          { label: 'Novo pedido',         icon: '🧾' },
@@ -27,14 +35,24 @@ export default function AdminNotificacoesPage() {
   const [notifs, setNotifs] = useState([])
   const [loading, setLoading] = useState(true)
   const [marcando, setMarcando] = useState(false)
+  const [erro, setErro] = useState('')
 
   const carregar = useCallback(async () => {
     setLoading(true)
+    setErro('')
     try {
-      const res = await fetch('/api/notificacoes?limit=100')
-      const data = res.ok ? await res.json() : []
-      setNotifs(Array.isArray(data) ? data : [])
-    } catch { setNotifs([]) }
+      const data = await adminFetchArray('/api/notificacoes?limit=100')
+      setNotifs(data)
+    } catch (error) {
+      setNotifs([])
+      if (isAdminUnauthorizedError(error)) {
+        setErro('Sessao expirada. Redirecionando para o login...')
+        clearAdminSession()
+        redirectToAdminLogin(getCurrentReturnTo())
+        return
+      }
+      setErro(error?.message || 'Erro ao carregar notificacoes.')
+    }
     finally { setLoading(false) }
   }, [])
 
@@ -42,7 +60,7 @@ export default function AdminNotificacoesPage() {
 
   async function marcarLida(id) {
     try {
-      await fetch('/api/notificacoes', {
+      await adminFetchJson('/api/notificacoes', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
@@ -54,7 +72,7 @@ export default function AdminNotificacoesPage() {
   async function marcarTodas() {
     setMarcando(true)
     try {
-      await fetch('/api/notificacoes', {
+      await adminFetchJson('/api/notificacoes', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ all: true }),
@@ -67,7 +85,7 @@ export default function AdminNotificacoesPage() {
   async function excluir(id, e) {
     e.stopPropagation()
     try {
-      await fetch(`/api/notificacoes?id=${id}`, { method: 'DELETE' })
+      await adminFetchJson(`/api/notificacoes?id=${id}`, { method: 'DELETE' })
       setNotifs(prev => prev.filter(n => n.id !== id))
     } catch {}
   }
@@ -78,6 +96,16 @@ export default function AdminNotificacoesPage() {
     return (
       <div className="flex-center" style={{ minHeight: '40vh' }}>
         <div className="spinner" style={{ width: '32px', height: '32px' }} />
+      </div>
+    )
+  }
+
+  if (erro) {
+    return (
+      <div className="empty-state">
+        <h2 className="empty-state-title">Nao foi possivel carregar notificacoes</h2>
+        <p>{erro}</p>
+        <button className="btn btn-ghost btn-sm" onClick={carregar}>Tentar novamente</button>
       </div>
     )
   }

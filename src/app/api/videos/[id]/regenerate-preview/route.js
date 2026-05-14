@@ -21,6 +21,11 @@ import { canManageEvent } from '@/lib/colaborador'
 import { mergeWatermarkConfig, getVideoWatermarkPath } from '@/lib/watermark'
 import { readConfig } from '@/lib/config'
 import { renderVideoPosterBuffers } from '@/lib/derivedImagesRenderer'
+import {
+  assertCanUpload,
+  isStorageQuotaExceededError,
+  toStorageQuotaErrorPayload,
+} from '@/lib/storageQuota'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
@@ -47,6 +52,8 @@ export async function POST(request, { params }) {
     }
 
     const watermarkConfig = mergeWatermarkConfig(readConfig(), event)
+
+    assertCanUpload({ kind: 'video', incomingBytes: 0 })
 
     updateVideo(video.id, { previewWmStatus: 'processing' })
 
@@ -102,6 +109,9 @@ export async function POST(request, { params }) {
       }, { status: 500 })
     }
   } catch (err) {
+    if (isStorageQuotaExceededError(err)) {
+      return NextResponse.json(toStorageQuotaErrorPayload(err), { status: err.status || 507 })
+    }
     console.error('[regenerate-preview] erro:', err)
     return NextResponse.json({ error: err.message || 'Erro interno.' }, { status: 500 })
   }

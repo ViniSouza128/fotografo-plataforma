@@ -4,8 +4,9 @@
 
 import fs from 'fs'
 import path from 'path'
+import { DATA_DIR, ensureRuntimeDirs } from '../runtimePaths'
 
-const STATE_PATH = path.join(process.cwd(), 'data', 'storage-migration-status.json')
+const STATE_PATH = path.join(DATA_DIR, 'storage-migration-status.json')
 
 const DEFAULT_STATE = {
   running: false,
@@ -27,6 +28,7 @@ export function readMigrationState() {
 }
 
 export function writeMigrationState(patch) {
+  ensureRuntimeDirs()
   const dir = path.dirname(STATE_PATH)
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
   const current = readMigrationState()

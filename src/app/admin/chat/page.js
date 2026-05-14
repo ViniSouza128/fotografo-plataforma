@@ -2,6 +2,15 @@
 // src/app/admin/chat/page.js
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  adminFetchArray,
+  adminFetchJson,
+  adminFetchObject,
+  clearAdminSession,
+  getCurrentReturnTo,
+  isAdminUnauthorizedError,
+  redirectToAdminLogin,
+} from '@/lib/adminFetch'
 
 function formatRelativo(iso) {
   if (!iso) return ''
@@ -22,15 +31,25 @@ export default function AdminChatPage() {
   const [loadingThread, setLoadingThread] = useState(false)
   const [texto, setTexto] = useState('')
   const [enviando, setEnviando] = useState(false)
+  const [erro, setErro] = useState('')
   const messagesEndRef = useRef(null)
   const pollRef = useRef(null)
 
   const carregarThreads = useCallback(async () => {
+    setErro('')
     try {
-      const res = await fetch('/api/chat')
-      const data = res.ok ? await res.json() : []
-      setThreads(Array.isArray(data) ? data : [])
-    } catch {}
+      const data = await adminFetchArray('/api/chat')
+      setThreads(data)
+    } catch (error) {
+      setThreads([])
+      if (isAdminUnauthorizedError(error)) {
+        setErro('Sessao expirada. Redirecionando para o login...')
+        clearAdminSession()
+        redirectToAdminLogin(getCurrentReturnTo())
+        return
+      }
+      setErro(error?.message || 'Erro ao carregar conversas.')
+    }
     finally { setLoading(false) }
   }, [])
 
@@ -40,18 +59,22 @@ export default function AdminChatPage() {
     if (!clientId) return
     setLoadingThread(true)
     try {
-      const res = await fetch(`/api/chat?clientId=${clientId}`)
-      const data = res.ok ? await res.json() : null
+      const data = await adminFetchObject(`/api/chat?clientId=${clientId}`)
       setThread(data)
       if (markRead && data?.mensagens?.some(m => !m.lidaPorAdmin && m.de === 'client')) {
-        await fetch('/api/chat', {
+        await adminFetchJson('/api/chat', {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ clientId }),
         })
         setThreads(prev => prev.map(t => t.clientId === clientId ? { ...t, naoLidasAdmin: 0 } : t))
       }
-    } catch {}
+    } catch (error) {
+      if (isAdminUnauthorizedError(error)) {
+        clearAdminSession()
+        redirectToAdminLogin(getCurrentReturnTo())
+      }
+    }
     finally { setLoadingThread(false) }
   }, [])
 
@@ -75,17 +98,20 @@ export default function AdminChatPage() {
     if (!t || !selectedId || enviando) return
     setEnviando(true)
     try {
-      const res = await fetch('/api/chat', {
+      await adminFetchJson('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ texto: t, clientId: selectedId }),
       })
-      if (res.ok) {
-        setTexto('')
-        await carregarThread(selectedId, false)
-        await carregarThreads()
+      setTexto('')
+      await carregarThread(selectedId, false)
+      await carregarThreads()
+    } catch (error) {
+      if (isAdminUnauthorizedError(error)) {
+        clearAdminSession()
+        redirectToAdminLogin(getCurrentReturnTo())
       }
-    } catch {}
+    }
     finally { setEnviando(false) }
   }
 
@@ -99,6 +125,16 @@ export default function AdminChatPage() {
     return (
       <div className="flex-center" style={{ minHeight: '40vh' }}>
         <div className="spinner" style={{ width: '32px', height: '32px' }} />
+      </div>
+    )
+  }
+
+  if (erro) {
+    return (
+      <div className="empty-state">
+        <h2 className="empty-state-title">Nao foi possivel carregar o chat</h2>
+        <p>{erro}</p>
+        <button className="btn btn-ghost btn-sm" onClick={carregarThreads}>Tentar novamente</button>
       </div>
     )
   }

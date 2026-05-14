@@ -12,9 +12,11 @@
 
 const fs = require('fs')
 const path = require('path')
+const {
+  DATA_DIR,
+  ensureRuntimeDirs,
+} = require('../src/lib/runtimePaths.cjs')
 
-const ROOT = process.cwd()
-const DATA_DIR = path.join(ROOT, 'data')
 const DB_PATH = path.join(DATA_DIR, 'db.sqlite')
 const FLAG_PATH = path.join(DATA_DIR, 'storage-backend.txt')
 const DROP_DB = process.argv.includes('--drop-db')
@@ -35,6 +37,7 @@ const ENTITIES = [
 ]
 
 async function main() {
+  ensureRuntimeDirs()
   if (!fs.existsSync(DB_PATH)) {
     console.error('[rollback] db.sqlite não existe — apenas redefinindo flag para json.')
     fs.writeFileSync(FLAG_PATH, 'json', 'utf-8')

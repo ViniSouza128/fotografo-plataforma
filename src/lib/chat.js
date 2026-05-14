@@ -2,14 +2,14 @@
 import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
+import { DATA_DIR, ensureRuntimeDirs } from './runtimePaths'
 
-const DATA_DIR = path.join(process.cwd(), 'data')
 const CHAT_PATH = path.join(DATA_DIR, 'chat.json')
 const MAX_MSG_PER_THREAD = 500
 const MAX_TEXTO = 2000
 
 function ensureDir() {
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true })
+  ensureRuntimeDirs()
 }
 
 export function readChat() {

@@ -8,6 +8,11 @@ import {
   getWatermarkPublicUrl,
 } from '../../../lib/watermark'
 import { appendAuditLog } from '@/lib/auditLog'
+import {
+  assertCanUpload,
+  isStorageQuotaExceededError,
+  toStorageQuotaErrorPayload,
+} from '@/lib/storageQuota'
 
 function normalizeVariant(value) {
   const safe = String(value || 'global').trim().toLowerCase()
@@ -39,6 +44,8 @@ export async function POST(request) {
     if (!file) return NextResponse.json({ error: 'Nenhum arquivo enviado' }, { status: 400 })
     if (file.type !== 'image/png') return NextResponse.json({ error: 'A marca d\'agua deve ser PNG' }, { status: 400 })
 
+    assertCanUpload({ kind: 'photo', incomingBytes: Number(file.size) || 0 })
+
     const buffer = Buffer.from(await file.arrayBuffer())
     saveWatermark(buffer, variant)
     appendAuditLog({
@@ -55,7 +62,10 @@ export async function POST(request) {
       url: getWatermarkPublicUrl(variant),
       watermarks: listWatermarks(),
     })
-  } catch {
+  } catch (error) {
+    if (isStorageQuotaExceededError(error)) {
+      return NextResponse.json(toStorageQuotaErrorPayload(error), { status: error.status || 507 })
+    }
     return NextResponse.json({ error: 'Erro ao salvar arquivo' }, { status: 500 })
   }
 }

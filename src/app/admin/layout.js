@@ -4,6 +4,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
+import {
+  adminFetchArray,
+  adminFetchObject,
+  buildAdminLoginHref,
+  clearAdminSession,
+  fetchAdminSession,
+  isAdminUnauthorizedError,
+} from '@/lib/adminFetch'
 
 export default function AdminLayout({ children }) {
   const router = useRouter()
@@ -17,58 +25,26 @@ export default function AdminLayout({ children }) {
   const [chatCount, setChatCount] = useState(0)
   const [siteCopyFeedback, setSiteCopyFeedback] = useState('')
   const siteCopyTimeoutRef = useRef(null)
-  const loginHref = `/login?returnTo=${encodeURIComponent(pathname || '/admin')}`
+  const loginHref = buildAdminLoginHref(pathname || '/admin')
 
   useEffect(() => {
     let cancelled = false
-    const logado = localStorage.getItem('adminLogado')
-    const raw = localStorage.getItem('clienteLogado')
-    let clienteValido = false
-    try {
-      const parsed = raw ? JSON.parse(raw) : null
-      clienteValido = !!(parsed && parsed.id && parsed.isAdmin)
-      if (parsed?.isSuperAdmin) setIsSuperAdmin(true)
-      if (parsed?.isColaborador) setIsColaborador(true)
-    } catch {}
-
-    if (logado === 'true' && clienteValido) {
-      setVerificando(false)
-      return
-    }
-
-    // Fallback: o cookie JWT pode estar válido neste navegador mesmo
-    // sem o localStorage (ex.: usuário fez login em outro browser e
-    // este só recebeu o cookie via SSO/share). Consulta o servidor.
+    setVerificando(true)
+    setIsSuperAdmin(false)
+    setIsColaborador(false)
+    // Sempre valida o cookie no servidor antes de liberar a area admin.
     ;(async () => {
       try {
-        const res = await fetch('/api/auth/me', { credentials: 'include' })
-        if (!res.ok) {
-          if (!cancelled) {
-            localStorage.removeItem('adminLogado')
-            router.replace(loginHref)
-          }
-          return
-        }
-        const data = await res.json().catch(() => null)
-        const c = data?.client
-        if (!c || !c.isAdmin) {
-          if (!cancelled) {
-            localStorage.removeItem('adminLogado')
-            localStorage.removeItem('clienteLogado')
-            router.replace(loginHref)
-          }
-          return
-        }
+        const client = await fetchAdminSession()
         if (cancelled) return
-        // Repopula localStorage para o resto do app que ainda lê dali.
-        localStorage.setItem('adminLogado', 'true')
-        localStorage.setItem('clienteLogado', JSON.stringify(c))
-        if (c.isSuperAdmin) setIsSuperAdmin(true)
-        if (c.isColaborador) setIsColaborador(true)
-        window.dispatchEvent(new Event('authUpdated'))
+        setIsSuperAdmin(!!client.isSuperAdmin)
+        setIsColaborador(!!client.isColaborador)
         setVerificando(false)
       } catch {
-        if (!cancelled) router.replace(loginHref)
+        if (!cancelled) {
+          clearAdminSession()
+          router.replace(loginHref)
+        }
       }
     })()
 
@@ -79,18 +55,23 @@ export default function AdminLayout({ children }) {
     if (verificando) return
     async function checkNovos() {
       try {
-        const [res, resRem, resNotif, resChat] = await Promise.all([
-          fetch('/api/pedidos?admin=1'),
-          fetch('/api/remocoes'),
-          fetch('/api/notificacoes?count=1'),
-          fetch('/api/chat?count=1'),
+        const [pedidosResult, remocoesResult, notifResult, chatResult] = await Promise.allSettled([
+          adminFetchArray('/api/pedidos?admin=1'),
+          adminFetchArray('/api/remocoes'),
+          adminFetchObject('/api/notificacoes?count=1'),
+          adminFetchObject('/api/chat?count=1'),
         ])
-        const pedidosPayload = await res.json().catch(() => [])
-        const remocoesPayload = await resRem.json().catch(() => [])
-        const notifPayload = await resNotif.json().catch(() => ({}))
-        const chatPayload = await resChat.json().catch(() => ({}))
-        const pedidos = Array.isArray(pedidosPayload) ? pedidosPayload : []
-        const remocoes = Array.isArray(remocoesPayload) ? remocoesPayload : []
+        const unauthorized = [pedidosResult, remocoesResult, notifResult, chatResult]
+          .some(result => result.status === 'rejected' && isAdminUnauthorizedError(result.reason))
+        if (unauthorized) {
+          clearAdminSession()
+          router.replace(loginHref)
+          return
+        }
+        const pedidos = pedidosResult.status === 'fulfilled' ? pedidosResult.value : []
+        const remocoes = remocoesResult.status === 'fulfilled' ? remocoesResult.value : []
+        const notifPayload = notifResult.status === 'fulfilled' ? notifResult.value : {}
+        const chatPayload = chatResult.status === 'fulfilled' ? chatResult.value : {}
         setRemocoesPendentes(remocoes.filter(r => r.status === 'pendente').length)
         setNotifCount(Number(notifPayload.count) || 0)
         setChatCount(Number(chatPayload.count) || 0)
@@ -108,15 +89,13 @@ export default function AdminLayout({ children }) {
     checkNovos()
     const pollInterval = setInterval(checkNovos, 60_000)
     return () => clearInterval(pollInterval)
-  }, [verificando])
+  }, [loginHref, router, verificando])
 
   const [confirmLogout, setConfirmLogout] = useState(false)
 
   async function handleLogout() {
-    localStorage.removeItem('adminLogado')
-    localStorage.removeItem('clienteLogado')
+    clearAdminSession()
     await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {})
-    window.dispatchEvent(new Event('authUpdated'))
     router.push('/login')
   }
 
@@ -169,6 +148,7 @@ export default function AdminLayout({ children }) {
   ]
 
   const menuItems = allMenuItems.filter(item => {
+    if (item.superAdminOnly) return !isColaborador
     if (item.visibleTo === 'all') return true
     if (item.visibleTo === 'superAdmin') return isSuperAdmin
     // 'fullAdmin' = admin não-colaborador
@@ -179,8 +159,13 @@ export default function AdminLayout({ children }) {
     { href: '/', label: 'Ver site', icon: '🌐', external: true },
     { href: '/admin/personalizar', label: 'Personalizar site', icon: '🎨', superAdminOnly: true },
     { href: '/admin/configuracoes', label: 'Configurações', icon: '⚙️', superAdminOnly: true },
+    { href: '/admin/configuracoes/armazenamento', label: 'Limite de armazenamento', icon: '💾', superAdminOnly: true },
     { href: '/admin/reset', label: 'Backup e Reset', icon: '🛟', superAdminOnly: true },
   ]
+
+  const superAdminOnlyRoute = siteItems
+    .filter(item => item.superAdminOnly)
+    .some(item => pathname === item.href || pathname.startsWith(`${item.href}/`))
 
   return (
     <div className="admin-layout">
@@ -259,7 +244,7 @@ export default function AdminLayout({ children }) {
             </button>
           </div>
 
-          {!isColaborador && siteItems.slice(1).map(item => (
+          {siteItems.slice(1).filter(item => !item.superAdminOnly || !isColaborador).map(item => (
             <Link
               key={item.href}
               href={item.href}
@@ -364,7 +349,14 @@ export default function AdminLayout({ children }) {
       )}
 
       <main className="admin-main">
-        {children}
+        {superAdminOnlyRoute && isColaborador ? (
+          <div style={{ maxWidth: '720px', padding: '2rem 0' }}>
+            <h1 className="admin-page-title">Acesso restrito</h1>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '0.5rem' }}>
+              Esta area e exclusiva para administradores.
+            </p>
+          </div>
+        ) : children}
       </main>
     </div>
   )

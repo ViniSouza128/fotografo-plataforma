@@ -36,12 +36,12 @@
 
 const fs = require('fs')
 const path = require('path')
-
-const ROOT = process.cwd()
-const DATA_DIR = path.join(ROOT, 'data')
-const BACKUP_DIR = process.env.BACKUP_DIR
-  ? path.resolve(process.env.BACKUP_DIR)
-  : path.join(ROOT, 'storage', 'backups')
+const {
+  BACKUP_DIR,
+  DATA_DIR,
+  PROJECT_ROOT,
+  ensureRuntimeDirs,
+} = require('../src/lib/runtimePaths.cjs')
 
 const RETENTION_DAYS = Math.max(1, Number(process.env.BACKUP_RETENTION_DAYS || 30))
 const QUIET = process.argv.includes('--quiet')
@@ -161,6 +161,7 @@ function buildMetadata() {
 
 async function main() {
   log(`[backup] início — ${new Date().toISOString()}`)
+  ensureRuntimeDirs()
   if (!fs.existsSync(DATA_DIR)) {
     err('[backup] data/ não existe.'); process.exit(1)
   }
@@ -175,7 +176,7 @@ async function main() {
   log(`[backup] data/: ${filesCount} arquivo(s) copiado(s)`)
 
   // 2) Snapshot do package.json (versão de referência)
-  const pkgPath = path.join(ROOT, 'package.json')
+  const pkgPath = path.join(PROJECT_ROOT, 'package.json')
   if (fs.existsSync(pkgPath)) {
     copyFileSafe(pkgPath, path.join(folder, 'package.json'))
   }

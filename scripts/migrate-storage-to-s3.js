@@ -17,18 +17,23 @@
 
 const fs = require('fs')
 const path = require('path')
-
-const ROOT = process.cwd()
+const {
+  DATA_DIR,
+  STORAGE_DIR,
+  UPLOADS_DIR,
+  ensureRuntimeDirs,
+} = require('../src/lib/runtimePaths.cjs')
 
 // Reuso da lógica do lib (compilada com Next, mas o código fonte usa só ESM básico).
 // Como o script roda em CJS, vamos reimplementar o essencial via require dinâmico.
 
 async function main() {
+  ensureRuntimeDirs()
   const onlyOriginals = process.argv.includes('--only-originals')
   const onlyDerivatives = process.argv.includes('--only-derivatives')
 
   // Carrega config
-  const cfgPath = path.join(ROOT, 'data', 'config.json')
+  const cfgPath = path.join(DATA_DIR, 'config.json')
   if (!fs.existsSync(cfgPath)) { console.error('[migrate-s3] data/config.json não existe.'); process.exit(1) }
   const cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf-8'))
   const sc = cfg.storageExterno || {}
@@ -46,8 +51,7 @@ async function main() {
     credentials: { accessKeyId: sc.accessKeyId, secretAccessKey: sc.secretAccessKey },
   })
 
-  const ORIGINALS_DIR = path.join(ROOT, 'storage', 'originals')
-  const UPLOADS_DIR = path.join(ROOT, 'public', 'uploads')
+  const ORIGINALS_DIR = path.join(STORAGE_DIR, 'originals')
 
   function* walk(dir) {
     if (!fs.existsSync(dir)) return

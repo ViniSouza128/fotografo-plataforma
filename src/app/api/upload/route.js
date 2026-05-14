@@ -26,6 +26,11 @@ import { mergeWatermarkConfig } from '@/lib/watermark'
 import { readEvents } from '@/lib/events'
 import { canManageEvent } from '@/lib/colaborador'
 import { mirrorOriginalToExternal, mirrorDerivativeToExternal } from '@/lib/storage'
+import {
+  assertCanUpload,
+  isStorageQuotaExceededError,
+  toStorageQuotaErrorPayload,
+} from '@/lib/storageQuota'
 
 const SHARP_THREADS = Number(process.env.UPLOAD_SHARP_THREADS || 2)
 const MAX_ACTIVE_PIPELINES = Number(process.env.UPLOAD_PIPELINE_CONCURRENCY || 2)
@@ -161,6 +166,8 @@ export async function POST(request) {
       }
     }
 
+    assertCanUpload({ kind: 'photo', incomingBytes: Number(file.size) || 0 })
+
     const effectiveConfig = mergeWatermarkConfig(config, event)
     const uploadOptimization = getUploadOptimizationRuntimeConfig(config)
     const filename = sanitizeFilename(file.name)
@@ -243,6 +250,9 @@ export async function POST(request) {
       miniUrl: getFirstUrl(cartCandidates),
     }, { status: 201 })
   } catch (error) {
+    if (isStorageQuotaExceededError(error)) {
+      return NextResponse.json(toStorageQuotaErrorPayload(error), { status: error.status || 507 })
+    }
     console.error('Erro no upload:', error)
     return NextResponse.json({ error: `Erro: ${error.message}` }, { status: 500 })
   }

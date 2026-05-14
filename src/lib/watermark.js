@@ -1,11 +1,13 @@
 import fs from 'fs'
 import path from 'path'
 import { normalizeDerivativeConfig } from './derivedImagesConfig'
+import { DATA_DIR, PROJECT_ROOT, UPLOADS_DIR, ensureRuntimeDirs } from './runtimePaths'
 
-const PUBLIC_DIR = path.join(process.cwd(), 'public')
-const DATA_DIR = path.join(process.cwd(), 'data')
-const GLOBAL_WATERMARK_PATH = path.join(PUBLIC_DIR, 'watermark.png')
-const VARIANT_WATERMARKS_DIR = path.join(PUBLIC_DIR, 'watermarks')
+const LEGACY_PUBLIC_DIR = path.join(PROJECT_ROOT, 'public')
+const GLOBAL_WATERMARK_PATH = path.join(UPLOADS_DIR, 'watermark.png')
+const LEGACY_GLOBAL_WATERMARK_PATH = path.join(LEGACY_PUBLIC_DIR, 'watermark.png')
+const VARIANT_WATERMARKS_DIR = path.join(UPLOADS_DIR, 'watermarks')
+const LEGACY_VARIANT_WATERMARKS_DIR = path.join(LEGACY_PUBLIC_DIR, 'watermarks')
 const ASSETS_META_PATH = path.join(DATA_DIR, 'watermark_assets.json')
 const WATERMARK_VARIANTS = ['global', 'grid', 'thumbs', 'mini', 'covers', 'video']
 const RESERVED_VARIANTS = new Set(['grid.png', 'thumbs.png', 'mini.png', 'covers.png'])
@@ -24,7 +26,7 @@ function readAssetsMeta() {
 
 function writeAssetsMeta(meta) {
   try {
-    if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true })
+    ensureRuntimeDirs()
     fs.writeFileSync(ASSETS_META_PATH, JSON.stringify(meta, null, 2), 'utf-8')
   } catch {
     // best-effort
@@ -51,6 +53,7 @@ export function getAssetOrientation(id) {
 }
 
 function ensureVariantDir() {
+  ensureRuntimeDirs()
   if (!fs.existsSync(VARIANT_WATERMARKS_DIR)) fs.mkdirSync(VARIANT_WATERMARKS_DIR, { recursive: true })
 }
 
@@ -61,17 +64,49 @@ function toPngFilename(name) {
   return safe.toLowerCase().endsWith('.png') ? safe.toLowerCase() : `${safe.toLowerCase()}.png`
 }
 
-export function getWatermarkAbsolutePath(variant = 'global') {
+function getRuntimeWatermarkAbsolutePath(variant = 'global') {
   if (variant === 'global' || variant === 'watermark.png') return GLOBAL_WATERMARK_PATH
   return path.join(VARIANT_WATERMARKS_DIR, toPngFilename(variant.replace('.png', '')))
 }
 
+function getLegacyWatermarkAbsolutePath(variant = 'global') {
+  if (variant === 'global' || variant === 'watermark.png') return LEGACY_GLOBAL_WATERMARK_PATH
+  return path.join(LEGACY_VARIANT_WATERMARKS_DIR, toPngFilename(variant.replace('.png', '')))
+}
+
+function getRuntimeWatermarkPublicUrl(variant = 'global', stamp = null) {
+  const suffix = stamp ? `?v=${stamp}` : ''
+  if (variant === 'global' || variant === 'watermark.png') return `/uploads/watermark.png${suffix}`
+  return `/uploads/watermarks/${toPngFilename(variant.replace('.png', ''))}${suffix}`
+}
+
+function getLegacyWatermarkPublicUrl(variant = 'global', stamp = null) {
+  const suffix = stamp ? `?v=${stamp}` : ''
+  if (variant === 'global' || variant === 'watermark.png') return `/watermark.png${suffix}`
+  return `/watermarks/${toPngFilename(variant.replace('.png', ''))}${suffix}`
+}
+
+export function getWatermarkAbsolutePath(variant = 'global') {
+  const runtimePath = getRuntimeWatermarkAbsolutePath(variant)
+  if (fs.existsSync(runtimePath)) return runtimePath
+
+  const legacyPath = getLegacyWatermarkAbsolutePath(variant)
+  if (fs.existsSync(legacyPath)) return legacyPath
+
+  return runtimePath
+}
+
 export function getWatermarkPublicUrl(variant = 'global') {
-  const stamp = fs.existsSync(getWatermarkAbsolutePath(variant))
-    ? fs.statSync(getWatermarkAbsolutePath(variant)).mtimeMs
-    : Date.now()
-  if (variant === 'global' || variant === 'watermark.png') return `/watermark.png?v=${stamp}`
-  return `/watermarks/${toPngFilename(variant.replace('.png', ''))}?v=${stamp}`
+  const runtimePath = getRuntimeWatermarkAbsolutePath(variant)
+  if (fs.existsSync(runtimePath)) {
+    return getRuntimeWatermarkPublicUrl(variant, fs.statSync(runtimePath).mtimeMs)
+  }
+
+  const legacyPath = getLegacyWatermarkAbsolutePath(variant)
+  const stamp = fs.existsSync(legacyPath) ? fs.statSync(legacyPath).mtimeMs : Date.now()
+  return fs.existsSync(legacyPath)
+    ? getLegacyWatermarkPublicUrl(variant, stamp)
+    : getRuntimeWatermarkPublicUrl(variant, stamp)
 }
 
 export function watermarkExists(variant = 'global') {
@@ -80,13 +115,14 @@ export function watermarkExists(variant = 'global') {
 
 export function saveWatermark(buffer, variant = 'global') {
   ensureVariantDir()
-  fs.writeFileSync(getWatermarkAbsolutePath(variant), buffer)
+  fs.writeFileSync(getRuntimeWatermarkAbsolutePath(variant), buffer)
 }
 
 export function deleteWatermark(variant = 'global') {
-  const target = getWatermarkAbsolutePath(variant)
   if (variant === 'global') return
-  if (fs.existsSync(target)) fs.unlinkSync(target)
+  for (const target of [getRuntimeWatermarkAbsolutePath(variant), getLegacyWatermarkAbsolutePath(variant)]) {
+    if (fs.existsSync(target)) fs.unlinkSync(target)
+  }
 }
 
 export function listWatermarkAssets() {
@@ -94,8 +130,9 @@ export function listWatermarkAssets() {
 
   const assetsMeta = readAssetsMeta()
   const entries = []
-  if (fs.existsSync(GLOBAL_WATERMARK_PATH)) {
-    const meta = fs.statSync(GLOBAL_WATERMARK_PATH)
+  const globalPath = getWatermarkAbsolutePath('global')
+  if (fs.existsSync(globalPath)) {
+    const meta = fs.statSync(globalPath)
     entries.push({
       id: 'watermark.png',
       name: 'Padrão global',
@@ -107,21 +144,31 @@ export function listWatermarkAssets() {
     })
   }
 
-  const files = fs.readdirSync(VARIANT_WATERMARKS_DIR, { withFileTypes: true })
-  for (const file of files) {
-    if (!file.isFile()) continue
-    if (!file.name.toLowerCase().endsWith('.png')) continue
-    const full = path.join(VARIANT_WATERMARKS_DIR, file.name)
-    const meta = fs.statSync(full)
-    entries.push({
-      id: file.name,
-      name: file.name.replace(/\.png$/i, ''),
-      url: `/watermarks/${file.name}?v=${meta.mtimeMs}`,
-      filename: file.name,
-      updatedAt: meta.mtimeMs,
-      reserved: RESERVED_VARIANTS.has(file.name),
-      orientation: normalizeOrientation(assetsMeta[file.name]?.orientation),
-    })
+  const seen = new Set(['watermark.png'])
+  const sources = [
+    { dir: VARIANT_WATERMARKS_DIR, legacy: false },
+    { dir: LEGACY_VARIANT_WATERMARKS_DIR, legacy: true },
+  ]
+  for (const source of sources) {
+    if (!fs.existsSync(source.dir)) continue
+    const files = fs.readdirSync(source.dir, { withFileTypes: true })
+    for (const file of files) {
+      if (!file.isFile()) continue
+      if (!file.name.toLowerCase().endsWith('.png')) continue
+      if (seen.has(file.name)) continue
+      seen.add(file.name)
+      const full = path.join(source.dir, file.name)
+      const meta = fs.statSync(full)
+      entries.push({
+        id: file.name,
+        name: file.name.replace(/\.png$/i, ''),
+        url: source.legacy ? `/watermarks/${file.name}?v=${meta.mtimeMs}` : `/uploads/watermarks/${file.name}?v=${meta.mtimeMs}`,
+        filename: file.name,
+        updatedAt: meta.mtimeMs,
+        reserved: RESERVED_VARIANTS.has(file.name),
+        orientation: normalizeOrientation(assetsMeta[file.name]?.orientation),
+      })
+    }
   }
 
   // Order by update time desc then name
@@ -162,7 +209,7 @@ export function saveWatermarkAsset(buffer, desiredName = null, orientation = nul
   return {
     id: targetName,
     filename: targetName,
-    url: `/watermarks/${targetName}?v=${meta.mtimeMs}`,
+    url: `/uploads/watermarks/${targetName}?v=${meta.mtimeMs}`,
     updatedAt: meta.mtimeMs,
     orientation: finalOrientation,
   }
@@ -173,7 +220,9 @@ export function removeWatermarkAsset(id) {
   if (!filename) return false
   if (filename === 'watermark.png') return false
   if (RESERVED_VARIANTS.has(filename)) return false
-  const target = path.join(VARIANT_WATERMARKS_DIR, filename)
+  const runtimeTarget = path.join(VARIANT_WATERMARKS_DIR, filename)
+  const legacyTarget = path.join(LEGACY_VARIANT_WATERMARKS_DIR, filename)
+  const target = fs.existsSync(runtimeTarget) ? runtimeTarget : legacyTarget
   if (!fs.existsSync(target)) return false
   fs.unlinkSync(target)
   // Cleanup metadata
@@ -188,9 +237,11 @@ export function removeWatermarkAsset(id) {
 export function resolveWatermarkAssetPath(assetName) {
   const filename = toPngFilename(assetName)
   if (!filename) return null
-  if (filename === 'watermark.png') return GLOBAL_WATERMARK_PATH
-  const candidate = path.join(VARIANT_WATERMARKS_DIR, filename)
-  return fs.existsSync(candidate) ? candidate : null
+  if (filename === 'watermark.png') return getWatermarkAbsolutePath('global')
+  const runtimeCandidate = path.join(VARIANT_WATERMARKS_DIR, filename)
+  if (fs.existsSync(runtimeCandidate)) return runtimeCandidate
+  const legacyCandidate = path.join(LEGACY_VARIANT_WATERMARKS_DIR, filename)
+  return fs.existsSync(legacyCandidate) ? legacyCandidate : null
 }
 
 export function getActiveWatermarkPath(config, variant = 'grid') {
@@ -212,7 +263,8 @@ export function getActiveWatermarkPath(config, variant = 'grid') {
   if (assetPath) return assetPath
 
   // 3) Legacy global fallback
-  return fs.existsSync(GLOBAL_WATERMARK_PATH) ? GLOBAL_WATERMARK_PATH : null
+  const globalPath = getWatermarkAbsolutePath('global')
+  return fs.existsSync(globalPath) ? globalPath : null
 }
 
 // Watermark dedicada para vídeos (miniatura, capa e overlay no MP4 via ffmpeg).
@@ -238,7 +290,8 @@ export function getVideoWatermarkPath(config) {
   const globalAsset = resolveWatermarkAssetPath(normalized.watermarkAsset || null)
   if (globalAsset) return globalAsset
 
-  return fs.existsSync(GLOBAL_WATERMARK_PATH) ? GLOBAL_WATERMARK_PATH : null
+  const globalPath = getWatermarkAbsolutePath('global')
+  return fs.existsSync(globalPath) ? globalPath : null
 }
 
 export function mergeWatermarkConfig(globalConfig, event = null) {

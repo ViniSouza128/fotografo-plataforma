@@ -2,18 +2,23 @@
 /* eslint-disable no-console */
 // scripts/test-bot.js
 // Bot de testes funcionais: bate na API real, verifica arquivos no disco
-// e relata cada cenário com PASS/FAIL. Limpa atrás de si.
+// e relata cada cenÃ¡rio com PASS/FAIL. Limpa atrÃ¡s de si.
 //
 // Uso:
 //   node scripts/test-bot.js                       (porta 3000)
 //   node scripts/test-bot.js --port 3004           (porta custom)
-//   node scripts/test-bot.js --keep                (não apaga uploads de teste)
+//   node scripts/test-bot.js --keep                (nÃ£o apaga uploads de teste)
 
 const fs = require('fs')
 const path = require('path')
 const crypto = require('crypto')
-
-const ROOT = process.cwd()
+const {
+  DATA_DIR,
+  PROJECT_ROOT,
+  STORAGE_DIR,
+  UPLOADS_DIR,
+  ensureRuntimeDirs,
+} = require('../src/lib/runtimePaths.cjs')
 
 const args = process.argv.slice(2)
 const PORT = (() => {
@@ -34,16 +39,16 @@ const failures = []
 
 function logPass(name, detail = '') {
   pass += 1
-  console.log(`\x1b[32m✓\x1b[0m ${name}${detail ? '  ' + detail : ''}`)
+  console.log(`\x1b[32mâœ“\x1b[0m ${name}${detail ? '  ' + detail : ''}`)
 }
 function logFail(name, err) {
   fail += 1
   failures.push({ name, err })
   const msg = err?.stack || err?.message || String(err)
-  console.log(`\x1b[31m✗\x1b[0m ${name}\n   ${msg.split('\n').join('\n   ')}`)
+  console.log(`\x1b[31mâœ—\x1b[0m ${name}\n   ${msg.split('\n').join('\n   ')}`)
 }
 function logHeader(label) {
-  console.log(`\n\x1b[36m── ${label} ──\x1b[0m`)
+  console.log(`\n\x1b[36mâ”€â”€ ${label} â”€â”€\x1b[0m`)
 }
 
 function buildCookieHeader() {
@@ -51,7 +56,7 @@ function buildCookieHeader() {
 }
 
 function parseSetCookie(setCookieHeaderArr) {
-  // setCookieHeaderArr é uma string única ou array. Vamos lidar com qualquer um.
+  // setCookieHeaderArr Ã© uma string Ãºnica ou array. Vamos lidar com qualquer um.
   const arr = Array.isArray(setCookieHeaderArr) ? setCookieHeaderArr : [setCookieHeaderArr].filter(Boolean)
   for (const raw of arr) {
     if (!raw) continue
@@ -138,7 +143,7 @@ async function testServerUp() {
 async function testLogin() {
   try {
     const client = await ensureLoggedIn()
-    if (!client.isAdmin) throw new Error('cliente não é admin')
+    if (!client.isAdmin) throw new Error('cliente nÃ£o Ã© admin')
     logPass('Admin login (admin@test.com/123456)', `id=${client.id.slice(0, 8)}`)
   } catch (err) {
     logFail('Admin login', err)
@@ -150,9 +155,9 @@ async function testListEvents() {
   try {
     const { status, json } = await httpJson('GET', '/api/events')
     if (status !== 200) throw new Error(`status=${status}`)
-    if (!Array.isArray(json)) throw new Error('resposta não é array')
+    if (!Array.isArray(json)) throw new Error('resposta nÃ£o Ã© array')
     const ev = json.find(e => e.id === TEST_EVENT_ID)
-    if (!ev) throw new Error(`evento ${TEST_EVENT_ID} não encontrado`)
+    if (!ev) throw new Error(`evento ${TEST_EVENT_ID} nÃ£o encontrado`)
     logPass('GET /api/events lista evento de teste', `name="${ev.name}"`)
   } catch (err) {
     logFail('GET /api/events', err)
@@ -163,14 +168,14 @@ async function testListPhotos() {
   try {
     const { status, json } = await httpJson('GET', `/api/photos?eventId=${TEST_EVENT_ID}&limit=5`)
     if (status !== 200) throw new Error(`status=${status}`)
-    if (!Array.isArray(json)) throw new Error('resposta não é array')
+    if (!Array.isArray(json)) throw new Error('resposta nÃ£o Ã© array')
     if (json.length === 0) throw new Error('nenhuma foto retornada')
     const sample = json[0]
     if (!sample.urls?.modal) throw new Error('foto sem urls.modal')
     if (!sample.pathGridWm?.startsWith(TEST_EVENT_ID + '/')) {
-      throw new Error(`pathGridWm não tem prefixo de evento: ${sample.pathGridWm}`)
+      throw new Error(`pathGridWm nÃ£o tem prefixo de evento: ${sample.pathGridWm}`)
     }
-    logPass('GET /api/photos retorna fotos com paths per-event', `1ª: ${sample.publicId}`)
+    logPass('GET /api/photos retorna fotos com paths per-event', `1Âª: ${sample.publicId}`)
   } catch (err) {
     logFail('GET /api/photos', err)
   }
@@ -181,9 +186,9 @@ async function testPhotoUploadWithBackgroundJob() {
   let savedPhotoId = null
   try {
     // 1) Pega uma JPG existente como amostra
-    const sampleDir = path.join(ROOT, 'public', 'uploads', TEST_EVENT_ID, 'grid', 'wm')
+    const sampleDir = path.join(UPLOADS_DIR, TEST_EVENT_ID, 'grid', 'wm')
     const samples = fs.readdirSync(sampleDir).filter(n => n.endsWith('.jpg'))
-    if (samples.length === 0) throw new Error('nenhuma amostra jpg disponível')
+    if (samples.length === 0) throw new Error('nenhuma amostra jpg disponÃ­vel')
     const samplePath = path.join(sampleDir, samples[0])
     const blob = fileFromPath(samplePath, 'image/jpeg')
 
@@ -203,15 +208,15 @@ async function testPhotoUploadWithBackgroundJob() {
     if (!upRes.ok) throw new Error(`upload status=${upRes.status} body=${JSON.stringify(upJson)}`)
     if (!upJson.filename) throw new Error('resposta sem filename')
     uploadedFilename = upJson.filename
-    logPass('POST /api/upload (sem derivadas inline)', `${uploadMs}ms · filename=${uploadedFilename}`)
+    logPass('POST /api/upload (sem derivadas inline)', `${uploadMs}ms Â· filename=${uploadedFilename}`)
 
-    // 3) Confirma que NÃO há derivadas no disco ainda
-    const gridWmPath = path.join(ROOT, 'public', 'uploads', TEST_EVENT_ID, 'grid', 'wm', uploadedFilename)
+    // 3) Confirma que NÃƒO hÃ¡ derivadas no disco ainda
+    const gridWmPath = path.join(UPLOADS_DIR, TEST_EVENT_ID, 'grid', 'wm', uploadedFilename)
     if (fs.existsSync(gridWmPath)) {
-      logFail('Upload sem derivadas inline (esperado: arquivo grid/wm não existe ainda)',
+      logFail('Upload sem derivadas inline (esperado: arquivo grid/wm nÃ£o existe ainda)',
         new Error(`mas existe: ${gridWmPath}`))
     } else {
-      logPass('Após /api/upload, derivadas ainda NÃO existem no disco (worker é assíncrono)')
+      logPass('ApÃ³s /api/upload, derivadas ainda NÃƒO existem no disco (worker Ã© assÃ­ncrono)')
     }
 
     // 4) POST /api/photos para registrar metadados (enfileira derivadas)
@@ -233,16 +238,16 @@ async function testPhotoUploadWithBackgroundJob() {
     }
     logPass('POST /api/photos retorna 201 com pathGridWm per-event', `id=${savedPhotoId.slice(0, 8)}`)
 
-    // 5) Verifica que o job foi enfileirado em data/jobs.json (pode já ter sido processado)
-    const jobsPath = path.join(ROOT, 'data', 'jobs.json')
+    // 5) Verifica que o job foi enfileirado em data/jobs.json (pode jÃ¡ ter sido processado)
+    const jobsPath = path.join(DATA_DIR, 'jobs.json')
     if (fs.existsSync(jobsPath)) {
       const jobs = JSON.parse(fs.readFileSync(jobsPath, 'utf-8'))
       logPass('data/jobs.json existe', `${jobs.length} job(s) na fila no momento da leitura`)
     } else {
-      logFail('data/jobs.json não foi criado', new Error('arquivo ausente'))
+      logFail('data/jobs.json nÃ£o foi criado', new Error('arquivo ausente'))
     }
 
-    // 6) Aguarda até o worker gerar todas as 6 derivadas
+    // 6) Aguarda atÃ© o worker gerar todas as 6 derivadas
     const expectedKinds = [
       ['grid', 'wm'], ['grid', 'clean'],
       ['thumbs', 'wm'], ['thumbs', 'clean'],
@@ -250,25 +255,25 @@ async function testPhotoUploadWithBackgroundJob() {
     ]
     await waitFor(() => {
       return expectedKinds.every(([k, w]) => {
-        const p = path.join(ROOT, 'public', 'uploads', TEST_EVENT_ID, k, w, uploadedFilename)
+        const p = path.join(UPLOADS_DIR, TEST_EVENT_ID, k, w, uploadedFilename)
         return fs.existsSync(p)
       })
     }, { timeoutMs: 30000, label: 'derivadas geradas pelo worker' })
-    logPass('Worker em segundo plano gerou todas as 6 derivadas (grid/thumbs/mini × wm/clean)')
+    logPass('Worker em segundo plano gerou todas as 6 derivadas (grid/thumbs/mini Ã— wm/clean)')
 
     // 7) Confirma que jobs.json eventualmente remove o job (o worker
-    // remove o registro logo após escrever os arquivos, mas pode haver
+    // remove o registro logo apÃ³s escrever os arquivos, mas pode haver
     // microsegundos de janela; faz polling curto).
     try {
       await waitFor(() => {
         const j = JSON.parse(fs.readFileSync(jobsPath, 'utf-8'))
         return !j.find(x => x.payload?.photoId === savedPhotoId)
-      }, { timeoutMs: 5000, intervalMs: 100, label: 'job removido após sucesso' })
-      logPass('Job photo-derivatives foi removido da fila após sucesso')
+      }, { timeoutMs: 5000, intervalMs: 100, label: 'job removido apÃ³s sucesso' })
+      logPass('Job photo-derivatives foi removido da fila apÃ³s sucesso')
     } catch (err) {
       const j = JSON.parse(fs.readFileSync(jobsPath, 'utf-8'))
       const stillForThis = j.find(x => x.payload?.photoId === savedPhotoId)
-      logFail('Job da foto deveria ter sido removido após sucesso',
+      logFail('Job da foto deveria ter sido removido apÃ³s sucesso',
         new Error(`ainda na fila: ${JSON.stringify(stillForThis)}`))
     }
   } catch (err) {
@@ -288,14 +293,14 @@ async function testVideoUploadWithBackgroundJobs() {
   let videoFilename = null
   let videoId = null
   try {
-    // Procura um MP4 íntegro (size razoável) para reusar como amostra.
-    // Ignora MP4 truncados de testes anteriores (< 1MB) e arquivos *_wm já
+    // Procura um MP4 Ã­ntegro (size razoÃ¡vel) para reusar como amostra.
+    // Ignora MP4 truncados de testes anteriores (< 1MB) e arquivos *_wm jÃ¡
     // processados por watermark.
     let samplePath = null
     let sampleSize = 0
-    const videoBuckets = fs.readdirSync(path.join(ROOT, 'storage', 'originals'))
+    const videoBuckets = fs.readdirSync(path.join(STORAGE_DIR, 'originals'))
     for (const bucket of videoBuckets) {
-      const dir = path.join(ROOT, 'storage', 'originals', bucket, 'videos')
+      const dir = path.join(STORAGE_DIR, 'originals', bucket, 'videos')
       if (!fs.existsSync(dir)) continue
       for (const name of fs.readdirSync(dir)) {
         if (!name.endsWith('.mp4') || name.includes('_wm')) continue
@@ -309,12 +314,12 @@ async function testVideoUploadWithBackgroundJobs() {
       if (samplePath) break
     }
     if (!samplePath) {
-      logFail('Video upload', new Error('nenhuma amostra MP4 íntegra (>=1MB) disponível para teste'))
+      logFail('Video upload', new Error('nenhuma amostra MP4 Ã­ntegra (>=1MB) disponÃ­vel para teste'))
       return
     }
-    logPass('Sample MP4 selecionado', `${path.basename(samplePath)} · ${(sampleSize / 1024 / 1024).toFixed(1)} MB`)
+    logPass('Sample MP4 selecionado', `${path.basename(samplePath)} Â· ${(sampleSize / 1024 / 1024).toFixed(1)} MB`)
 
-    // 1) /api/upload-video — deve usar .partial e renomear atomicamente
+    // 1) /api/upload-video â€” deve usar .partial e renomear atomicamente
     const blob = fileFromPath(samplePath, 'video/mp4')
     const fd = new FormData()
     fd.append('file', blob, `testbot-${Date.now()}.mp4`)
@@ -335,18 +340,18 @@ async function testVideoUploadWithBackgroundJobs() {
       logFail('upload-video deveria retornar previewWmStatus=pending (delegado ao worker)',
         new Error(`recebido: ${upJson.previewWmStatus}`))
     } else {
-      logPass('POST /api/upload-video (rápido, preview pendente para worker)', `${uploadMs}ms`)
+      logPass('POST /api/upload-video (rÃ¡pido, preview pendente para worker)', `${uploadMs}ms`)
     }
 
-    // 2) Confirma que não tem .partial sobrando
-    const partialPath = path.join(ROOT, 'storage', 'originals', TEST_EVENT_ID, 'videos', `${videoFilename}.partial`)
+    // 2) Confirma que nÃ£o tem .partial sobrando
+    const partialPath = path.join(STORAGE_DIR, 'originals', TEST_EVENT_ID, 'videos', `${videoFilename}.partial`)
     if (fs.existsSync(partialPath)) {
-      logFail('Upload deveria renomear .partial → final', new Error(`.partial ainda existe: ${partialPath}`))
+      logFail('Upload deveria renomear .partial â†’ final', new Error(`.partial ainda existe: ${partialPath}`))
     } else {
-      logPass('Upload de vídeo renomeou .partial para o nome final atômicamente')
+      logPass('Upload de vÃ­deo renomeou .partial para o nome final atÃ´micamente')
     }
 
-    // 3) /api/videos POST — registra e enfileira jobs
+    // 3) /api/videos POST â€” registra e enfileira jobs
     const regBody = {
       eventId: TEST_EVENT_ID,
       filename: videoFilename,
@@ -362,9 +367,9 @@ async function testVideoUploadWithBackgroundJobs() {
     const regRes = await httpJson('POST', '/api/videos', regBody)
     if (regRes.status !== 201) throw new Error(`videos POST status=${regRes.status} body=${JSON.stringify(regRes.json)}`)
     videoId = regRes.json.id
-    logPass('POST /api/videos registrou vídeo', `id=${videoId.slice(0, 8)}`)
+    logPass('POST /api/videos registrou vÃ­deo', `id=${videoId.slice(0, 8)}`)
 
-    // 4) Worker deve gerar poster (clean+wm) — pode levar uns segundos
+    // 4) Worker deve gerar poster (clean+wm) â€” pode levar uns segundos
     await waitFor(async () => {
       const r = await httpJson('GET', `/api/videos?eventId=${TEST_EVENT_ID}&ids=${videoId}`)
       const v = r.json?.find?.(x => x.id === videoId)
@@ -381,14 +386,14 @@ async function testVideoUploadWithBackgroundJobs() {
     logPass('Worker gerou preview MP4 com WM (ffmpeg)')
 
     // 6) Verifica arquivos no disco
-    const cleanPosterFile = path.join(ROOT, 'public', 'uploads', 'video-posters', 'clean', videoFilename.replace(/\.\w+$/, '.jpg'))
-    const wmPosterFile = path.join(ROOT, 'public', 'uploads', 'video-posters', 'wm', videoFilename.replace(/\.\w+$/, '.jpg'))
-    const previewWmFile = path.join(ROOT, 'storage', 'originals', TEST_EVENT_ID, 'videos', videoFilename.replace(/\.\w+$/, '_wm.mp4'))
+    const cleanPosterFile = path.join(UPLOADS_DIR, 'video-posters', 'clean', videoFilename.replace(/\.\w+$/, '.jpg'))
+    const wmPosterFile = path.join(UPLOADS_DIR, 'video-posters', 'wm', videoFilename.replace(/\.\w+$/, '.jpg'))
+    const previewWmFile = path.join(STORAGE_DIR, 'originals', TEST_EVENT_ID, 'videos', videoFilename.replace(/\.\w+$/, '_wm.mp4'))
     const allOk = fs.existsSync(cleanPosterFile) && fs.existsSync(wmPosterFile) && fs.existsSync(previewWmFile)
     if (!allOk) {
       throw new Error(`arquivos esperados ausentes: clean=${fs.existsSync(cleanPosterFile)} wm=${fs.existsSync(wmPosterFile)} preview=${fs.existsSync(previewWmFile)}`)
     }
-    logPass('Arquivos físicos: posterClean, posterWm e preview_wm.mp4 estão no disco')
+    logPass('Arquivos fÃ­sicos: posterClean, posterWm e preview_wm.mp4 estÃ£o no disco')
   } catch (err) {
     logFail('Video upload + background pipeline', err)
   } finally {
@@ -402,22 +407,22 @@ async function testVideoUploadWithBackgroundJobs() {
 
 async function testJobsQueueBootRecovery() {
   // Usa diretamente o lib via require seria complicado em next runtime; aqui
-  // só validamos que o arquivo data/jobs.json existe e é válido JSON.
+  // sÃ³ validamos que o arquivo data/jobs.json existe e Ã© vÃ¡lido JSON.
   try {
-    const jobsPath = path.join(ROOT, 'data', 'jobs.json')
+    const jobsPath = path.join(DATA_DIR, 'jobs.json')
     if (!fs.existsSync(jobsPath)) {
       logFail('data/jobs.json existe', new Error('arquivo ausente'))
       return
     }
     const jobs = JSON.parse(fs.readFileSync(jobsPath, 'utf-8'))
-    if (!Array.isArray(jobs)) throw new Error('jobs.json não é array')
+    if (!Array.isArray(jobs)) throw new Error('jobs.json nÃ£o Ã© array')
     // Garante que nenhum job ficou em "processing" pendurado
     const stuck = jobs.filter(j => j.status === 'processing')
     if (stuck.length > 0) {
       logFail('Nenhum job preso em "processing"',
         new Error(`${stuck.length} jobs em processing: ${stuck.map(j => j.id).join(', ')}`))
     } else {
-      logPass('Nenhum job preso em "processing" (boot recovery saudável)')
+      logPass('Nenhum job preso em "processing" (boot recovery saudÃ¡vel)')
     }
   } catch (err) {
     logFail('Jobs queue health', err)
@@ -425,11 +430,11 @@ async function testJobsQueueBootRecovery() {
 }
 
 async function testPartialFilesCleanup() {
-  // Verifica que não há .partial sobrando em videos
+  // Verifica que nÃ£o hÃ¡ .partial sobrando em videos
   try {
-    const dir = path.join(ROOT, 'storage', 'originals')
+    const dir = path.join(STORAGE_DIR, 'originals')
     if (!fs.existsSync(dir)) {
-      logPass('storage/originals limpo', '(diretório não existe)')
+      logPass('storage/originals limpo', '(diretÃ³rio nÃ£o existe)')
       return
     }
     let stale = []
@@ -456,7 +461,7 @@ async function testPerEventPaths() {
     const r = await httpJson('GET', `/api/photos?eventId=${TEST_EVENT_ID}&limit=3`)
     const sample = r.json?.[0]
     if (!sample) throw new Error('nenhuma foto')
-    const expected = path.join(ROOT, 'public', 'uploads', TEST_EVENT_ID, 'grid', 'wm', sample.filename)
+    const expected = path.join(UPLOADS_DIR, TEST_EVENT_ID, 'grid', 'wm', sample.filename)
     if (!fs.existsSync(expected)) {
       throw new Error(`arquivo esperado ausente: ${expected}`)
     }
@@ -467,46 +472,46 @@ async function testPerEventPaths() {
 }
 
 async function testVideoWatermarkOnPosterWm() {
-  // Verifica que ao menos um vídeo tem posterWm com tamanho razoável
+  // Verifica que ao menos um vÃ­deo tem posterWm com tamanho razoÃ¡vel
   try {
     const r = await httpJson('GET', `/api/videos?eventId=${TEST_EVENT_ID}`)
     const list = Array.isArray(r.json) ? r.json : []
     const withWmPoster = list.filter(v => v.posterWm)
     if (withWmPoster.length === 0) {
-      logFail('Algum vídeo tem posterWm', new Error('nenhum vídeo com posterWm encontrado'))
+      logFail('Algum vÃ­deo tem posterWm', new Error('nenhum vÃ­deo com posterWm encontrado'))
       return
     }
     // Verifica que o arquivo existe no disco
     const v = withWmPoster[0]
-    const wmPath = path.join(ROOT, 'public', 'uploads', 'video-posters', 'wm', v.filename.replace(/\.\w+$/, '.jpg'))
+    const wmPath = path.join(UPLOADS_DIR, 'video-posters', 'wm', v.filename.replace(/\.\w+$/, '.jpg'))
     if (!fs.existsSync(wmPath)) {
-      throw new Error(`posterWm referenciado mas arquivo não existe: ${wmPath}`)
+      throw new Error(`posterWm referenciado mas arquivo nÃ£o existe: ${wmPath}`)
     }
     const stat = fs.statSync(wmPath)
     if (stat.size < 1000) throw new Error(`posterWm muito pequeno: ${stat.size} bytes`)
-    logPass(`Vídeo "${v.originalName}" tem posterWm no disco`, `${(stat.size / 1024).toFixed(1)} KB`)
+    logPass(`VÃ­deo "${v.originalName}" tem posterWm no disco`, `${(stat.size / 1024).toFixed(1)} KB`)
   } catch (err) {
     logFail('Video posterWm check', err)
   }
 }
 
 async function testPublicEventPage() {
-  // Apenas valida que a página renderiza (status 200) — UX é validada no Chrome.
+  // Apenas valida que a pÃ¡gina renderiza (status 200) â€” UX Ã© validada no Chrome.
   try {
     const res = await fetch(`${BASE_URL}/evento/${TEST_EVENT_ID}`)
     if (!res.ok) throw new Error(`status=${res.status}`)
     const html = await res.text()
 
-    // Checa que o HTML não tem padrões claramente errados
-    // (anchor aninhada gera erro de hidratação no Chrome)
+    // Checa que o HTML nÃ£o tem padrÃµes claramente errados
+    // (anchor aninhada gera erro de hidrataÃ§Ã£o no Chrome)
     if (/<a[^>]*>[^<]*<a[^>]*>/.test(html)) {
-      logFail('Página pública do evento — sem <a> aninhada',
+      logFail('PÃ¡gina pÃºblica do evento â€” sem <a> aninhada',
         new Error('encontrou <a> aninhada no HTML servido'))
     } else {
-      logPass(`Página pública /evento/${TEST_EVENT_ID.slice(0, 8)}... carrega sem nested <a>`)
+      logPass(`PÃ¡gina pÃºblica /evento/${TEST_EVENT_ID.slice(0, 8)}... carrega sem nested <a>`)
     }
   } catch (err) {
-    logFail('Página pública do evento', err)
+    logFail('PÃ¡gina pÃºblica do evento', err)
   }
 }
 
@@ -516,9 +521,9 @@ async function testAdminEventPage() {
       headers: { Cookie: buildCookieHeader() },
     })
     if (!res.ok) throw new Error(`status=${res.status}`)
-    logPass(`Página admin /admin/eventos/${TEST_EVENT_ID.slice(0, 8)}... carrega (200)`)
+    logPass(`PÃ¡gina admin /admin/eventos/${TEST_EVENT_ID.slice(0, 8)}... carrega (200)`)
   } catch (err) {
-    logFail('Página admin do evento', err)
+    logFail('PÃ¡gina admin do evento', err)
   }
 }
 
@@ -528,9 +533,9 @@ async function testUploadFotosPage() {
       headers: { Cookie: buildCookieHeader() },
     })
     if (!res.ok) throw new Error(`status=${res.status}`)
-    logPass(`Página upload-fotos carrega (200)`)
+    logPass(`PÃ¡gina upload-fotos carrega (200)`)
   } catch (err) {
-    logFail('Página upload-fotos', err)
+    logFail('PÃ¡gina upload-fotos', err)
   }
 }
 
@@ -539,10 +544,10 @@ async function testMiddlewareBlocksNonDerivative() {
   try {
     const res = await fetch(`${BASE_URL}/uploads/foo-private.txt`)
     if (res.status !== 404) {
-      logFail('Middleware bloqueia /uploads/<arquivo-não-público>',
+      logFail('Middleware bloqueia /uploads/<arquivo-nÃ£o-pÃºblico>',
         new Error(`status esperado 404, recebido ${res.status}`))
     } else {
-      logPass('Middleware bloqueia /uploads/foo-private.txt → 404')
+      logPass('Middleware bloqueia /uploads/foo-private.txt â†’ 404')
     }
   } catch (err) {
     logFail('Middleware check', err)
@@ -558,9 +563,9 @@ async function testWatermarkEndpointFallback() {
     const url = `/api/images/derive?filename=${encodeURIComponent(sample.filename)}&kind=thumbs&watermark=wm&eventId=${TEST_EVENT_ID}&mode=ensure`
     const { status, json } = await httpJson('GET', url)
     if (status !== 200) throw new Error(`status=${status}`)
-    if (!json?.ok) throw new Error(`resposta não ok: ${JSON.stringify(json)}`)
+    if (!json?.ok) throw new Error(`resposta nÃ£o ok: ${JSON.stringify(json)}`)
     if (!json.url || !json.url.includes(TEST_EVENT_ID)) {
-      throw new Error(`url não tem eventId: ${json.url}`)
+      throw new Error(`url nÃ£o tem eventId: ${json.url}`)
     }
     logPass('/api/images/derive (mode=ensure) retorna URL per-event', `${json.url}`)
   } catch (err) {
@@ -569,23 +574,24 @@ async function testWatermarkEndpointFallback() {
 }
 
 async function main() {
-  console.log(`\n\x1b[1mBot de testes — ${BASE_URL}\x1b[0m`)
+  ensureRuntimeDirs()
+  console.log(`\n\x1b[1mBot de testes â€” ${BASE_URL}\x1b[0m`)
 
   logHeader('Infraestrutura')
   await testServerUp()
   await testLogin()
 
-  logHeader('API básica')
+  logHeader('API bÃ¡sica')
   await testListEvents()
   await testListPhotos()
 
-  logHeader('Pipeline assíncrono — fotos')
+  logHeader('Pipeline assÃ­ncrono â€” fotos')
   await testPhotoUploadWithBackgroundJob()
 
-  logHeader('Pipeline assíncrono — vídeos')
+  logHeader('Pipeline assÃ­ncrono â€” vÃ­deos')
   await testVideoUploadWithBackgroundJobs()
 
-  logHeader('Saúde da fila + recuperação')
+  logHeader('SaÃºde da fila + recuperaÃ§Ã£o')
   await testJobsQueueBootRecovery()
   await testPartialFilesCleanup()
 
@@ -594,7 +600,7 @@ async function main() {
   await testVideoWatermarkOnPosterWm()
   await testWatermarkEndpointFallback()
 
-  logHeader('Páginas web (status only)')
+  logHeader('PÃ¡ginas web (status only)')
   await testPublicEventPage()
   await testAdminEventPage()
   await testUploadFotosPage()

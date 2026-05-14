@@ -15,9 +15,8 @@
 import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
+import { DATA_DIR, ensureRuntimeDirs } from './runtimePaths'
 
-const ROOT = process.cwd()
-const DATA_DIR = path.join(ROOT, 'data')
 const JOBS_PATH = path.join(DATA_DIR, 'jobs.json')
 
 const STATUS_PENDING = 'pending'
@@ -37,7 +36,7 @@ let _wakeUpTimer = null
 const _processors = new Map()
 
 function ensureDataDir() {
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true })
+  ensureRuntimeDirs()
 }
 
 function readJobsRaw() {

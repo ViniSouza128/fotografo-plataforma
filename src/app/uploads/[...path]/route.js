@@ -2,8 +2,14 @@ import fs from 'fs'
 import path from 'path'
 import { NextResponse } from 'next/server'
 import { ensurePhotoDerivedVariant } from '@/lib/imageDerivatives'
-import { PUBLIC_UPLOADS_DIR, sanitizeStoredFilename } from '@/lib/imageStorage'
+import { sanitizeStoredFilename } from '@/lib/imageStorage'
 import { sanitizeEventBucket } from '@/lib/imagePaths'
+import {
+  getUploadsRoots,
+  inspectSafeUploadsFile,
+  normalizeUploadsRequestParts,
+  resolveUploadsRequestPath,
+} from '@/lib/uploadsSecurity'
 
 export const dynamic = 'force-dynamic'
 
@@ -16,28 +22,10 @@ const MIME_BY_EXT = {
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon',
   '.avif': 'image/avif',
-}
-
-function toPosixParts(parts) {
-  return (Array.isArray(parts) ? parts : [])
-    .map((value) => String(value || '').trim())
-    .filter(Boolean)
-}
-
-function isSafeUploadsParts(parts) {
-  return parts.length > 0 && parts.every((part) => {
-    if (!part || part === '.' || part === '..') return false
-    return !part.includes('\\') && !part.includes('/')
-  })
-}
-
-function buildUploadsAbsolutePath(parts) {
-  if (!isSafeUploadsParts(parts)) return null
-  const targetPath = path.join(PUBLIC_UPLOADS_DIR, ...parts)
-  const resolvedRoot = path.resolve(PUBLIC_UPLOADS_DIR)
-  const resolvedTarget = path.resolve(targetPath)
-  if (resolvedTarget !== resolvedRoot && !resolvedTarget.startsWith(resolvedRoot + path.sep)) return null
-  return resolvedTarget
+  '.mp4': 'video/mp4',
+  '.m4v': 'video/mp4',
+  '.mov': 'video/quicktime',
+  '.webm': 'video/webm',
 }
 
 function getMimeType(filePath) {
@@ -91,20 +79,29 @@ async function ensureDerivedIfPossible(parts) {
 }
 
 export async function GET(_request, context) {
-  const parts = toPosixParts(context?.params?.path)
-  const absolutePath = buildUploadsAbsolutePath(parts)
-
-  if (!absolutePath) {
-    return new NextResponse('Not found', { status: 404 })
+  const normalized = normalizeUploadsRequestParts(context?.params?.path)
+  if (!normalized.ok) {
+    return new NextResponse('Bad request', { status: 400 })
   }
 
-  if (fs.existsSync(absolutePath)) {
-    return await serveLocalFile(absolutePath)
+  const roots = getUploadsRoots()
+  for (const root of roots) {
+    const absolutePath = resolveUploadsRequestPath(normalized.parts, { root })
+    if (!absolutePath) return new NextResponse('Forbidden', { status: 403 })
+    const inspected = await inspectSafeUploadsFile(absolutePath, root)
+    if (inspected.ok) {
+      return await serveLocalFile(inspected.filePath)
+    }
+    if (inspected.status === 403) {
+      return new NextResponse('Forbidden', { status: 403 })
+    }
   }
 
-  const ensured = await ensureDerivedIfPossible(parts)
-  if (ensured && fs.existsSync(absolutePath)) {
-    return await serveLocalFile(absolutePath)
+  const ensured = await ensureDerivedIfPossible(normalized.parts)
+  if (ensured) {
+    const primaryPath = resolveUploadsRequestPath(normalized.parts, { root: roots[0] })
+    const inspected = primaryPath ? await inspectSafeUploadsFile(primaryPath, roots[0]) : null
+    if (inspected?.ok) return await serveLocalFile(inspected.filePath)
   }
 
   return new NextResponse('Not found', { status: 404 })
